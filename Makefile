@@ -580,6 +580,7 @@ $(DESKTOP_FILE):
 
 $(BUILD_FILE):
 	@echo "updating build info: '$(BUILD_FILE)'"
+	@mkdir -p $(dir $(BUILD_FILE))
 	@echo "#ifndef __BUILD_H__" > $(BUILD_FILE)
 	@echo "#define __BUILD_H__" >> $(BUILD_FILE)
 	@echo "#define PROGNAME \"$(PROGNAME)\"" >> $(BUILD_FILE)
