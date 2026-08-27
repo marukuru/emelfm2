@@ -157,7 +157,5 @@ jobs:
           name: "Release ${{ needs.release-info.outputs.version }} (Build ${{ github.run_number }})"
           body_path: artifacts/release_notes.md
           files: |
-            artifacts/**/*.deb
-            artifacts/**/*.AppImage
             artifacts/*.deb
             artifacts/*.AppImage
