@@ -1424,8 +1424,9 @@ gboolean e2_filestore_make_all_infos (gchar *parentpath, GList **list)
 	g_strlcpy (localpath, parentpath, sizeof (localpath));
 	if (trailer)
 	{
-		*(parentpath + len1 - sizeof (gchar)) = G_DIR_SEPARATOR;
+		*(localpath + len1) = G_DIR_SEPARATOR;
 		len1 += sizeof (gchar);
+		*(localpath + len1) = '\0';
 	}
 	len2 -= len1;	//or NAME_MAX ?
 	item = localpath + len1;
@@ -1469,6 +1470,7 @@ nextmember:
 				//keep going if just this one item is N/A
 				GList *tmp = member;
 				member = member->next;
+				g_free (tmp->data);
 				*list = g_list_delete_link (*list, tmp);
 				if (member != NULL)
 					goto nextmember;
@@ -1720,10 +1722,12 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 			//do not free keys when destroying, they're not copies
 			GHashTable *newlookup = g_hash_table_new_full
 				(g_str_hash, g_str_equal, NULL, NULL);
+			FileInfo **entries_array = g_new(FileInfo *, itemcount);
 			i = 0;
 			for (member = entries; member != NULL; member = member->next)
 			{
-				g_hash_table_insert (newlookup, ((FileInfo *)member->data)->filename,
+				entries_array[i] = (FileInfo *)member->data;
+				g_hash_table_insert (newlookup, entries_array[i]->filename,
 					GUINT_TO_POINTER (i));
 				i++;
 			}
@@ -1741,52 +1745,54 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 			//walk current FileInfo's, reconciling with new ones in entries list,
 			//setting modes[] data, removing gone items from current store,
 			//cleaning up unused data in entries
-			gtk_tree_model_get_iter_first (mdl, &iter); //there will always be at least one entry, ".."
-			do
+			CLOSEBGL
+			if (gtk_tree_model_get_iter_first (mdl, &iter)) //there will always be at least one entry, ".."
 			{
+				do
+				{
 loopstart:
-				gtk_tree_model_get (mdl, &iter, FINFO, &currinfoptr, -1);
-				if (g_hash_table_lookup_extended (newlookup, currinfoptr->filename,
-					&orig_key, &pindx))
-				{
-					indx = GPOINTER_TO_UINT (pindx);
-					newinfoptr = (FileInfo *) g_list_nth_data (entries, indx);
-					//FIXME vfs may not have same data as local
-					//FIXME make this faster
-					if (newinfoptr->statbuf.st_atime != currinfoptr->statbuf.st_atime
-					 || newinfoptr->statbuf.st_size != currinfoptr->statbuf.st_size
-					 || newinfoptr->statbuf.st_mtime != currinfoptr->statbuf.st_mtime
-					 || newinfoptr->statbuf.st_ctime != currinfoptr->statbuf.st_ctime
-					 || newinfoptr->statbuf.st_mode != currinfoptr->statbuf.st_mode
-					 || newinfoptr->statbuf.st_uid != currinfoptr->statbuf.st_uid
-					 || newinfoptr->statbuf.st_gid != currinfoptr->statbuf.st_gid
-					)
+					gtk_tree_model_get (mdl, &iter, FINFO, &currinfoptr, -1);
+					if (g_hash_table_lookup_extended (newlookup, currinfoptr->filename,
+						&orig_key, &pindx))
 					{
-						modes [indx].oldindx = i;
-						modes [indx].oldmode = REFRESH_CHANGE;
-						modes [indx].newindx = newindx++;
-						updates = g_list_append (updates, newinfoptr);
+						indx = GPOINTER_TO_UINT (pindx);
+						newinfoptr = entries_array[indx];
+						//FIXME vfs may not have same data as local
+						//FIXME make this faster
+						if (newinfoptr->statbuf.st_atime != currinfoptr->statbuf.st_atime
+						 || newinfoptr->statbuf.st_size != currinfoptr->statbuf.st_size
+						 || newinfoptr->statbuf.st_mtime != currinfoptr->statbuf.st_mtime
+						 || newinfoptr->statbuf.st_ctime != currinfoptr->statbuf.st_ctime
+						 || newinfoptr->statbuf.st_mode != currinfoptr->statbuf.st_mode
+						 || newinfoptr->statbuf.st_uid != currinfoptr->statbuf.st_uid
+						 || newinfoptr->statbuf.st_gid != currinfoptr->statbuf.st_gid
+						)
+						{
+							modes [indx].oldindx = i;
+							modes [indx].oldmode = REFRESH_CHANGE;
+							modes [indx].newindx = newindx++;
+							updates = g_list_prepend (updates, newinfoptr);
+						}
+						else //all relevant data are unchanged
+						{
+							//we don't want to use or add this one
+							modes [indx].oldmode = REFRESH_KEEP;
+							gone = g_list_prepend (gone, newinfoptr); //for later cleanup
+						}
+						i++;
 					}
-					else //all relevant data are unchanged
+					else //this stored item is not hashed i.e. gone from dir
 					{
-						//we don't want to use or add this one
-						modes [indx].oldmode = REFRESH_KEEP;
-						gone = g_list_prepend (gone, newinfoptr); //for later cleanup
+						gone = g_list_prepend (gone, currinfoptr); //for later cleanup
+						gboolean more = gtk_list_store_remove (view->store, &iter);
+						if (more)
+							goto loopstart; //prevent double-iter-next, i unchanged
+						else
+							break;
 					}
-					i++;
-				}
-				else //this stored item is not hashed i.e. gone from dir
-				{
-					gone = g_list_prepend (gone, currinfoptr); //for later cleanup
-					CLOSEBGL
-					gboolean more = gtk_list_store_remove (view->store, &iter);
-					OPENBGL
-					if (more)
-						goto loopstart; //prevent double-iter-next, i unchanged
-					else
-						break;
-				}
-			} while (gtk_tree_model_iter_next (mdl, &iter));
+				} while (gtk_tree_model_iter_next (mdl, &iter));
+			}
+			OPENBGL
 
 			//tag and list any new/added items
 			for (i = 0; i < itemcount; i++)
@@ -1794,9 +1800,11 @@ loopstart:
 				if (modes[i].oldmode == REFRESH_ADD)	//not previously detected = default (addition)
 				{
 					modes [i].newindx = newindx++;	//this will match the store index when created
-					updates = g_list_append (updates, g_list_nth_data (entries, i));
+					updates = g_list_prepend (updates, entries_array[i]);
 				}
 			}
+			updates = g_list_reverse(updates);
+			g_free (entries_array);
 
 			if (updates != NULL)
 			{
@@ -1850,10 +1858,12 @@ loopstart:
 								-1);
 							if (modes[i].oldmode == REFRESH_CHANGE)
 							{
+								CLOSEBGL
 								gtk_tree_model_iter_nth_child (GTK_TREE_MODEL (view->store),
 									&iter, NULL, modes[i].oldindx);
 								gtk_tree_model_get (GTK_TREE_MODEL (view->store),
 									&iter, FINFO, &currinfoptr, -1);
+								OPENBGL
 								//simply replace all changeable contents
 								g_free (key);
 								if (caseignore)
