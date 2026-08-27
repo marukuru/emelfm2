@@ -691,7 +691,17 @@ series:
 		}
 #endif
 		else if (strchr (ss + 1, 'm') == NULL) //very rough check!
+		{
+			// Skip generic CSI sequence
+			while (*ss >= 0x30 && *ss <= 0x3F) ss++;
+			while (*ss >= 0x20 && *ss <= 0x2F) ss++;
+			if (*ss >= 0x40 && *ss <= 0x7E)
+			{
+				ss++;
+				continue;
+			}
 			break;
+		}
 		else
 		{
 			lnum = strtoul (ss, &se, 10);
@@ -850,15 +860,23 @@ series:
 				}
 			    break;
 			default:
-				g_array_free (codes, TRUE); //CHECKME more tolerant ?
-				return start;
+				// ignore unsupported codes instead of aborting the whole sequence
+				break;
 			}
 			ss = se + 1;
 			if (*se == ';') goto series;
 		}
 		else
 		{
-			ss -= 2; //back to 
+			// It was a number but ended with something else, like \x1b[2K
+			while (*se >= 0x30 && *se <= 0x3F) se++;
+			while (*se >= 0x20 && *se <= 0x2F) se++;
+			if (*se >= 0x40 && *se <= 0x7E)
+			{
+				ss = se + 1;
+				continue;
+			}
+			ss -= 2; //back to  
 			break;
 		}
 	}
@@ -3500,7 +3518,13 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 		{
 			if (s1 < strend - 1 && *(s1+1) == '[')
 			{
-				if (strchr (s1+1, 'm') != NULL)
+				gboolean is_complete = FALSE;
+				gchar *test_csi = s1 + 2;
+				while (test_csi < strend && *test_csi >= 0x30 && *test_csi <= 0x3F) test_csi++;
+				while (test_csi < strend && *test_csi >= 0x20 && *test_csi <= 0x2F) test_csi++;
+				if (test_csi < strend && *test_csi >= 0x40 && *test_csi <= 0x7E) is_complete = TRUE;
+
+				if (is_complete)
 				{	//possibly a control-sequence we can process
 					guint indx;
 					gint i, *ip;
@@ -3564,8 +3588,16 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 				else //escape detected, but not sure what sequence is, or whether complete
 				{
 					//handle partial sequence from end of upstream buffer
-					if (strcmp (s1 + 1, utf + 1) == 0)
+					gboolean is_at_end = FALSE;
+					gchar *test_csi = s1 + 2;
+					while (test_csi < strend && *test_csi >= 0x30 && *test_csi <= 0x3F) test_csi++;
+					while (test_csi < strend && *test_csi >= 0x20 && *test_csi <= 0x2F) test_csi++;
+					if (test_csi == strend) is_at_end = TRUE;
+					
+					if (is_at_end)
 					{	//sequence is end of msg
+						_e2_output_insert_text (tab, origin, strst, s1 - 1, &start, &end,
+							(strst == msg) && newline, (strst == msg)?back_prior:0);
 						_e2_output_carryover (tab, origin, s1);
 						return;
 					}
@@ -3581,8 +3613,10 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 			else //escape detected, but not sure what sequence is, or whether complete
 			{
 				//handle partial sequence from end of upstream buffer
-				if (strcmp (s1 + 1, utf + 1) == 0)
+				if (s1 == strend - 1)
 				{	//sequence is end of msg
+					_e2_output_insert_text (tab, origin, strst, s1 - 1, &start, &end,
+						(strst == msg) && newline, (strst == msg)?back_prior:0);
 					_e2_output_carryover (tab, origin, s1);
 					return;
 				}
