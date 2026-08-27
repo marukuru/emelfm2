@@ -247,7 +247,7 @@ static gboolean _e2_action_visible_cb (GtkTreeModel *model, GtkTreeIter *iter, g
 	return retval;
 }
 //forward declaration needed by _e2_action_hover_close_menu
-static gboolean _e2_action_main_focusout_cb (GtkWidget *window, GdkEventFocus *event, E2HoverData *data);
+static void _e2_action_main_is_active_cb (GObject *gobject, GParamSpec *pspec, E2HoverData *data);
 static GtkWidget *selitem = NULL;
 /**
 @brief "button-press-event" signal callback for a hover-menu widget
@@ -327,7 +327,7 @@ static void _e2_action_hover_close_menu (GtkWidget *popwin, E2HoverData *data)
 	//disconnect the application focus-out handler (Bug 1 fix) to avoid it
 	//firing again after the menu is already gone
 	g_signal_handlers_disconnect_by_func (G_OBJECT (app.main_window),
-		_e2_action_main_focusout_cb, data);
+		_e2_action_main_is_active_cb, data);
 	gtk_widget_destroy (popwin);
 	data->menu = NULL;
 	selitem = NULL;
@@ -377,36 +377,34 @@ static gboolean _e2_action_leave_menu_cb (GtkWidget *window, GdkEventCrossing *e
 	NEEDOPENBGL
 	return FALSE;
 }
+
 /**
-@brief "focus-out-event" signal callback on the main application window
+@brief "notify::is-active" signal callback on the main application window
 
 Fix for Bug 1: when the user alt+tabs to another application the hover
 popup stays visible because it never receives a leave-notify-event.
-Watching for the main window losing focus lets us close the popup
+Watching for the main window losing active status lets us close the popup
 immediately and disconnect this one-shot handler.
 
-@param window app.main_window
-@param event focus-event data
+@param gobject app.main_window
+@param pspec parameter spec
 @param data pointer to data struct for the hover action
-
-@return FALSE always so the event is propagated
 */
-static gboolean _e2_action_main_focusout_cb (GtkWidget *window,
-	GdkEventFocus *event, E2HoverData *data)
+static void _e2_action_main_is_active_cb (GObject *gobject, GParamSpec *pspec, E2HoverData *data)
 {
 	if (!GTK_IS_WIDGET (data->menu))
-		return FALSE;
+		return;
 
-	if (gtk_window_is_active (GTK_WINDOW (window)))
-		return FALSE;
+	if (gtk_window_is_active (GTK_WINDOW (gobject)))
+		return;
 
 	NEEDCLOSEBGL
 	GtkWidget *popwin = gtk_widget_get_toplevel (data->menu);
 	if (GTK_IS_WIDGET (popwin))
 		_e2_action_hover_close_menu (popwin, data);
 	NEEDOPENBGL
-	return FALSE;
 }
+
 /**
 @brief timer callback to implement a hover menu
 @brief data pointer to hover data
@@ -436,9 +434,11 @@ static gboolean _e2_action_do_hover_timeout (E2HoverData *data)
 				G_CALLBACK (_e2_action_enter_menu_cb), data);
 			g_signal_connect (G_OBJECT (popwin), "leave-notify-event",
 				G_CALLBACK (_e2_action_leave_menu_cb), data);
+
 			//Bug 1: close popup when the application loses focus (e.g. alt+tab)
-			g_signal_connect (G_OBJECT (app.main_window), "focus-out-event",
-				G_CALLBACK (_e2_action_main_focusout_cb), data);
+			g_signal_connect (G_OBJECT (app.main_window), "notify::is-active",
+				G_CALLBACK (_e2_action_main_is_active_cb), data);
+
 #ifdef USE_GTK2_18
 			if (!gtk_widget_get_visible (data->menu))
 #else
@@ -462,13 +462,10 @@ static gboolean _e2_action_do_hover_timeout (E2HoverData *data)
 				OPENBGL
 				if (ev) gdk_event_free (ev);
 #else
-				gtk_widget_show (data->menu); //setup size for use when positioning ?
-				gint x, y;
-				gboolean push = TRUE;
+				guint32 event_time = gtk_get_current_event_time ();
 				CLOSEBGL
-				e2_toolbar_set_menu_position (GTK_MENU (data->menu), &x, &y, &push, data->hovered);
-				gtk_window_move (GTK_WINDOW (popwin), x, y); //this might be ignored by WM ?
-				gtk_widget_show_all (popwin);
+				gtk_menu_popup (GTK_MENU (data->menu), NULL, NULL,
+					(GtkMenuPositionFunc) e2_toolbar_set_menu_position, data->hovered, 1, event_time);
 				OPENBGL
 #endif
 			}
