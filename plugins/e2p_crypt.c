@@ -1305,8 +1305,8 @@ static guint8 _e2pcr_init_key (guint8 hashes[256], const gchar *password,
 	const gchar *p, *pe;
 
 	//initialize the key;
-    for (indx = 0; indx < KEY_LENGTH; indx++)
-        hashes[indx] = (guint8)indx;
+	for (indx = 0; indx < KEY_LENGTH; indx++)
+		hashes[indx] = (guint8)indx;
 	//mangle the key from the password, as done in ARC4
 	i = j = 0;
 	p = password;
@@ -2790,7 +2790,7 @@ reloop:
 			}
 			filepath = NULL;
 
-			if (++i == count);
+			if (++i == count)
 			{
 				//try with next dir from PATH or ...
 				printd (DEBUG, "cannot find a file for data source");

@@ -1918,7 +1918,7 @@ static gboolean _e2_pane_select_extension (gpointer from, E2_ActionRuntime *art)
 	WAIT_FOR_REFRESH(curr_view)
 
 	model = curr_view->model;
-	if (gtk_tree_model_get_iter_first (model, &iter));
+	if (gtk_tree_model_get_iter_first (model, &iter))
 	{	//it's not empty
 		FileInfo *info = e2_fileview_get_selected_first_local (curr_view, FALSE);
 		if (info != NULL)

@@ -322,13 +322,7 @@ Also sets the active iter for the combo, if relevant.
 void e2_command_line_update_highlight (GtkWidget *entry, const gchar *newtext)
 {
 	printd (DEBUG, "parent-combo get @ 14");
-	GtkComboBox *combo = GTK_COMBO_BOX (
-#ifdef USE_GTK2_14
-		gtk_widget_get_parent (entry)
-#else
-		entry->parent
-#endif
-	);
+	GtkComboBox *combo = GTK_COMBO_BOX (gtk_widget_get_ancestor (entry, GTK_TYPE_COMBO_BOX));
 	printd (DEBUG, "parent-combo get @ 15");
 
 	GtkTreeIter iter;
@@ -526,12 +520,7 @@ static void _e2_command_line_diractivate_cb (GtkEntry *entry,
 			//mark dirline text if appropriate
 			e2_command_line_highlight (GTK_WIDGET (entry), TRUE);
 			//update dirline history
-			GtkWidget *combo =
-#ifdef USE_GTK2_14
-				gtk_widget_get_parent ((GtkWidget*)entry);
-#else
-				((GtkWidget*)entry)->parent;
-#endif
+			GtkWidget *combo = gtk_widget_get_ancestor ((GtkWidget*)entry, GTK_TYPE_COMBO_BOX);
 			e2_combobox_prepend_history (combo, path, -2,
 				e2_option_bool_get ("dir-line-history-double"));
 		}
@@ -636,12 +625,7 @@ static gboolean _e2_command_line_activate_action (gpointer from, E2_ActionRuntim
 {
 	if (GTK_IS_ENTRY (from))
 	{
-		GtkWidget *parent =
-#ifdef USE_GTK2_14
-			gtk_widget_get_parent (GTK_WIDGET(from));
-#else
-			GTK_WIDGET(from)->parent;
-#endif
+		GtkWidget *parent = gtk_widget_get_ancestor (GTK_WIDGET(from), GTK_TYPE_COMBO_BOX);
 #ifdef USE_GTK3_0
 		if (GTK_IS_COMBO_BOX (parent))
 #else

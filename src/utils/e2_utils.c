@@ -2584,7 +2584,7 @@ GList *e2_utils_get_trash_all (void)
 			g_free (tlocal);
 	}
 	e2_list_free_with_data (&mounts);
-	if (trashes != NULL && trashes->next != NULL);
+	if (trashes != NULL && trashes->next != NULL)
 		trashes = g_list_reverse (trashes);
 
 	if (e2_cl_options.trash_dir != NULL)

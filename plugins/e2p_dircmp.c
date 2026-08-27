@@ -763,7 +763,7 @@ static gpointer _e2p_diff_all (gpointer thread_data)
 {
 	GtkTreeIter iter;
 	GtkTreeModel *model = curr_view->model;
-	if (gtk_tree_model_get_iter_first (model, &iter));
+	if (gtk_tree_model_get_iter_first (model, &iter))
 	{	//it's not empty
 		e2_filestore_disable_refresh ();
 		CLOSEBGL //prevent thread-related hang!

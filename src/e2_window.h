@@ -51,7 +51,7 @@ void e2_window_set_cursor(GdkCursorType type);
 gboolean e2_window_update_status_bar (gpointer userdata);
 void e2_window_enable_status_update (gint interval);
 void e2_window_disable_status_update (void);
-inline void e2_window_show_status_message (const gchar *message
+void e2_window_show_status_message (const gchar *message
 #ifdef USE_GTK2_20
 	, gboolean with_spinner
 #endif

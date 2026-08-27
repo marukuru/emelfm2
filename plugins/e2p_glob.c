@@ -435,7 +435,7 @@ static void _e2p_glob_response_cb (GtkDialog *dialog, gint response,
 			{
 				GtkTreeIter iter;
 				GtkTreeModel *model = curr_view->model;
-				if (gtk_tree_model_get_iter_first (model, &iter));
+				if (gtk_tree_model_get_iter_first (model, &iter))
 				{	//it's not empty
 					FileInfo *info;
 					GdkModifierType state;

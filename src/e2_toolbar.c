@@ -1771,8 +1771,8 @@ gboolean e2_toolbar_button_toggle_custom (gchar *hashkey)
 		{
 			if (ex->false_image != NULL) gtk_widget_hide (ex->false_image);
 			if (ex->false_label != NULL) gtk_widget_hide (ex->false_label);
-	if (ex->true_image != NULL)
-		printd (DEBUG, "showing TRUE image");
+			if (ex->true_image != NULL)
+				printd (DEBUG, "showing TRUE image");
 			if (ex->true_image != NULL) gtk_widget_show (ex->true_image);
 			if (ex->true_label != NULL) gtk_widget_show (ex->true_label);
 #ifdef USE_GTK2_12TIPS
@@ -1788,8 +1788,8 @@ gboolean e2_toolbar_button_toggle_custom (gchar *hashkey)
 		{
 			if (ex->true_image != NULL) gtk_widget_hide (ex->true_image);
 			if (ex->true_label != NULL) gtk_widget_hide (ex->true_label);
-	if (ex->false_image != NULL)
-		printd (DEBUG, "showing FALSE image");
+			if (ex->false_image != NULL)
+				printd (DEBUG, "showing FALSE image");
 			if (ex->false_image != NULL) gtk_widget_show (ex->false_image);
 			if (ex->false_label != NULL) gtk_widget_show (ex->false_label);
 #ifdef USE_GTK2_12TIPS

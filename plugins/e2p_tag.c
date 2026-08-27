@@ -159,7 +159,7 @@ static gboolean _e2p_retag (gpointer from, E2_ActionRuntime *art)
 	WAIT_FOR_REFRESH(view)
 
 	model = view->model;
-	if (gtk_tree_model_get_iter_first (model, &iter));
+	if (gtk_tree_model_get_iter_first (model, &iter))
 	{	//it's not empty now
 		GHashTable *selitems;
 		GtkTreeSelection *sel;
