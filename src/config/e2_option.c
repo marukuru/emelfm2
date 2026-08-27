@@ -611,7 +611,7 @@ gboolean e2_option_backup (gchar *name)
 				GtkTreeIter iter;
 				if (gtk_tree_model_get_iter_first (set->ex.tree.model, &iter))
 					e2_option_tree_write_to_file (f, set, &iter, 0);	//error handling ?
-				if (e2_fs_file_write (f, ">\n") == 0)
+				if (e2_fs_file_write (f, ">\n") < 0)
 					goto error_handler;
 				break;
 */
@@ -768,7 +768,7 @@ void e2_option_destroy_config ()
 gboolean write_error = FALSE;
 static void _e2_option_file_write_unknowns (gpointer key, gpointer value, E2_FILE *f)
 {
-	if (e2_fs_file_write (f, "%s\n", (gchar *)value) == 0)
+	if (e2_fs_file_write (f, "%s\n", (gchar *)value) < 0)
 		write_error = TRUE;
 }
 /**
@@ -800,7 +800,7 @@ void e2_option_file_write (const gchar *utfpath)
 		printd (DEBUG, "write config file: %s", cfg_file);
 		if (e2_fs_file_write (f,
 			//the 1st line is language-independent, for version verification
-			"# "PROGNAME" (v "VERSION RELEASE")\n\n" ) == 0)
+			"# "PROGNAME" (v "VERSION RELEASE")\n\n" ) < 0)
 				goto error_handler;
 		if (e2_fs_file_write (f,
 		 //FIXME = remind translators not to remove # from line starts
@@ -823,7 +823,7 @@ void e2_option_file_write (const gchar *utfpath)
 			{
 				case E2_OPTION_TYPE_INT:
 					if (e2_fs_file_write (f, "# %s\n%s=%d\n",
-						set->desc, set->name, set->ival) == 0)
+						set->desc, set->name, set->ival) < 0)
 							goto error_handler;
 					break;
 				case E2_OPTION_TYPE_BOOL:
@@ -832,17 +832,17 @@ void e2_option_file_write (const gchar *utfpath)
 				case E2_OPTION_TYPE_COLOR:
 				case E2_OPTION_TYPE_SEL:
 					if (e2_fs_file_write (f, "# %s\n%s=%s\n",
-						set->desc, set->name, set->sval) == 0)
+						set->desc, set->name, set->sval) < 0)
 							goto error_handler;
 					break;
 				case E2_OPTION_TYPE_TREE:
 					if (e2_fs_file_write (f, "# %s\n%s=<\n",
-						set->name, set->name) == 0)
+						set->name, set->name) < 0)
 							goto error_handler;
 					GtkTreeIter iter;
 					if (gtk_tree_model_get_iter_first (set->ex.tree.model, &iter))
 						e2_option_tree_write_to_file (f, set, &iter, 0);	//error handling ?
-					if (e2_fs_file_write (f, ">\n") == 0)
+					if (e2_fs_file_write (f, ">\n") < 0)
 						goto error_handler;
 					break;
 				default:

@@ -612,12 +612,12 @@ void e2_cache_file_write (void)
 
 		if (e2_fs_file_write (f,
 			//first line is language-independent, for version checking
-			"# "PROGNAME" (v "VERSION")\n\n") == 0)
+			"# "PROGNAME" (v "VERSION")\n\n") < 0)
 				goto error_handler;
 		if (e2_fs_file_write (f,
 			_("%sThis file stores runtime configuration data for %s.\n"
 			"%sThe file will be overwritten each time %s is shut down.\n\n"),
-			 "# ", PROGNAME, "# ", PROGNAME) == 0)
+			 "# ", PROGNAME, "# ", PROGNAME) < 0)
 				goto error_handler;
 		if (cache_list != NULL)
 		{
@@ -651,28 +651,28 @@ extern gint real_height;
 				{
 					case E2_CACHE_TYPE_BOOL:
 						if (e2_fs_file_write (f, "%s=%s\n", cache->name,
-							*cache->data ? "true" : "false") == 0)
+							*cache->data ? "true" : "false") < 0)
 								goto error_handler;
 						break;
 					case E2_CACHE_TYPE_INT:
-						if (e2_fs_file_write (f, "%s=%d\n", cache->name, *((gint *)cache->data)) == 0)
+						if (e2_fs_file_write (f, "%s=%d\n", cache->name, *((gint *)cache->data)) < 0)
 							goto error_handler;
 						break;
 					case E2_CACHE_TYPE_TIME:
 						//time_t may be int or long int
-						if (e2_fs_file_write (f, "%s=%ld\n", cache->name, *((glong *)cache->data)) == 0)
+						if (e2_fs_file_write (f, "%s=%ld\n", cache->name, *((glong *)cache->data)) < 0)
 							goto error_handler;
 						break;
 					case E2_CACHE_TYPE_DOUBLE:
 						{
 						gchar doubl[G_ASCII_DTOSTR_BUF_SIZE];
 						g_ascii_dtostr (doubl, G_ASCII_DTOSTR_BUF_SIZE, *((gdouble *)cache->data));
-						if (e2_fs_file_write (f, "%s=%s\n", cache->name, doubl) == 0)
+						if (e2_fs_file_write (f, "%s=%s\n", cache->name, doubl) < 0)
 							goto error_handler;
 						}
 						break;
 					case E2_CACHE_TYPE_STR:
-						if (e2_fs_file_write (f, "%s=%s\n", cache->name, (gchar *) *cache->data) == 0)
+						if (e2_fs_file_write (f, "%s=%s\n", cache->name, (gchar *) *cache->data) < 0)
 							goto error_handler;
 						break;
 #ifdef E2_VFS
@@ -696,7 +696,7 @@ extern gint real_height;
 							}
 							if (stringlist != NULL)
 							{
-								if (e2_fs_file_write (f, "%s=<\n", cache->name) == 0)
+								if (e2_fs_file_write (f, "%s=<\n", cache->name) < 0)
 									goto error_handler;
 								GList *node;
 								for (node = stringlist; node != NULL; node = node->next)
@@ -706,10 +706,10 @@ extern gint real_height;
 										//||
 										*((gchar *)node->data) == '>')
 											e2_fs_file_write (f, "\\");
-									if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) == 0)
+									if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) < 0)
 										goto error_handler;
 								}
-								if (e2_fs_file_write (f, ">\n") == 0)
+								if (e2_fs_file_write (f, ">\n") < 0)
 									goto error_handler;
 									//CHECKME = leaks when this is done before session-end ??
 							}
@@ -724,8 +724,8 @@ extern gint real_height;
 						}
 						if ((cache->data != NULL) && (*cache->data != NULL))
 						{
-//							if (e2_fs_file_write (f, "<%s\n", cache->name) == 0)
-							if (e2_fs_file_write (f, "%s=<\n", cache->name) == 0)
+//							if (e2_fs_file_write (f, "<%s\n", cache->name) < 0)
+							if (e2_fs_file_write (f, "%s=<\n", cache->name) < 0)
 								goto error_handler;
 							GList *node;
 							for (node = (GList *) *cache->data; node != NULL; node = node->next)
@@ -735,10 +735,10 @@ extern gint real_height;
 									//||
 									*((gchar *)node->data) == '>')
 										e2_fs_file_write (f, "\\");
-								if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) == 0)
+								if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) < 0)
 									goto error_handler;
 							}
-							if (e2_fs_file_write (f, ">\n") == 0)
+							if (e2_fs_file_write (f, ">\n") < 0)
 								goto error_handler;
 							//CHECKME = leaks when this is done before session-end ??
 						}
@@ -749,15 +749,15 @@ extern gint real_height;
 							void (*fun) (gpointer) = cache->sync_func;
 							fun (cache->sync_data);	//sync_data = size of array
 						}
-						if (e2_fs_file_write (f, "%s=", cache->name) == 0)
+						if (e2_fs_file_write (f, "%s=", cache->name) < 0)
 							goto error_handler;
 						gint *values = (gint *) cache->data;
 						//j = array size - 1 - the last is handled separately
 						gint i, j = GPOINTER_TO_INT (cache->sync_data) - 1;
 						for (i = 0 ; i < j ; i++)
-							if (e2_fs_file_write (f, "%d,", *values++) == 0)
+							if (e2_fs_file_write (f, "%d,", *values++) < 0)
 								goto error_handler;
-						if (e2_fs_file_write (f, "%d\n", *values) == 0)
+						if (e2_fs_file_write (f, "%d\n", *values) < 0)
 							goto error_handler;
 						break;
 	//				case E2_CACHE_TYPE_LONG:
@@ -784,12 +784,12 @@ extern gint real_height;
 				case E2_CACHE_TYPE_STR:
 				case E2_CACHE_TYPE_ARRAY:
 					if (e2_fs_file_write (f, "%s=%s\n", cache->name,
-						(gchar *) cache->data) == 0)
+						(gchar *) cache->data) < 0)
 							goto error_handler;
 					break;
 				case E2_CACHE_TYPE_LIST:
 				case E2_CACHE_TYPE_STORE:
-					if (e2_fs_file_write (f, "%s=<\n", cache->name) == 0)
+					if (e2_fs_file_write (f, "%s=<\n", cache->name) < 0)
 						goto error_handler;
 					GList *node;
 					for (node = (GList *) cache->data; node != NULL; node = node->next)
@@ -799,10 +799,10 @@ extern gint real_height;
 							//||
 							*((gchar *)node->data) == '>')
 								e2_fs_file_write (f, "\\");
-						if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) == 0)
+						if (e2_fs_file_write (f, "%s\n", (gchar *) node->data) < 0)
 							goto error_handler;
 					}
-					if (e2_fs_file_write (f, ">\n") == 0)
+					if (e2_fs_file_write (f, ">\n") < 0)
 						goto error_handler;
 					break;
 //				case E2_CACHE_TYPE_LONG:
@@ -930,14 +930,17 @@ static void _e2_cache_read_from_string (gchar *f[])
 		}
 		else
 		{
-			cache = ALLOCATE (E2_Cache);
-			CHECKALLOCATEDFATAL (cache)
 			gchar **split = g_strsplit (line, "=", 2);
-			cache->name = g_strdup (split[0]);
-			cache->data = (gpointer *) g_strdup (split[1]);
-			cache->type = E2_CACHE_TYPE_STR; //initially, all items assumed to be strings
+			if (split[0] != NULL && split[1] != NULL)
+			{
+				cache = ALLOCATE (E2_Cache);
+				CHECKALLOCATEDFATAL (cache)
+				cache->name = g_strdup (split[0]);
+				cache->data = (gpointer *) g_strdup (split[1]);
+				cache->type = E2_CACHE_TYPE_STR; //initially, all items assumed to be strings
+				unknown_list = g_list_append (unknown_list, cache);
+			}
 			g_strfreev (split);
-			unknown_list = g_list_append (unknown_list, cache);
 		}
 	}
 }
