@@ -904,7 +904,7 @@ void e2_dialog_set_cursor (GtkWidget *dialog, GdkCursorType type)
 #else
 	gdk_cursor_unref (cursor);
 #endif
-	gdk_flush ();
+	gdk_display_flush (gdk_display_get_default ());
 }
 
 /**

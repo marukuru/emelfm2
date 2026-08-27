@@ -2684,7 +2684,10 @@ static gboolean _e2_utils_drcb_match_wild_last (VPATH *parent,
 	{
 		GPatternSpec *pattern = (GPatternSpec *)pair->b;
 		gchar *utfname = F_FILENAME_FROM_LOCALE (itemname);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 		if (g_pattern_match_string (pattern, utfname))
+#pragma GCC diagnostic pop
 		{
 			gchar *escname;
 			gboolean all = GPOINTER_TO_INT (pair->a);
@@ -2831,7 +2834,10 @@ static gboolean _e2_utils_drcb_match_wild_path (VPATH *parent,
 	if (strcmp (itemname, ".."))	//"." entries are filtered at source
 	{
 		gchar *utfname = F_FILENAME_FROM_LOCALE (itemname);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 		if (g_pattern_match_string (pattern, utfname))
+#pragma GCC diagnostic pop
 			*found = g_list_append (*found, g_strdup (itemname));
 
 		F_FREE (utfname, itemname);

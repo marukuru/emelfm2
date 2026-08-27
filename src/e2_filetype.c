@@ -122,7 +122,7 @@ const gchar **e2_filetype_get_actions (gchar *ext)
 		actions = (const gchar **) g_hash_table_find (app.filetypes,
 						(GHRFunc)_e2_filetype_find_any, ext);
 
-	if (!(actions == NULL || *actions == '\0'))
+	if (!(actions == NULL || *actions == NULL))
 		return actions;
 	else
 		return NULL;
@@ -142,7 +142,7 @@ Used only by callback open_cb.
 gchar *e2_filetype_get_default_action (gchar *ext)
 {
 	const gchar **actions = e2_filetype_get_actions (ext);
-	if (!(actions == NULL || *actions == '\0'))
+	if (!(actions == NULL || *actions == NULL))
 		return g_strdup (*actions);
 	else
 		return NULL;

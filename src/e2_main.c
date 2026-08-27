@@ -473,7 +473,7 @@ static void _e2_main_loop_clean_BGL (E2_MainLoop *loopdata)
 	while (g_main_context_iteration (DEFAULT_CONTEXT, FALSE)); //CHECKME useful ?
 	CLOSEBGL
 //	printd (DEBUG, "_e2_main_loop_clean_BGL, thread %u, BGL back on", pthread_self());
-	gdk_flush (); //stops UI freezes ? (gtk does this)
+	gdk_display_flush (gdk_display_get_default ()); //stops UI freezes ? (gtk does this)
 //	printd (DEBUG, "End %s, loopdata: %x", __PRETTY_FUNCTION__, loopdata);
 }
 
@@ -497,7 +497,7 @@ void e2_main_loop_run (E2_MainLoop *loopdata)
 	loopdata->threadID = pthread_self ();	//for aborting if that happens
 	gint saverefcount;
 
-	gdk_flush ();
+	gdk_display_flush (gdk_display_get_default ());
 	pthread_cleanup_push ((gpointer)e2_filestore_reset_refresh, NULL);
 		//enable refresh
 		//BAD if cfg_refresh_refcount adjusted individually ?
@@ -693,8 +693,11 @@ gint main (gint argc, gchar *argv[])
 WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reasonable workaround is available.)
 #  endif
 	//these are deprecated for gtk 3.6+
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 	gdk_threads_set_lock_functions (e2_main_close_uilock, e2_main_open_uilock);
 	gdk_threads_init ();	//setup gdk mutex
+#pragma GCC diagnostic pop
 # endif
 #endif
 #ifdef ENABLE_NLS

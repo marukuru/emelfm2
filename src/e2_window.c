@@ -1075,7 +1075,7 @@ void e2_window_set_cursor (GdkCursorType type)
 #else
 	gdk_cursor_unref (cursor);
 #endif
-	gdk_flush ();
+	gdk_display_flush (gdk_display_get_default ());
 }
 /* *
 @brief set output pane size  UNUSED

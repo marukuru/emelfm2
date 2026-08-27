@@ -1414,12 +1414,7 @@ static gpointer _e2_fs_read_mounted_dir (E2_DRFuncArgs *data)
 	}
 
 	struct dirent *entryptr;
-	//reportedly, some systems do not provide enough name-space
-	union
-	{
-		struct dirent entry;
-		gchar b [offsetof (struct dirent, d_name) + NAME_MAX + 1];
-	} u;
+
 #ifdef E2_VFS
 	VPATH ddata;
 	ddata.spacedata = NULL;	//this func only handles local dirs
@@ -1430,33 +1425,24 @@ static gpointer _e2_fs_read_mounted_dir (E2_DRFuncArgs *data)
 //		pthread_cleanup_push ((gpointer)g_list_free, (gpointer)entries);	//this will leak list data
 
 	errno = 0;
-	while (!readdir_r (dp, &u.entry, &entryptr) && entryptr != NULL)
+	while ((entryptr = readdir (dp)) != NULL)
 	{
-//#ifdef _DIRENT_HAVE_D_RECLEN
-		//reportedly, some systems do not terminate the name string
-		//BUT this is not liked by the compiler ...
-//		*((gchar *) (&u.entry + u.entry.d_reclen)) = '\0';
-//maybe this is better ?
-//		gpointer s = &u.entry;
-//		s += u.entry.d_reclen;
-//		*(gchar *)s = '\0';
-//#endif
 		//one item we're not interested in
-		if (u.entry.d_name[0] != '.' || u.entry.d_name[1] != '\0')
+		if (entryptr->d_name[0] != '.' || entryptr->d_name[1] != '\0')
 		{
 			if (processor != NULL)
 			{
 #ifdef E2_VFS
 				ddata.path = data->localpath;
-				if (!processor (&ddata, u.entry.d_name, &entries, data->cb_data))
+				if (!processor (&ddata, entryptr->d_name, &entries, data->cb_data))
 #else
-				if (!processor (data->localpath, u.entry.d_name, &entries, data->cb_data))
+				if (!processor (data->localpath, entryptr->d_name, &entries, data->cb_data))
 #endif
 				break;
 			}
 			else
 				//order is irrelevant, prepend is faster
-				entries = g_list_prepend (entries, g_strdup (u.entry.d_name));
+				entries = g_list_prepend (entries, g_strdup (entryptr->d_name));
 		}
 	}
 	if (errno == EBADF)

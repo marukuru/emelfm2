@@ -1085,7 +1085,7 @@ static void _e2_task_kill_action (E2_TaskRuntime *rt)
 			//wait for any consequent UI change
 			usleep (5000);
 			WAIT_FOR_EVENTS
-			gdk_flush ();
+			gdk_display_flush (gdk_display_get_default ());
 		}
 
 		//initiate DEFERRED cancellation of the Q thread

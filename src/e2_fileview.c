@@ -1948,11 +1948,19 @@ static gboolean _e2_fileview_filter_check (GtkTreeModel *model,
 				if (!view->name_filter.case_sensitive)
 				{
 				  freeme = g_utf8_strdown (utf, -1);
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 				  matched = g_pattern_match_string (patterninfo->pspec, freeme);
+#pragma GCC diagnostic pop
 				  g_free (freeme);
 				}
 				else
+				{
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 				  matched = g_pattern_match_string (patterninfo->pspec, utf);
+#pragma GCC diagnostic pop
+				}
 
 				if (matched && negated)
 				{
