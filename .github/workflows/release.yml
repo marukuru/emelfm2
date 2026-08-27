@@ -75,8 +75,7 @@ jobs:
               cat debian/changelog >> debian/changelog.new
             fi
             mv debian/changelog.new debian/changelog
-            
-            export DEB_CFLAGS_APPEND=\"-Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type\"
+
             dpkg-buildpackage -us -uc -b
             mkdir -p /workspace/dist
             find / -maxdepth 2 -name 'emelfm2_*.deb' 2>/dev/null | xargs -I{} mv {} /workspace/dist/ || true

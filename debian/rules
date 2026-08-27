@@ -10,6 +10,7 @@
 # Default CFLAGS are specified in package file Makefile.config.
 # Any override must be passed to make as CFLAGS=<whatever> in MAKEOPTS
 MAKEOPTS = \
+ CFLAGS="\$(CFLAGS) -O2 -Wall -fcommon -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type" \
  WITH_GTK2=1 \
  WITH_LATEST=1 NEW_COMMAND=1 \
  EXTRA_BINDINGS=0 \
