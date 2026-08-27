@@ -15,11 +15,11 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1172 e2_alias.c:329 e2_command.c:3345
+#: e2_about_dialog.c:138 e2_action.c:1208 e2_alias.c:329 e2_command.c:3345
 msgid "help"
 msgstr "ヘルプ"
 
-#: e2_about_dialog.c:154 e2_action.c:1144
+#: e2_about_dialog.c:154 e2_action.c:1180
 msgid "about"
 msgstr "about"
 
@@ -83,516 +83,516 @@ msgstr "お読みください"
 msgid "_View"
 msgstr "見る(_V)"
 
-#: e2_action.c:1114
+#: e2_action.c:1150
 msgid "bookmark"
 msgstr "ブックマーク"
 
-#: e2_action.c:1115
+#: e2_action.c:1151
 msgid "command"
 msgstr "コマンド"
 
-#: e2_action.c:1116 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1152 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "children"
 msgstr "子"
 
-#: e2_action.c:1117
+#: e2_action.c:1153
 msgid "configure"
 msgstr "設定"
 
-#: e2_action.c:1118 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1154 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "dialog"
 msgstr "ダイアログ"
 
-#: e2_action.c:1119
+#: e2_action.c:1155
 msgid "dirline"
 msgstr "ディレクトリ行"
 
-#: e2_action.c:1120 e2p_du.c:273
+#: e2_action.c:1156 e2p_du.c:273
 msgid "file"
 msgstr "ファイル"
 
-#: e2_action.c:1121
+#: e2_action.c:1157
 msgid "filelist"
 msgstr "ファイルリスト"
 
-#: e2_action.c:1122 e2_option.c:1308
+#: e2_action.c:1158 e2_option.c:1308
 msgid "history"
 msgstr "履歴"
 
-#: e2_action.c:1123
+#: e2_action.c:1159
 msgid "option"
 msgstr "オプション"
 
-#: e2_action.c:1124 e2_option.c:1318
+#: e2_action.c:1160 e2_option.c:1318
 msgid "output"
 msgstr "出力"
 
-#: e2_action.c:1125
+#: e2_action.c:1161
 msgid "pane1"
 msgstr "ペイン1"
 
-#: e2_action.c:1126
+#: e2_action.c:1162
 msgid "pane2"
 msgstr "ペイン2"
 
-#: e2_action.c:1127
+#: e2_action.c:1163
 msgid "pane"
 msgstr "ペイン"
 
-#: e2_action.c:1128 e2_option.c:1323
+#: e2_action.c:1164 e2_option.c:1323
 msgid "panes"
 msgstr "ペイン"
 
-#: e2_action.c:1129
+#: e2_action.c:1165
 msgid "pending"
 msgstr "未決定"
 
-#: e2_action.c:1130 e2_config_dialog.c:1156
+#: e2_action.c:1166 e2_config_dialog.c:1156
 msgid "plugin"
 msgstr "プラグイン"
 
-#: e2_action.c:1131
+#: e2_action.c:1167
 msgid "toggle"
 msgstr "切替"
 
-#: e2_action.c:1132 e2_bookmark.c:716
+#: e2_action.c:1168 e2_bookmark.c:716
 msgid "trash"
 msgstr "ゴミ箱"
 
-#: e2_action.c:1133
+#: e2_action.c:1169
 msgid "separator"
 msgstr "セパレータ"
 
-#: e2_action.c:1134
+#: e2_action.c:1170
 msgid "<custom command>"
 msgstr "<カスタムコマンド>"
 
-#: e2_action.c:1135
+#: e2_action.c:1171
 msgid "<separator>"
 msgstr "<セパレータ>"
 
-#: e2_action.c:1136
+#: e2_action.c:1172
 msgid "<submenu>"
 msgstr "<サブメニュー>"
 
-#: e2_action.c:1138
+#: e2_action.c:1174
 msgid "<actions>"
 msgstr "<アクション>"
 
-#: e2_action.c:1139
+#: e2_action.c:1175
 msgid "<bookmarks>"
 msgstr "<ブックマーク>"
 
-#: e2_action.c:1140
+#: e2_action.c:1176
 msgid "<filters>"
 msgstr "<フィルタ>"
 
-#: e2_action.c:1141
+#: e2_action.c:1177
 msgid "<handlers>"
 msgstr "<ハンドラ>"
 
-#: e2_action.c:1142
+#: e2_action.c:1178
 msgid "<line>"
 msgstr "<ライン>"
 
-#: e2_action.c:1143
+#: e2_action.c:1179
 msgid "<menu>"
 msgstr "<メニュー>"
 
-#: e2_action.c:1145
+#: e2_action.c:1181
 msgid "activate"
 msgstr "アクティブにする"
 
-#: e2_action.c:1146
+#: e2_action.c:1182
 msgid "add"
 msgstr "追加"
 
-#: e2_action.c:1147
+#: e2_action.c:1183
 msgid "add_history"
 msgstr "履歴を追加(_H)"
 
-#: e2_action.c:1148
+#: e2_action.c:1184
 msgid "adjust_ratio"
 msgstr "比率を調整"
 
-#: e2_action.c:1149
+#: e2_action.c:1185
 msgid "application"
 msgstr "アプリケーション"
 
-#: e2_action.c:1150 e2_config_dialog.c:2149 e2_config_dialog.c:2186
+#: e2_action.c:1186 e2_config_dialog.c:2149 e2_config_dialog.c:2186
 msgid "change"
 msgstr "変更"
 
-#: e2_action.c:1151 e2_alias.c:327
+#: e2_action.c:1187 e2_alias.c:327
 msgid "clear"
 msgstr "クリア"
 
-#: e2_action.c:1152
+#: e2_action.c:1188
 msgid "clear_history"
 msgstr "履歴をクリア"
 
-#: e2_action.c:1153
+#: e2_action.c:1189
 msgid "complete"
 msgstr "完了"
 
-#: e2_action.c:1154 e2_task.c:2068
+#: e2_action.c:1190 e2_task.c:2068
 msgid "copy"
 msgstr "コピー"
 
-#: e2_action.c:1155
+#: e2_action.c:1191
 msgid "copy_as"
 msgstr "別名でコピー"
 
-#: e2_action.c:1156
+#: e2_action.c:1192
 msgid "copy_merge"
 msgstr "マージをコピー"
 
-#: e2_action.c:1157
+#: e2_action.c:1193
 msgid "copy_with_time"
 msgstr "時刻付きでコピー"
 
-#: e2_action.c:1158
+#: e2_action.c:1194
 msgid "default"
 msgstr "デフォルト"
 
-#: e2_action.c:1159
+#: e2_action.c:1195
 msgid "del_history"
 msgstr "履歴を削除(_H)"
 
-#: e2_action.c:1160
+#: e2_action.c:1196
 msgid "delete"
 msgstr "削除"
 
-#: e2_action.c:1161
+#: e2_action.c:1197
 msgid "edit"
 msgstr "編集"
 
-#: e2_action.c:1162
+#: e2_action.c:1198
 msgid "edit_again"
 msgstr "再編集"
 
-#: e2_action.c:1163
+#: e2_action.c:1199
 msgid "filetype"
 msgstr "ファイルの種類"
 
-#: e2_action.c:1164 e2_task.c:4418 e2p_find.c:4200
+#: e2_action.c:1200 e2_task.c:4418 e2p_find.c:4200
 msgid "find"
 msgstr "find"
 
-#: e2_action.c:1165
+#: e2_action.c:1201
 msgid "focus"
 msgstr "フォーカス"
 
-#: e2_action.c:1166
+#: e2_action.c:1202
 msgid "fullscreen"
 msgstr "フルスクリーン"
 
-#: e2_action.c:1167
+#: e2_action.c:1203
 msgid "go_back"
 msgstr "戻る"
 
-#: e2_action.c:1168
+#: e2_action.c:1204
 msgid "go_forward"
 msgstr "進む"
 
-#: e2_action.c:1169
+#: e2_action.c:1205
 msgid "go_up"
 msgstr "上へ"
 
-#: e2_action.c:1170
+#: e2_action.c:1206
 msgid "goto_bottom"
 msgstr "一番下へ"
 
-#: e2_action.c:1171
+#: e2_action.c:1207
 msgid "goto_top"
 msgstr "一番上へ"
 
-#: e2_action.c:1173 e2_mkdir_dialog.c:1062
+#: e2_action.c:1209 e2_mkdir_dialog.c:1062
 msgid "info"
 msgstr "情報"
 
-#: e2_action.c:1174
+#: e2_action.c:1210
 msgid "insert_selection"
 msgstr "選択したものを挿入(_s)"
 
-#: e2_action.c:1175
+#: e2_action.c:1211
 msgid "invert_selection"
 msgstr "選択を反転"
 
-#: e2_action.c:1176
+#: e2_action.c:1212
 msgid "list"
 msgstr "リスト"
 
-#: e2_action.c:1177
+#: e2_action.c:1213
 msgid "mirror"
 msgstr "同期"
 
-#: e2_action.c:1178
+#: e2_action.c:1214
 msgid "mkdir"
 msgstr "mkdir"
 
-#: e2_action.c:1179
+#: e2_action.c:1215
 msgid "mountpoints"
 msgstr "マウントポイント"
 
-#: e2_action.c:1180 e2_task.c:2611
+#: e2_action.c:1216 e2_task.c:2611
 msgid "move"
 msgstr "移動"
 
-#: e2_action.c:1181
+#: e2_action.c:1217
 msgid "move_as"
 msgstr "別名で移動"
 
-#: e2_action.c:1182 e2_select_dir_dialog.c:41
+#: e2_action.c:1218 e2_select_dir_dialog.c:41
 msgid "open"
 msgstr "開く"
 
-#: e2_action.c:1183
+#: e2_action.c:1219
 msgid "open_in_other"
 msgstr "他のペインに開く"
 
-#: e2_action.c:1184
+#: e2_action.c:1220
 msgid "open_with"
 msgstr "アプリで開く"
 
-#: e2_action.c:1185 e2p_find.c:3663
+#: e2_action.c:1221 e2p_find.c:3663
 msgid "owners"
 msgstr "所有者"
 
-#: e2_action.c:1186
+#: e2_action.c:1222
 msgid "page_down"
 msgstr "page_down"
 
-#: e2_action.c:1187
+#: e2_action.c:1223
 msgid "page_up"
 msgstr "上へ"
 
-#: e2_action.c:1188 e2_permissions_dialog.c:314
+#: e2_action.c:1224 e2_permissions_dialog.c:314
 msgid "permissions"
 msgstr "権限"
 
-#: e2_action.c:1189
+#: e2_action.c:1225
 msgid "print"
 msgstr "print"
 
-#: e2_action.c:1190 e2_alias.c:328
+#: e2_action.c:1226 e2_alias.c:328
 msgid "quit"
 msgstr "終了"
 
-#: e2_action.c:1191
+#: e2_action.c:1227
 msgid "refresh"
 msgstr "更新"
 
-#: e2_action.c:1192
+#: e2_action.c:1228
 msgid "refreshresume"
 msgstr "更新レジューム"
 
-#: e2_action.c:1193
+#: e2_action.c:1229
 msgid "refreshsuspend"
 msgstr "更新サスペンド"
 
-#: e2_action.c:1194 e2_task.c:3256
+#: e2_action.c:1230 e2_task.c:3256
 msgid "rename"
 msgstr "リネーム"
 
-#: e2_action.c:1195
+#: e2_action.c:1231
 msgid "scroll_down"
 msgstr "scroll_down"
 
-#: e2_action.c:1196
+#: e2_action.c:1232
 msgid "scroll_up"
 msgstr "scroll_up"
 
-#: e2_action.c:1197 e2_option.c:1329
+#: e2_action.c:1233 e2_option.c:1329
 msgid "search"
 msgstr "検索"
 
-#: e2_action.c:1198
+#: e2_action.c:1234
 msgid "select_type"
 msgstr "種類を選択"
 
-#: e2_action.c:1199
+#: e2_action.c:1235
 msgid "send"
 msgstr "送る"
 
-#: e2_action.c:1200
+#: e2_action.c:1236
 msgid "set"
 msgstr "セット"
 
-#: e2_action.c:1201
+#: e2_action.c:1237
 msgid "show"
 msgstr "表示"
 
-#: e2_action.c:1202
+#: e2_action.c:1238
 msgid "show_hidden"
 msgstr "隠しを表示(_h)"
 
-#: e2_action.c:1203
+#: e2_action.c:1239
 msgid "show_menu"
 msgstr "メニューを表示"
 
-#: e2_action.c:1204
+#: e2_action.c:1240
 msgid "sortaccesssed"
 msgstr "アクセス順にソート"
 
-#: e2_action.c:1205
+#: e2_action.c:1241
 msgid "sortchanged"
 msgstr "changed 順にソート"
 
-#: e2_action.c:1206
+#: e2_action.c:1242
 msgid "sortext"
 msgstr "sortext"
 
-#: e2_action.c:1207
+#: e2_action.c:1243
 msgid "sortgroup"
 msgstr "グループ順にソート"
 
-#: e2_action.c:1208
+#: e2_action.c:1244
 msgid "sortmodified"
 msgstr "modified順にソート"
 
-#: e2_action.c:1209
+#: e2_action.c:1245
 msgid "sortname"
 msgstr "名前順にソート"
 
-#: e2_action.c:1210
+#: e2_action.c:1246
 msgid "sortpermission"
 msgstr "権限順にソート"
 
-#: e2_action.c:1211
+#: e2_action.c:1247
 msgid "sortsize"
 msgstr "サイズ順にソート"
 
-#: e2_action.c:1212
+#: e2_action.c:1248
 msgid "sortuser"
 msgstr "ユーザ順にソート"
 
-#: e2_action.c:1213
+#: e2_action.c:1249
 msgid "switch"
 msgstr "切替"
 
-#: e2_action.c:1214
+#: e2_action.c:1250
 msgid "symlink"
 msgstr "symlink"
 
-#: e2_action.c:1215
+#: e2_action.c:1251
 msgid "symlink_as"
 msgstr "symlink_as"
 
-#: e2_action.c:1216
+#: e2_action.c:1252
 msgid "sync"
 msgstr "同期"
 
-#: e2_action.c:1217
+#: e2_action.c:1253
 msgid "toggle_direction"
 msgstr "方向を切り替え(_d)"
 
-#: e2_action.c:1218
+#: e2_action.c:1254
 msgid "toggle_focus"
 msgstr "フォーカスを切替"
 
-#: e2_action.c:1219
+#: e2_action.c:1255
 msgid "toggle_select_all"
 msgstr "全て選択非選択のトグル"
 
-#: e2_action.c:1220
+#: e2_action.c:1256
 msgid "toggle_selected"
 msgstr "選択を切替"
 
-#: e2_action.c:1222
+#: e2_action.c:1258
 msgid "tree"
 msgstr "ツリー"
 
-#: e2_action.c:1224
+#: e2_action.c:1260
 msgid "unpack"
 msgstr "解凍"
 
-#: e2_action.c:1226
+#: e2_action.c:1262
 msgid "untrash"
 msgstr "ゴミ箱から戻す"
 
-#: e2_action.c:1228 e2_option.c:1334
+#: e2_action.c:1264 e2_option.c:1334
 msgid "view"
 msgstr "表示"
 
-#: e2_action.c:1229
+#: e2_action.c:1265
 msgid "view_again"
 msgstr "再表示"
 
-#: e2_action.c:1230
+#: e2_action.c:1266
 msgid "view_at"
 msgstr "次のもので閲覧"
 
-#: e2_action.c:1232 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1268 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "child"
 msgstr "子列"
 
-#: e2_action.c:1233 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2_action.c:1269 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr "ctrl"
 
-#: e2_action.c:1234
+#: e2_action.c:1270
 msgid "dirs"
 msgstr "dirs"
 
-#: e2_action.c:1235
+#: e2_action.c:1271
 msgid "escape"
 msgstr "escape"
 
-#: e2_action.c:1236
+#: e2_action.c:1272
 msgid "expand"
 msgstr "展開"
 
-#: e2_action.c:1237 e2p_du.c:273
+#: e2_action.c:1273 e2p_du.c:273
 msgid "files"
 msgstr "ファイル"
 
-#: e2_action.c:1238
+#: e2_action.c:1274
 msgid "off"
 msgstr "オフ"
 
-#: e2_action.c:1239
+#: e2_action.c:1275
 msgid "on"
 msgstr "オン"
 
-#: e2_action.c:1240
+#: e2_action.c:1276
 msgid "quote"
 msgstr "引用"
 
-#: e2_action.c:1241 e2p_clipnames.c:49
+#: e2_action.c:1277 e2p_clipnames.c:49
 msgid "shift"
 msgstr "shift"
 
-#: e2_action.c:1242
+#: e2_action.c:1278
 msgid "top"
 msgstr "トップ"
 
-#: e2_action.c:1246
+#: e2_action.c:1282
 msgid "<spacemenu>"
 msgstr "<スペースメニュー>"
 
-#: e2_action.c:1247
+#: e2_action.c:1283
 msgid "dummy"
 msgstr "ダミー"
 
-#: e2_action.c:1248
+#: e2_action.c:1284
 msgid "namespace"
 msgstr "名前スペース"
 
-#: e2_action.c:1249
+#: e2_action.c:1285
 msgid "unpack_in_other"
 msgstr "他のペインに解凍"
 
-#: e2_action.c:1252
+#: e2_action.c:1288
 msgid "key"
 msgstr "キー"
 
-#: e2_action.c:1255
+#: e2_action.c:1291
 msgid "fake"
 msgstr "フェイク"
 
-#: e2_action.c:1258 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1294 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "button"
 msgstr "ボタン"
 
