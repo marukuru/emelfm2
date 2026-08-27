@@ -5,3 +5,17 @@
 *.so
 *.deps
 emelfm2
+build-stamp
+configure-stamp
+debian/emelfm2/
+debian/emelfm2-i18n/
+debian/.debhelper/
+debian/*.log
+debian/*.substvars
+debian/*.debhelper
+debian/files
+debian/emelfm2.xpm
+*.mo
+*.pot
+src/build.h
+src/build/build.h
