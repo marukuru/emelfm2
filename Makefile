@@ -379,7 +379,7 @@ install: all install_plugins
 install_plugins: plugins
 	@echo "installing plugins to prefix '$(PREFIX)'"
 	@install -d $(PLUGINS_DIR)
-	@for file in "$(LIBS_OBJECTS) $(LIBS_XOBJECTS)"; do \
+	@for file in $(LIBS_OBJECTS) $(LIBS_XOBJECTS); do \
 		install -m 755 $$file $(PLUGINS_DIR); \
 	done
 	@install -d -m 755 $(ICON_DIR)/48x48

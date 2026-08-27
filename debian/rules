@@ -62,6 +62,8 @@ install: build
 	dh_testroot
 	dh_clean
 	dh_installdirs
+	# Explicitly remove stale plugin binaries so freshly compiled .so files are always installed
+	$(RM) -r $(CURDIR)/debian/emelfm2/usr/lib/emelfm2/plugins
 
 	$(MAKE) install PREFIX=$(CURDIR)/debian/emelfm2/usr/
 	$(RM) $(CURDIR)/debian/emelfm2/usr/share/doc/emelfm2/INSTALL
