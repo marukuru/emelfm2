@@ -1,0 +1,150 @@
+name: Release
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  release-info:
+    runs-on: ubuntu-latest
+    outputs:
+      version: ${{ steps.info.outputs.version }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Get Version
+        id: info
+        run: |
+          VERSION=$(grep '^VERSION=' Makefile | cut -d= -f2)
+          RELEASE=$(grep '^RELEASE=' Makefile | cut -d= -f2 || true)
+          echo "version=${VERSION}${RELEASE}" >> $GITHUB_OUTPUT
+
+      - name: Generate Changelog
+        id: changelog
+        run: |
+          # Get the last tag, if exists, else first commit
+          LAST_TAG=$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)
+          # Generate changelog from git commits
+          git log --pretty=format:"* %s (%an)" ${LAST_TAG}..HEAD > release_notes.md
+
+      - name: Upload Release Notes
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes
+          path: release_notes.md
+
+  build-deb:
+    needs: release-info
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ubuntu_version: ["22.04", "24.04", "26.04", "latest"]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Build DEB in Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ubuntu:${{ matrix.ubuntu_version }} bash -c "
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update
+            apt-get install -y dpkg-dev debhelper devscripts build-essential libglib2.0-dev libgtk2.0-dev libmagic-dev libdbus-glib-1-dev imagemagick git lsb-release
+            
+            CODENAME=\$(lsb_release -cs)
+            VERSION_STR=${{ needs.release-info.outputs.version }}
+            BUILD_NUM=${{ github.run_number }}
+            FULL_VERSION=\"\${VERSION_STR}-\${BUILD_NUM}-\${CODENAME}\"
+            
+            # Generate debian/changelog
+            echo 'emelfm2 ('\$FULL_VERSION') unstable; urgency=low' > debian/changelog.new
+            echo '' >> debian/changelog.new
+            git log --pretty=format:'  * %s (%an)' \$(git describe --tags --abbrev=0 2>/dev/null || git rev-list --max-parents=0 HEAD)..HEAD >> debian/changelog.new
+            echo '' >> debian/changelog.new
+            echo ' -- GitHub Actions <actions@github.com>  '\$(date -R) >> debian/changelog.new
+            echo '' >> debian/changelog.new
+            if [ -f debian/changelog ]; then
+              cat debian/changelog >> debian/changelog.new
+            fi
+            mv debian/changelog.new debian/changelog
+            
+            dpkg-buildpackage -us -uc -b
+            mkdir -p /workspace/dist
+            mv /emelfm2_*.deb /workspace/dist/ || mv ../emelfm2_*.deb /workspace/dist/
+            cd /workspace/dist
+            for file in *.deb; do
+              mv \"\$file\" \"emelfm2_\${VERSION_STR}_\${BUILD_NUM}_\${CODENAME}.deb\"
+            done
+          "
+
+      - name: Upload DEB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: deb-${{ matrix.ubuntu_version }}
+          path: dist/*.deb
+
+  build-appimage:
+    needs: release-info
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Install Dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y build-essential libglib2.0-dev libgtk2.0-dev libmagic-dev libdbus-glib-1-dev file curl
+      
+      - name: Build and Install to AppDir
+        run: |
+          make -j$(nproc)
+          make install PREFIX=AppDir/usr
+          make install_plugins PREFIX=AppDir/usr
+          mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/48x48/apps
+          cp docs/desktop_environment/emelfm2.desktop AppDir/usr/share/applications/
+          cp icons/emelfm2_48.png AppDir/usr/share/icons/hicolor/48x48/apps/emelfm2.png || true
+      
+      - name: Build AppImage
+        run: |
+          curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
+          curl -LO https://github.com/linuxdeploy/linuxdeploy-plugin-gtk/releases/download/continuous/linuxdeploy-plugin-gtk.sh
+          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
+          
+          export OUTPUT="emelfm2_${{ needs.release-info.outputs.version }}_${{ github.run_number }}_ubuntu-22.04.AppImage"
+          ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin gtk --output appimage
+          mkdir -p dist
+          mv *.AppImage dist/
+          
+      - name: Upload AppImage artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: appimage
+          path: dist/*.AppImage
+
+  publish-release:
+    needs: [release-info, build-deb, build-appimage]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Download all artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
+          merge-multiple: true
+      
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: "v${{ needs.release-info.outputs.version }}-${{ github.run_number }}"
+          name: "Release ${{ needs.release-info.outputs.version }} (Build ${{ github.run_number }})"
+          body_path: artifacts/release_notes.md
+          files: |
+            artifacts/*.deb
+            artifacts/*.AppImage
