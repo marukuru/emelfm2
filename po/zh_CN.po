@@ -30,11 +30,11 @@ msgstr ""
 "X-Poedit-SearchPath-8: src/utils\n"
 "X-Poedit-SearchPath-9: src/command/complete\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1162 e2_alias.c:329 e2_command.c:3345
+#: e2_about_dialog.c:138 e2_action.c:1211 e2_alias.c:329 e2_command.c:3345
 msgid "help"
 msgstr "帮助"
 
-#: e2_about_dialog.c:154 e2_action.c:1134
+#: e2_about_dialog.c:154 e2_action.c:1183
 msgid "about"
 msgstr "关于"
 
@@ -107,516 +107,516 @@ msgstr "读取文件"
 msgid "_View"
 msgstr "查看(_V)"
 
-#: e2_action.c:1104
+#: e2_action.c:1153
 msgid "bookmark"
 msgstr ""
 
-#: e2_action.c:1105
+#: e2_action.c:1154
 msgid "command"
 msgstr ""
 
-#: e2_action.c:1106 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1155 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "children"
 msgstr ""
 
-#: e2_action.c:1107
+#: e2_action.c:1156
 msgid "configure"
 msgstr ""
 
-#: e2_action.c:1108 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1157 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "dialog"
 msgstr ""
 
-#: e2_action.c:1109
+#: e2_action.c:1158
 msgid "dirline"
 msgstr ""
 
-#: e2_action.c:1110 e2p_du.c:273
+#: e2_action.c:1159 e2p_du.c:273
 msgid "file"
 msgstr ""
 
-#: e2_action.c:1111
+#: e2_action.c:1160
 msgid "filelist"
 msgstr ""
 
-#: e2_action.c:1112 e2_option.c:1308
+#: e2_action.c:1161 e2_option.c:1308
 msgid "history"
 msgstr ""
 
-#: e2_action.c:1113
+#: e2_action.c:1162
 msgid "option"
 msgstr ""
 
-#: e2_action.c:1114 e2_option.c:1318
+#: e2_action.c:1163 e2_option.c:1318
 msgid "output"
 msgstr "输出"
 
-#: e2_action.c:1115
+#: e2_action.c:1164
 msgid "pane1"
 msgstr ""
 
-#: e2_action.c:1116
+#: e2_action.c:1165
 msgid "pane2"
 msgstr ""
 
-#: e2_action.c:1117
+#: e2_action.c:1166
 msgid "pane"
 msgstr ""
 
-#: e2_action.c:1118 e2_option.c:1323
+#: e2_action.c:1167 e2_option.c:1323
 msgid "panes"
 msgstr "面板"
 
-#: e2_action.c:1119
+#: e2_action.c:1168
 msgid "pending"
 msgstr ""
 
-#: e2_action.c:1120 e2_config_dialog.c:1156
+#: e2_action.c:1169 e2_config_dialog.c:1156
 msgid "plugin"
 msgstr ""
 
-#: e2_action.c:1121
+#: e2_action.c:1170
 msgid "toggle"
 msgstr ""
 
-#: e2_action.c:1122 e2_bookmark.c:716
+#: e2_action.c:1171 e2_bookmark.c:716
 msgid "trash"
 msgstr ""
 
-#: e2_action.c:1123
+#: e2_action.c:1172
 msgid "separator"
 msgstr ""
 
-#: e2_action.c:1124
+#: e2_action.c:1173
 msgid "<custom command>"
 msgstr ""
 
-#: e2_action.c:1125
+#: e2_action.c:1174
 msgid "<separator>"
 msgstr ""
 
-#: e2_action.c:1126
+#: e2_action.c:1175
 msgid "<submenu>"
 msgstr ""
 
-#: e2_action.c:1128
+#: e2_action.c:1177
 msgid "<actions>"
 msgstr ""
 
-#: e2_action.c:1129
+#: e2_action.c:1178
 msgid "<bookmarks>"
 msgstr ""
 
-#: e2_action.c:1130
+#: e2_action.c:1179
 msgid "<filters>"
 msgstr ""
 
-#: e2_action.c:1131
+#: e2_action.c:1180
 msgid "<handlers>"
 msgstr ""
 
-#: e2_action.c:1132
+#: e2_action.c:1181
 msgid "<line>"
 msgstr ""
 
-#: e2_action.c:1133
+#: e2_action.c:1182
 msgid "<menu>"
 msgstr ""
 
-#: e2_action.c:1135
+#: e2_action.c:1184
 msgid "activate"
 msgstr ""
 
-#: e2_action.c:1136
+#: e2_action.c:1185
 msgid "add"
 msgstr ""
 
-#: e2_action.c:1137
+#: e2_action.c:1186
 msgid "add_history"
 msgstr ""
 
-#: e2_action.c:1138
+#: e2_action.c:1187
 msgid "adjust_ratio"
 msgstr ""
 
-#: e2_action.c:1139
+#: e2_action.c:1188
 msgid "application"
 msgstr ""
 
-#: e2_action.c:1140 e2_config_dialog.c:2149 e2_config_dialog.c:2186
+#: e2_action.c:1189 e2_config_dialog.c:2149 e2_config_dialog.c:2186
 msgid "change"
 msgstr ""
 
-#: e2_action.c:1141 e2_alias.c:327
+#: e2_action.c:1190 e2_alias.c:327
 msgid "clear"
 msgstr ""
 
-#: e2_action.c:1142
+#: e2_action.c:1191
 msgid "clear_history"
 msgstr ""
 
-#: e2_action.c:1143
+#: e2_action.c:1192
 msgid "complete"
 msgstr ""
 
-#: e2_action.c:1144 e2_task.c:2068
+#: e2_action.c:1193 e2_task.c:2068
 msgid "copy"
 msgstr ""
 
-#: e2_action.c:1145
+#: e2_action.c:1194
 msgid "copy_as"
 msgstr ""
 
-#: e2_action.c:1146
+#: e2_action.c:1195
 msgid "copy_merge"
 msgstr ""
 
-#: e2_action.c:1147
+#: e2_action.c:1196
 msgid "copy_with_time"
 msgstr ""
 
-#: e2_action.c:1148
+#: e2_action.c:1197
 msgid "default"
 msgstr ""
 
-#: e2_action.c:1149
+#: e2_action.c:1198
 msgid "del_history"
 msgstr ""
 
-#: e2_action.c:1150
+#: e2_action.c:1199
 msgid "delete"
 msgstr ""
 
-#: e2_action.c:1151
+#: e2_action.c:1200
 msgid "edit"
 msgstr ""
 
-#: e2_action.c:1152
+#: e2_action.c:1201
 msgid "edit_again"
 msgstr ""
 
-#: e2_action.c:1153
+#: e2_action.c:1202
 msgid "filetype"
 msgstr ""
 
-#: e2_action.c:1154 e2_task.c:4418 e2p_find.c:4200
+#: e2_action.c:1203 e2_task.c:4418 e2p_find.c:4200
 msgid "find"
 msgstr ""
 
-#: e2_action.c:1155
+#: e2_action.c:1204
 msgid "focus"
 msgstr ""
 
-#: e2_action.c:1156
+#: e2_action.c:1205
 msgid "fullscreen"
 msgstr ""
 
-#: e2_action.c:1157
+#: e2_action.c:1206
 msgid "go_back"
 msgstr ""
 
-#: e2_action.c:1158
+#: e2_action.c:1207
 msgid "go_forward"
 msgstr ""
 
-#: e2_action.c:1159
+#: e2_action.c:1208
 msgid "go_up"
 msgstr ""
 
-#: e2_action.c:1160
+#: e2_action.c:1209
 msgid "goto_bottom"
 msgstr ""
 
-#: e2_action.c:1161
+#: e2_action.c:1210
 msgid "goto_top"
 msgstr ""
 
-#: e2_action.c:1163 e2_mkdir_dialog.c:1062
+#: e2_action.c:1212 e2_mkdir_dialog.c:1062
 msgid "info"
 msgstr ""
 
-#: e2_action.c:1164
+#: e2_action.c:1213
 msgid "insert_selection"
 msgstr ""
 
-#: e2_action.c:1165
+#: e2_action.c:1214
 msgid "invert_selection"
 msgstr ""
 
-#: e2_action.c:1166
+#: e2_action.c:1215
 msgid "list"
 msgstr ""
 
-#: e2_action.c:1167
+#: e2_action.c:1216
 msgid "mirror"
 msgstr ""
 
-#: e2_action.c:1168
+#: e2_action.c:1217
 msgid "mkdir"
 msgstr ""
 
-#: e2_action.c:1169
+#: e2_action.c:1218
 msgid "mountpoints"
 msgstr ""
 
-#: e2_action.c:1170 e2_task.c:2611
+#: e2_action.c:1219 e2_task.c:2611
 msgid "move"
 msgstr ""
 
-#: e2_action.c:1171
+#: e2_action.c:1220
 msgid "move_as"
 msgstr ""
 
-#: e2_action.c:1172 e2_select_dir_dialog.c:41
+#: e2_action.c:1221 e2_select_dir_dialog.c:41
 msgid "open"
 msgstr ""
 
-#: e2_action.c:1173
+#: e2_action.c:1222
 msgid "open_in_other"
 msgstr ""
 
-#: e2_action.c:1174
+#: e2_action.c:1223
 msgid "open_with"
 msgstr ""
 
-#: e2_action.c:1175 e2p_find.c:3663
+#: e2_action.c:1224 e2p_find.c:3663
 msgid "owners"
 msgstr ""
 
-#: e2_action.c:1176
+#: e2_action.c:1225
 msgid "page_down"
 msgstr ""
 
-#: e2_action.c:1177
+#: e2_action.c:1226
 msgid "page_up"
 msgstr ""
 
-#: e2_action.c:1178 e2_permissions_dialog.c:314
+#: e2_action.c:1227 e2_permissions_dialog.c:314
 msgid "permissions"
 msgstr ""
 
-#: e2_action.c:1179
+#: e2_action.c:1228
 msgid "print"
 msgstr ""
 
-#: e2_action.c:1180 e2_alias.c:328
+#: e2_action.c:1229 e2_alias.c:328
 msgid "quit"
 msgstr ""
 
-#: e2_action.c:1181
+#: e2_action.c:1230
 msgid "refresh"
 msgstr ""
 
-#: e2_action.c:1182
+#: e2_action.c:1231
 msgid "refreshresume"
 msgstr ""
 
-#: e2_action.c:1183
+#: e2_action.c:1232
 msgid "refreshsuspend"
 msgstr ""
 
-#: e2_action.c:1184 e2_task.c:3256
+#: e2_action.c:1233 e2_task.c:3256
 msgid "rename"
 msgstr ""
 
-#: e2_action.c:1185
+#: e2_action.c:1234
 msgid "scroll_down"
 msgstr ""
 
-#: e2_action.c:1186
+#: e2_action.c:1235
 msgid "scroll_up"
 msgstr ""
 
-#: e2_action.c:1187 e2_option.c:1329
+#: e2_action.c:1236 e2_option.c:1329
 msgid "search"
 msgstr ""
 
-#: e2_action.c:1188
+#: e2_action.c:1237
 msgid "select_type"
 msgstr ""
 
-#: e2_action.c:1189
+#: e2_action.c:1238
 msgid "send"
 msgstr ""
 
-#: e2_action.c:1190
+#: e2_action.c:1239
 msgid "set"
 msgstr ""
 
-#: e2_action.c:1191
+#: e2_action.c:1240
 msgid "show"
 msgstr ""
 
-#: e2_action.c:1192
+#: e2_action.c:1241
 msgid "show_hidden"
 msgstr ""
 
-#: e2_action.c:1193
+#: e2_action.c:1242
 msgid "show_menu"
 msgstr ""
 
-#: e2_action.c:1194
+#: e2_action.c:1243
 msgid "sortaccesssed"
 msgstr ""
 
-#: e2_action.c:1195
+#: e2_action.c:1244
 msgid "sortchanged"
 msgstr ""
 
-#: e2_action.c:1196
+#: e2_action.c:1245
 msgid "sortext"
 msgstr ""
 
-#: e2_action.c:1197
+#: e2_action.c:1246
 msgid "sortgroup"
 msgstr ""
 
-#: e2_action.c:1198
+#: e2_action.c:1247
 msgid "sortmodified"
 msgstr ""
 
-#: e2_action.c:1199
+#: e2_action.c:1248
 msgid "sortname"
 msgstr ""
 
-#: e2_action.c:1200
+#: e2_action.c:1249
 msgid "sortpermission"
 msgstr ""
 
-#: e2_action.c:1201
+#: e2_action.c:1250
 msgid "sortsize"
 msgstr ""
 
-#: e2_action.c:1202
+#: e2_action.c:1251
 msgid "sortuser"
 msgstr ""
 
-#: e2_action.c:1203
+#: e2_action.c:1252
 msgid "switch"
 msgstr ""
 
-#: e2_action.c:1204
+#: e2_action.c:1253
 msgid "symlink"
 msgstr ""
 
-#: e2_action.c:1205
+#: e2_action.c:1254
 msgid "symlink_as"
 msgstr ""
 
-#: e2_action.c:1206
+#: e2_action.c:1255
 msgid "sync"
 msgstr ""
 
-#: e2_action.c:1207
+#: e2_action.c:1256
 msgid "toggle_direction"
 msgstr ""
 
-#: e2_action.c:1208
+#: e2_action.c:1257
 msgid "toggle_focus"
 msgstr ""
 
-#: e2_action.c:1209
+#: e2_action.c:1258
 msgid "toggle_select_all"
 msgstr ""
 
-#: e2_action.c:1210
+#: e2_action.c:1259
 msgid "toggle_selected"
 msgstr ""
 
-#: e2_action.c:1212
+#: e2_action.c:1261
 msgid "tree"
 msgstr ""
 
-#: e2_action.c:1214
+#: e2_action.c:1263
 msgid "unpack"
 msgstr ""
 
-#: e2_action.c:1216
+#: e2_action.c:1265
 msgid "untrash"
 msgstr ""
 
-#: e2_action.c:1218 e2_option.c:1334
+#: e2_action.c:1267 e2_option.c:1334
 msgid "view"
 msgstr ""
 
-#: e2_action.c:1219
+#: e2_action.c:1268
 msgid "view_again"
 msgstr ""
 
-#: e2_action.c:1220
+#: e2_action.c:1269
 msgid "view_at"
 msgstr ""
 
-#: e2_action.c:1222 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1271 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "child"
 msgstr ""
 
-#: e2_action.c:1223 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2_action.c:1272 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr ""
 
-#: e2_action.c:1224
+#: e2_action.c:1273
 msgid "dirs"
 msgstr ""
 
-#: e2_action.c:1225
+#: e2_action.c:1274
 msgid "escape"
 msgstr ""
 
-#: e2_action.c:1226
+#: e2_action.c:1275
 msgid "expand"
 msgstr ""
 
-#: e2_action.c:1227 e2p_du.c:273
+#: e2_action.c:1276 e2p_du.c:273
 msgid "files"
 msgstr ""
 
-#: e2_action.c:1228
+#: e2_action.c:1277
 msgid "off"
 msgstr ""
 
-#: e2_action.c:1229
+#: e2_action.c:1278
 msgid "on"
 msgstr ""
 
-#: e2_action.c:1230
+#: e2_action.c:1279
 msgid "quote"
 msgstr ""
 
-#: e2_action.c:1231 e2p_clipnames.c:49
+#: e2_action.c:1280 e2p_clipnames.c:49
 msgid "shift"
 msgstr ""
 
-#: e2_action.c:1232
+#: e2_action.c:1281
 msgid "top"
 msgstr ""
 
-#: e2_action.c:1236
+#: e2_action.c:1285
 msgid "<spacemenu>"
 msgstr ""
 
-#: e2_action.c:1237
+#: e2_action.c:1286
 msgid "dummy"
 msgstr ""
 
-#: e2_action.c:1238
+#: e2_action.c:1287
 msgid "namespace"
 msgstr ""
 
-#: e2_action.c:1239
+#: e2_action.c:1288
 msgid "unpack_in_other"
 msgstr ""
 
-#: e2_action.c:1242
+#: e2_action.c:1291
 msgid "key"
 msgstr ""
 
-#: e2_action.c:1245
+#: e2_action.c:1294
 msgid "fake"
 msgstr ""
 
-#: e2_action.c:1248 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1297 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "button"
 msgstr ""
 
