@@ -20,11 +20,11 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1208 e2_alias.c:329 e2_command.c:3345
+#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3345
 msgid "help"
 msgstr "справка"
 
-#: e2_about_dialog.c:154 e2_action.c:1180
+#: e2_about_dialog.c:154 e2_action.c:1182
 msgid "about"
 msgstr "о_программе"
 
@@ -96,516 +96,516 @@ msgstr "Просмотреть файл"
 msgid "_View"
 msgstr "_Просмотр"
 
-#: e2_action.c:1150
+#: e2_action.c:1152
 msgid "bookmark"
 msgstr "закладка"
 
-#: e2_action.c:1151
+#: e2_action.c:1153
 msgid "command"
 msgstr "команда"
 
-#: e2_action.c:1152 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1154 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "children"
 msgstr "дочерний"
 
-#: e2_action.c:1153
+#: e2_action.c:1155
 msgid "configure"
 msgstr "конфигурация"
 
-#: e2_action.c:1154 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1156 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "dialog"
 msgstr "диалог"
 
-#: e2_action.c:1155
+#: e2_action.c:1157
 msgid "dirline"
 msgstr "строка_адреса"
 
-#: e2_action.c:1156 e2p_du.c:273
+#: e2_action.c:1158 e2p_du.c:273
 msgid "file"
 msgstr "файл"
 
-#: e2_action.c:1157
+#: e2_action.c:1159
 msgid "filelist"
 msgstr "список_файлов"
 
-#: e2_action.c:1158 e2_option.c:1308
+#: e2_action.c:1160 e2_option.c:1308
 msgid "history"
 msgstr "история"
 
-#: e2_action.c:1159
+#: e2_action.c:1161
 msgid "option"
 msgstr "параметр"
 
-#: e2_action.c:1160 e2_option.c:1318
+#: e2_action.c:1162 e2_option.c:1318
 msgid "output"
 msgstr "вывод"
 
-#: e2_action.c:1161
+#: e2_action.c:1163
 msgid "pane1"
 msgstr "панель1"
 
-#: e2_action.c:1162
+#: e2_action.c:1164
 msgid "pane2"
 msgstr "панель2"
 
-#: e2_action.c:1163
+#: e2_action.c:1165
 msgid "pane"
 msgstr "панель"
 
-#: e2_action.c:1164 e2_option.c:1323
+#: e2_action.c:1166 e2_option.c:1323
 msgid "panes"
 msgstr "панели"
 
-#: e2_action.c:1165
+#: e2_action.c:1167
 msgid "pending"
 msgstr "ожидание"
 
-#: e2_action.c:1166 e2_config_dialog.c:1156
+#: e2_action.c:1168 e2_config_dialog.c:1156
 msgid "plugin"
 msgstr "модуль"
 
-#: e2_action.c:1167
+#: e2_action.c:1169
 msgid "toggle"
 msgstr "переключить"
 
-#: e2_action.c:1168 e2_bookmark.c:716
+#: e2_action.c:1170 e2_bookmark.c:716
 msgid "trash"
 msgstr "корзина"
 
-#: e2_action.c:1169
+#: e2_action.c:1171
 msgid "separator"
 msgstr "разделитель"
 
-#: e2_action.c:1170
+#: e2_action.c:1172
 msgid "<custom command>"
 msgstr "<особая команда>"
 
-#: e2_action.c:1171
+#: e2_action.c:1173
 msgid "<separator>"
 msgstr "<разделитель>"
 
-#: e2_action.c:1172
+#: e2_action.c:1174
 msgid "<submenu>"
 msgstr "<подменю>"
 
-#: e2_action.c:1174
+#: e2_action.c:1176
 msgid "<actions>"
 msgstr "<действия>"
 
-#: e2_action.c:1175
+#: e2_action.c:1177
 msgid "<bookmarks>"
 msgstr "<закладки>"
 
-#: e2_action.c:1176
+#: e2_action.c:1178
 msgid "<filters>"
 msgstr "<фильтры>"
 
-#: e2_action.c:1177
+#: e2_action.c:1179
 msgid "<handlers>"
 msgstr "<обработчики>"
 
-#: e2_action.c:1178
+#: e2_action.c:1180
 msgid "<line>"
 msgstr "<строка>"
 
-#: e2_action.c:1179
+#: e2_action.c:1181
 msgid "<menu>"
 msgstr "<меню>"
 
-#: e2_action.c:1181
+#: e2_action.c:1183
 msgid "activate"
 msgstr "активировать"
 
-#: e2_action.c:1182
+#: e2_action.c:1184
 msgid "add"
 msgstr "добавить"
 
-#: e2_action.c:1183
+#: e2_action.c:1185
 msgid "add_history"
 msgstr "доб_в_историю"
 
-#: e2_action.c:1184
+#: e2_action.c:1186
 msgid "adjust_ratio"
 msgstr "подогнать_соотношение"
 
-#: e2_action.c:1185
+#: e2_action.c:1187
 msgid "application"
 msgstr "приложение"
 
-#: e2_action.c:1186 e2_config_dialog.c:2149 e2_config_dialog.c:2186
+#: e2_action.c:1188 e2_config_dialog.c:2149 e2_config_dialog.c:2186
 msgid "change"
 msgstr "изменить"
 
-#: e2_action.c:1187 e2_alias.c:327
+#: e2_action.c:1189 e2_alias.c:327
 msgid "clear"
 msgstr "очистить"
 
-#: e2_action.c:1188
+#: e2_action.c:1190
 msgid "clear_history"
 msgstr "очистить_историю"
 
-#: e2_action.c:1189
+#: e2_action.c:1191
 msgid "complete"
 msgstr "завершить"
 
-#: e2_action.c:1190 e2_task.c:2068
+#: e2_action.c:1192 e2_task.c:2068
 msgid "copy"
 msgstr "копировать"
 
-#: e2_action.c:1191
+#: e2_action.c:1193
 msgid "copy_as"
 msgstr "копировать_как"
 
-#: e2_action.c:1192
+#: e2_action.c:1194
 msgid "copy_merge"
 msgstr "копировать_со_слиянием"
 
-#: e2_action.c:1193
+#: e2_action.c:1195
 msgid "copy_with_time"
 msgstr "копировать_со_временем"
 
-#: e2_action.c:1194
+#: e2_action.c:1196
 msgid "default"
 msgstr "по_умолчанию"
 
-#: e2_action.c:1195
+#: e2_action.c:1197
 msgid "del_history"
 msgstr "удал_историю"
 
-#: e2_action.c:1196
+#: e2_action.c:1198
 msgid "delete"
 msgstr "удалить"
 
-#: e2_action.c:1197
+#: e2_action.c:1199
 msgid "edit"
 msgstr "редактирование"
 
-#: e2_action.c:1198
+#: e2_action.c:1200
 msgid "edit_again"
 msgstr "редактировать_снова"
 
-#: e2_action.c:1199
+#: e2_action.c:1201
 msgid "filetype"
 msgstr "тип_файла"
 
-#: e2_action.c:1200 e2_task.c:4418 e2p_find.c:4200
+#: e2_action.c:1202 e2_task.c:4418 e2p_find.c:4200
 msgid "find"
 msgstr "найти"
 
-#: e2_action.c:1201
+#: e2_action.c:1203
 msgid "focus"
 msgstr "установить_фокус"
 
-#: e2_action.c:1202
+#: e2_action.c:1204
 msgid "fullscreen"
 msgstr "полный_экран"
 
-#: e2_action.c:1203
+#: e2_action.c:1205
 msgid "go_back"
 msgstr "назад"
 
-#: e2_action.c:1204
+#: e2_action.c:1206
 msgid "go_forward"
 msgstr "вперёд"
 
-#: e2_action.c:1205
+#: e2_action.c:1207
 msgid "go_up"
 msgstr "на_уровень_вверх"
 
-#: e2_action.c:1206
+#: e2_action.c:1208
 msgid "goto_bottom"
 msgstr "в_конец"
 
-#: e2_action.c:1207
+#: e2_action.c:1209
 msgid "goto_top"
 msgstr "в_начало"
 
-#: e2_action.c:1209 e2_mkdir_dialog.c:1062
+#: e2_action.c:1211 e2_mkdir_dialog.c:1062
 msgid "info"
 msgstr "информация"
 
-#: e2_action.c:1210
+#: e2_action.c:1212
 msgid "insert_selection"
 msgstr "вставить_выделение"
 
-#: e2_action.c:1211
+#: e2_action.c:1213
 msgid "invert_selection"
 msgstr "обратить_выделение"
 
-#: e2_action.c:1212
+#: e2_action.c:1214
 msgid "list"
 msgstr "список"
 
-#: e2_action.c:1213
+#: e2_action.c:1215
 msgid "mirror"
 msgstr "зеркало"
 
-#: e2_action.c:1214
+#: e2_action.c:1216
 msgid "mkdir"
 msgstr "создать_каталог"
 
-#: e2_action.c:1215
+#: e2_action.c:1217
 msgid "mountpoints"
 msgstr "точки_монтирования"
 
-#: e2_action.c:1216 e2_task.c:2611
+#: e2_action.c:1218 e2_task.c:2611
 msgid "move"
 msgstr "переместить"
 
-#: e2_action.c:1217
+#: e2_action.c:1219
 msgid "move_as"
 msgstr "переместить_как"
 
-#: e2_action.c:1218 e2_select_dir_dialog.c:41
+#: e2_action.c:1220 e2_select_dir_dialog.c:41
 msgid "open"
 msgstr "открыть"
 
-#: e2_action.c:1219
+#: e2_action.c:1221
 msgid "open_in_other"
 msgstr "открыть_в_другой"
 
-#: e2_action.c:1220
+#: e2_action.c:1222
 msgid "open_with"
 msgstr "открыть_с_помощью"
 
-#: e2_action.c:1221 e2p_find.c:3663
+#: e2_action.c:1223 e2p_find.c:3663
 msgid "owners"
 msgstr "владельцы"
 
-#: e2_action.c:1222
+#: e2_action.c:1224
 msgid "page_down"
 msgstr "прокрутить_экран_вниз"
 
-#: e2_action.c:1223
+#: e2_action.c:1225
 msgid "page_up"
 msgstr "прокрутить_экран_вверх"
 
-#: e2_action.c:1224 e2_permissions_dialog.c:314
+#: e2_action.c:1226 e2_permissions_dialog.c:314
 msgid "permissions"
 msgstr "разрешения"
 
-#: e2_action.c:1225
+#: e2_action.c:1227
 msgid "print"
 msgstr "напечать"
 
-#: e2_action.c:1226 e2_alias.c:328
+#: e2_action.c:1228 e2_alias.c:328
 msgid "quit"
 msgstr "выйти"
 
-#: e2_action.c:1227
+#: e2_action.c:1229
 msgid "refresh"
 msgstr "обновить"
 
-#: e2_action.c:1228
+#: e2_action.c:1230
 msgid "refreshresume"
 msgstr "продолжить_обновлять"
 
-#: e2_action.c:1229
+#: e2_action.c:1231
 msgid "refreshsuspend"
 msgstr "отменить_обновлять"
 
-#: e2_action.c:1230 e2_task.c:3256
+#: e2_action.c:1232 e2_task.c:3256
 msgid "rename"
 msgstr "переименовать"
 
-#: e2_action.c:1231
+#: e2_action.c:1233
 msgid "scroll_down"
 msgstr "прокрутить_вниз"
 
-#: e2_action.c:1232
+#: e2_action.c:1234
 msgid "scroll_up"
 msgstr "прокрутить_вверх"
 
-#: e2_action.c:1233 e2_option.c:1329
+#: e2_action.c:1235 e2_option.c:1329
 msgid "search"
 msgstr "искать"
 
-#: e2_action.c:1234
+#: e2_action.c:1236
 msgid "select_type"
 msgstr "выбрать_такие_же"
 
-#: e2_action.c:1235
+#: e2_action.c:1237
 msgid "send"
 msgstr "послать"
 
-#: e2_action.c:1236
+#: e2_action.c:1238
 msgid "set"
 msgstr "установить"
 
-#: e2_action.c:1237
+#: e2_action.c:1239
 msgid "show"
 msgstr "показать"
 
-#: e2_action.c:1238
+#: e2_action.c:1240
 msgid "show_hidden"
 msgstr "показать_скрытые"
 
-#: e2_action.c:1239
+#: e2_action.c:1241
 msgid "show_menu"
 msgstr "показать_меню"
 
-#: e2_action.c:1240
+#: e2_action.c:1242
 msgid "sortaccesssed"
 msgstr "сорт_по_доступу"
 
-#: e2_action.c:1241
+#: e2_action.c:1243
 msgid "sortchanged"
 msgstr "сорт_по_созданию"
 
-#: e2_action.c:1242
+#: e2_action.c:1244
 msgid "sortext"
 msgstr "сорт_по_расширению"
 
-#: e2_action.c:1243
+#: e2_action.c:1245
 msgid "sortgroup"
 msgstr "сорт_по_группе"
 
-#: e2_action.c:1244
+#: e2_action.c:1246
 msgid "sortmodified"
 msgstr "сорт_по_изменению"
 
-#: e2_action.c:1245
+#: e2_action.c:1247
 msgid "sortname"
 msgstr "сорт_по_имени"
 
-#: e2_action.c:1246
+#: e2_action.c:1248
 msgid "sortpermission"
 msgstr "сорт_по_разрешению"
 
-#: e2_action.c:1247
+#: e2_action.c:1249
 msgid "sortsize"
 msgstr "сорт_по_размеру"
 
-#: e2_action.c:1248
+#: e2_action.c:1250
 msgid "sortuser"
 msgstr "сорт_по_владельцу"
 
-#: e2_action.c:1249
+#: e2_action.c:1251
 msgid "switch"
 msgstr "переключить"
 
-#: e2_action.c:1250
+#: e2_action.c:1252
 msgid "symlink"
 msgstr "симлинк"
 
-#: e2_action.c:1251
+#: e2_action.c:1253
 msgid "symlink_as"
 msgstr "симлинк_как"
 
-#: e2_action.c:1252
+#: e2_action.c:1254
 msgid "sync"
 msgstr "синхронизировать"
 
-#: e2_action.c:1253
+#: e2_action.c:1255
 msgid "toggle_direction"
 msgstr "переключить_расположение"
 
-#: e2_action.c:1254
+#: e2_action.c:1256
 msgid "toggle_focus"
 msgstr "переключить_фокус"
 
-#: e2_action.c:1255
+#: e2_action.c:1257
 msgid "toggle_select_all"
 msgstr "переключить_все"
 
-#: e2_action.c:1256
+#: e2_action.c:1258
 msgid "toggle_selected"
 msgstr "переключить_выбранные"
 
-#: e2_action.c:1258
+#: e2_action.c:1260
 msgid "tree"
 msgstr "дерево"
 
-#: e2_action.c:1260
+#: e2_action.c:1262
 msgid "unpack"
 msgstr "распаковать"
 
-#: e2_action.c:1262
+#: e2_action.c:1264
 msgid "untrash"
 msgstr "восстановить_из_корзины"
 
-#: e2_action.c:1264 e2_option.c:1334
+#: e2_action.c:1266 e2_option.c:1334
 msgid "view"
 msgstr "просмотр"
 
-#: e2_action.c:1265
+#: e2_action.c:1267
 msgid "view_again"
 msgstr "смотреть_снова"
 
-#: e2_action.c:1266
+#: e2_action.c:1268
 msgid "view_at"
 msgstr "открыть_на"
 
-#: e2_action.c:1268 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1270 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "child"
 msgstr "дочерний"
 
-#: e2_action.c:1269 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2_action.c:1271 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr "ctrl"
 
-#: e2_action.c:1270
+#: e2_action.c:1272
 msgid "dirs"
 msgstr "каталоги"
 
-#: e2_action.c:1271
+#: e2_action.c:1273
 msgid "escape"
 msgstr "отмена"
 
-#: e2_action.c:1272
+#: e2_action.c:1274
 msgid "expand"
 msgstr "расширить"
 
-#: e2_action.c:1273 e2p_du.c:273
+#: e2_action.c:1275 e2p_du.c:273
 msgid "files"
 msgstr "файлы"
 
-#: e2_action.c:1274
+#: e2_action.c:1276
 msgid "off"
 msgstr "off"
 
-#: e2_action.c:1275
+#: e2_action.c:1277
 msgid "on"
 msgstr "on"
 
-#: e2_action.c:1276
+#: e2_action.c:1278
 msgid "quote"
 msgstr "quote"
 
-#: e2_action.c:1277 e2p_clipnames.c:49
+#: e2_action.c:1279 e2p_clipnames.c:49
 msgid "shift"
 msgstr "shift"
 
-#: e2_action.c:1278
+#: e2_action.c:1280
 msgid "top"
 msgstr "верх"
 
-#: e2_action.c:1282
+#: e2_action.c:1284
 msgid "<spacemenu>"
 msgstr "<меню_пробел>"
 
-#: e2_action.c:1283
+#: e2_action.c:1285
 msgid "dummy"
 msgstr "dummy"
 
-#: e2_action.c:1284
+#: e2_action.c:1286
 msgid "namespace"
 msgstr "область_имён"
 
-#: e2_action.c:1285
+#: e2_action.c:1287
 msgid "unpack_in_other"
 msgstr "распаковать_в_другую"
 
-#: e2_action.c:1288
+#: e2_action.c:1290
 msgid "key"
 msgstr "клавиша"
 
-#: e2_action.c:1291
+#: e2_action.c:1293
 msgid "fake"
 msgstr "fake"
 
-#: e2_action.c:1294 e2_option__default.c:381 e2_toolbar.c:3377
+#: e2_action.c:1296 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "button"
 msgstr "кнопка"
 
