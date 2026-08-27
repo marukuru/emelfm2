@@ -3,7 +3,7 @@ Section: universe/x11
 Priority: optional
 Maintainer: Ubuntu MOTU Developers <ubuntu-motu@lists.ubuntu.com>
 XSBC-Original-Maintainer: Ralf Meyer <ranfyy@gmail.com>
-Build-Depends: libglib2.0-dev, libgtk2.0-dev, libmagic-dev, libdbus-glib-1-dev, debhelper (>= 7), imagemagick
+Build-Depends: libglib2.0-dev, libgtk2.0-dev, libmagic-dev, libdbus-glib-1-dev, debhelper (>= 10), imagemagick
 #dpatch not ATM
 #libacl1-dev is needed for acl-plugin
 #libhal-storage-dev is needed for hal instead of udisks
