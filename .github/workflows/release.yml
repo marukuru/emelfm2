@@ -74,6 +74,7 @@ jobs:
             fi
             mv debian/changelog.new debian/changelog
             
+            export DEB_CFLAGS_APPEND="-Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type"
             dpkg-buildpackage -us -uc -b
             mkdir -p /workspace/dist
             mv /emelfm2_*.deb /workspace/dist/ || mv ../emelfm2_*.deb /workspace/dist/
@@ -109,6 +110,7 @@ jobs:
           mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/48x48/apps
           cp docs/desktop_environment/emelfm2.desktop AppDir/usr/share/applications/
           cp icons/emelfm2_48.png AppDir/usr/share/icons/hicolor/48x48/apps/emelfm2.png || true
+          sed -i 's|^Exec=.*|Exec=emelfm2|g' AppDir/usr/share/applications/emelfm2.desktop
       
       - name: Build AppImage
         run: |
