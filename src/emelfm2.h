@@ -239,9 +239,9 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #endif
 
 //install stock icons only for gtk 3.10+
-#ifdef E2_ADD_STOCKS
-# ifndef USE_GTK3_10
-#  undef E2_ADD_STOCKS
+#ifdef USE_GTK3_10
+# ifndef E2_ADD_STOCKS
+#  define E2_ADD_STOCKS 1
 # endif
 #endif
 

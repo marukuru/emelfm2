@@ -484,20 +484,40 @@ GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
 	if (name == NULL)
 		name = STOCK_NAME_MISSING_IMAGE;	//revert to default icon image
 
+	gint psize;
+	if (isize >= 0 && isize <= GTK_ICON_SIZE_DIALOG)
+		psize = e2_icons_get_pixsize (isize);
+	else
+		psize = isize;
+
 	GArray *allidata = g_hash_table_lookup (cached_icons, name);
+	if (allidata == NULL)
+	{
+		gchar *base = g_strdup (name);
+		gchar *dot = strrchr (base, '.');
+		if (dot) *dot = '\0';
+		
+		allidata = g_hash_table_lookup (cached_icons, base);
+		
+		if (allidata == NULL)
+		{
+			gchar *underscore = strrchr (base, '_');
+			if (underscore && g_ascii_isdigit(*(underscore+1)))
+			{
+				*underscore = '\0';
+				allidata = g_hash_table_lookup (cached_icons, base);
+			}
+		}
+		g_free (base);
+	}
+
 	if (allidata != NULL)
 	{
 		//find 'best' in the cache
-		gint psize;
 		E2_Image *dp;
 		gboolean scale;
 		gshort this, min = 0, max = G_MAXSHORT;
 		gushort indx, iscale = G_MAXUSHORT, inone = G_MAXUSHORT, imin = 0, imax = G_MAXUSHORT, count = allidata->len;
-
-		if (isize >= 0 && isize <= GTK_ICON_SIZE_DIALOG)
-                    psize = e2_icons_get_pixsize (isize);
-		else
-                    psize = isize;
 
 		for (indx=0, dp=(E2_Image*)allidata->data; indx<count; indx++, dp++)
 		{
@@ -574,6 +594,17 @@ GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
 	}
 	else
 	{
+		if (g_path_is_absolute (name))
+		{
+			GdkPixbuf *pxb = gdk_pixbuf_new_from_file_at_scale (name, psize, psize, TRUE, NULL);
+			if (pxb != NULL)
+				return pxb;
+			if (missing)
+				name = STOCK_NAME_MISSING_IMAGE;
+			else
+				return NULL;
+		}
+
 		//not custom, maybe it's a stock
 		const gchar *check = name;
 #ifdef USE_GTK3_10
@@ -596,10 +627,10 @@ GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
 				gchar *iname = stock->name;
 				if (iname == NULL)
 					iname = stock->stock;
-				pxb = gtk_icon_theme_load_icon (thm, iname, isize,
+				pxb = gtk_icon_theme_load_icon (thm, iname, psize,
 					GTK_ICON_LOOKUP_GENERIC_FALLBACK | GTK_ICON_LOOKUP_USE_BUILTIN, NULL);
 # else
-				pxb = gtk_icon_theme_load_icon (thm, name, isize,
+				pxb = gtk_icon_theme_load_icon (thm, name, psize,
 					GTK_ICON_LOOKUP_GENERIC_FALLBACK | GTK_ICON_LOOKUP_USE_BUILTIN, NULL);
 # endif
 #elif defined(USE_GTK3_0)
@@ -1283,7 +1314,14 @@ gchar *e2_icons_get_custom_path (gboolean withtrailer)
 	}
 	else
 	{
-		path = (withtrailer) ? ICON_DIR G_DIR_SEPARATOR_S : ICON_DIR;	//localised
+		if (!g_file_test (ICON_DIR, G_FILE_TEST_IS_DIR) && g_file_test ("icons", G_FILE_TEST_IS_DIR))
+		{
+			path = (withtrailer) ? "icons" G_DIR_SEPARATOR_S : "icons";
+		}
+		else
+		{
+			path = (withtrailer) ? ICON_DIR G_DIR_SEPARATOR_S : ICON_DIR;	//localised
+		}
 		localpath = g_strdup (path);
 	}
 	return localpath;

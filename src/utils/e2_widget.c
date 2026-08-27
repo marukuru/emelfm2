@@ -289,11 +289,22 @@ GtkWidget *e2_widget_get_icon (const gchar *icon, GtkIconSize size)
 GtkWidget *e2_widget_get_arrow (GtkArrowType direction)
 {
 	
-	GtkWidget *arrow;
-	if (cached_arrows[direction] != NULL)
+	GtkWidget *arrow = NULL;
+	if (direction >= 0 && direction <= 3 && cached_arrows[direction] != NULL)
 		arrow = gtk_image_new_from_pixbuf (cached_arrows[direction]);
 	else
-		arrow = gtk_image_new_from_icon_name (STOCK_NAME_MISSING_IMAGE, GTK_ICON_SIZE_MENU);
+	{
+		const gchar *icon_names[] = {
+			"go-up-symbolic",
+			"go-down-symbolic",
+			"go-previous-symbolic",
+			"go-next-symbolic"
+		};
+		if (direction >= 0 && direction <= 3)
+			arrow = gtk_image_new_from_icon_name (icon_names[direction], GTK_ICON_SIZE_MENU);
+		else
+			arrow = gtk_image_new_from_icon_name (STOCK_NAME_MISSING_IMAGE, GTK_ICON_SIZE_MENU);
+	}
 	//TODO set arrow properties
 	//g_object_set (G_OBJECT (arrow),,,, NULL);
 	return arrow;
