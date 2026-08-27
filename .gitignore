@@ -19,3 +19,4 @@ debian/emelfm2.xpm
 *.pot
 src/build.h
 src/build/build.h
+patch-stamp
