@@ -33,8 +33,12 @@ ToDo
 */
 
 #include "emelfm2.h"
-#include <string.h>
 #include "e2_action.h"
+
+GHashTable *toggles_hash;
+_action_labels action_labels;
+
+#include <string.h>
 #include "e2_action_option.h"
 #include "e2_task.h"
 #include "e2_filestore.h"

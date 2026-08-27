@@ -27,6 +27,9 @@ Functions to handle tree options
 #include "emelfm2.h"
 #include <string.h>
 #include "e2_option_tree.h"
+
+GHashTable *tree_view_buffer_hash;
+
 #include "e2_dialog.h"
 #ifdef E2_MOUSECUSTOM
 # include "e2_mousebinding.h"

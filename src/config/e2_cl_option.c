@@ -26,6 +26,9 @@ and that is not supported by GOptionContext (nor is -h for help)
 */
 
 #include "emelfm2.h"
+
+E2_CommandLineOptions e2_cl_options;
+
 #include <getopt.h>
 #include <string.h>
 #include "e2_cl_option.h"

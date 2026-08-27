@@ -178,14 +178,14 @@ typedef	union _E2_OptionSetupExtra
 } E2_OptionSetupExtra;
 
 typedef gchar *_config_labels[44];	//make sure there's enough for all array items
-_config_labels config_labels;
+extern _config_labels config_labels;
 #define _C(d) config_labels[d]
 
-gchar *default_config_file;
+extern gchar *default_config_file;
 
-GPtrArray *options_array;	//for processing options in order they were registered
-GHashTable *options_hash;	//for quick lookups, data shared with options_array
-GHashTable *options_queue;	//for not-yet-registed options
+extern GPtrArray *options_array;	//for processing options in order they were registered
+extern GHashTable *options_hash;	//for quick lookups, data shared with options_array
+extern GHashTable *options_queue;	//for not-yet-registed options
 
 //void e2_option_clean1 (E2_OptionSet *set);
 void e2_option_setup_labels (void);

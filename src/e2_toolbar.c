@@ -41,6 +41,10 @@ ToDo
 */
 
 #include "emelfm2.h"
+#include "e2_toolbar.h"
+
+gchar *toggles_array [E2_TOGGLE_COUNT];
+
 #include <string.h>
 #include <time.h>
 #include "e2_toolbar.h"

@@ -26,8 +26,15 @@ This file contains utilitiy functions for utf8 string handling.
 */
 
 #include "emelfm2.h"
-#include <string.h>
 #include "e2_utf8.h"
+
+gchar *(*e2_display_from_locale) (const gchar *);
+gchar *(*e2_fname_to_locale) (const gchar *);
+gchar *(*e2_fname_from_locale) (const gchar *);
+gchar *(*e2_fname_dupto_locale) (const gchar *);
+gchar *(*e2_fname_dupfrom_locale) (const gchar *);
+
+#include <string.h>
 #include "e2_cl_option.h"
 
 

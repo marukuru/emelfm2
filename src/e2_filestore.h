@@ -44,7 +44,7 @@ typedef struct _E2_Column
 } E2_Column;
 
 //gboolean order;  //sort order flag, TRUE for ascending, FALSE for descending
-E2_Column e2_all_columns[MAX_COLUMNS];
+extern E2_Column e2_all_columns[MAX_COLUMNS];
 
 gboolean e2_filestore_repoll (GtkWidget *widget, GdkEvent *event, gpointer userdata);
 void e2_filestore_stop_refresh_checks (void);

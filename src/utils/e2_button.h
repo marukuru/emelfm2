@@ -86,17 +86,18 @@ typedef enum
 #define E2_RESPONSE_USER6		125
 
 //static button templates, when relevant these are copied locally and amended for use
-E2_Button E2_BUTTON_YES;
-E2_Button E2_BUTTON_NO;
-E2_Button E2_BUTTON_CANCEL;
-E2_Button E2_BUTTON_APPLY;
-E2_Button E2_BUTTON_APPLYTOALL;
-E2_Button E2_BUTTON_REFRESH;
-E2_Button E2_BUTTON_CLOSE;
-E2_Button E2_BUTTON_CREATE;
-E2_Button E2_BUTTON_REMOVE;
-E2_Button E2_BUTTON_DISCARD;
-E2_Button E2_BUTTON_MORE;
+extern E2_Button E2_BUTTON_YES;
+extern E2_Button E2_BUTTON_NO;
+extern E2_Button E2_BUTTON_CANCEL;
+extern E2_Button E2_BUTTON_APPLY;
+extern E2_Button E2_BUTTON_APPLYTOALL;
+extern E2_Button E2_BUTTON_REFRESH;
+extern E2_Button E2_BUTTON_CLOSE;
+extern E2_Button E2_BUTTON_CREATE;
+extern E2_Button E2_BUTTON_REMOVE;
+extern E2_Button E2_BUTTON_DISCARD;
+extern E2_Button E2_BUTTON_MORE;
+
 
 void e2_button_setup_labels (void);
 void e2_button_derive (E2_Button *button, E2_Button *base, E2_ButtonText type);

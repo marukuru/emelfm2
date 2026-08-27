@@ -105,11 +105,11 @@ gchar *e2_utf8_filename_to_locale_backup (const gchar *d);
 //#define F_FREE(d) (*e2_fname_free)(d)
 #define F_FREE e2_utf8_fname_free
 //pointers to functions used to convert (or not) coding of file path/name strings
-gchar *(*e2_display_from_locale) (const gchar *);
-gchar *(*e2_fname_to_locale) (const gchar *);
-gchar *(*e2_fname_from_locale) (const gchar *);
-gchar *(*e2_fname_dupto_locale) (const gchar *);
-gchar *(*e2_fname_dupfrom_locale) (const gchar *);
+extern gchar *(*e2_display_from_locale) (const gchar *);
+extern gchar *(*e2_fname_to_locale) (const gchar *);
+extern gchar *(*e2_fname_from_locale) (const gchar *);
+extern gchar *(*e2_fname_dupto_locale) (const gchar *);
+extern gchar *(*e2_fname_dupfrom_locale) (const gchar *);
 //void (*e2_fname_free) (gpointer);
 //pointers set to these functions when coding conversion is not needed
 gchar *e2_utf8_not_converted (const gchar *);

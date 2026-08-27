@@ -130,7 +130,7 @@ typedef enum
 	E2_TREE_CONTEXT_EXP_COL=1<<2,
 } E2_TreeContextMenuFlags;
 
-GHashTable *tree_view_buffer_hash;
+extern GHashTable *tree_view_buffer_hash;
 
 void e2_option_tree_menu_hash_clean (GList *list);
 void e2_option_tree_menu_set_sensitive (GtkWidget *menu,

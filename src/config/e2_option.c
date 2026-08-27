@@ -32,8 +32,15 @@ ToDo - description of how options work
 
 #include "emelfm2.h"
 #include <string.h>
-#include "e2_fs.h"
 #include "e2_option.h"
+
+_config_labels config_labels;
+gchar *default_config_file;
+GPtrArray *options_array;
+GHashTable *options_hash;
+GHashTable *options_queue;
+
+#include "e2_fs.h"
 #include "e2_option_tree.h"
 #include "e2_action.h"
 #include "e2_task.h"

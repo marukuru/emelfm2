@@ -109,6 +109,17 @@ The following items are covered:
 */
 
 #include "emelfm2.h"
+
+E2_MainData app;
+E2_PaneRuntime *curr_pane;
+E2_PaneRuntime *other_pane;
+ViewInfo *curr_view;
+ViewInfo *other_view;
+E2_OutputTabRuntime *curr_tab;
+pthread_mutex_t list_mutex;
+pthread_mutex_t history_mutex;
+pthread_mutex_t display_mutex;
+
 #include <string.h>
 #include <unistd.h>
 #include <locale.h>

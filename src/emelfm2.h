@@ -831,18 +831,18 @@ typedef struct _E2_MainData
 	GHookList hook_pane_focus_changed;
 } E2_MainData;
 
-E2_MainData app;
-E2_PaneRuntime *curr_pane;
-E2_PaneRuntime *other_pane;
-ViewInfo *curr_view;
-ViewInfo *other_view;
-E2_OutputTabRuntime *curr_tab;	//currently-focused member of tabslist
+extern E2_MainData app;
+extern E2_PaneRuntime *curr_pane;
+extern E2_PaneRuntime *other_pane;
+extern ViewInfo *curr_view;
+extern ViewInfo *other_view;
+extern E2_OutputTabRuntime *curr_tab;	//currently-focused member of tabslist
 
-pthread_mutex_t list_mutex;
+extern pthread_mutex_t list_mutex;
 #define LISTS_LOCK pthread_mutex_lock (&list_mutex);
 #define LISTS_UNLOCK pthread_mutex_unlock (&list_mutex);
 //CHECKME worth having a separate mutex for this ?
-pthread_mutex_t history_mutex;
+extern pthread_mutex_t history_mutex;
 #define HISTORY_LOCK pthread_mutex_lock (&history_mutex);
 #define HISTORY_UNLOCK pthread_mutex_unlock (&history_mutex);
 
@@ -864,7 +864,7 @@ pthread_mutex_t history_mutex;
 
 //local management of gdk mutex, to enable tolerant re-locking by the same thread
 //direct mutex-manipulation
-pthread_mutex_t display_mutex;	//BGL replacement
+extern pthread_mutex_t display_mutex;	//BGL replacement
 //workaround for deprecated/lack-of internal X11 lock in gtk3.6+, use display_mutex
 //# define LOCAL_BGL BUT gtk doesn't understand local locking
 #ifdef DEBUG_MESSAGES

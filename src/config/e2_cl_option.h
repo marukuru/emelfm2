@@ -46,7 +46,7 @@ typedef struct _E2_CommandLineOptions
 	GSList *startup_commands;
 } E2_CommandLineOptions;
 
-E2_CommandLineOptions e2_cl_options; //FIXME cleanup when session ends ?
+extern E2_CommandLineOptions e2_cl_options; //FIXME cleanup when session ends ?
 
 void e2_cl_option_process (gint argc, gchar *argv[]);
 void e2_cl_option_clear (void);

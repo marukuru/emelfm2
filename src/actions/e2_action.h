@@ -139,7 +139,7 @@ struct _E2_ActionRuntime
 //bare button 1 or 3
 #define ACTION_CLICK(a) (a->state==GDK_BUTTON1_MASK || a->state==(GDK_BUTTON1_MASK|GDK_BUTTON2_MASK))
 
-GHashTable *toggles_hash;
+extern GHashTable *toggles_hash;
 #ifdef E2_TREEDIALOG
 //make sure that the array size works for the extra action label(s)
 //_A(109) may be used
@@ -158,7 +158,7 @@ GHashTable *toggles_hash;
 #endif
 #define ALLOCATED_NAMES 130
 typedef gchar *_action_labels[ACTION_LABEL_COUNT];
-_action_labels action_labels;
+extern _action_labels action_labels;
 #define _A(d) action_labels[d]
 
 GtkTreeModel *e2_action_filter_store (gpointer data);

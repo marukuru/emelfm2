@@ -136,7 +136,7 @@ typedef enum
 	E2_TOGGLE_COUNT	//this is the no. of actions, not a 'type'
 } E2_ToggleType;
 
-gchar *toggles_array [E2_TOGGLE_COUNT];
+extern gchar *toggles_array [E2_TOGGLE_COUNT];
 
 void e2_toolbar_rebadge (E2_ToolbarRuntime *rt);
 void e2_toolbar_initialise_space_handler (E2_ToolbarRuntime *rt);
