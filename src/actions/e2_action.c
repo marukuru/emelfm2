@@ -246,6 +246,8 @@ static gboolean _e2_action_visible_cb (GtkTreeModel *model, GtkTreeIter *iter, g
 //	g_free (child);
 	return retval;
 }
+//forward declaration needed by _e2_action_hover_close_menu
+static gboolean _e2_action_main_focusout_cb (GtkWidget *window, GdkEventFocus *event, E2HoverData *data);
 static GtkWidget *selitem = NULL;
 /**
 @brief "button-press-event" signal callback for a hover-menu widget
@@ -315,6 +317,22 @@ static gboolean _e2_action_hover_pointermove_cb (GtkWidget *window,
 	return FALSE;
 }
 /**
+@brief helper to destroy the hover popup
+@param popwin the parent-window-widget of the hover menu
+@param data pointer to data struct for the hover action
+@return
+*/
+static void _e2_action_hover_close_menu (GtkWidget *popwin, E2HoverData *data)
+{
+	//disconnect the application focus-out handler (Bug 1 fix) to avoid it
+	//firing again after the menu is already gone
+	g_signal_handlers_disconnect_by_func (G_OBJECT (app.main_window),
+		_e2_action_main_focusout_cb, data);
+	gtk_widget_destroy (popwin);
+	data->menu = NULL;
+	selitem = NULL;
+}
+/**
 @brief "enter-notify-event" signal callback for a hover-menu parent-window widget
 Kills any hover-timer, and sets up for menu selection
 @param window the parent-window-widget of the hover menu
@@ -332,14 +350,6 @@ static gboolean _e2_action_enter_menu_cb (GtkWidget *window, GdkEventCrossing *e
 		g_source_remove (data->timer_id);
 		data->timer_id = 0;
 	}
-	NEEDCLOSEBGL
-#ifdef USE_GTK2_18
-	if (G_LIKELY(!gtk_widget_has_grab (window)))
-#else
-	if (G_LIKELY(!GTK_WIDGET_HAS_GRAB (window)))
-#endif
-		gtk_grab_add (window); //apply keyboard and mouse focus
-	NEEDOPENBGL
 	g_signal_connect (G_OBJECT (window), "motion-notify-event",
 		G_CALLBACK (_e2_action_hover_pointermove_cb), data);
 
@@ -363,16 +373,38 @@ static gboolean _e2_action_leave_menu_cb (GtkWidget *window, GdkEventCrossing *e
 	}
 	printd (DEBUG, "In _e2_action_leave_menu_cb()");
 	NEEDCLOSEBGL
-#ifdef USE_GTK2_18
-	if (G_LIKELY (gtk_widget_has_grab (window)))
-#else
-	if (G_LIKELY (GTK_WIDGET_HAS_GRAB (window)))
-#endif
-		gtk_grab_remove (window);
-	gtk_widget_destroy (window);
+	_e2_action_hover_close_menu (window, data);
 	NEEDOPENBGL
-	data->menu = NULL;
-	selitem = NULL;
+	return FALSE;
+}
+/**
+@brief "focus-out-event" signal callback on the main application window
+
+Fix for Bug 1: when the user alt+tabs to another application the hover
+popup stays visible because it never receives a leave-notify-event.
+Watching for the main window losing focus lets us close the popup
+immediately and disconnect this one-shot handler.
+
+@param window app.main_window
+@param event focus-event data
+@param data pointer to data struct for the hover action
+
+@return FALSE always so the event is propagated
+*/
+static gboolean _e2_action_main_focusout_cb (GtkWidget *window,
+	GdkEventFocus *event, E2HoverData *data)
+{
+	if (!GTK_IS_WIDGET (data->menu))
+		return FALSE;
+
+	if (gtk_window_is_active (GTK_WINDOW (window)))
+		return FALSE;
+
+	NEEDCLOSEBGL
+	GtkWidget *popwin = gtk_widget_get_toplevel (data->menu);
+	if (GTK_IS_WIDGET (popwin))
+		_e2_action_hover_close_menu (popwin, data);
+	NEEDOPENBGL
 	return FALSE;
 }
 /**
@@ -404,6 +436,9 @@ static gboolean _e2_action_do_hover_timeout (E2HoverData *data)
 				G_CALLBACK (_e2_action_enter_menu_cb), data);
 			g_signal_connect (G_OBJECT (popwin), "leave-notify-event",
 				G_CALLBACK (_e2_action_leave_menu_cb), data);
+			//Bug 1: close popup when the application loses focus (e.g. alt+tab)
+			g_signal_connect (G_OBJECT (app.main_window), "focus-out-event",
+				G_CALLBACK (_e2_action_main_focusout_cb), data);
 #ifdef USE_GTK2_18
 			if (!gtk_widget_get_visible (data->menu))
 #else
@@ -412,11 +447,20 @@ static gboolean _e2_action_do_hover_timeout (E2HoverData *data)
 			{
 #ifdef USE_GTK3_22
 				GdkGravity corner = e2_toolbar_get_button_gravity ((GtkWidget*)data->hovered);
+				GdkEvent *ev = gtk_get_current_event ();
+				if (!ev) {
+					ev = gdk_event_new (GDK_BUTTON_PRESS);
+					ev->button.window = gtk_widget_get_window ((GtkWidget*)data->hovered);
+					if (ev->button.window)
+						g_object_ref (ev->button.window);
+					ev->button.time = gtk_get_current_event_time ();
+					gdk_event_set_device (ev, gdk_seat_get_pointer (gdk_display_get_default_seat (gdk_display_get_default ())));
+				}
 				CLOSEBGL
-//				gtk_widget_show_all (popwin);
 				gtk_menu_popup_at_widget (GTK_MENU (data->menu), (GtkWidget*)data->hovered,
-					corner, GDK_GRAVITY_NORTH_WEST, NULL);
+					corner, GDK_GRAVITY_NORTH_WEST, ev);
 				OPENBGL
+				if (ev) gdk_event_free (ev);
 #else
 				gtk_widget_show (data->menu); //setup size for use when positioning ?
 				gint x, y;
@@ -449,6 +493,7 @@ static gboolean _e2_action_clear_hover_cb (E2HoverData *data)
 		OPENBGL
 	}
 	data->menu = NULL;
+	data->timer_id = 0;
 
 	return FALSE;
 }
@@ -496,6 +541,8 @@ a E2_ACTION_TYPE_HOVER action.
 gboolean e2_action_start_hover_cb (GtkWidget *button, GdkEventCrossing *event, E2HoverData *data)
 {
 //	printd (DEBUG, "in function e2_action_start_hover_cb");
+	if (event->mode != GDK_CROSSING_NORMAL)
+		return FALSE;
 	if (data->timer_id > 0)
 	{
 		//we're re-entering the buttton from a menu
@@ -531,6 +578,8 @@ a E2_ACTION_TYPE_HOVER action, and for a popped-up menu widget.
 gboolean e2_action_end_hover_cb (GtkWidget *widget, GdkEventCrossing *event, E2HoverData *data)
 {
 //	printd (DEBUG, "in function e2_action_end_hover_cb");
+	if (event->mode != GDK_CROSSING_NORMAL)
+		return FALSE;
 	if (data->timer_id > 0)
 	{
 		g_source_remove (data->timer_id);
