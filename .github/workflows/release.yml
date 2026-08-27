@@ -57,6 +57,8 @@ jobs:
             apt-get update
             apt-get install -y dpkg-dev debhelper devscripts build-essential libglib2.0-dev libgtk2.0-dev libmagic-dev libdbus-glib-1-dev imagemagick git lsb-release
             
+            git config --global --add safe.directory /workspace
+            
             CODENAME=\$(lsb_release -cs)
             VERSION_STR=${{ needs.release-info.outputs.version }}
             BUILD_NUM=${{ github.run_number }}
@@ -74,7 +76,7 @@ jobs:
             fi
             mv debian/changelog.new debian/changelog
             
-            export DEB_CFLAGS_APPEND="-Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type"
+            export DEB_CFLAGS_APPEND=\"-Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type\"
             dpkg-buildpackage -us -uc -b
             mkdir -p /workspace/dist
             find / -maxdepth 2 -name 'emelfm2_*.deb' 2>/dev/null | xargs -I{} mv {} /workspace/dist/ || true
