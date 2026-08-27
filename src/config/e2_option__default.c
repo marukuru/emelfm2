@@ -326,6 +326,12 @@ void e2_option_default_register (void)
 	e2_option_color_register ("color-ft-socket", group_name, _("socket"),
 		_("Sockets are listed in this color"), NULL, "purple",
 		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_BUILDLISTS);
+	e2_option_bool_register ("color-ft-reg-set", group_name, _("custom regular file color"),
+		_("If enabled, regular files will be listed in the color below"), NULL, FALSE,
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_BUILDLISTS);
+	e2_option_color_register ("color-ft-reg", group_name, _("regular file"),
+		_("Regular file names are listed in this color"), "color-ft-reg-set", "black",
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_BUILDLISTS);
 
 	group_name = g_strconcat(_C(33),".",_C(2),":",_C(26),NULL); //_("panes.colors:miscellaneous"
 #ifdef E2_ASSISTED

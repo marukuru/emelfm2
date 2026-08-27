@@ -1077,6 +1077,7 @@ GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view)
 	GDKCOLOR *dev_color = e2_option_color_get ("color-ft-dev");
 	GDKCOLOR *sock_color = e2_option_color_get ("color-ft-socket");
 	GDKCOLOR *exec_color = e2_option_color_get ("color-ft-exec");
+	GDKCOLOR *reg_color = e2_option_bool_get ("color-ft-reg-set") ? e2_option_color_get ("color-ft-reg") : NULL;
 
 	//iterate through the listed FileInfo's
 	for (tmp = entries; tmp != NULL; tmp = tmp->next)
@@ -1301,9 +1302,9 @@ GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view)
 						break;
 				}
 				if (foreground == NULL)
-					foreground = default_color;
+					foreground = reg_color ? reg_color : default_color;
 #else
-				foreground = default_color;
+				foreground = reg_color ? reg_color : default_color;
 #endif
 			}
 		    break;
