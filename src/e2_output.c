@@ -813,6 +813,26 @@ series:
 						*ip = -i;
 				}
 			    break;
+			case 90:
+			case 91:
+			case 92:
+			case 93:
+			case 94:
+			case 95:
+			case 96:
+			case 97:
+				_e2_output_update_code (&codes, num-90+8+256);
+			    break;
+			case 100:
+			case 101:
+			case 102:
+			case 103:
+			case 104:
+			case 105:
+			case 106:
+			case 107:
+				_e2_output_update_code (&codes, num-100+8+512);
+			    break;
 			case 38: //xterm extended code : foreground
 			case 48: //background
 				if (*se == '\0') break;
