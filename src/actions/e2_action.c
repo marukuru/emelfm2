@@ -304,13 +304,15 @@ static gboolean _e2_action_hover_pointermove_cb (GtkWidget *window,
 		//show selected item
 #ifdef USE_GTK3_0
 		//without activating the item on gtk3
-		if (selitem != NULL)
+		if (selitem != NULL && GTK_IS_MENU_ITEM (selitem))
 			gtk_menu_item_deselect (GTK_MENU_ITEM(selitem));
-		gtk_menu_item_select (GTK_MENU_ITEM(menuitem));
+		if (menuitem != NULL && GTK_IS_MENU_ITEM (menuitem))
+			gtk_menu_item_select (GTK_MENU_ITEM(menuitem));
 #endif
 		selitem = menuitem;
 #ifndef USE_GTK3_0
-		gtk_menu_shell_select_item (GTK_MENU_SHELL (data->menu), menuitem);
+		if (menuitem != NULL && GTK_IS_MENU_ITEM (menuitem))
+			gtk_menu_shell_select_item (GTK_MENU_SHELL (data->menu), menuitem);
 #endif
 	}
 	NEEDOPENBGL
@@ -482,6 +484,7 @@ static gboolean _e2_action_do_hover_timeout (E2HoverData *data)
 */
 static gboolean _e2_action_clear_hover_cb (E2HoverData *data)
 {
+	data->timer_id = 0;
 	if (GTK_IS_WIDGET (data->menu))
 	{
 		CLOSEBGL
@@ -490,7 +493,6 @@ static gboolean _e2_action_clear_hover_cb (E2HoverData *data)
 		OPENBGL
 	}
 	data->menu = NULL;
-	data->timer_id = 0;
 
 	return FALSE;
 }

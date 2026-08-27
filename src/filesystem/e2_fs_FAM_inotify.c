@@ -866,17 +866,17 @@ static void _e2_fs_FAM_inotify_abandon (void)
 	if (target0_timerid != 0)
 	{
 		g_source_remove (target0_timerid);
-//		target0_timerid = 0;
+		target0_timerid = 0;
 	}
 	if (target1_timerid != 0)
 	{
 		g_source_remove (target1_timerid);
-//		target1_timerid = 0;
+		target1_timerid = 0;
 	}
 	if (target2_timerid != 0)
 	{
 		g_source_remove (target2_timerid);
-//		target2_timerid = 0;
+		target2_timerid = 0;
 	}
 
 	//cancel all monitoring that's in force
