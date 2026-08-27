@@ -30,15 +30,15 @@ msgstr ""
 "X-Poedit-SearchPath-8: src/utils\n"
 "X-Poedit-SearchPath-9: src/command/complete\n"
 
-#: e2_about_dialog.c:139 e2_action.c:1158 e2_alias.c:329 e2_command.c:3345
+#: e2_about_dialog.c:138 e2_action.c:1162 e2_alias.c:329 e2_command.c:3345
 msgid "help"
 msgstr "帮助"
 
-#: e2_about_dialog.c:155 e2_action.c:1130
+#: e2_about_dialog.c:154 e2_action.c:1134
 msgid "about"
 msgstr "关于"
 
-#: e2_about_dialog.c:162
+#: e2_about_dialog.c:161
 #, c-format
 msgid ""
 "<b>An \"orthodox\" file manager for GTK2+</b>\n"
@@ -61,7 +61,7 @@ msgstr ""
 "编译环境 %s\n"
 "使用 %s 于 GTK+%d.%d.%d"
 
-#: e2_about_dialog.c:175
+#: e2_about_dialog.c:174
 #, c-format
 msgid ""
 "The file\n"
@@ -72,11 +72,11 @@ msgstr ""
 "<b>%s</b>\n"
 "中有详细的信息."
 
-#: e2_about_dialog.c:178
+#: e2_about_dialog.c:177
 msgid "contributors"
 msgstr "贡献者"
 
-#: e2_about_dialog.c:183
+#: e2_about_dialog.c:182
 msgid ""
 "This program is based on emelFM, developed by Michael Clark.\n"
 "\n"
@@ -86,537 +86,537 @@ msgstr ""
 "\n"
 "很多朋友作出了贡献."
 
-#: e2_about_dialog.c:192
+#: e2_about_dialog.c:191
 msgid "usage"
 msgstr "参数"
 
-#: e2_about_dialog.c:200 e2_option.c:1289 e2_output.c:2856
+#: e2_about_dialog.c:199 e2_option.c:1296 e2_output.c:2876
 msgid "commands"
 msgstr "命令"
 
-#: e2_about_dialog.c:207 e2_option_tree.c:1517
+#: e2_about_dialog.c:206 e2_option_tree.c:1520
 msgid "actions"
 msgstr "动作"
 
-#: e2_about_dialog.c:217 e2_filetype_dialog.c:1202
+#: e2_about_dialog.c:216 e2_filetype_dialog.c:1202
 msgid "Read the file"
 msgstr "读取文件"
 
-#: e2_about_dialog.c:217 e2_context_menu.c:423 e2_filetype_dialog.c:1201
+#: e2_about_dialog.c:216 e2_context_menu.c:423 e2_filetype_dialog.c:1201
 #: e2p_view.c:84
 msgid "_View"
 msgstr "查看(_V)"
 
-#: e2_action.c:1100
+#: e2_action.c:1104
 msgid "bookmark"
 msgstr ""
 
-#: e2_action.c:1101
+#: e2_action.c:1105
 msgid "command"
 msgstr ""
 
-#: e2_action.c:1102 e2_bookmark.c:385 e2_option_tree.c:1524
+#: e2_action.c:1106 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "children"
 msgstr ""
 
-#: e2_action.c:1103
+#: e2_action.c:1107
 msgid "configure"
 msgstr ""
 
-#: e2_action.c:1104 e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_action.c:1108 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "dialog"
 msgstr ""
 
-#: e2_action.c:1105
+#: e2_action.c:1109
 msgid "dirline"
 msgstr ""
 
-#: e2_action.c:1106 e2p_du.c:273
+#: e2_action.c:1110 e2p_du.c:273
 msgid "file"
 msgstr ""
 
-#: e2_action.c:1107
+#: e2_action.c:1111
 msgid "filelist"
 msgstr ""
 
-#: e2_action.c:1108 e2_option.c:1301
+#: e2_action.c:1112 e2_option.c:1308
 msgid "history"
 msgstr ""
 
-#: e2_action.c:1109
+#: e2_action.c:1113
 msgid "option"
 msgstr ""
 
-#: e2_action.c:1110 e2_option.c:1311
+#: e2_action.c:1114 e2_option.c:1318
 msgid "output"
 msgstr "输出"
 
-#: e2_action.c:1111
+#: e2_action.c:1115
 msgid "pane1"
 msgstr ""
 
-#: e2_action.c:1112
+#: e2_action.c:1116
 msgid "pane2"
 msgstr ""
 
-#: e2_action.c:1113
+#: e2_action.c:1117
 msgid "pane"
 msgstr ""
 
-#: e2_action.c:1114 e2_option.c:1316
+#: e2_action.c:1118 e2_option.c:1323
 msgid "panes"
 msgstr "面板"
 
-#: e2_action.c:1115
+#: e2_action.c:1119
 msgid "pending"
 msgstr ""
 
-#: e2_action.c:1116 e2_config_dialog.c:1156
+#: e2_action.c:1120 e2_config_dialog.c:1156
 msgid "plugin"
 msgstr ""
 
-#: e2_action.c:1117
+#: e2_action.c:1121
 msgid "toggle"
 msgstr ""
 
-#: e2_action.c:1118 e2_bookmark.c:716
+#: e2_action.c:1122 e2_bookmark.c:716
 msgid "trash"
 msgstr ""
 
-#: e2_action.c:1119
+#: e2_action.c:1123
 msgid "separator"
 msgstr ""
 
-#: e2_action.c:1120
+#: e2_action.c:1124
 msgid "<custom command>"
 msgstr ""
 
-#: e2_action.c:1121
+#: e2_action.c:1125
 msgid "<separator>"
 msgstr ""
 
-#: e2_action.c:1122
+#: e2_action.c:1126
 msgid "<submenu>"
 msgstr ""
 
-#: e2_action.c:1124
+#: e2_action.c:1128
 msgid "<actions>"
 msgstr ""
 
-#: e2_action.c:1125
+#: e2_action.c:1129
 msgid "<bookmarks>"
 msgstr ""
 
-#: e2_action.c:1126
+#: e2_action.c:1130
 msgid "<filters>"
 msgstr ""
 
-#: e2_action.c:1127
+#: e2_action.c:1131
 msgid "<handlers>"
 msgstr ""
 
-#: e2_action.c:1128
+#: e2_action.c:1132
 msgid "<line>"
 msgstr ""
 
-#: e2_action.c:1129
+#: e2_action.c:1133
 msgid "<menu>"
 msgstr ""
 
-#: e2_action.c:1131
+#: e2_action.c:1135
 msgid "activate"
 msgstr ""
 
-#: e2_action.c:1132
+#: e2_action.c:1136
 msgid "add"
 msgstr ""
 
-#: e2_action.c:1133
+#: e2_action.c:1137
 msgid "add_history"
 msgstr ""
 
-#: e2_action.c:1134
+#: e2_action.c:1138
 msgid "adjust_ratio"
 msgstr ""
 
-#: e2_action.c:1135
+#: e2_action.c:1139
 msgid "application"
 msgstr ""
 
-#: e2_action.c:1136 e2_config_dialog.c:2151 e2_config_dialog.c:2188
+#: e2_action.c:1140 e2_config_dialog.c:2149 e2_config_dialog.c:2186
 msgid "change"
 msgstr ""
 
-#: e2_action.c:1137 e2_alias.c:327
+#: e2_action.c:1141 e2_alias.c:327
 msgid "clear"
 msgstr ""
 
-#: e2_action.c:1138
+#: e2_action.c:1142
 msgid "clear_history"
 msgstr ""
 
-#: e2_action.c:1139
+#: e2_action.c:1143
 msgid "complete"
 msgstr ""
 
-#: e2_action.c:1140 e2_task.c:2068
+#: e2_action.c:1144 e2_task.c:2068
 msgid "copy"
 msgstr ""
 
-#: e2_action.c:1141
+#: e2_action.c:1145
 msgid "copy_as"
 msgstr ""
 
-#: e2_action.c:1142
+#: e2_action.c:1146
 msgid "copy_merge"
 msgstr ""
 
-#: e2_action.c:1143
+#: e2_action.c:1147
 msgid "copy_with_time"
 msgstr ""
 
-#: e2_action.c:1144
+#: e2_action.c:1148
 msgid "default"
 msgstr ""
 
-#: e2_action.c:1145
+#: e2_action.c:1149
 msgid "del_history"
 msgstr ""
 
-#: e2_action.c:1146
+#: e2_action.c:1150
 msgid "delete"
 msgstr ""
 
-#: e2_action.c:1147
+#: e2_action.c:1151
 msgid "edit"
 msgstr ""
 
-#: e2_action.c:1148
+#: e2_action.c:1152
 msgid "edit_again"
 msgstr ""
 
-#: e2_action.c:1149
+#: e2_action.c:1153
 msgid "filetype"
 msgstr ""
 
-#: e2_action.c:1150 e2_task.c:4418 e2p_find.c:4200
+#: e2_action.c:1154 e2_task.c:4418 e2p_find.c:4200
 msgid "find"
 msgstr ""
 
-#: e2_action.c:1151
+#: e2_action.c:1155
 msgid "focus"
 msgstr ""
 
-#: e2_action.c:1152
+#: e2_action.c:1156
 msgid "fullscreen"
 msgstr ""
 
-#: e2_action.c:1153
+#: e2_action.c:1157
 msgid "go_back"
 msgstr ""
 
-#: e2_action.c:1154
+#: e2_action.c:1158
 msgid "go_forward"
 msgstr ""
 
-#: e2_action.c:1155
+#: e2_action.c:1159
 msgid "go_up"
 msgstr ""
 
-#: e2_action.c:1156
+#: e2_action.c:1160
 msgid "goto_bottom"
 msgstr ""
 
-#: e2_action.c:1157
+#: e2_action.c:1161
 msgid "goto_top"
 msgstr ""
 
-#: e2_action.c:1159 e2_mkdir_dialog.c:1063
+#: e2_action.c:1163 e2_mkdir_dialog.c:1062
 msgid "info"
 msgstr ""
 
-#: e2_action.c:1160
+#: e2_action.c:1164
 msgid "insert_selection"
 msgstr ""
 
-#: e2_action.c:1161
+#: e2_action.c:1165
 msgid "invert_selection"
 msgstr ""
 
-#: e2_action.c:1162
+#: e2_action.c:1166
 msgid "list"
 msgstr ""
 
-#: e2_action.c:1163
+#: e2_action.c:1167
 msgid "mirror"
 msgstr ""
 
-#: e2_action.c:1164
+#: e2_action.c:1168
 msgid "mkdir"
 msgstr ""
 
-#: e2_action.c:1165
+#: e2_action.c:1169
 msgid "mountpoints"
 msgstr ""
 
-#: e2_action.c:1166 e2_task.c:2611
+#: e2_action.c:1170 e2_task.c:2611
 msgid "move"
 msgstr ""
 
-#: e2_action.c:1167
+#: e2_action.c:1171
 msgid "move_as"
 msgstr ""
 
-#: e2_action.c:1168 e2_select_dir_dialog.c:41
+#: e2_action.c:1172 e2_select_dir_dialog.c:41
 msgid "open"
 msgstr ""
 
-#: e2_action.c:1169
+#: e2_action.c:1173
 msgid "open_in_other"
 msgstr ""
 
-#: e2_action.c:1170
+#: e2_action.c:1174
 msgid "open_with"
 msgstr ""
 
-#: e2_action.c:1171 e2p_find.c:3663
+#: e2_action.c:1175 e2p_find.c:3663
 msgid "owners"
 msgstr ""
 
-#: e2_action.c:1172
+#: e2_action.c:1176
 msgid "page_down"
 msgstr ""
 
-#: e2_action.c:1173
+#: e2_action.c:1177
 msgid "page_up"
 msgstr ""
 
-#: e2_action.c:1174 e2_permissions_dialog.c:314
+#: e2_action.c:1178 e2_permissions_dialog.c:314
 msgid "permissions"
 msgstr ""
 
-#: e2_action.c:1175
+#: e2_action.c:1179
 msgid "print"
 msgstr ""
 
-#: e2_action.c:1176 e2_alias.c:328
+#: e2_action.c:1180 e2_alias.c:328
 msgid "quit"
 msgstr ""
 
-#: e2_action.c:1177
+#: e2_action.c:1181
 msgid "refresh"
 msgstr ""
 
-#: e2_action.c:1178
+#: e2_action.c:1182
 msgid "refreshresume"
 msgstr ""
 
-#: e2_action.c:1179
+#: e2_action.c:1183
 msgid "refreshsuspend"
 msgstr ""
 
-#: e2_action.c:1180 e2_task.c:3256
+#: e2_action.c:1184 e2_task.c:3256
 msgid "rename"
 msgstr ""
 
-#: e2_action.c:1181
+#: e2_action.c:1185
 msgid "scroll_down"
 msgstr ""
 
-#: e2_action.c:1182
+#: e2_action.c:1186
 msgid "scroll_up"
 msgstr ""
 
-#: e2_action.c:1183 e2_option.c:1322
+#: e2_action.c:1187 e2_option.c:1329
 msgid "search"
 msgstr ""
 
-#: e2_action.c:1184
+#: e2_action.c:1188
 msgid "select_type"
 msgstr ""
 
-#: e2_action.c:1185
+#: e2_action.c:1189
 msgid "send"
 msgstr ""
 
-#: e2_action.c:1186
+#: e2_action.c:1190
 msgid "set"
 msgstr ""
 
-#: e2_action.c:1187
+#: e2_action.c:1191
 msgid "show"
 msgstr ""
 
-#: e2_action.c:1188
+#: e2_action.c:1192
 msgid "show_hidden"
 msgstr ""
 
-#: e2_action.c:1189
+#: e2_action.c:1193
 msgid "show_menu"
 msgstr ""
 
-#: e2_action.c:1190
+#: e2_action.c:1194
 msgid "sortaccesssed"
 msgstr ""
 
-#: e2_action.c:1191
+#: e2_action.c:1195
 msgid "sortchanged"
 msgstr ""
 
-#: e2_action.c:1192
+#: e2_action.c:1196
 msgid "sortext"
 msgstr ""
 
-#: e2_action.c:1193
+#: e2_action.c:1197
 msgid "sortgroup"
 msgstr ""
 
-#: e2_action.c:1194
+#: e2_action.c:1198
 msgid "sortmodified"
 msgstr ""
 
-#: e2_action.c:1195
+#: e2_action.c:1199
 msgid "sortname"
 msgstr ""
 
-#: e2_action.c:1196
+#: e2_action.c:1200
 msgid "sortpermission"
 msgstr ""
 
-#: e2_action.c:1197
+#: e2_action.c:1201
 msgid "sortsize"
 msgstr ""
 
-#: e2_action.c:1198
+#: e2_action.c:1202
 msgid "sortuser"
 msgstr ""
 
-#: e2_action.c:1199
+#: e2_action.c:1203
 msgid "switch"
 msgstr ""
 
-#: e2_action.c:1200
+#: e2_action.c:1204
 msgid "symlink"
 msgstr ""
 
-#: e2_action.c:1201
+#: e2_action.c:1205
 msgid "symlink_as"
 msgstr ""
 
-#: e2_action.c:1202
+#: e2_action.c:1206
 msgid "sync"
 msgstr ""
 
-#: e2_action.c:1203
+#: e2_action.c:1207
 msgid "toggle_direction"
 msgstr ""
 
-#: e2_action.c:1204
+#: e2_action.c:1208
 msgid "toggle_focus"
 msgstr ""
 
-#: e2_action.c:1205
+#: e2_action.c:1209
 msgid "toggle_select_all"
 msgstr ""
 
-#: e2_action.c:1206
+#: e2_action.c:1210
 msgid "toggle_selected"
 msgstr ""
 
-#: e2_action.c:1208
+#: e2_action.c:1212
 msgid "tree"
 msgstr ""
 
-#: e2_action.c:1210
+#: e2_action.c:1214
 msgid "unpack"
 msgstr ""
 
-#: e2_action.c:1212
+#: e2_action.c:1216
 msgid "untrash"
 msgstr ""
 
-#: e2_action.c:1214 e2_option.c:1327
+#: e2_action.c:1218 e2_option.c:1334
 msgid "view"
 msgstr ""
 
-#: e2_action.c:1215
+#: e2_action.c:1219
 msgid "view_again"
 msgstr ""
 
-#: e2_action.c:1216
+#: e2_action.c:1220
 msgid "view_at"
 msgstr ""
 
-#: e2_action.c:1218 e2_bookmark.c:385 e2_option_tree.c:1524
+#: e2_action.c:1222 e2_bookmark.c:385 e2_option_tree.c:1527
 msgid "child"
 msgstr ""
 
-#: e2_action.c:1219 e2_pane.c:1284 e2_pane.c:1436 e2_pane.c:1832
-#: e2_task.c:2180 e2p_clipnames.c:52
+#: e2_action.c:1223 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr ""
 
-#: e2_action.c:1220
+#: e2_action.c:1224
 msgid "dirs"
 msgstr ""
 
-#: e2_action.c:1221
+#: e2_action.c:1225
 msgid "escape"
 msgstr ""
 
-#: e2_action.c:1222
+#: e2_action.c:1226
 msgid "expand"
 msgstr ""
 
-#: e2_action.c:1223 e2p_du.c:273
+#: e2_action.c:1227 e2p_du.c:273
 msgid "files"
 msgstr ""
 
-#: e2_action.c:1224
+#: e2_action.c:1228
 msgid "off"
 msgstr ""
 
-#: e2_action.c:1225
+#: e2_action.c:1229
 msgid "on"
 msgstr ""
 
-#: e2_action.c:1226
+#: e2_action.c:1230
 msgid "quote"
 msgstr ""
 
-#: e2_action.c:1227 e2p_clipnames.c:49
+#: e2_action.c:1231 e2p_clipnames.c:49
 msgid "shift"
 msgstr ""
 
-#: e2_action.c:1228
+#: e2_action.c:1232
 msgid "top"
 msgstr ""
 
-#: e2_action.c:1232
+#: e2_action.c:1236
 msgid "<spacemenu>"
 msgstr ""
 
-#: e2_action.c:1233
+#: e2_action.c:1237
 msgid "dummy"
 msgstr ""
 
-#: e2_action.c:1234
+#: e2_action.c:1238
 msgid "namespace"
 msgstr ""
 
-#: e2_action.c:1235
+#: e2_action.c:1239
 msgid "unpack_in_other"
 msgstr ""
 
-#: e2_action.c:1238
+#: e2_action.c:1242
 msgid "key"
 msgstr ""
 
-#: e2_action.c:1241
+#: e2_action.c:1245
 msgid "fake"
 msgstr ""
 
-#: e2_action.c:1244 e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_action.c:1248 e2_option__default.c:381 e2_toolbar.c:3377
 msgid "button"
 msgstr ""
 
@@ -624,7 +624,7 @@ msgstr ""
 msgid "x"
 msgstr ""
 
-#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3496 e2p_upgrade.c:173
+#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3500 e2p_upgrade.c:173
 msgid "Done. Press enter "
 msgstr "完成. 按 enter "
 
@@ -632,11 +632,11 @@ msgstr "完成. 按 enter "
 msgid "xx"
 msgstr ""
 
-#: e2_alias.c:330 e2_output.c:2861
+#: e2_alias.c:330 e2_output.c:2881
 msgid "keys"
 msgstr ""
 
-#: e2_alias.c:332 e2_output.c:2867
+#: e2_alias.c:332 e2_output.c:2887
 msgid "buttons"
 msgstr "按钮"
 
@@ -670,8 +670,8 @@ msgstr "并且"
 
 #: e2_bookmark.c:385 e2_bookmark.c:387 e2_dialog.c:1470 e2_dialog.c:1600
 #: e2_dialog.c:1606 e2_dialog.c:1677 e2_dialog.c:1718 e2_edit_dialog.c:781
-#: e2_edit_dialog.c:1010 e2_main.c:947 e2_option_tree.c:1517
-#: e2_option_tree.c:1524 e2p_crypt.c:852 e2p_rename.c:1100
+#: e2_edit_dialog.c:1010 e2_main.c:961 e2_option_tree.c:1520
+#: e2_option_tree.c:1527 e2p_crypt.c:852 e2p_rename.c:1100
 msgid "confirm"
 msgstr "确认"
 
@@ -691,8 +691,8 @@ msgstr "新增到后面(_A)"
 msgid "Bookmark the current directory after the selected item"
 msgstr "在选择项的后面加入当前文件夹"
 
-#: e2_bookmark.c:501 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:851
-#: e2_icons.c:1104 e2p_unpack.c:777
+#: e2_bookmark.c:501 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:882
+#: e2_icons.c:1135 e2p_unpack.c:777
 msgid "_Delete"
 msgstr "删除(_D)"
 
@@ -741,21 +741,21 @@ msgid "default trash directory"
 msgstr "缺省的回收站文件夹"
 
 #: e2_bookmark.c:734 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
-#: e2_toolbar.c:3450 e2_toolbar.c:3522 e2_toolbar.c:3688
+#: e2_toolbar.c:3454 e2_toolbar.c:3526 e2_toolbar.c:3692
 msgid "Label"
 msgstr "标签"
 
 #: e2_bookmark.c:736 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
-#: e2_toolbar.c:3452 e2_toolbar.c:3524 e2_toolbar.c:3690
+#: e2_toolbar.c:3456 e2_toolbar.c:3528 e2_toolbar.c:3694
 msgid "Icon"
 msgstr "图标"
 
-#: e2_bookmark.c:738 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3454
-#: e2_toolbar.c:3526 e2_toolbar.c:3692
+#: e2_bookmark.c:738 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3458
+#: e2_toolbar.c:3530 e2_toolbar.c:3696
 msgid "Tooltip"
 msgstr "提示"
 
-#: e2_bookmark.c:740 e2_vfs_dialog.c:1418
+#: e2_bookmark.c:740
 msgid "Path"
 msgstr "路径"
 
@@ -797,7 +797,7 @@ msgid ""
 "'children'"
 msgstr "如果要删除书签含有子项, 要求确认"
 
-#: e2_button.c:30 e2_button.c:59 e2_icons.c:841 e2_icons.c:1094
+#: e2_button.c:30 e2_button.c:59 e2_icons.c:872 e2_icons.c:1125
 #: e2p_upgrade.c:121
 msgid "_Cancel"
 msgstr "取消(_C)"
@@ -810,7 +810,7 @@ msgstr "确定(_T)"
 msgid "Change all unprocessed items"
 msgstr "改变所有未处理过的文件"
 
-#: e2_button.c:34 e2_icons.c:925 e2_icons.c:1178
+#: e2_button.c:34 e2_icons.c:956 e2_icons.c:1209
 msgid "_All"
 msgstr "全部(_A)"
 
@@ -818,29 +818,29 @@ msgstr "全部(_A)"
 msgid "Abandon any changes"
 msgstr "放弃全部变更"
 
-#: e2_button.c:37 e2_icons.c:858 e2_icons.c:1111
+#: e2_button.c:37 e2_icons.c:889 e2_icons.c:1142
 msgid "_Discard"
 msgstr "放弃(_D)"
 
-#: e2_button.c:40 e2_icons.c:920 e2_icons.c:1173 e2_tree_dialog.c:1206
+#: e2_button.c:40 e2_icons.c:951 e2_icons.c:1204 e2_tree_dialog.c:1206
 #: e2p_thumbnail.c:1243
 msgid "_Refresh"
 msgstr "刷新(_R)"
 
-#: e2_button.c:42 e2_icons.c:845 e2_icons.c:1098
+#: e2_button.c:42 e2_icons.c:876 e2_icons.c:1129
 msgid "_Close"
 msgstr "关闭(_C)"
 
-#: e2_button.c:44 e2_mkdir_dialog.c:1156
+#: e2_button.c:44 e2_mkdir_dialog.c:1155
 msgid "C_reate"
 msgstr "新建(_R)"
 
-#: e2_button.c:46 e2_icons.c:921 e2_icons.c:1174 e2_option_tree.c:1907
+#: e2_button.c:46 e2_icons.c:952 e2_icons.c:1205 e2_option_tree.c:1910
 #: e2_permissions_dialog.c:474
 msgid "_Remove"
 msgstr "移除(_R)"
 
-#: e2_button.c:48 e2_icons.c:839 e2_icons.c:1092 e2p_config.c:1235
+#: e2_button.c:48 e2_icons.c:870 e2_icons.c:1123 e2p_config.c:1235
 #: e2p_config.c:1379 e2p_upgrade.c:112
 msgid "_Apply"
 msgstr "应用(_A)"
@@ -885,100 +885,100 @@ msgstr ""
 msgid "Cannot write cache file %s - %s"
 msgstr "无法写入缓冲文件 %s - %s"
 
-#: e2_cl_option.c:79
+#: e2_cl_option.c:82
 #, c-format
 msgid "Usage: %s [option ...]"
 msgstr "参数: %s [选项 ...]"
 
-#: e2_cl_option.c:82
+#: e2_cl_option.c:85
 msgid "Options:"
 msgstr "选项:"
 
-#: e2_cl_option.c:83
+#: e2_cl_option.c:86
 msgid "set 1st pane's start directory to DIR"
 msgstr "设置第一个面板启动文件夹"
 
-#: e2_cl_option.c:84
+#: e2_cl_option.c:87
 msgid "set 2nd pane's start directory to DIR"
 msgstr "设置第二个面板启动文件夹"
 
-#: e2_cl_option.c:85
+#: e2_cl_option.c:88
 msgid "also load (but not save) config data in DIR"
 msgstr ""
 
-#: e2_cl_option.c:86
+#: e2_cl_option.c:89
 msgid "display build-time parameters"
 msgstr "显示编译参数"
 
-#: e2_cl_option.c:87
+#: e2_cl_option.c:90
 msgid "set config directory to DIR (default: ~/.config/emelfm2)"
 msgstr "配置所在的文件夹(缺省: ~/.config/emelfm2)"
 
-#: e2_cl_option.c:89
+#: e2_cl_option.c:92
 msgid "set debug level from 1 (low) to 5 (high)"
 msgstr "设置调试级别(1 低 -- 5 高)"
 
-#: e2_cl_option.c:91
+#: e2_cl_option.c:94
 msgid "set filesystem character encoding to ENC"
 msgstr "设置文件系统编码类型"
 
-#: e2_cl_option.c:92
+#: e2_cl_option.c:95
 msgid "set fallback encoding to ENC (default: ISO-8859-1)"
 msgstr "设置 Fallback 编码 (default: ISO-8859-1)"
 
-#: e2_cl_option.c:93
+#: e2_cl_option.c:96
 msgid "set config-file language to LANG (default: from environment variable)"
 msgstr ""
 
-#: e2_cl_option.c:94
+#: e2_cl_option.c:97
 msgid "show this help message"
 msgstr "显示帮助信息"
 
-#: e2_cl_option.c:95
+#: e2_cl_option.c:98
 msgid "ignore encoding/locale problems (at your own risk!)"
 msgstr "忽略编码/区域问题(风险自担)"
 
-#: e2_cl_option.c:96
+#: e2_cl_option.c:99
 msgid "maximise scope of error logging"
 msgstr "最大范围地记录错误日志"
 
-#: e2_cl_option.c:97
+#: e2_cl_option.c:100
 msgid "run program as daemon"
 msgstr "以 Daemon 方式运行程序"
 
-#: e2_cl_option.c:98
+#: e2_cl_option.c:101
 msgid "run program with default settings"
 msgstr "用缺省设置运行程序"
 
-#: e2_cl_option.c:99
+#: e2_cl_option.c:102
 msgid "run command CMD at session start"
 msgstr "启动时执行 CMD 命令"
 
-#: e2_cl_option.c:100
+#: e2_cl_option.c:103
 msgid "set one-line gui option using config-file formatted OPT"
 msgstr "使用配置文件格式设置单行 GUI 选项"
 
-#: e2_cl_option.c:101
+#: e2_cl_option.c:104
 msgid "set trash directory to DIR (default: ~/.local/share/Trash/files)"
 msgstr "设置垃圾文件回收目录 (缺省: ~/.local/share/Trash/files)"
 
-#: e2_cl_option.c:102
+#: e2_cl_option.c:105
 msgid "highlight the displayed session user"
 msgstr "高亮显示 Session User"
 
-#: e2_cl_option.c:103
+#: e2_cl_option.c:106
 msgid "display version and build info"
 msgstr "显示版本和编译信息"
 
-#: e2_cl_option.c:105
+#: e2_cl_option.c:108
 msgid "display time/location info in debug messages"
 msgstr "在调试信息中显示时间和区域信息"
 
-#: e2_cl_option.c:107
+#: e2_cl_option.c:110
 msgid "same as -2 DIR, except pane 2 is focused"
 msgstr "与 -2 文件夹相同, 除非面板2已经被激活"
 
-#: e2_cl_option.c:124
+#: e2_cl_option.c:127
 #, c-format
 msgid ""
 "%s v. %s\n"
@@ -993,11 +993,11 @@ msgstr ""
 "构建日期: %s\n"
 "构建平台: GTK+ %d.%d.%d %s\n"
 
-#: e2_cl_option.c:141
+#: e2_cl_option.c:144
 msgid "build parameters"
 msgstr "编译参数"
 
-#: e2_cl_option.c:377
+#: e2_cl_option.c:380
 #, c-format
 msgid ""
 "Startup options must begin with \"-\" or \"--\", or be a valid file-system "
@@ -1263,127 +1263,127 @@ msgid ""
 msgstr ""
 "用基于根的完整路径代替链接中类似包含 '../../<文件夹>/<文件>' 的相对路径"
 
-#: e2_command_line.c:1040
+#: e2_command_line.c:1024
 msgid "all"
 msgstr "全部"
 
-#: e2_command_line.c:1048
+#: e2_command_line.c:1032
 msgid "mounts"
 msgstr "装载"
 
-#: e2_command_line.c:1061
+#: e2_command_line.c:1045
 msgid "shell"
 msgstr ""
 
-#: e2_command_line.c:1159
+#: e2_command_line.c:1143
 #, c-format
 msgid "Warning - process %s is not active"
 msgstr "警告 - 进程 %s 未激活"
 
-#: e2_command_line.c:1556
+#: e2_command_line.c:1540
 msgid "show last"
 msgstr "显示最后一次的命令"
 
-#: e2_command_line.c:1557
+#: e2_command_line.c:1541
 msgid ""
 "If activated, the last-entered command will be displayed, instead of an "
 "empty line"
 msgstr "显示最后一次输入的命令, 代替原来的空行"
 
-#: e2_command_line.c:1562
+#: e2_command_line.c:1546
 msgid "maximum number of history entries"
 msgstr "保存命令记录的条数"
 
-#: e2_command_line.c:1563
+#: e2_command_line.c:1547
 msgid ""
 "This is the largest number of command-line history entries that will be "
 "recorded. Set to 0 for no limit"
 msgstr "这是保存命令行记录条数的最大值. 0, 无限制."
 
-#: e2_command_line.c:1566
+#: e2_command_line.c:1550
 msgid "double entries"
 msgstr "记录多次"
 
-#: e2_command_line.c:1567
+#: e2_command_line.c:1551
 msgid "This allows entries to be recorded more than once in the history list"
 msgstr "允许历史记录中有重复的记录"
 
-#: e2_command_line.c:1570 e2_command_line.c:1623
+#: e2_command_line.c:1554 e2_command_line.c:1607
 msgid "cyclic list"
 msgstr "循环列表"
 
-#: e2_command_line.c:1571
+#: e2_command_line.c:1555
 msgid ""
 "When scanning the history list, cycle from either end around to the other "
 "end, instead of stopping"
 msgstr "扫描历史记录时, 到达文件尾部自动从头开始, 而不是停止"
 
-#: e2_command_line.c:1575 e2_command_line.c:1628
+#: e2_command_line.c:1559 e2_command_line.c:1612
 msgid "show as a menu"
 msgstr "显示为菜单"
 
-#: e2_command_line.c:1576
+#: e2_command_line.c:1560
 msgid ""
-"If activated, the history entries will be presented as a menu. For most Gtk"
-"+2 themes, this will not be as attractive as the list view"
+"If activated, the history entries will be presented as a menu. For most "
+"Gtk+2 themes, this will not be as attractive as the list view"
 msgstr ""
 "历史命令将被显示为菜单. 在大多数 Gtk+2 主题中, 这并不比列表框更有吸引力"
 
-#: e2_command_line.c:1583
+#: e2_command_line.c:1567
 msgid "append space after unique items"
 msgstr "在文件名后添加空格"
 
-#: e2_command_line.c:1584
+#: e2_command_line.c:1568
 msgid ""
 "This appends a 'space' character to the end of a unique successful match of "
 "a file"
 msgstr "如果唯一匹配的文件, 在文件名后添加空格"
 
-#: e2_command_line.c:1591
+#: e2_command_line.c:1575
 msgid "show last entry"
 msgstr "显示最后一次的命令"
 
-#: e2_command_line.c:1592
+#: e2_command_line.c:1576
 msgid ""
 "If activated, the last-entered directory will be displayed, instead of an "
 "empty line"
 msgstr "显示最后的文件夹, 代替原来的空行"
 
-#: e2_command_line.c:1596
+#: e2_command_line.c:1580
 msgid "show pathname as a tooltip"
 msgstr "在提示信息中显示路径名"
 
-#: e2_command_line.c:1597
+#: e2_command_line.c:1581
 msgid ""
 "If activated, the full directory pathname will display as a tooltip. This is "
 "useful when the path is too long for the normal display"
 msgstr "完整的路径名将被显示在提示中. 路径名可能太长, 不适合常规显示"
 
-#: e2_command_line.c:1602
+#: e2_command_line.c:1586
 msgid "<Tab> only"
 msgstr "只有 <Tab>"
 
-#: e2_command_line.c:1602
+#: e2_command_line.c:1586
 msgid "inserted"
 msgstr "插入"
 
-#: e2_command_line.c:1602
+#: e2_command_line.c:1586
 msgid "selected"
 msgstr "已选择"
 
-#: e2_command_line.c:1603
+#: e2_command_line.c:1587
 msgid "directory path completion"
 msgstr "补全文件夹路径"
 
-#: e2_command_line.c:1604
+#: e2_command_line.c:1588
 msgid "This determines the mode of completion when keying a directory-path"
 msgstr "键入时, 补全文件夹路径"
 
-#: e2_command_line.c:1609
+#: e2_command_line.c:1593
 msgid "auto update"
 msgstr "自动更新"
 
-#: e2_command_line.c:1610
+#: e2_command_line.c:1594
 msgid ""
 "If activated, all opened directories will be added to pane history, "
 "otherwise, manual addition is needed"
@@ -1391,38 +1391,38 @@ msgstr ""
 "如果激活该选项, 所有打开过的文件夹都将被加入面板的历史记录. 否则, 需要手工添"
 "加."
 
-#: e2_command_line.c:1613
+#: e2_command_line.c:1597
 msgid "maximum number of entries"
 msgstr "历史的记录最多保存"
 
-#: e2_command_line.c:1614
+#: e2_command_line.c:1598
 msgid ""
 "This is the largest number of directory-line history entries that will be "
 "retained"
 msgstr "记录文件夹历史的最大条数"
 
-#: e2_command_line.c:1618
+#: e2_command_line.c:1602
 msgid "repeated entries"
 msgstr "允许重复记录"
 
-#: e2_command_line.c:1619
+#: e2_command_line.c:1603
 msgid "Allows entries to be recorded more than once in the history list"
 msgstr "允许历史记录中有重复的记录"
 
-#: e2_command_line.c:1624
+#: e2_command_line.c:1608
 msgid ""
 "When scanning a history list, cycle from either end around to the other end, "
 "instead of stopping"
 msgstr "扫描历史记录时, 到达文件尾部自动从头开始, 而不是停止"
 
-#: e2_command_line.c:1629
+#: e2_command_line.c:1613
 msgid ""
 "If activated, the directory line history will be presented as a menu. For "
 "most for most Gtk+2 themes, this will not be as attractive as the list view"
 msgstr ""
 "文件夹记录将被显示为菜单. 在大多数 Gtk+2 主题中, 这并不比列表框更有吸引力"
 
-#: e2_config_dialog.c:188 e2_config_dialog.c:1976
+#: e2_config_dialog.c:188 e2_config_dialog.c:1974
 msgid "configuration"
 msgstr "配置"
 
@@ -1460,72 +1460,72 @@ msgstr "选择插件"
 msgid "Choose font: %s"
 msgstr "选择字体: %s"
 
-#: e2_config_dialog.c:1354
+#: e2_config_dialog.c:1353
 msgid "abcd efgh ABCD EFGH"
 msgstr "abcd efgh ABCD EFGH 示范文字"
 
-#: e2_config_dialog.c:1354
+#: e2_config_dialog.c:1353
 msgid "example:"
 msgstr "例如:"
 
-#: e2_config_dialog.c:1469
+#: e2_config_dialog.c:1468
 msgid "Color data are not stored there"
 msgstr "颜色配置没有被保存过"
 
-#: e2_config_dialog.c:1489 e2_config_dialog.c:1498
+#: e2_config_dialog.c:1488 e2_config_dialog.c:1497
 msgid "The current color descriptor is not valid"
 msgstr "当前的颜色配置不正确"
 
-#: e2_config_dialog.c:1505 e2_config_dialog.c:1513
+#: e2_config_dialog.c:1504 e2_config_dialog.c:1512
 msgid "Set filetype color"
 msgstr "设置不同文件类型的颜色"
 
-#: e2_config_dialog.c:1648
+#: e2_config_dialog.c:1647
 #, c-format
 msgid "Choose color: %s"
 msgstr "选择颜色: %s"
 
-#: e2_config_dialog.c:1741
+#: e2_config_dialog.c:1739
 msgid "abCD"
 msgstr "abCD 示范文字"
 
-#: e2_config_dialog.c:1741
+#: e2_config_dialog.c:1739
 msgid "currently:"
 msgstr "当前:"
 
-#: e2_config_dialog.c:2025 e2_filetype_dialog.c:950
+#: e2_config_dialog.c:2023 e2_filetype_dialog.c:950
 msgid "Categories"
 msgstr "分类"
 
-#: e2_config_dialog.c:2152
+#: e2_config_dialog.c:2150
 msgid "Click to open a font select dialog"
 msgstr "点击打开字体选取对话框"
 
-#: e2_config_dialog.c:2189
+#: e2_config_dialog.c:2187
 msgid "Click to open a color selection dialog"
 msgstr "点击打开颜色选取对话框"
 
-#: e2_config_dialog.c:2312
+#: e2_config_dialog.c:2310
 msgid "De_fault"
 msgstr "缺省(_F)"
 
-#: e2_config_dialog.c:2313
+#: e2_config_dialog.c:2311
 msgid "Revert all options to their default settings"
 msgstr "恢复所有的选项为缺省的设置"
 
-#: e2_config_dialog.c:2318
+#: e2_config_dialog.c:2316
 msgid "_Basic"
 msgstr "基本(_B)"
 
-#: e2_config_dialog.c:2319
+#: e2_config_dialog.c:2317
 msgid "Display only the basic configuration options"
 msgstr "只显示基本配置选项"
 
-#: e2_config_dialog.c:2325
+#: e2_config_dialog.c:2323
 msgid "Ad_vanced"
 msgstr "高级(_V)"
 
-#: e2_config_dialog.c:2326
+#: e2_config_dialog.c:2324
 msgid "Display all configuration options"
 msgstr "显示所有配置选项"
 
@@ -1542,21 +1542,21 @@ msgid "_Actions"
 msgstr "动作(_A)"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
-#: e2_filetype_dialog.c:725 e2_icons.c:849 e2_icons.c:1102
-#: e2_option_tree_context_menu.c:287 e2_output.c:1693 e2_toolbar.c:3415
+#: e2_filetype_dialog.c:725 e2_icons.c:880 e2_icons.c:1133
+#: e2_option_tree_context_menu.c:287 e2_output.c:1713 e2_toolbar.c:3419
 #: e2_tree_dialog.c:1200 e2_view_dialog.c:1033 e2p_copy.c:750
 msgid "_Copy"
 msgstr "复制(_C)"
 
-#: e2_context_menu.c:429 e2_dnd.c:833 e2_toolbar.c:3417 e2p_move.c:802
+#: e2_context_menu.c:429 e2_dnd.c:833 e2_toolbar.c:3421 e2p_move.c:802
 msgid "_Move"
 msgstr "移动(_M)"
 
-#: e2_context_menu.c:430 e2_dnd.c:839 e2_toolbar.c:3419
+#: e2_context_menu.c:430 e2_dnd.c:839 e2_toolbar.c:3423
 msgid "_Link"
 msgstr "链接(_L)"
 
-#: e2_context_menu.c:431 e2_toolbar.c:3423
+#: e2_context_menu.c:431 e2_toolbar.c:3427
 msgid "_Trash"
 msgstr "回收站(_T)"
 
@@ -1656,7 +1656,7 @@ msgstr "空闲空间百分比"
 msgid "_Edit user commands.."
 msgstr "编辑用户命令(_E)"
 
-#: e2_context_menu.c:458 e2_toolbar.c:3425
+#: e2_context_menu.c:458 e2_toolbar.c:3429
 msgid "Ma_ke dir.."
 msgstr "新建文件夹(_K).."
 
@@ -1664,11 +1664,11 @@ msgstr "新建文件夹(_K).."
 msgid "_Bookmarks"
 msgstr "标签(_B)"
 
-#: e2_context_menu.c:461 e2_toolbar.c:3582 e2_toolbar.c:3647
+#: e2_context_menu.c:461 e2_toolbar.c:3586 e2_toolbar.c:3651
 msgid "Add _top"
 msgstr "新增到顶端(_T)"
 
-#: e2_context_menu.c:463 e2_toolbar.c:3586 e2_toolbar.c:3651
+#: e2_context_menu.c:463 e2_toolbar.c:3590 e2_toolbar.c:3655
 msgid "Add _bottom"
 msgstr "新增到底端(_T)"
 
@@ -1693,14 +1693,13 @@ msgid "Ctrl"
 msgstr ""
 
 #: e2_context_menu.c:493 e2_keybinding.c:1640 e2_mousebinding.c:1846
-#: e2_mousegesture.c:1327 e2_permissions_dialog.c:454 e2_toolbar.c:3456
-#: e2_toolbar.c:3528 e2_toolbar.c:3694
+#: e2_mousegesture.c:1327 e2_permissions_dialog.c:454 e2_toolbar.c:3460
+#: e2_toolbar.c:3532 e2_toolbar.c:3698
 msgid "Action"
 msgstr "执行"
 
 #: e2_context_menu.c:496 e2_keybinding.c:1644 e2_mousebinding.c:1849
-#: e2_mousegesture.c:1330 e2_toolbar.c:3459 e2_toolbar.c:3531
-#: e2_toolbar.c:3697
+#: e2_mousegesture.c:1330 e2_toolbar.c:3463 e2_toolbar.c:3535 e2_toolbar.c:3701
 msgid "Argument"
 msgstr "参数"
 
@@ -1829,7 +1828,7 @@ msgstr ""
 msgid "Overwrite any existing item without further confirmation"
 msgstr "覆盖已经存在的文件, 不需进一步的确认"
 
-#: e2_dialog.c:1646 e2_edit_dialog.c:1700 e2_icons.c:865 e2_icons.c:1118
+#: e2_dialog.c:1646 e2_edit_dialog.c:1700 e2_icons.c:896 e2_icons.c:1149
 msgid "_Replace"
 msgstr "替换(_R)"
 
@@ -1846,8 +1845,8 @@ msgstr "静默(_Q)"
 msgid "Don't ask any more"
 msgstr "不再询问"
 
-#: e2_dialog.c:1727 e2_icons.c:897 e2_icons.c:931 e2_icons.c:1150
-#: e2_icons.c:1184 e2p_find.c:4232 e2p_rename.c:1927
+#: e2_dialog.c:1727 e2_icons.c:928 e2_icons.c:962 e2_icons.c:1181
+#: e2_icons.c:1215 e2p_find.c:4232 e2p_rename.c:1927
 msgid "_Stop"
 msgstr "停止(_S)"
 
@@ -1872,7 +1871,7 @@ msgstr "中间"
 msgid "mouse"
 msgstr "鼠标"
 
-#: e2_dialog.c:1753 e2_output.c:4140 e2_toolbar.c:3337
+#: e2_dialog.c:1753 e2_output.c:4167 e2_toolbar.c:3341
 msgid "none"
 msgstr "无"
 
@@ -1950,7 +1949,7 @@ msgid "Spelling suggestions"
 msgstr "语法建议"
 
 #: e2_edit_dialog.c:914 e2_edit_dialog.c:1027 e2_edit_dialog.c:1722
-#: e2_icons.c:924 e2_icons.c:1177 e2_vfs_dialog.c:1009 e2p_config.c:1169
+#: e2_icons.c:955 e2_icons.c:1208 e2p_config.c:1169
 msgid "_Save"
 msgstr "保存(_S)"
 
@@ -1990,7 +1989,7 @@ msgstr "打印(_P).."
 msgid "Reload the file being edited"
 msgstr "重载被编辑的文件"
 
-#: e2_edit_dialog.c:935 e2_toolbar.c:3488 e2p_find.c:4277
+#: e2_edit_dialog.c:935 e2_toolbar.c:3492 e2p_find.c:4277
 msgid "_Find.."
 msgstr "查找(_F).."
 
@@ -2006,7 +2005,7 @@ msgstr "替换(_R).."
 msgid "Find and replace matching text"
 msgstr "查找并替换"
 
-#: e2_edit_dialog.c:940 e2_edit_dialog.c:1776 e2_output.c:1653
+#: e2_edit_dialog.c:940 e2_edit_dialog.c:1775 e2_output.c:1673
 #: e2_view_dialog.c:1797
 msgid "_Hide"
 msgstr "隐藏(_H)"
@@ -2015,7 +2014,7 @@ msgstr "隐藏(_H)"
 msgid "Hide the search options bar"
 msgstr "隐藏查找选项"
 
-#: e2_edit_dialog.c:944 e2_edit_dialog.c:1781 e2_icons.c:935 e2_icons.c:1188
+#: e2_edit_dialog.c:944 e2_edit_dialog.c:1780 e2_icons.c:966 e2_icons.c:1219
 msgid "_Undo"
 msgstr "撤销(_U)"
 
@@ -2023,7 +2022,7 @@ msgstr "撤销(_U)"
 msgid "Undo last change"
 msgstr "撤销最后一次的修改"
 
-#: e2_edit_dialog.c:949 e2_edit_dialog.c:1787
+#: e2_edit_dialog.c:949 e2_edit_dialog.c:1786
 msgid "Re_do"
 msgstr "重做(_D)"
 
@@ -2076,7 +2075,7 @@ msgid "Save modified file ?"
 msgstr "保存编辑过的文件 ?"
 
 #: e2_edit_dialog.c:1016 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:862 e2_icons.c:1115 e2_output.c:1701
+#: e2_filetype_dialog.c:1197 e2_icons.c:893 e2_icons.c:1146 e2_output.c:1721
 msgid "_Edit"
 msgstr "编辑(_E)"
 
@@ -2120,7 +2119,7 @@ msgstr "确认(_N)"
 msgid "Replace this match"
 msgstr "替换找到的"
 
-#: e2_edit_dialog.c:1710 e2_icons.c:866 e2_icons.c:1119 e2_view_dialog.c:1812
+#: e2_edit_dialog.c:1710 e2_icons.c:897 e2_icons.c:1150 e2_view_dialog.c:1812
 #: e2p_find.c:4241
 msgid "_Find"
 msgstr "查找(_F)"
@@ -2129,16 +2128,16 @@ msgstr "查找(_F)"
 msgid "Find the next match"
 msgstr "查找下一个"
 
-#: e2_edit_dialog.c:1738 e2_edit_dialog.c:1753 e2_view_dialog.c:1839
-#: e2_view_dialog.c:1860
+#: e2_edit_dialog.c:1737 e2_edit_dialog.c:1752 e2_view_dialog.c:1838
+#: e2_view_dialog.c:1859
 msgid "not found"
 msgstr "未找到"
 
-#: e2_edit_dialog.c:2002
+#: e2_edit_dialog.c:2001
 msgid "backup when saving"
 msgstr "保存时备份"
 
-#: e2_edit_dialog.c:2003
+#: e2_edit_dialog.c:2002
 msgid ""
 "When saving an edited file, an existing file with the same name will be "
 "renamed"
@@ -2204,8 +2203,8 @@ msgstr "文件信息"
 msgid "Virtual file"
 msgstr "虚拟文件"
 
-#: e2_file_info_dialog.c:560 e2_file_info_dialog.c:695 e2_utf8.c:406
-#: e2_utf8.c:436 e2_utf8.c:495
+#: e2_file_info_dialog.c:560 e2_file_info_dialog.c:695 e2_utf8.c:413
+#: e2_utf8.c:443 e2_utf8.c:502
 msgid "Unknown"
 msgstr "未知"
 
@@ -2294,26 +2293,26 @@ msgid ""
 "Pattern provided to strftime() to format date/time strings in the dialog"
 msgstr "由 strftime() 解释的用于显示对话框中日期/时间的格式字符串"
 
-#: e2_filestore.c:1189 e2_toolbar.c:2060
+#: e2_filestore.c:1190 e2_toolbar.c:2064
 msgid "k"
 msgstr ""
 
-#: e2_filestore.c:1194 e2_toolbar.c:2065
+#: e2_filestore.c:1195 e2_toolbar.c:2069
 msgid "M"
 msgstr ""
 
-#: e2_filestore.c:1587 e2_pane.c:613
+#: e2_filestore.c:1590 e2_pane.c:617
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "无法访问 %s, 用 %s 代替"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1375 e2_task.c:4252 e2_task_backend.c:1894
+#: e2_output.c:1395 e2_task.c:4252 e2_task_backend.c:1894
 msgid "<directory>"
 msgstr "<文件夹>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1744
-#: e2_output.c:1423 e2_task.c:4258
+#: e2_output.c:1443 e2_task.c:4258
 msgid "<executable>"
 msgstr "<可执行文件>"
 
@@ -2327,9 +2326,8 @@ msgstr "文件夹"
 
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
-#: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:903 e2_icons.c:1156
-#: e2_output.c:1704 e2_vfs_dialog.c:1013 e2_vfs_dialog.c:1560
-#: e2_view_dialog.c:714
+#: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:934 e2_icons.c:1187
+#: e2_output.c:1724 e2_view_dialog.c:714
 msgid "_Open"
 msgstr "打开(_O)"
 
@@ -2541,7 +2539,7 @@ msgstr "剪切所选择的行(_S)"
 msgid "Copy selected row(s)"
 msgstr "复制所选择的行"
 
-#: e2_filetype_dialog.c:731 e2_icons.c:909 e2_icons.c:1162
+#: e2_filetype_dialog.c:731 e2_icons.c:940 e2_icons.c:1193
 #: e2_option_tree_context_menu.c:291
 msgid "_Paste"
 msgstr "粘贴(_P)"
@@ -2550,9 +2548,9 @@ msgstr "粘贴(_P)"
 msgid "Paste previously copied or cut row(s) after current row"
 msgstr "在当前行的后面粘贴原来复制的内容"
 
-#: e2_filetype_dialog.c:736 e2_filetype_dialog.c:1087 e2_icons.c:838
-#: e2_icons.c:1091 e2_option_tree.c:1920 e2_option_tree_context_menu.c:315
-#: e2_permissions_dialog.c:470 e2_vfs_dialog.c:1545
+#: e2_filetype_dialog.c:736 e2_filetype_dialog.c:1087 e2_icons.c:869
+#: e2_icons.c:1122 e2_option_tree.c:1923 e2_option_tree_context_menu.c:315
+#: e2_permissions_dialog.c:470
 msgid "_Add"
 msgstr "新增(_A)"
 
@@ -2560,9 +2558,9 @@ msgstr "新增(_A)"
 msgid "Add a row after the current one"
 msgstr "在输出面板上增加一个新的 TAB"
 
-#: e2_filetype_dialog.c:739 e2_filetype_dialog.c:1076 e2_icons.c:876
-#: e2_icons.c:1129 e2_option_tree.c:1930 e2_option_tree_context_menu.c:343
-#: e2_toolbar.c:424 e2_toolbar.c:3601 e2_toolbar.c:3662 e2_toolbar.c:3668
+#: e2_filetype_dialog.c:739 e2_filetype_dialog.c:1076 e2_icons.c:907
+#: e2_icons.c:1160 e2_option_tree.c:1933 e2_option_tree_context_menu.c:343
+#: e2_toolbar.c:428 e2_toolbar.c:3605 e2_toolbar.c:3666 e2_toolbar.c:3672
 msgid "_Up"
 msgstr "向上(_U)"
 
@@ -2570,9 +2568,9 @@ msgstr "向上(_U)"
 msgid "Move selected row up"
 msgstr "向上移动所选择的行"
 
-#: e2_filetype_dialog.c:741 e2_filetype_dialog.c:1081 e2_icons.c:870
-#: e2_icons.c:1123 e2_option_tree.c:1927 e2_option_tree_context_menu.c:346
-#: e2_toolbar.c:426
+#: e2_filetype_dialog.c:741 e2_filetype_dialog.c:1081 e2_icons.c:901
+#: e2_icons.c:1154 e2_option_tree.c:1930 e2_option_tree_context_menu.c:346
+#: e2_toolbar.c:430
 msgid "_Down"
 msgstr "向下(_D)"
 
@@ -2596,11 +2594,11 @@ msgstr "标签"
 msgid "Commands"
 msgstr "命令"
 
-#: e2_filetype_dialog.c:1077 e2_option_tree.c:1931
+#: e2_filetype_dialog.c:1077 e2_option_tree.c:1934
 msgid "Move the selected row one place up"
 msgstr "移动选择的行到上面"
 
-#: e2_filetype_dialog.c:1083 e2_option_tree.c:1928
+#: e2_filetype_dialog.c:1083 e2_option_tree.c:1931
 msgid "Move the selected row one place down"
 msgstr "移动选择的行到下面"
 
@@ -2708,75 +2706,75 @@ msgstr "无法访问文件夹 %s - 无权限"
 msgid "Directory '%s' does not exist"
 msgstr "文件夹 '%s' 不存在"
 
-#: e2_fs.c:1576 e2_fs.c:1673
+#: e2_fs.c:1562 e2_fs.c:1659
 msgid "Reading directory data"
 msgstr "正在读取文件夹数据"
 
-#: e2_fs.c:1577
+#: e2_fs.c:1563
 msgid "directory read"
 msgstr "读文件夹"
 
-#: e2_fs.c:2425
+#: e2_fs.c:2411
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "无法打开文件 '%s' 写入 - %s"
 
-#: e2_fs.c:2470
+#: e2_fs.c:2456
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "发生写错误, 文件  '%s' - %s"
 
-#: e2_fs.c:2597 e2_fs.c:2649 e2_fs.c:2955 e2_view_dialog.c:609
-#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2_fs.c:2583 e2_fs.c:2635 e2_fs.c:2941 e2_view_dialog.c:609 e2p_config.c:693
+#: e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "读取文件 %s 时, 发生错误"
 
-#: e2_fs.c:2632 e2_fs.c:2906 e2_fs_walk.c:308 e2_fs_walk.c:470
-#: e2_fs_walk.c:699 e2_output.c:1478 e2_task_backend.c:1223
+#: e2_fs.c:2618 e2_fs.c:2892 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_output.c:1498 e2_task_backend.c:1223
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "无法获取 %s 的信息"
 
-#: e2_fs.c:2639
+#: e2_fs.c:2625
 #, c-format
 msgid "Cannot open file %s"
 msgstr "无法打开文件 %s"
 
-#: e2_fs.c:2767 e2_fs.c:2895
+#: e2_fs.c:2753 e2_fs.c:2881
 #, c-format
 msgid "Cannot create file %s"
 msgstr "无法新建文件 %s"
 
-#: e2_fs.c:2779 e2_fs.c:2970 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2765 e2_fs.c:2956 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "写文件 %s 发生错误"
 
-#: e2_fs.c:2881 e2p_dircmp.c:403
+#: e2_fs.c:2867 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "无法读文件'%s'"
 
-#: e2_fs.c:3030
+#: e2_fs.c:3016
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "无法打开命令管道'%s'"
 
-#: e2_fs.c:3051
+#: e2_fs.c:3037
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "执行命令 %s 失败: 内存不足"
 
-#: e2_fs.c:3223
+#: e2_fs.c:3209
 msgid "-rwxrwxrwx"
 msgstr ""
 
-#: e2_fs.c:3228
+#: e2_fs.c:3214
 msgid "ldbcfs"
 msgstr ""
 
-#: e2_fs.c:3233
+#: e2_fs.c:3219
 msgid "TtSs"
 msgstr ""
 
@@ -2822,258 +2820,258 @@ msgstr "清空(_R)"
 msgid "Cannot auto-mount device '%s' at '%s'"
 msgstr "无法自动装载设备 %s - %s"
 
-#: e2_icons.c:837 e2_icons.c:1090
+#: e2_icons.c:868 e2_icons.c:1121
 msgid "_About"
 msgstr "关于(_A)"
 
-#: e2_icons.c:840 e2_icons.c:1093
+#: e2_icons.c:871 e2_icons.c:1124
 msgid "_Bold"
 msgstr "粗体(_B)"
 
-#: e2_icons.c:844 e2_icons.c:1097
+#: e2_icons.c:875 e2_icons.c:1128
 msgid "_Clear"
 msgstr "清空(_C)"
 
-#: e2_icons.c:847 e2_icons.c:1100
+#: e2_icons.c:878 e2_icons.c:1131
 msgid "_Connect"
 msgstr "连接(_C)"
 
-#: e2_icons.c:848 e2_icons.c:1101
+#: e2_icons.c:879 e2_icons.c:1132
 msgid "_Convert"
 msgstr "转换(_C)"
 
-#: e2_icons.c:850 e2_icons.c:1103
+#: e2_icons.c:881 e2_icons.c:1134
 msgid "_Cut"
 msgstr "剪切(_C)"
 
-#: e2_icons.c:857 e2_icons.c:1110
+#: e2_icons.c:888 e2_icons.c:1141
 msgid "_Directory"
 msgstr "文件夹(_D)"
 
-#: e2_icons.c:859 e2_icons.c:1112
+#: e2_icons.c:890 e2_icons.c:1143
 msgid "_Disconnect"
 msgstr "中断连接(_D)"
 
-#: e2_icons.c:863 e2_icons.c:1116
+#: e2_icons.c:894 e2_icons.c:1147
 msgid "_Execute"
 msgstr "执行(_E)"
 
-#: e2_icons.c:864 e2_icons.c:1117
+#: e2_icons.c:895 e2_icons.c:1148
 msgid "_File"
 msgstr "文件(_F)"
 
-#: e2_icons.c:868 e2_icons.c:1121
+#: e2_icons.c:899 e2_icons.c:1152
 msgid "_Fullscreen"
 msgstr "全屏(_F)"
 
-#: e2_icons.c:869 e2_icons.c:1122 e2_toolbar.c:3600 e2_toolbar.c:3661
-#: e2_toolbar.c:3669
+#: e2_icons.c:900 e2_icons.c:1153 e2_toolbar.c:3604 e2_toolbar.c:3665
+#: e2_toolbar.c:3673
 msgid "_Back"
 msgstr "后退(_B)"
 
-#: e2_icons.c:871 e2_icons.c:890 e2_icons.c:1124 e2_icons.c:1143
-#: e2_toolbar.c:3602 e2_toolbar.c:3663 e2_toolbar.c:3667
+#: e2_icons.c:902 e2_icons.c:921 e2_icons.c:1155 e2_icons.c:1174
+#: e2_toolbar.c:3606 e2_toolbar.c:3667 e2_toolbar.c:3671
 msgid "_Forward"
 msgstr "前进(_F)"
 
-#: e2_icons.c:872 e2_icons.c:1125
+#: e2_icons.c:903 e2_icons.c:1156
 msgid "_Bottom"
 msgstr "底端(_T)"
 
-#: e2_icons.c:873 e2_icons.c:1126
+#: e2_icons.c:904 e2_icons.c:1157
 msgid "_First"
 msgstr "第一个(_F)"
 
-#: e2_icons.c:874 e2_icons.c:1127
+#: e2_icons.c:905 e2_icons.c:1158
 msgid "_Last"
 msgstr "最后一个(_L)"
 
-#: e2_icons.c:875 e2_icons.c:1128
+#: e2_icons.c:906 e2_icons.c:1159
 msgid "_Top"
 msgstr "顶端(_T)"
 
-#: e2_icons.c:878 e2_icons.c:1131 e2_option_tree.c:1949 e2_toolbar.c:3503
+#: e2_icons.c:909 e2_icons.c:1162 e2_option_tree.c:1952 e2_toolbar.c:3507
 #: e2p_find.c:4223 e2p_rename.c:1925
 msgid "_Help"
 msgstr "帮助(_H)"
 
-#: e2_icons.c:879 e2_icons.c:1132
+#: e2_icons.c:910 e2_icons.c:1163
 msgid "_Home"
 msgstr ""
 
-#: e2_icons.c:880 e2_icons.c:1133
+#: e2_icons.c:911 e2_icons.c:1164
 msgid "_Indent"
 msgstr "缩进(_I)"
 
-#: e2_icons.c:881 e2_icons.c:1134
+#: e2_icons.c:912 e2_icons.c:1165
 msgid "_Index"
 msgstr "排序(_I)"
 
-#: e2_icons.c:882 e2_icons.c:1135
+#: e2_icons.c:913 e2_icons.c:1166
 msgid "_Information"
 msgstr "信息(_F)"
 
-#: e2_icons.c:883 e2_icons.c:1136
+#: e2_icons.c:914 e2_icons.c:1167
 msgid "_Italic"
 msgstr "斜体(_I)"
 
-#: e2_icons.c:884 e2_icons.c:1137
+#: e2_icons.c:915 e2_icons.c:1168
 msgid "_Goto"
 msgstr "转到(_G)"
 
-#: e2_icons.c:885 e2_icons.c:1138
+#: e2_icons.c:916 e2_icons.c:1169
 msgid "_Centre"
 msgstr "居中(_C)"
 
-#: e2_icons.c:886 e2_icons.c:1139
+#: e2_icons.c:917 e2_icons.c:1170
 msgid "_Fill"
 msgstr "填充(_F)"
 
-#: e2_icons.c:887 e2_icons.c:1140 e2_toolbar.c:431
+#: e2_icons.c:918 e2_icons.c:1171 e2_toolbar.c:435
 msgid "_Left"
 msgstr "向左(_L)"
 
-#: e2_icons.c:888 e2_icons.c:1141 e2_toolbar.c:433
+#: e2_icons.c:919 e2_icons.c:1172 e2_toolbar.c:437
 msgid "_Right"
 msgstr "向右(_R)"
 
-#: e2_icons.c:891 e2_icons.c:1144 e2_vfs_dialog.c:993
+#: e2_icons.c:922 e2_icons.c:1175
 msgid "_Next"
 msgstr "下一个(_N)"
 
-#: e2_icons.c:892 e2_icons.c:1145 e2p_copy.c:604 e2p_move.c:652
+#: e2_icons.c:923 e2_icons.c:1176 e2p_copy.c:604 e2p_move.c:652
 msgid "_Pause"
 msgstr "暂停(_P)"
 
-#: e2_icons.c:893 e2_icons.c:1146
+#: e2_icons.c:924 e2_icons.c:1177
 msgid "_Play"
 msgstr "播放(_P)"
 
-#: e2_icons.c:894 e2_icons.c:1147 e2_vfs_dialog.c:989
+#: e2_icons.c:925 e2_icons.c:1178
 msgid "_Previous"
 msgstr "前一个(_P)"
 
-#: e2_icons.c:895 e2_icons.c:1148
+#: e2_icons.c:926 e2_icons.c:1179
 msgid "_Record"
 msgstr "记录(_R)"
 
-#: e2_icons.c:896 e2_icons.c:1149
+#: e2_icons.c:927 e2_icons.c:1180
 msgid "Re_wind"
 msgstr ""
 
-#: e2_icons.c:899 e2_icons.c:1152
+#: e2_icons.c:930 e2_icons.c:1183
 msgid "_Network"
 msgstr "网络(_N)"
 
-#: e2_icons.c:900 e2_icons.c:1153
+#: e2_icons.c:931 e2_icons.c:1184
 msgid "_New"
 msgstr "新建(_N)"
 
-#: e2_icons.c:901 e2_icons.c:1154
+#: e2_icons.c:932 e2_icons.c:1185
 msgid "_No"
 msgstr "否(_N)"
 
-#: e2_icons.c:902 e2_icons.c:1155
+#: e2_icons.c:933 e2_icons.c:1186
 msgid "_OK"
 msgstr "_OK"
 
-#: e2_icons.c:904 e2_icons.c:1157
+#: e2_icons.c:935 e2_icons.c:1188
 msgid "_Landscape"
 msgstr "竖排(_L)"
 
-#: e2_icons.c:905 e2_icons.c:1158
+#: e2_icons.c:936 e2_icons.c:1189
 msgid "_Portrait"
 msgstr "横排(_P)"
 
-#: e2_icons.c:910 e2_icons.c:1163
+#: e2_icons.c:941 e2_icons.c:1194
 msgid "_Preferences"
 msgstr "配置(_P)"
 
-#: e2_icons.c:912 e2_icons.c:1165
+#: e2_icons.c:943 e2_icons.c:1196
 msgid "_Print"
 msgstr "打印(_P)"
 
-#: e2_icons.c:914 e2_icons.c:1167
+#: e2_icons.c:945 e2_icons.c:1198
 msgid "Pre_view"
 msgstr "预览(_V)"
 
-#: e2_icons.c:915 e2_icons.c:1168
+#: e2_icons.c:946 e2_icons.c:1199
 msgid "_Report"
 msgstr "报告(_R)"
 
-#: e2_icons.c:917 e2_icons.c:1170
+#: e2_icons.c:948 e2_icons.c:1201
 msgid "_Properties"
 msgstr "属性(_P)"
 
-#: e2_icons.c:918 e2_icons.c:1171 e2_main.c:952 e2_toolbar.c:3505
+#: e2_icons.c:949 e2_icons.c:1202 e2_main.c:966 e2_toolbar.c:3509
 msgid "_Quit"
 msgstr "退出(_Q)"
 
-#: e2_icons.c:919 e2_icons.c:1172
+#: e2_icons.c:950 e2_icons.c:1203
 msgid "_Redo"
 msgstr "重做(_R)"
 
-#: e2_icons.c:922 e2_icons.c:1175
+#: e2_icons.c:953 e2_icons.c:1206
 msgid "_Revert"
 msgstr "取消修改(_V)"
 
-#: e2_icons.c:923 e2_icons.c:1176
+#: e2_icons.c:954 e2_icons.c:1207
 msgid "_Save_as"
 msgstr "保存为(_S)"
 
-#: e2_icons.c:926 e2_icons.c:1179
+#: e2_icons.c:957 e2_icons.c:1210
 msgid "_Color"
 msgstr "颜色(_C)"
 
-#: e2_icons.c:927 e2_icons.c:1180
+#: e2_icons.c:958 e2_icons.c:1211
 msgid "_Font"
 msgstr "字体(_F)"
 
-#: e2_icons.c:928 e2_icons.c:1181
+#: e2_icons.c:959 e2_icons.c:1212
 msgid "Sort_asc"
 msgstr "顺序"
 
-#: e2_icons.c:929 e2_icons.c:1182
+#: e2_icons.c:960 e2_icons.c:1213
 msgid "Sort_desc"
 msgstr "逆序"
 
-#: e2_icons.c:930 e2_icons.c:1183
+#: e2_icons.c:961 e2_icons.c:1214
 msgid "_Spell"
 msgstr "拼写(_S)"
 
-#: e2_icons.c:932 e2_icons.c:1185
+#: e2_icons.c:963 e2_icons.c:1216
 msgid "_Strikeout"
 msgstr "删除线(_S)"
 
-#: e2_icons.c:933 e2_icons.c:1186
+#: e2_icons.c:964 e2_icons.c:1217
 msgid "_Undelete"
 msgstr "恢复删除(_D)"
 
-#: e2_icons.c:934 e2_icons.c:1187
+#: e2_icons.c:965 e2_icons.c:1218
 msgid "_Underline"
 msgstr "下划线(_U)"
 
-#: e2_icons.c:936 e2_icons.c:1189
+#: e2_icons.c:967 e2_icons.c:1220
 msgid "_Outdent"
 msgstr "缩进(_O)"
 
-#: e2_icons.c:937 e2_icons.c:1190
+#: e2_icons.c:968 e2_icons.c:1221
 msgid "_Yes"
 msgstr "是(_Y)"
 
-#: e2_icons.c:938 e2_icons.c:1191
+#: e2_icons.c:969 e2_icons.c:1222
 msgid "_Original"
 msgstr "原始(_K)"
 
-#: e2_icons.c:939 e2_icons.c:1192
+#: e2_icons.c:970 e2_icons.c:1223
 msgid "_Fit"
 msgstr "适合(_F)"
 
-#: e2_icons.c:940 e2_icons.c:1193
+#: e2_icons.c:971 e2_icons.c:1224
 msgid "Zoom_in"
 msgstr "放大"
 
-#: e2_icons.c:941 e2_icons.c:1194
+#: e2_icons.c:972 e2_icons.c:1225
 msgid "Zoom_out"
 msgstr "缩小"
 
@@ -3082,7 +3080,7 @@ msgstr "缩小"
 msgid "Cannot find a key binding named %s"
 msgstr "无法找到名为 %s 的快捷键"
 
-#: e2_keybinding.c:1290 e2_option.c:1305
+#: e2_keybinding.c:1290 e2_option.c:1312
 msgid "key bindings"
 msgstr "快捷键"
 
@@ -3108,12 +3106,12 @@ msgid ""
 "keybindings"
 msgstr "设置组合键的延迟时间, 以毫秒为单位"
 
-#: e2_main.c:326
+#: e2_main.c:337
 #, c-format
 msgid "Your current locale is '%s'.\n"
 msgstr "你现在的区域设置是 '%s'.\n"
 
-#: e2_main.c:328
+#: e2_main.c:339
 #, c-format
 msgid ""
 "You have set the environment variable G_BROKEN_FILENAMES, which\n"
@@ -3128,7 +3126,7 @@ msgstr ""
 "但是, 你并未设置系统本地化参数.\n"
 "请设置环境变量 LANG 或者 LC_CTYPE !\n"
 
-#: e2_main.c:336
+#: e2_main.c:347
 #, c-format
 msgid ""
 "(Note: There is a command line option -i/--ignore-problems, but use it\n"
@@ -3137,7 +3135,7 @@ msgstr ""
 "(注意: 使用命令选项 -i/--ignore-problems, 讲忽略错误\n"
 "可能存在风险!)\n"
 
-#: e2_main.c:341
+#: e2_main.c:352
 #, c-format
 msgid ""
 "%s will ignore locale problems when reading filenames because\n"
@@ -3150,20 +3148,20 @@ msgstr ""
 "其他各种问题. 建议使用环境变量 LANG or LC_CTYPE\n"
 "设置系统本地化参数.\n"
 
-#: e2_main.c:703
+#: e2_main.c:717
 msgid "emelFM2"
 msgstr ""
 
-#: e2_main.c:947
+#: e2_main.c:961
 #, c-format
 msgid "%u process(es) are running"
 msgstr "%u 进程正在运行"
 
-#: e2_main.c:949
+#: e2_main.c:963
 msgid "_Continue"
 msgstr "继续(_C)"
 
-#: e2_main.c:950
+#: e2_main.c:964
 msgid "Continue working"
 msgstr "继续工作"
 
@@ -3211,106 +3209,106 @@ msgstr "是"
 msgid "no"
 msgstr "否"
 
-#: e2_mkdir_dialog.c:426
+#: e2_mkdir_dialog.c:425
 #, c-format
 msgid "cannot write to '%s' - %s"
 msgstr "无法写入 '%s' - %s"
 
-#: e2_mkdir_dialog.c:434
+#: e2_mkdir_dialog.c:433
 #, c-format
 msgid "cannot write to parent directory - %s"
 msgstr "无法写入父文件夹 - %s"
 
-#: e2_mkdir_dialog.c:442
+#: e2_mkdir_dialog.c:441
 #, c-format
 msgid "only '%s' exists - %s"
 msgstr "只存在 '%s' - %s"
 
-#: e2_mkdir_dialog.c:472
+#: e2_mkdir_dialog.c:471
 msgid "the directory already exists"
 msgstr "文件夹已存在"
 
-#: e2_mkdir_dialog.c:474
+#: e2_mkdir_dialog.c:473
 msgid "something is in the way"
 msgstr "被阻止"
 
-#: e2_mkdir_dialog.c:485
+#: e2_mkdir_dialog.c:484
 msgid "but it's unwise to use wildcard char(s)"
 msgstr "但是不建议使用通配符"
 
-#: e2_mkdir_dialog.c:488
+#: e2_mkdir_dialog.c:487
 msgid "directories will be created"
 msgstr "文件夹将被建立"
 
-#: e2_mkdir_dialog.c:691 e2_mkdir_dialog.c:737 e2_task_backend.c:876
+#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:876
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "无法新建文件夹 %s"
 
-#: e2_mkdir_dialog.c:1049
+#: e2_mkdir_dialog.c:1048
 msgid "What is the new directory's name?"
 msgstr "新文件夹的名称 ?"
 
-#: e2_mkdir_dialog.c:1049
+#: e2_mkdir_dialog.c:1048
 msgid "create directory"
 msgstr "新建文件夹"
 
-#: e2_mkdir_dialog.c:1085
+#: e2_mkdir_dialog.c:1084
 msgid "<small>parent directory:</small>"
 msgstr "<small>父文件夹:</small>"
 
-#: e2_mkdir_dialog.c:1092
+#: e2_mkdir_dialog.c:1091
 msgid "<small>creation possible:</small>"
 msgstr "<small>建立:</small>"
 
-#: e2_mkdir_dialog.c:1147
+#: e2_mkdir_dialog.c:1146
 msgid "Create and continue"
 msgstr "新建并继续"
 
-#: e2_mkdir_dialog.c:1230
+#: e2_mkdir_dialog.c:1229
 msgid "open info frame"
 msgstr "打开信息框"
 
-#: e2_mkdir_dialog.c:1231
+#: e2_mkdir_dialog.c:1230
 msgid ""
 "This causes make-directory dialogs to start with extra information displayed"
 msgstr "新建文件夹对话框时, 显示额外的信息"
 
-#: e2_mkdir_dialog.c:1234
+#: e2_mkdir_dialog.c:1233
 msgid "follow active-pane directory"
 msgstr "在当前面板的文件夹下"
 
-#: e2_mkdir_dialog.c:1235
+#: e2_mkdir_dialog.c:1234
 msgid ""
 "This makes the parent directory for new directories the same as the one in "
 "the active pane, even if the latter changes"
 msgstr "新的文件夹将被建立在当前面板的目录下"
 
-#: e2_mkdir_dialog.c:1239
+#: e2_mkdir_dialog.c:1238
 msgid "suggest directory name"
 msgstr "建议文件夹名"
 
-#: e2_mkdir_dialog.c:1240
+#: e2_mkdir_dialog.c:1239
 msgid ""
 "This presents a suggested name for each new directory, based on the last-"
 "created directory with an increasing number appended"
 msgstr "建议新的文件夹名, 一般使用最后一次建立的文件夹名, 添加一个递增的数字"
 
-#: e2_mkdir_dialog.c:1244
+#: e2_mkdir_dialog.c:1243
 msgid "show last directory name"
 msgstr "显示最后的文件夹名"
 
-#: e2_mkdir_dialog.c:1245
+#: e2_mkdir_dialog.c:1244
 msgid ""
 "This causes the name of the last-created directory to be shown in the entry "
 "field, after opening the dialog or when creating another directory"
 msgstr "在打开对话框或者建立另一个文件夹时, 最后建立的文件夹名将被显示在输入框"
 
-#: e2_mkdir_dialog.c:1248
+#: e2_mkdir_dialog.c:1247
 msgid "replicate changes"
 msgstr "同步修改"
 
-#: e2_mkdir_dialog.c:1249
+#: e2_mkdir_dialog.c:1248
 msgid ""
 "This causes option-changes to be replicated in other mkdir dialogs. "
 "Otherwise such changes will be confined to the current dialog"
@@ -3381,16 +3379,16 @@ msgstr "选择 不 匹配的文件"
 msgid "Case sensitive"
 msgstr "大小写敏感"
 
-#: e2_option.c:181
+#: e2_option.c:188
 #, c-format
 msgid "Cannot create trash directory %s"
 msgstr "无法建立回收站文件夹 %s"
 
-#: e2_option.c:475
+#: e2_option.c:482
 msgid "Configuration data re-loaded"
 msgstr "重新应用配置数据"
 
-#: e2_option.c:800
+#: e2_option.c:807
 #, c-format
 msgid ""
 "# This is the %s configuration data file.\n"
@@ -3403,144 +3401,144 @@ msgid ""
 "\n"
 msgstr ""
 
-#: e2_option.c:898
+#: e2_option.c:905
 #, c-format
 msgid "Cannot write config file %s - %s"
 msgstr "无法写入配置文件 %s - %s"
 
-#: e2_option.c:1283
+#: e2_option.c:1290
 msgid "aliases"
 msgstr "别名"
 
-#: e2_option.c:1284
+#: e2_option.c:1291
 msgid "bookmarks"
 msgstr "书签"
 
-#: e2_option.c:1285
+#: e2_option.c:1292
 msgid "colors"
 msgstr "颜色"
 
-#: e2_option.c:1286
+#: e2_option.c:1293
 msgid "columns"
 msgstr "列"
 
-#: e2_option.c:1287
+#: e2_option.c:1294
 msgid "command toolbar"
 msgstr "命令工具栏"
 
-#: e2_option.c:1288
+#: e2_option.c:1295
 msgid "command line"
 msgstr "命令行"
 
-#: e2_option.c:1290
+#: e2_option.c:1297
 msgid "confirmation"
 msgstr "确认"
 
-#: e2_option.c:1291
+#: e2_option.c:1298
 msgid "context menu"
 msgstr "上下文菜单"
 
-#: e2_option.c:1292
+#: e2_option.c:1299
 msgid "custom menus"
 msgstr "自定义菜单"
 
-#: e2_option.c:1294
+#: e2_option.c:1301
 msgid "dialogs"
 msgstr "对话框"
 
-#: e2_option.c:1295
+#: e2_option.c:1302
 msgid "directory lines"
 msgstr "文件夹"
 
-#: e2_option.c:1296
+#: e2_option.c:1303
 msgid "extensions"
 msgstr "文件扩展名"
 
-#: e2_option.c:1297
+#: e2_option.c:1304
 msgid "file actions"
 msgstr "文件动作"
 
-#: e2_option.c:1298
+#: e2_option.c:1305
 msgid "filetypes"
 msgstr "文件类型"
 
-#: e2_option.c:1299
+#: e2_option.c:1306
 msgid "fonts"
 msgstr "字体"
 
-#: e2_option.c:1300
+#: e2_option.c:1307
 msgid "general"
 msgstr "普通"
 
-#: e2_option.c:1302 e2p_config.c:1354 e2p_config.c:1391 e2p_config.c:1418
+#: e2_option.c:1309 e2p_config.c:1354 e2p_config.c:1391 e2p_config.c:1418
 msgid "icons"
 msgstr "图标"
 
-#: e2_option.c:1303
+#: e2_option.c:1310
 msgid "interface"
 msgstr "接口"
 
-#: e2_option.c:1304
+#: e2_option.c:1311
 msgid "item types"
 msgstr "文件类型"
 
-#: e2_option.c:1306
+#: e2_option.c:1313
 msgid "main"
 msgstr "主要的"
 
-#: e2_option.c:1307
+#: e2_option.c:1314
 msgid "make directory"
 msgstr "新建文件夹"
 
-#: e2_option.c:1309
+#: e2_option.c:1316
 msgid "miscellaneous"
 msgstr "其它"
 
-#: e2_option.c:1310
+#: e2_option.c:1317
 msgid "options"
 msgstr "选项"
 
-#: e2_option.c:1312
+#: e2_option.c:1319
 msgid "pane 1"
 msgstr "面板1"
 
-#: e2_option.c:1313
+#: e2_option.c:1320
 msgid "pane1 toolbar"
 msgstr "面板1 工具栏"
 
-#: e2_option.c:1314
+#: e2_option.c:1321
 msgid "pane 2"
 msgstr "面板2"
 
-#: e2_option.c:1315
+#: e2_option.c:1322
 msgid "pane2 toolbar"
 msgstr "面板2 工具栏"
 
-#: e2_option.c:1317
+#: e2_option.c:1324
 msgid "plugins"
 msgstr "插件"
 
-#: e2_option.c:1319
+#: e2_option.c:1326
 msgid "pointer buttons"
 msgstr "按钮"
 
-#: e2_option.c:1321
+#: e2_option.c:1328
 msgid "position"
 msgstr "位置"
 
-#: e2_option.c:1323
+#: e2_option.c:1330
 msgid "startup"
 msgstr "启动"
 
-#: e2_option.c:1324
+#: e2_option.c:1331
 msgid "style"
 msgstr "风格"
 
-#: e2_option.c:1325
+#: e2_option.c:1332
 msgid "tab completion"
 msgstr "TAB 补全"
 
-#: e2_option.c:1326
+#: e2_option.c:1333
 msgid "task toolbar"
 msgstr "任务工具栏"
 
@@ -3723,8 +3721,8 @@ msgstr "图标文件夹"
 msgid "The directory from which icon files will be retrieved"
 msgstr "用来提取图标的文件夹"
 
-#: e2_option__default.c:182 e2_option__default.c:366 e2_option__default.c:375
-#: e2_toolbar.c:3363 e2_toolbar.c:3373
+#: e2_option__default.c:182 e2_option__default.c:372 e2_option__default.c:381
+#: e2_toolbar.c:3367 e2_toolbar.c:3377
 msgid "theme"
 msgstr "主题"
 
@@ -3823,11 +3821,11 @@ msgstr "当前行使用背景色"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "文件列表中的当前行将使用不同的背景色"
 
-#: e2_option__default.c:264 e2_output.c:4155 e2_view_dialog.c:2178
+#: e2_option__default.c:264 e2_output.c:4182 e2_view_dialog.c:2177
 msgid "use custom font"
 msgstr "使用自定义字体"
 
-#: e2_option__default.c:265 e2_output.c:4156 e2_view_dialog.c:2179
+#: e2_option__default.c:265 e2_output.c:4183 e2_view_dialog.c:2178
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -3956,183 +3954,203 @@ msgstr "网络套接字"
 msgid "Sockets are listed in this color"
 msgstr "网络套接字的显示颜色"
 
+#: e2_option__default.c:329
+#, fuzzy
+msgid "custom regular file color"
+msgstr "自定义背景颜色"
+
+#: e2_option__default.c:330
+#, fuzzy
+msgid "If enabled, regular files will be listed in the color below"
+msgstr "可执行文件的显示颜色"
+
 #: e2_option__default.c:332
+#, fuzzy
+msgid "regular file"
+msgstr "普通"
+
+#: e2_option__default.c:333
+#, fuzzy
+msgid "Regular file names are listed in this color"
+msgstr "可执行文件的显示颜色"
+
+#: e2_option__default.c:338
 msgid "custom background color"
 msgstr "自定义背景颜色"
 
-#: e2_option__default.c:333
+#: e2_option__default.c:339
 msgid "If enabled, the color specified below will be used for background"
 msgstr "使用下面指定的颜色作为背景色"
 
-#: e2_option__default.c:336
+#: e2_option__default.c:342
 msgid "background color"
 msgstr "背景色"
 
-#: e2_option__default.c:337
+#: e2_option__default.c:343
 msgid "Background color used instead of theme color"
 msgstr "代替主题背景色的颜色"
 
-#: e2_option__default.c:341
+#: e2_option__default.c:347
 msgid "active pane header color"
 msgstr "激活面板标题头的颜色"
 
-#: e2_option__default.c:342
+#: e2_option__default.c:348
 msgid ""
 "This color is used for the background of column headers in the active pane"
 msgstr "激活面板列标题的背景色"
 
-#: e2_option__default.c:344
+#: e2_option__default.c:350
 msgid "highlight color"
 msgstr "高亮"
 
-#: e2_option__default.c:345
+#: e2_option__default.c:351
 msgid ""
 "This color is used for the background of highlighed item-names and other text"
 msgstr "高亮显示的文件名或者其它文本的背景色"
 
-#: e2_option__default.c:366 e2_toolbar.c:3363
+#: e2_option__default.c:372 e2_toolbar.c:3367
 msgid "icon above label"
 msgstr "图标在文字上面"
 
-#: e2_option__default.c:366 e2_toolbar.c:3363
+#: e2_option__default.c:372 e2_toolbar.c:3367
 msgid "icon beside label"
 msgstr "图标在文字旁边"
 
-#: e2_option__default.c:366 e2_toolbar.c:3363
+#: e2_option__default.c:372 e2_toolbar.c:3367
 msgid "icon only"
 msgstr "仅图标"
 
-#: e2_option__default.c:366 e2_toolbar.c:3363
+#: e2_option__default.c:372 e2_toolbar.c:3367
 msgid "label only"
 msgstr "仅文字"
 
-#: e2_option__default.c:367 e2_toolbar.c:3364
+#: e2_option__default.c:373 e2_toolbar.c:3368
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' leaves most space for other things"
 msgstr "'%s' 为 Gtk 缺省设置, '%s' 为其它按钮留下更多的显示空间"
 
-#: e2_option__default.c:369
+#: e2_option__default.c:375
 msgid "toolbars button style"
 msgstr "工具栏按钮风格"
 
-#: e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_option__default.c:381 e2_toolbar.c:3377
 msgid "dnd"
 msgstr "拖曳"
 
-#: e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_option__default.c:381 e2_toolbar.c:3377
 msgid "menu"
 msgstr "菜单"
 
-#: e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_option__default.c:381 e2_toolbar.c:3377
 msgid "toolbar large"
 msgstr "大图标"
 
-#: e2_option__default.c:375 e2_toolbar.c:3373
+#: e2_option__default.c:381 e2_toolbar.c:3377
 msgid "toolbar small"
 msgstr "小图标"
 
-#: e2_option__default.c:376 e2_toolbar.c:3374
+#: e2_option__default.c:382 e2_toolbar.c:3378
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' is smallest, '%s' is largest"
 msgstr "'%s' 使用 Gtk 缺省风格, '%s' 最小, '%s' 最大"
 
-#: e2_option__default.c:378
+#: e2_option__default.c:384
 msgid "toolbars icon size"
 msgstr "工具栏图标大小"
 
-#: e2_option_tree.c:191 e2_option_tree.c:921
+#: e2_option_tree.c:194 e2_option_tree.c:924
 msgid "Press key"
 msgstr "按键盘上键"
 
-#: e2_option_tree.c:325
+#: e2_option_tree.c:328
 #, c-format
 msgid "Changing button %s may block normal operation"
 msgstr "改变键 %s 可能影响到一般操作"
 
-#: e2_option_tree.c:405
+#: e2_option_tree.c:408
 #, c-format
 msgid "That combination is assigned to '%s'"
 msgstr "组合键被设置为 '%s'"
 
-#: e2_option_tree.c:616
+#: e2_option_tree.c:619
 msgid "Press button"
 msgstr "按鼠标键"
 
-#: e2_option_tree.c:670
+#: e2_option_tree.c:673
 #, c-format
 msgid "%s is assigned to '%s'"
 msgstr "%s 被设置为 '%s'"
 
-#: e2_option_tree.c:1263
+#: e2_option_tree.c:1266
 #, c-format
 msgid "select icon for %s"
 msgstr "选择 %s 的图标"
 
-#: e2_option_tree.c:1517
+#: e2_option_tree.c:1520
 #, c-format
 msgid ""
 "Are you sure that you want to delete this row and <b>%d</b> other related "
 "%s ?"
 msgstr "确定要删除这一行和 <b>%d</b> 以及相关的 %s 吗?"
 
-#: e2_option_tree.c:1517
+#: e2_option_tree.c:1520
 msgid "action"
 msgstr "动作"
 
-#: e2_option_tree.c:1524
+#: e2_option_tree.c:1527
 #, c-format
 msgid "Are you sure that you want to delete this row and <b>%d</b> %s?"
 msgstr "确定要删除这一行和 <b>%d</b> %s 吗?"
 
-#: e2_option_tree.c:1908
+#: e2_option_tree.c:1911
 msgid "Remove the selected row"
 msgstr "删除所选择的行"
 
-#: e2_option_tree.c:1911 e2_option_tree_context_menu.c:338
+#: e2_option_tree.c:1914 e2_option_tree_context_menu.c:338
 msgid "_Select"
 msgstr "选择(_S)"
 
-#: e2_option_tree.c:1912 e2_option_tree_context_menu.c:339
+#: e2_option_tree.c:1915 e2_option_tree_context_menu.c:339
 msgid "Select one or more plugins to be added"
 msgstr "选择一个或者多个要增加的插件"
 
-#: e2_option_tree.c:1917
+#: e2_option_tree.c:1920
 msgid "_Child"
 msgstr "子项(_C)"
 
-#: e2_option_tree.c:1918
+#: e2_option_tree.c:1921
 msgid "Add a child row to the currently selected one"
 msgstr "新增子项到所选择的行"
 
-#: e2_option_tree.c:1921
+#: e2_option_tree.c:1924
 msgid "Add a row after the currently selected row in the tree"
 msgstr "新增行到当前选择行的后面"
 
-#: e2_option_tree.c:1936
+#: e2_option_tree.c:1939
 msgid "Tra_nslate"
 msgstr "翻译(_N)"
 
-#: e2_option_tree.c:1937
+#: e2_option_tree.c:1940
 msgid "Set all single-letter bindings to current locale"
 msgstr "按照当前本地化参数设置所有的单键绑定"
 
-#: e2_option_tree.c:1941
+#: e2_option_tree.c:1944
 msgid "Re_plicate"
 msgstr "重复(_P)"
 
-#: e2_option_tree.c:1942
+#: e2_option_tree.c:1945
 msgid "Import data of the other toolbar"
 msgstr "从其它的工具栏导入数据"
 
-#: e2_option_tree.c:1946
+#: e2_option_tree.c:1949
 msgid "Co_lor"
 msgstr "颜色(_L)"
 
-#: e2_option_tree.c:1947
+#: e2_option_tree.c:1950
 msgid "Show color-selection dialog"
 msgstr "显示颜色选取对话框"
 
-#: e2_option_tree.c:1950
+#: e2_option_tree.c:1953
 msgid "Get help on this option"
 msgstr "获取这个选项的帮助信息"
 
@@ -4192,242 +4210,242 @@ msgstr "菜单中不显示(_E)"
 msgid "Hide all listed plugins from menu"
 msgstr "在菜单中隐藏所有的插件"
 
-#: e2_output.c:1187
+#: e2_output.c:1207
 #, c-format
 msgid "Cannot find any output from process %s"
 msgstr "进程 %s 无输出信息"
 
-#: e2_output.c:1654
+#: e2_output.c:1674
 msgid "Do not show the output pane"
 msgstr "不显示到输出面板"
 
-#: e2_output.c:1657
+#: e2_output.c:1677
 msgid "_Toggle full"
 msgstr "全窗口(_T)"
 
-#: e2_output.c:1660
+#: e2_output.c:1680
 msgid "Toggle output pane size to/from the full window size"
 msgstr "切换输出面板的大小到全窗口"
 
-#: e2_output.c:1664
+#: e2_output.c:1684
 msgid "_New tab"
 msgstr "新 TAB(_N)"
 
-#: e2_output.c:1665
+#: e2_output.c:1685
 msgid "Add another tab for the output pane"
 msgstr "在输出面板上增加一个新的 TAB"
 
-#: e2_output.c:1668
+#: e2_output.c:1688
 msgid "_Remove tab"
 msgstr "移除 TAB(_R)"
 
-#: e2_output.c:1669
+#: e2_output.c:1689
 msgid "Close this this tab"
 msgstr "关闭这个 TAB"
 
-#: e2_output.c:1677
+#: e2_output.c:1697
 msgid "_Attach"
 msgstr "附着(_A)"
 
-#: e2_output.c:1678
+#: e2_output.c:1698
 msgid "Move this tab back to output pane"
 msgstr "将这个 TAB 移动到输出面板后面"
 
-#: e2_output.c:1685 e2_output.c:1689
+#: e2_output.c:1705 e2_output.c:1709
 msgid "C_lear"
 msgstr "清空(_L)"
 
-#: e2_output.c:1686 e2_output.c:1690
+#: e2_output.c:1706 e2_output.c:1710
 msgid "Clear this tab"
 msgstr "清空这个 TAB 的内容"
 
-#: e2_output.c:1694 e2_view_dialog.c:1034
+#: e2_output.c:1714 e2_view_dialog.c:1034
 msgid "Copy selected text"
 msgstr "复制所选的文字"
 
-#: e2_output.c:1702
+#: e2_output.c:1722
 msgid "Edit the tab contents"
 msgstr "修改 TAB 里的内同"
 
-#: e2_output.c:1744
+#: e2_output.c:1764
 msgid "Co_mmand output"
 msgstr "命令输出(_M)"
 
-#: e2_output.c:1745
+#: e2_output.c:1765
 msgid "Show output from a completed command"
 msgstr "显示已完成的命令的输出"
 
-#: e2_output.c:1758 e2_view_dialog.c:1045
+#: e2_output.c:1778 e2_view_dialog.c:1045
 msgid "_Settings"
 msgstr "设置(_S)"
 
-#: e2_output.c:1769
+#: e2_output.c:1789
 msgid "_Other"
 msgstr "其它(_O)"
 
-#: e2_output.c:1770
+#: e2_output.c:1790
 msgid "Open the configuration dialog at the output options page"
 msgstr "打开输出选项的配置对话框"
 
-#: e2_output.c:2707
+#: e2_output.c:2727
 msgid "output tabs"
 msgstr "输出 TAB"
 
-#: e2_output.c:3341
+#: e2_output.c:3361
 msgid "-- end-of-output --"
 msgstr "-- 输出完 --"
 
-#: e2_output.c:4110
+#: e2_output.c:4137
 msgid "show output pane when a new message appears"
 msgstr "有新的信息时, 显示输出面板"
 
-#: e2_output.c:4111
+#: e2_output.c:4138
 msgid "This will ensure you don't miss any messages"
 msgstr "这将避免遗漏任何信息"
 
-#: e2_output.c:4114
+#: e2_output.c:4141
 msgid "show output pane if the command line is focused"
 msgstr "当命令行获取焦点时, 显示输出信息"
 
-#: e2_output.c:4115
+#: e2_output.c:4142
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "当你输入命令时, 输出面板将被打开"
 
-#: e2_output.c:4119
+#: e2_output.c:4146
 msgid "hide output pane if the command line is unfocused"
 msgstr "当命令行失去焦点时, 隐藏输出面板"
 
-#: e2_output.c:4120
+#: e2_output.c:4147
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
 msgstr "当焦点移出命令行时, 输出面板将被自动关闭"
 
-#: e2_output.c:4123
+#: e2_output.c:4150
 msgid "show commands"
 msgstr "显示命令"
 
-#: e2_output.c:4124
+#: e2_output.c:4151
 msgid "This echoes the commands that are run and their exit value"
 msgstr "显示命令的运行和返回值"
 
-#: e2_output.c:4126
+#: e2_output.c:4153
 msgid "scroll to new output"
 msgstr "自动滚动"
 
-#: e2_output.c:4127
+#: e2_output.c:4154
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr "自动滚动输出面板的内容, 显示新信息"
 
-#: e2_output.c:4129
+#: e2_output.c:4156
 msgid "only scroll when really following"
 msgstr "跟随时滚动"
 
-#: e2_output.c:4130
+#: e2_output.c:4157
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr "手工滚动后, 将停止自动滚动"
 
-#: e2_output.c:4133
+#: e2_output.c:4160
 msgid "only scroll when new output is at the end"
 msgstr "新的输出完成后, 再滚动"
 
-#: e2_output.c:4134
+#: e2_output.c:4161
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
 msgstr "停止面板滚动, 如果在当前插入位置, 有另一个不同的进程显示字符"
 
-#: e2_output.c:4137
+#: e2_output.c:4164
 msgid "auto-selection boundary characters"
 msgstr "自动选择边界字符"
 
-#: e2_output.c:4138
+#: e2_output.c:4165
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr "字符, 通常是标点符号, 其中的任何一个都被设置成自动选择文字时的边界"
 
-#: e2_output.c:4140
+#: e2_output.c:4167
 msgid "everywhere"
 msgstr "任何地方"
 
-#: e2_output.c:4140
+#: e2_output.c:4167
 msgid "words"
 msgstr "断词"
 
-#: e2_output.c:4142
+#: e2_output.c:4169
 msgid "line wrap mode"
 msgstr "折行"
 
-#: e2_output.c:4143
+#: e2_output.c:4170
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "will only break the line between words"
 msgstr "如果模式为'无', 将使用水平滚动条. 模式'断词'时, 折行仅用于两个单词之间"
 
-#: e2_output.c:4146
+#: e2_output.c:4173
 msgid "left margin (pixels)"
 msgstr "左边距(像素)"
 
-#: e2_output.c:4147
+#: e2_output.c:4174
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的左边距"
 
-#: e2_output.c:4150
+#: e2_output.c:4177
 msgid "right margin (pixels)"
 msgstr "右边距(像素)"
 
-#: e2_output.c:4151
+#: e2_output.c:4178
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的右边距"
 
-#: e2_output.c:4159
+#: e2_output.c:4186
 msgid "custom output font"
 msgstr "自定义输出字体"
 
-#: e2_output.c:4160
+#: e2_output.c:4187
 msgid "This is the font used for text in the output pane"
 msgstr "定义输出面板中文字的字体"
 
-#: e2_output.c:4165
+#: e2_output.c:4192
 msgid "positive color"
 msgstr "颜色(正)"
 
-#: e2_output.c:4166
+#: e2_output.c:4193
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
 msgstr "用于成功的操作或者其它正面事件的信息的颜色"
 
-#: e2_output.c:4169
+#: e2_output.c:4196
 msgid "negative color"
 msgstr "颜色(反)"
 
-#: e2_output.c:4170
+#: e2_output.c:4197
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr "这个颜色用于错误, 警告和其它需要引起注意的信息"
 
-#: e2_output.c:4173
+#: e2_output.c:4200
 msgid "commands color"
 msgstr "命令文本颜色"
 
-#: e2_output.c:4174
+#: e2_output.c:4201
 msgid "This color is used for echoing issued commands"
 msgstr "这个颜色用于命令返回信息"
 
-#: e2_output.c:4177
+#: e2_output.c:4204
 msgid "unimportant color"
 msgstr "颜色(不重要)"
 
-#: e2_output.c:4178
+#: e2_output.c:4205
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -4442,7 +4460,7 @@ msgid "Directory name"
 msgstr "文件夹名"
 
 #: e2_ownership_dialog.c:383 e2_permissions_dialog.c:340
-#: e2_permissions_dialog.c:414 e2_vfs_dialog.c:1419
+#: e2_permissions_dialog.c:414
 msgid "User"
 msgstr "用户"
 
@@ -4450,58 +4468,58 @@ msgstr "用户"
 msgid "_Recurse"
 msgstr "含子文件夹(_R)"
 
-#: e2_pane.c:1717 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
+#: e2_pane.c:1721 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
 msgid "No trash directory is available"
 msgstr "无可用的回收站文件夹"
 
-#: e2_pane.c:1843
+#: e2_pane.c:1847
 msgid "_Edit places"
 msgstr "编辑位置(_E)"
 
-#: e2_pane.c:2222
+#: e2_pane.c:2226
 msgid "both"
 msgstr "两个面板"
 
-#: e2_pane.c:2621
+#: e2_pane.c:2625
 msgid "At startup, show a specific directory in this pane"
 msgstr "启动时, 在这个面板显示指定的文件夹"
 
-#: e2_pane.c:2622
+#: e2_pane.c:2626
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
 msgstr "启动时显示的下面定义的文件夹, 而不是用最后打开的文件夹"
 
-#: e2_pane.c:2627
+#: e2_pane.c:2631
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "面板 %d 的启动文件夹:"
 
-#: e2_pane.c:2629
+#: e2_pane.c:2633
 msgid "This is the directory to show in this pane, at session start"
 msgstr "这个文件夹将在程序启动时显示"
 
-#: e2_pane.c:2637
+#: e2_pane.c:2641
 msgid "this pane is like pane 2"
 msgstr "跟面板2 一样"
 
-#: e2_pane.c:2639 e2_pane.c:2649
+#: e2_pane.c:2643 e2_pane.c:2653
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
 "to pane %d"
 msgstr "这使面板 %d 的选项(不包括工具栏的放置选项和内容)应用到面板 %d"
 
-#: e2_pane.c:2647
+#: e2_pane.c:2651
 msgid "this pane is like pane 1"
 msgstr "跟面板1 一样"
 
-#: e2_pane.c:2660
+#: e2_pane.c:2664
 #, c-format
 msgid "show %s column"
 msgstr "显示 %s 列"
 
-#: e2_pane.c:2661
+#: e2_pane.c:2665
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "选择的列将被显示在面板 %d (duh ...)"
@@ -4738,7 +4756,7 @@ msgstr "无足够的授权修改 %s 的所有者"
 msgid "open with"
 msgstr "打开"
 
-#: e2_task.c:4309 e2_toolbar.c:3492 e2_toolbar.c:3496 e2p_upgrade.c:172
+#: e2_task.c:4309 e2_toolbar.c:3496 e2_toolbar.c:3500 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "命令:"
 
@@ -4756,7 +4774,7 @@ msgid "Cannot change ownership of %s"
 msgstr "无法修改 %s 的所有者"
 
 #: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1576
-#: e2p_shred.c:629 e2p_shred.c:645
+#: e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "无法删除 %s"
@@ -4811,7 +4829,7 @@ msgid "Cannot rename %s to %s"
 msgstr "无法把 %s 更名为 %s"
 
 #: e2_task_backend.c:1612 e2_task_backend.c:1728 e2p_crypt.c:2971
-#: e2p_shred.c:451 e2p_timeset.c:323
+#: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "无法获取 %s 的当前数据"
@@ -4831,502 +4849,502 @@ msgstr "无法获取 %s 的 权限"
 msgid "Cannot change ownership of all of %s"
 msgstr "无法修改 %s 的全部文件的所有者"
 
-#: e2_toolbar.c:395
+#: e2_toolbar.c:399
 msgid "Show _bar"
 msgstr "显示工具栏"
 
-#: e2_toolbar.c:397
+#: e2_toolbar.c:401
 msgid "Show _tooltips"
 msgstr "显示提示信息"
 
-#: e2_toolbar.c:399
+#: e2_toolbar.c:403
 msgid "Space _handling"
 msgstr "调整显示空间(_H)"
 
-#: e2_toolbar.c:402
+#: e2_toolbar.c:406
 msgid "_none"
 msgstr "无(_n)"
 
-#: e2_toolbar.c:404
+#: e2_toolbar.c:408
 msgid "_scrollbars"
 msgstr "滚动条(_S)"
 
-#: e2_toolbar.c:406
+#: e2_toolbar.c:410
 msgid "_rest button"
 msgstr "其它(_R)"
 
-#: e2_toolbar.c:408
+#: e2_toolbar.c:412
 msgid "_Placement"
 msgstr "放置(_P)"
 
-#: e2_toolbar.c:409
+#: e2_toolbar.c:413
 msgid "_horizontal"
 msgstr "水平(_H)"
 
-#: e2_toolbar.c:411
+#: e2_toolbar.c:415
 msgid "_Container"
 msgstr "包含(_C)"
 
-#: e2_toolbar.c:414
+#: e2_toolbar.c:418
 msgid "_main window"
 msgstr "主窗口(_M)"
 
-#: e2_toolbar.c:416
+#: e2_toolbar.c:420
 msgid "_both panes"
 msgstr "双面板(_B)"
 
-#: e2_toolbar.c:418
+#: e2_toolbar.c:422
 msgid "file-pane _1"
 msgstr "文件面板1(_1)"
 
-#: e2_toolbar.c:420
+#: e2_toolbar.c:424
 msgid "flle-pane _2"
 msgstr "文件面板2(_2)"
 
-#: e2_toolbar.c:436
+#: e2_toolbar.c:440
 msgid "_Reset order"
 msgstr "重置顺序(_R)"
 
-#: e2_toolbar.c:438
+#: e2_toolbar.c:442
 msgid "Buttons _relief"
 msgstr "按钮浮起"
 
-#: e2_toolbar.c:440
+#: e2_toolbar.c:444
 msgid "Buttons _same size"
 msgstr "按钮大小一致"
 
-#: e2_toolbar.c:442
+#: e2_toolbar.c:446
 msgid "_Button style"
 msgstr "按钮风格（_B）"
 
-#: e2_toolbar.c:446 e2_toolbar.c:460
+#: e2_toolbar.c:450 e2_toolbar.c:464
 msgid "_theme"
 msgstr "主题"
 
-#: e2_toolbar.c:448
+#: e2_toolbar.c:452
 msgid "icon _only"
 msgstr "仅图标(_O)"
 
-#: e2_toolbar.c:450
+#: e2_toolbar.c:454
 msgid "_label only"
 msgstr "仅文字(_L)"
 
-#: e2_toolbar.c:452
+#: e2_toolbar.c:456
 msgid "icon _above label"
 msgstr "图标在文字上面(_A)"
 
-#: e2_toolbar.c:454
+#: e2_toolbar.c:458
 msgid "icon _beside label"
 msgstr "图标在文字旁边(_B)"
 
-#: e2_toolbar.c:456
+#: e2_toolbar.c:460
 msgid "_Icon size"
 msgstr "图标大小(_I)"
 
-#: e2_toolbar.c:462
+#: e2_toolbar.c:466
 msgid "_menu"
 msgstr "菜单(_M)"
 
-#: e2_toolbar.c:464
+#: e2_toolbar.c:468
 msgid "toolbar _small"
 msgstr "小图标"
 
-#: e2_toolbar.c:466
+#: e2_toolbar.c:470
 msgid "toolbar _large"
 msgstr "大图标"
 
-#: e2_toolbar.c:468
+#: e2_toolbar.c:472
 msgid "_button"
 msgstr "按钮(_B)"
 
-#: e2_toolbar.c:470
+#: e2_toolbar.c:474
 msgid "drag '_n' drop"
 msgstr "拖曳(_N)"
 
-#: e2_toolbar.c:472
+#: e2_toolbar.c:476
 msgid "_dialog"
 msgstr "对话框(_D)"
 
-#: e2_toolbar.c:475
+#: e2_toolbar.c:479
 msgid "Bar i_tems"
 msgstr "工具栏项目(_T)"
 
-#: e2_toolbar.c:889
+#: e2_toolbar.c:893
 msgid "_Rest"
 msgstr "其它(_R)"
 
-#: e2_toolbar.c:891
+#: e2_toolbar.c:895
 msgid "Show a menu of hidden items"
 msgstr "显示被隐藏项目的菜单"
 
-#: e2_toolbar.c:2042
+#: e2_toolbar.c:2046
 msgid "not"
 msgstr "否"
 
-#: e2_toolbar.c:2073
+#: e2_toolbar.c:2077
 msgid "accessed"
 msgstr "最后访问时间"
 
-#: e2_toolbar.c:2073
+#: e2_toolbar.c:2077
 msgid "changed"
 msgstr "最后修改时间"
 
-#: e2_toolbar.c:2073
+#: e2_toolbar.c:2077
 msgid "modified"
 msgstr "最后修改时间"
 
-#: e2_toolbar.c:3311
+#: e2_toolbar.c:3315
 msgid "show the "
 msgstr "显示 "
 
-#: e2_toolbar.c:3312
+#: e2_toolbar.c:3316
 #, c-format
 msgid "This determines whether the %s is displayed or hidden"
 msgstr "这决定了 %s 将被显示或者隐藏"
 
-#: e2_toolbar.c:3319
+#: e2_toolbar.c:3323
 msgid " horizontal"
 msgstr " 水平"
 
-#: e2_toolbar.c:3320
+#: e2_toolbar.c:3324
 #, c-format
 msgid "This determines whether the %s is displayed horizontally or vertically"
 msgstr "这决定了 %s 将被水平显示或者垂直"
 
-#: e2_toolbar.c:3327
+#: e2_toolbar.c:3331
 #, c-format
 msgid "show tooltips for %s buttons"
 msgstr "显示 %s 的按钮提示信息"
 
-#: e2_toolbar.c:3328
+#: e2_toolbar.c:3332
 #, c-format
 msgid "If deactivated, tooltips will not be displayed for %s buttons"
 msgstr "如果不激活, %s 按钮的提示信息将不会被显示"
 
-#: e2_toolbar.c:3335
+#: e2_toolbar.c:3339
 #, c-format
 msgid ""
 "This determines the method for accessing %s elements that are hidden due to "
 "lack of screen-space"
 msgstr "定义如何访问因屏幕大小限制而被隐藏的内容 %s"
 
-#: e2_toolbar.c:3337
+#: e2_toolbar.c:3341
 msgid "use rest button"
 msgstr "使用 '其它' 按钮"
 
-#: e2_toolbar.c:3337
+#: e2_toolbar.c:3341
 msgid "use scrollbars"
 msgstr "显示滚动条"
 
-#: e2_toolbar.c:3338
+#: e2_toolbar.c:3342
 msgid "space handling"
 msgstr "显示调整"
 
-#: e2_toolbar.c:3345
+#: e2_toolbar.c:3349
 msgid " buttons have relief"
 msgstr " 按钮浮起"
 
-#: e2_toolbar.c:3347
+#: e2_toolbar.c:3351
 msgid ""
 "Buttons with relief show their outline continually, not just when 'moused'"
 msgstr "在按钮上显示浮起的外框, 不仅仅是被点击的时候"
 
-#: e2_toolbar.c:3354
+#: e2_toolbar.c:3358
 msgid " buttons are the same size"
 msgstr " 按钮大小一致"
 
-#: e2_toolbar.c:3356
+#: e2_toolbar.c:3360
 msgid ""
 "Equal-width buttons look good on a vertical bar, bad on a horizontal bar"
 msgstr "使用相等的图标宽度. 适合垂直工具栏, 不适合水平工具栏."
 
-#: e2_toolbar.c:3366
+#: e2_toolbar.c:3370
 msgid "button style"
 msgstr "按钮风格"
 
-#: e2_toolbar.c:3376
+#: e2_toolbar.c:3380
 msgid "icon size"
 msgstr "图标大小"
 
-#: e2_toolbar.c:3383
+#: e2_toolbar.c:3387
 msgid " container"
 msgstr " 包含"
 
-#: e2_toolbar.c:3384
+#: e2_toolbar.c:3388
 #, c-format
 msgid "This determines the 'box' into which the %s is placed"
 msgstr "定义放置 %s 的方法"
 
-#: e2_toolbar.c:3386
+#: e2_toolbar.c:3390
 msgid "both panes"
 msgstr "两个面板"
 
-#: e2_toolbar.c:3386
+#: e2_toolbar.c:3390
 msgid "file-pane 1"
 msgstr "文件面板1"
 
-#: e2_toolbar.c:3386
+#: e2_toolbar.c:3390
 msgid "file-pane 2"
 msgstr "文件面板2"
 
-#: e2_toolbar.c:3386
+#: e2_toolbar.c:3390
 msgid "main window"
 msgstr "主窗口"
 
-#: e2_toolbar.c:3394
+#: e2_toolbar.c:3398
 msgid " priority"
 msgstr "优先级"
 
-#: e2_toolbar.c:3395
+#: e2_toolbar.c:3399
 msgid "This determines the order of toolbars (0 = left or top)"
 msgstr "定义工具栏的顺序 (0 = 左或者上)"
 
-#: e2_toolbar.c:3416
+#: e2_toolbar.c:3420
 msgid "Copy items selected in the active pane to the other one"
 msgstr "复制当前面板上所选择的文件到另一个面板"
 
-#: e2_toolbar.c:3418
+#: e2_toolbar.c:3422
 msgid "Move items selected in the active pane to the other one"
 msgstr "移动当前面板上所选择的文件到另一个面板"
 
-#: e2_toolbar.c:3420
+#: e2_toolbar.c:3424
 msgid "Symlink items selected in the active pane to the other one"
 msgstr "链接当前面板上所选择的文件到另一个面板"
 
-#: e2_toolbar.c:3421
+#: e2_toolbar.c:3425
 msgid "Re_name.."
 msgstr "更名(_N).."
 
-#: e2_toolbar.c:3422
+#: e2_toolbar.c:3426
 msgid "Rename items selected in the active pane"
 msgstr "批量更名当前面板所选择的文件"
 
-#: e2_toolbar.c:3424
+#: e2_toolbar.c:3428
 msgid "Move items selected in the active pane to a trashbin"
 msgstr "移动当前面板所选择的文件到回收站"
 
-#: e2_toolbar.c:3425
+#: e2_toolbar.c:3429
 msgid "Create new directory(ies)"
 msgstr "建立新文件夹"
 
-#: e2_toolbar.c:3431
+#: e2_toolbar.c:3435
 msgid "Re_fresh"
 msgstr "刷新(_F)"
 
-#: e2_toolbar.c:3431
+#: e2_toolbar.c:3435
 msgid "Update pane contents"
 msgstr "刷新面板内容"
 
-#: e2_toolbar.c:3432
+#: e2_toolbar.c:3436
 msgid "_Switch"
 msgstr "开关(_S)"
 
-#: e2_toolbar.c:3433
+#: e2_toolbar.c:3437
 msgid "Toggle the active pane"
 msgstr "切换当前文件面板"
 
-#: e2_toolbar.c:3479
+#: e2_toolbar.c:3483
 msgid "Full"
 msgstr "放大"
 
-#: e2_toolbar.c:3479
+#: e2_toolbar.c:3483
 msgid "Maximize output pane"
 msgstr "输出面板最大化"
 
-#: e2_toolbar.c:3480
+#: e2_toolbar.c:3484
 msgid "Shrink"
 msgstr "缩小"
 
-#: e2_toolbar.c:3480
+#: e2_toolbar.c:3484
 msgid "Un-maximize output pane"
 msgstr "取消输出面板最大化"
 
-#: e2_toolbar.c:3481
+#: e2_toolbar.c:3485
 msgid "Hide"
 msgstr "隐藏"
 
-#: e2_toolbar.c:3481
+#: e2_toolbar.c:3485
 msgid "Hide output pane"
 msgstr "隐藏输出面板"
 
-#: e2_toolbar.c:3482
+#: e2_toolbar.c:3486
 msgid "Show"
 msgstr "显示"
 
-#: e2_toolbar.c:3482
+#: e2_toolbar.c:3486
 msgid "Show output pane"
 msgstr "显示输出面板"
 
-#: e2_toolbar.c:3483
+#: e2_toolbar.c:3487
 msgid "Clear"
 msgstr "清空"
 
-#: e2_toolbar.c:3483
+#: e2_toolbar.c:3487
 msgid "Clear output pane"
 msgstr "清空输出面板"
 
-#: e2_toolbar.c:3485
+#: e2_toolbar.c:3489
 msgid "Clear command line"
 msgstr "清空命令行"
 
-#: e2_toolbar.c:3485
+#: e2_toolbar.c:3489
 msgid "cl"
 msgstr "清空"
 
-#: e2_toolbar.c:3486
+#: e2_toolbar.c:3490
 msgid "Child processes"
 msgstr "子进程列表"
 
-#: e2_toolbar.c:3486
+#: e2_toolbar.c:3490
 msgid "ps"
 msgstr "子进程"
 
-#: e2_toolbar.c:3487
+#: e2_toolbar.c:3491
 msgid "Calculate disk usage of selected items"
 msgstr "计算已选择文件的磁盘占用空间"
 
-#: e2_toolbar.c:3487 e2p_du.c:375
+#: e2_toolbar.c:3491 e2p_du.c:375
 msgid "du"
 msgstr ""
 
-#: e2_toolbar.c:3488
+#: e2_toolbar.c:3492
 msgid "Find item in active pane, by name"
 msgstr "在当前面板中, 根据文件名进行查找"
 
-#: e2_toolbar.c:3489
+#: e2_toolbar.c:3493
 msgid "Open terminal at the active directory"
 msgstr "在当前文件夹打开终端程序"
 
-#: e2_toolbar.c:3489
+#: e2_toolbar.c:3493
 msgid "_X"
 msgstr "终端(_X)"
 
-#: e2_toolbar.c:3492 e2_toolbar.c:3496
+#: e2_toolbar.c:3496 e2_toolbar.c:3500
 msgid "Run command as root"
 msgstr "以Root用户执行命令"
 
-#: e2_toolbar.c:3492 e2_toolbar.c:3496
+#: e2_toolbar.c:3496 e2_toolbar.c:3500
 msgid "su.."
 msgstr ""
 
-#: e2_toolbar.c:3499
+#: e2_toolbar.c:3503
 msgid "Mount or unmount a device"
 msgstr "装载和卸载设备"
 
-#: e2_toolbar.c:3499
+#: e2_toolbar.c:3503
 msgid "mts.."
 msgstr "装载.."
 
-#: e2_toolbar.c:3502
+#: e2_toolbar.c:3506
 msgid "View/change configuration settings for this program"
 msgstr "查看或者改变程序的配置"
 
-#: e2_toolbar.c:3502
+#: e2_toolbar.c:3506
 msgid "_Settings.."
 msgstr "设置(_S).."
 
-#: e2_toolbar.c:3503
+#: e2_toolbar.c:3507
 msgid "Get information about this program"
 msgstr "获得该程序的帮助信息"
 
-#: e2_toolbar.c:3505
+#: e2_toolbar.c:3509
 msgid "Close this program"
 msgstr "关闭程序"
 
-#: e2_toolbar.c:3553 e2_toolbar.c:3618
+#: e2_toolbar.c:3557 e2_toolbar.c:3622
 msgid "Hide other pane"
 msgstr "隐藏其它面板"
 
-#: e2_toolbar.c:3553 e2_toolbar.c:3555 e2_toolbar.c:3558 e2_toolbar.c:3618
-#: e2_toolbar.c:3620 e2_toolbar.c:3623
+#: e2_toolbar.c:3557 e2_toolbar.c:3559 e2_toolbar.c:3562 e2_toolbar.c:3622
+#: e2_toolbar.c:3624 e2_toolbar.c:3627
 msgid "_Panes"
 msgstr "面板(_P)"
 
-#: e2_toolbar.c:3556 e2_toolbar.c:3559 e2_toolbar.c:3621 e2_toolbar.c:3624
+#: e2_toolbar.c:3560 e2_toolbar.c:3563 e2_toolbar.c:3625 e2_toolbar.c:3628
 msgid "Show other pane"
 msgstr "显示其它面板"
 
-#: e2_toolbar.c:3561 e2_toolbar.c:3626
+#: e2_toolbar.c:3565 e2_toolbar.c:3630
 msgid "Show _hidden"
 msgstr "隐藏(_H)"
 
-#: e2_toolbar.c:3562 e2_toolbar.c:3627
+#: e2_toolbar.c:3566 e2_toolbar.c:3631
 msgid "Display hidden items in this directory"
 msgstr "显示这个文件夹中的隐藏文件"
 
-#: e2_toolbar.c:3563 e2_toolbar.c:3628
+#: e2_toolbar.c:3567 e2_toolbar.c:3632
 msgid "Hide _hidden"
 msgstr "隐藏(_H)"
 
-#: e2_toolbar.c:3564 e2_toolbar.c:3629
+#: e2_toolbar.c:3568 e2_toolbar.c:3633
 msgid "Do not display hidden items in this directory"
 msgstr "不显示这个文件夹中的隐藏文件"
 
-#: e2_toolbar.c:3565 e2_toolbar.c:3567 e2_toolbar.c:3630 e2_toolbar.c:3632
+#: e2_toolbar.c:3569 e2_toolbar.c:3571 e2_toolbar.c:3634 e2_toolbar.c:3636
 msgid "Fil_ters"
 msgstr "过滤(_T)"
 
-#: e2_toolbar.c:3566 e2_toolbar.c:3631
+#: e2_toolbar.c:3570 e2_toolbar.c:3635
 msgid "Set rules for the items to be displayed"
 msgstr "设置文件的显示过滤规则"
 
-#: e2_toolbar.c:3568 e2_toolbar.c:3633
+#: e2_toolbar.c:3572 e2_toolbar.c:3637
 msgid "Set/remove rules for the items to be displayed"
 msgstr "关闭文件的显示过滤规则"
 
-#: e2_toolbar.c:3570 e2_toolbar.c:3635
+#: e2_toolbar.c:3574 e2_toolbar.c:3639
 msgid "_VFS"
 msgstr ""
 
-#: e2_toolbar.c:3571 e2_toolbar.c:3636
+#: e2_toolbar.c:3575 e2_toolbar.c:3640
 msgid "Show a virtual directory in this pane"
 msgstr "显示这个面板中的虚拟文件夹"
 
-#: e2_toolbar.c:3572 e2_toolbar.c:3637
+#: e2_toolbar.c:3576 e2_toolbar.c:3641
 msgid "_LocalFS"
 msgstr ""
 
-#: e2_toolbar.c:3580 e2_toolbar.c:3645
+#: e2_toolbar.c:3584 e2_toolbar.c:3649
 msgid "_Marks"
 msgstr "书签(_M)"
 
-#: e2_toolbar.c:3581 e2_toolbar.c:3646
+#: e2_toolbar.c:3585 e2_toolbar.c:3650
 msgid "Bookmarks"
 msgstr "书签"
 
-#: e2_toolbar.c:3583 e2_toolbar.c:3648
+#: e2_toolbar.c:3587 e2_toolbar.c:3652
 msgid "Add the current directory to the top of the bookmarks list"
 msgstr "新增当前文件夹到书签列表的第一项"
 
-#: e2_toolbar.c:3587 e2_toolbar.c:3652
+#: e2_toolbar.c:3591 e2_toolbar.c:3656
 msgid "Add the current directory to the bottom of the bookmarks list"
 msgstr "新增当前文件夹到书签列表的最后"
 
-#: e2_toolbar.c:3590 e2_toolbar.c:3655
+#: e2_toolbar.c:3594 e2_toolbar.c:3659
 msgid "_Edit bookmarks"
 msgstr "管理书签(_E)"
 
-#: e2_toolbar.c:3591 e2_toolbar.c:3656
+#: e2_toolbar.c:3595 e2_toolbar.c:3660
 msgid "Open the bookmarks configuration dialog"
 msgstr "打开书签管理对话框"
 
-#: e2_toolbar.c:3594 e2_toolbar.c:3597 e2_toolbar.c:3659 e2_toolbar.c:3665
+#: e2_toolbar.c:3598 e2_toolbar.c:3601 e2_toolbar.c:3663 e2_toolbar.c:3669
 msgid "M_irror"
 msgstr "转到(_I)"
 
-#: e2_toolbar.c:3595 e2_toolbar.c:3598 e2_toolbar.c:3660 e2_toolbar.c:3666
+#: e2_toolbar.c:3599 e2_toolbar.c:3602 e2_toolbar.c:3664 e2_toolbar.c:3670
 msgid "Go to directory shown in other pane"
 msgstr "转到在另一个面板中的当前文件夹"
 
-#: e2_toolbar.c:3600 e2_toolbar.c:3661 e2_toolbar.c:3669
+#: e2_toolbar.c:3604 e2_toolbar.c:3665 e2_toolbar.c:3673
 msgid "Go to previous directory in history"
 msgstr "转到历史上的前一个文件夹"
 
-#: e2_toolbar.c:3601 e2_toolbar.c:3662 e2_toolbar.c:3668
+#: e2_toolbar.c:3605 e2_toolbar.c:3666 e2_toolbar.c:3672
 msgid "Go up to parent directory"
 msgstr "转到上一级文件夹"
 
-#: e2_toolbar.c:3602 e2_toolbar.c:3663 e2_toolbar.c:3667
+#: e2_toolbar.c:3606 e2_toolbar.c:3667 e2_toolbar.c:3671
 msgid "Go to next directory in history"
 msgstr "转到历史上的下一个文件夹"
 
@@ -5359,7 +5377,7 @@ msgstr "面板2 导航"
 msgid "Toggle display of hidden directories"
 msgstr "显示/不显示隐藏文件夹"
 
-#: e2_utf8.c:465
+#: e2_utf8.c:472
 msgid "unknown encoding"
 msgstr "未知编码"
 
@@ -5387,187 +5405,9 @@ msgstr "未找到匹配的 '}'"
 msgid "No matching '$' found in action text"
 msgstr "未找到匹配的 '$'"
 
-#: e2_utils.c:4006
+#: e2_utils.c:4012
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr ""
-
-#: e2_vfs_dialog.c:573
-msgid "You must specify the site to open"
-msgstr ""
-
-#: e2_vfs_dialog.c:608
-#, fuzzy, c-format
-msgid "Cannot open '%s'"
-msgstr "无法运行 '%s'"
-
-#: e2_vfs_dialog.c:691
-msgid "vfs data"
-msgstr ""
-
-#: e2_vfs_dialog.c:709
-#, fuzzy
-msgid "alias"
-msgstr "别名"
-
-#: e2_vfs_dialog.c:714
-msgid "You may provide a short-name for use in labels and matching"
-msgstr ""
-
-#: e2_vfs_dialog.c:726
-msgid "protocol"
-msgstr ""
-
-#: e2_vfs_dialog.c:731 e2_vfs_dialog.c:737 e2p_find.c:3597
-msgid "type"
-msgstr "类型"
-
-#: e2_vfs_dialog.c:772
-#, fuzzy
-msgid "host name"
-msgstr "并且, 名字:"
-
-#: e2_vfs_dialog.c:772
-#, fuzzy
-msgid "parent identifier"
-msgstr "识别"
-
-#: e2_vfs_dialog.c:778
-msgid "Domain name of the site e.g. your.computer.net"
-msgstr ""
-
-#: e2_vfs_dialog.c:779
-msgid "Full URI for the parent space, if any"
-msgstr ""
-
-#: e2_vfs_dialog.c:793
-#, fuzzy
-msgid "path to archive"
-msgstr "zip"
-
-#: e2_vfs_dialog.c:799
-#, fuzzy
-msgid "initial directory"
-msgstr "在文件夹中(_D)"
-
-#: e2_vfs_dialog.c:867
-#, fuzzy
-msgid "Absolute path of directory at the site to be initially displayed"
-msgstr "设置文件的显示过滤规则"
-
-#: e2_vfs_dialog.c:871
-msgid "Absolute path of archive in this space, including archive's full name"
-msgstr ""
-
-#: e2_vfs_dialog.c:876
-msgid "Path to be initially displayed, if any"
-msgstr ""
-
-#: e2_vfs_dialog.c:894
-msgid "user"
-msgstr ""
-
-#: e2_vfs_dialog.c:900
-msgid ""
-"Username needed to log on to the specified site, or leave blank for anonymous"
-msgstr ""
-
-#: e2_vfs_dialog.c:914
-#, fuzzy
-msgid "password"
-msgstr "输入口令:"
-
-#: e2_vfs_dialog.c:924
-msgid ""
-"Password needed to log on to the specified site, or leave blank for email "
-"address"
-msgstr ""
-
-#: e2_vfs_dialog.c:928
-msgid "Password, if any, needed to open the archive"
-msgstr ""
-
-#: e2_vfs_dialog.c:951
-#, fuzzy
-msgid "port"
-msgstr "导出"
-
-#: e2_vfs_dialog.c:957
-msgid "Port number to access the specified site, or leave blank for default"
-msgstr ""
-
-#: e2_vfs_dialog.c:990
-msgid "Show data for previously-used place with same protocol/type"
-msgstr ""
-
-#: e2_vfs_dialog.c:994
-msgid "Show data for next-used place with same protocol/type"
-msgstr ""
-
-#: e2_vfs_dialog.c:1003 e2_vfs_dialog.c:1551
-msgid "_Local"
-msgstr ""
-
-#: e2_vfs_dialog.c:1004 e2_vfs_dialog.c:1553
-msgid "Revert to native filesystem"
-msgstr ""
-
-#: e2_vfs_dialog.c:1010
-#, fuzzy
-msgid "Store this data but do not open the place"
-msgstr "将这个 TAB 移动到输出面板后面"
-
-#: e2_vfs_dialog.c:1014
-#, fuzzy
-msgid "Open this place"
-msgstr "替换找到的"
-
-#: e2_vfs_dialog.c:1400
-#, fuzzy
-msgid "vfs history"
-msgstr "历史"
-
-#: e2_vfs_dialog.c:1416
-msgid "Protocol"
-msgstr ""
-
-#: e2_vfs_dialog.c:1417
-msgid "Host"
-msgstr ""
-
-#: e2_vfs_dialog.c:1420
-#, fuzzy
-msgid "Password"
-msgstr "断词"
-
-#: e2_vfs_dialog.c:1421
-#, fuzzy
-msgid "Port"
-msgstr "横排(_P)"
-
-#: e2_vfs_dialog.c:1422
-#, fuzzy
-msgid "Alias"
-msgstr "别名"
-
-#: e2_vfs_dialog.c:1541
-#, fuzzy
-msgid "Delete the selected row"
-msgstr "删除所选择的行"
-
-#: e2_vfs_dialog.c:1547
-#, fuzzy
-msgid "Add a row after the selected one"
-msgstr "新增行到当前所选行的后面"
-
-#: e2_vfs_dialog.c:1562
-#, fuzzy
-msgid "Open the place described in the selected row"
-msgstr "新增子项到所选择的行"
-
-#: e2_vfs_dialog.c:1568
-#, fuzzy
-msgid "Save and close"
-msgstr "另存为.."
 
 #: e2_view_dialog.c:484 e2p_crypt.c:1576 e2p_crypt.c:1901
 #, c-format
@@ -5662,65 +5502,65 @@ msgstr "折行(_W)"
 msgid "Show the search options bar"
 msgstr "显示查找选项"
 
-#: e2_view_dialog.c:2164
+#: e2_view_dialog.c:2163
 msgid "wrap text"
 msgstr "折行"
 
-#: e2_view_dialog.c:2165
+#: e2_view_dialog.c:2164
 msgid "This causes the view window to open with text-wrapping enabled"
 msgstr "查看窗口中的文字自动折行显示"
 
-#: e2_view_dialog.c:2169
+#: e2_view_dialog.c:2168
 msgid "window width"
 msgstr "窗口宽度"
 
-#: e2_view_dialog.c:2170
+#: e2_view_dialog.c:2169
 msgid ""
 "The view window will default to showing this many characters per line (but "
 "the the displayed buttons may make it wider than this)"
 msgstr "缺省情况下, 查看窗口每行显示的字符较多(但显示的按钮可能使它更宽些)"
 
-#: e2_view_dialog.c:2174
+#: e2_view_dialog.c:2173
 msgid "window height"
 msgstr "窗口高度"
 
-#: e2_view_dialog.c:2175
+#: e2_view_dialog.c:2174
 msgid "The view window will default to showing this many lines of text"
 msgstr "缺省情况下, 查看窗口将显示较多的行"
 
-#: e2_view_dialog.c:2182
+#: e2_view_dialog.c:2181
 msgid "custom font for viewing files"
 msgstr "自定义查看文件用的字体"
 
-#: e2_view_dialog.c:2183
+#: e2_view_dialog.c:2182
 msgid "This is the font used for text in each view dialog"
 msgstr "这是用于文件查看对话框的字体"
 
-#: e2_view_dialog.c:2186
+#: e2_view_dialog.c:2185
 msgid "case sensitive searches"
 msgstr "查找时大小写敏感"
 
-#: e2_view_dialog.c:2187
+#: e2_view_dialog.c:2186
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
 msgstr "第一次打开查看窗口的查找功能时, 大小写敏感"
 
-#: e2_view_dialog.c:2191
+#: e2_view_dialog.c:2190
 msgid "show last search string"
 msgstr "显示最后一次查找的字符串"
 
-#: e2_view_dialog.c:2192
+#: e2_view_dialog.c:2191
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
 msgstr "打开查找功能时, 最后一次查找的字符串将被显示在输入框中"
 
-#: e2_view_dialog.c:2196
+#: e2_view_dialog.c:2195
 msgid "keep search history"
 msgstr "保存查找历史"
 
-#: e2_view_dialog.c:2197
+#: e2_view_dialog.c:2196
 msgid "This causes search strings to be remembered between sessions"
 msgstr "记住查找的字符串"
 
@@ -5734,7 +5574,7 @@ msgstr "显示 & %d 隐藏 "
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s 已选择 %d 总数 %d %s 当前文件夹 %s"
 
-#: e2_window.c:1723
+#: e2_window.c:1721
 msgid "WhoAmI"
 msgstr ""
 
@@ -5944,7 +5784,7 @@ msgstr "复制选择的文件, 保留时间属性, 并显示详细的进程"
 msgid "Compression failed for file %s"
 msgstr "压缩文件失败 %s"
 
-#: e2p_crypt.c:1637 e2p_crypt.c:3008 e2p_shred.c:486
+#: e2p_crypt.c:1637 e2p_crypt.c:3008 e2p_shred.c:494
 #, c-format
 msgid "Cannot open '%s' for writing"
 msgstr "无法打开文件 '%s' 写入"
@@ -6466,6 +6306,10 @@ msgstr ""
 msgid "sticky"
 msgstr "延伸"
 
+#: e2p_find.c:3597
+msgid "type"
+msgstr "类型"
+
 #: e2p_find.c:3603
 msgid "and which:"
 msgstr "并且, 类型:"
@@ -6864,20 +6708,20 @@ msgstr "分隔符"
 msgid "String comprising all chars considered to be a 'separator'"
 msgstr "比较字符串时, 视为分隔符"
 
-#: e2p_shred.c:768
+#: e2p_shred.c:789
 #, c-format
 msgid "Failed to remove %s"
 msgstr "无法删除 %s"
 
-#: e2p_shred.c:888
+#: e2p_shred.c:909
 msgid "shred"
 msgstr ""
 
-#: e2p_shred.c:889
+#: e2p_shred.c:910
 msgid "_Shred"
 msgstr "销毁(_S)"
 
-#: e2p_shred.c:890
+#: e2p_shred.c:911
 msgid "Thoroughly delete selected items"
 msgstr "彻底删除所选择的文件"
 
@@ -7145,6 +6989,82 @@ msgstr "用文本查看器 %s 打开第一个所选的文件"
 #: e2p_view.c:83
 msgid "view_with_plugin"
 msgstr "用插件查看"
+
+#, fuzzy, c-format
+#~ msgid "Cannot open '%s'"
+#~ msgstr "无法运行 '%s'"
+
+#, fuzzy
+#~ msgid "alias"
+#~ msgstr "别名"
+
+#, fuzzy
+#~ msgid "host name"
+#~ msgstr "并且, 名字:"
+
+#, fuzzy
+#~ msgid "parent identifier"
+#~ msgstr "识别"
+
+#, fuzzy
+#~ msgid "path to archive"
+#~ msgstr "zip"
+
+#, fuzzy
+#~ msgid "initial directory"
+#~ msgstr "在文件夹中(_D)"
+
+#, fuzzy
+#~ msgid "Absolute path of directory at the site to be initially displayed"
+#~ msgstr "设置文件的显示过滤规则"
+
+#, fuzzy
+#~ msgid "password"
+#~ msgstr "输入口令:"
+
+#, fuzzy
+#~ msgid "port"
+#~ msgstr "导出"
+
+#, fuzzy
+#~ msgid "Store this data but do not open the place"
+#~ msgstr "将这个 TAB 移动到输出面板后面"
+
+#, fuzzy
+#~ msgid "Open this place"
+#~ msgstr "替换找到的"
+
+#, fuzzy
+#~ msgid "vfs history"
+#~ msgstr "历史"
+
+#, fuzzy
+#~ msgid "Password"
+#~ msgstr "断词"
+
+#, fuzzy
+#~ msgid "Port"
+#~ msgstr "横排(_P)"
+
+#, fuzzy
+#~ msgid "Alias"
+#~ msgstr "别名"
+
+#, fuzzy
+#~ msgid "Delete the selected row"
+#~ msgstr "删除所选择的行"
+
+#, fuzzy
+#~ msgid "Add a row after the selected one"
+#~ msgstr "新增行到当前所选行的后面"
+
+#, fuzzy
+#~ msgid "Open the place described in the selected row"
+#~ msgstr "新增子项到所选择的行"
+
+#, fuzzy
+#~ msgid "Save and close"
+#~ msgstr "另存为.."
 
 #~ msgid "confirm bookmark delete"
 #~ msgstr "确认删除书签"
