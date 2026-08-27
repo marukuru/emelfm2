@@ -77,7 +77,8 @@ jobs:
             export DEB_CFLAGS_APPEND="-Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-error=return-mismatch -Wno-error=declaration-missing-parameter-type"
             dpkg-buildpackage -us -uc -b
             mkdir -p /workspace/dist
-            mv /emelfm2_*.deb /workspace/dist/ || mv ../emelfm2_*.deb /workspace/dist/
+            find / -maxdepth 2 -name 'emelfm2_*.deb' 2>/dev/null | xargs -I{} mv {} /workspace/dist/ || true
+            find .. -maxdepth 1 -name 'emelfm2_*.deb' 2>/dev/null | xargs -I{} mv {} /workspace/dist/ || true
             cd /workspace/dist
             for file in *.deb; do
               mv \"\$file\" \"emelfm2_\${VERSION_STR}_\${BUILD_NUM}_\${CODENAME}.deb\"
@@ -88,7 +89,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: deb-${{ matrix.ubuntu_version }}
-          path: dist/*.deb
+          path: ${{ github.workspace }}/dist/*.deb
 
   build-appimage:
     needs: release-info
@@ -114,15 +115,18 @@ jobs:
       
       - name: Build AppImage
         run: |
-          curl -LO https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage
-          curl -LO https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh
-          chmod +x linuxdeploy-x86_64.AppImage linuxdeploy-plugin-gtk.sh
-          
-          export OUTPUT="emelfm2_${{ needs.release-info.outputs.version }}_${{ github.run_number }}_ubuntu-22.04.AppImage"
-          ./linuxdeploy-x86_64.AppImage --appdir AppDir --plugin gtk --output appimage
+          mkdir -p tools
+          curl -L https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage -o tools/linuxdeploy-x86_64.AppImage
+          curl -L https://raw.githubusercontent.com/linuxdeploy/linuxdeploy-plugin-gtk/master/linuxdeploy-plugin-gtk.sh -o tools/linuxdeploy-plugin-gtk.sh
+          chmod +x tools/linuxdeploy-x86_64.AppImage tools/linuxdeploy-plugin-gtk.sh
+          export LINUXDEPLOY_PLUGIN_GTK="$PWD/tools/linuxdeploy-plugin-gtk.sh"
+
+          APPIMAGE_NAME="emelfm2_${{ needs.release-info.outputs.version }}_${{ github.run_number }}.AppImage"
+          export OUTPUT="${APPIMAGE_NAME}"
+          ./tools/linuxdeploy-x86_64.AppImage --appdir AppDir --plugin gtk --output appimage
           mkdir -p dist
-          mv *.AppImage dist/
-          
+          mv "${APPIMAGE_NAME}" dist/
+
       - name: Upload AppImage artifact
         uses: actions/upload-artifact@v4
         with:
@@ -140,7 +144,10 @@ jobs:
         with:
           path: artifacts
           merge-multiple: true
-      
+
+      - name: List artifacts
+        run: find artifacts -type f
+
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
@@ -148,5 +155,7 @@ jobs:
           name: "Release ${{ needs.release-info.outputs.version }} (Build ${{ github.run_number }})"
           body_path: artifacts/release_notes.md
           files: |
+            artifacts/**/*.deb
+            artifacts/**/*.AppImage
             artifacts/*.deb
             artifacts/*.AppImage
