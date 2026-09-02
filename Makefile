@@ -435,7 +435,7 @@ clean_plugins:
 
 $(TARGET): $(OBJECTS)
 	@echo "linking binary '$(TARGET)'"
-	@$(CC) $(LDFLAGS) $(OBJECTS) -o $(TARGET) -Wl,--as-needed $(lLIBS)
+	@$(CC) -rdynamic $(LDFLAGS) $(OBJECTS) -o $(TARGET) -Wl,--as-needed $(lLIBS)
 ifneq ($(STRIP),0)
 	@echo "stripping binary '$(TARGET)'"
 	@strip $(TARGET)
