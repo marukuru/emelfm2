@@ -3298,13 +3298,7 @@ gboolean e2_fileview_prepare_list (ViewInfo *view)
 				//this has same effect as unref existing filtermodel
 				gtk_tree_view_set_model (GTK_TREE_VIEW (view->treeview), NULL);
 				//arrange to cleanup the old store at an idle time
-				gboolean newtimer = (app.used_stores == NULL);
-				app.used_stores = g_slist_append (app.used_stores, view->store);
-				if (newtimer)
-				{
-					printd (DEBUG, "setup to clear stores later");
-					g_idle_add (e2_filestore_clear_old_stores, NULL);
-				}
+				e2_filestore_queue_old_store (view->store);
 
 				view->store = newstore;
 				view->model = gtk_tree_model_filter_new (GTK_TREE_MODEL (newstore), NULL);
@@ -3492,13 +3486,7 @@ gboolean e2_fileview_prepare_list (ViewInfo *view)
 		g_object_unref (G_OBJECT (store));
 		g_object_unref (G_OBJECT (view->model));
 		//arrange to cleanup the old store at an idle time
-		gboolean newtimer = (app.used_stores == NULL);
-		app.used_stores = g_slist_append (app.used_stores, view->store);
-		if (newtimer)
-		{
-			printd (DEBUG, "setup to clear stores later");
-			g_idle_add (e2_filestore_clear_old_stores, NULL);
-		}
+		e2_filestore_queue_old_store (view->store);
 		view->store = store;
 		sortable = GTK_TREE_SORTABLE (store);
 		//allow non-sorted display using GTK_TREE_SORTABLE_DEFAULT_SORT_COLUMN_ID

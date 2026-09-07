@@ -811,7 +811,7 @@ typedef struct _E2_MainData
 	GList *colorchunks;
 #endif
 	GSList *mainloops;			//local mainloop information in E2_MainLoop's
-	GSList *used_stores;		//for deferred liststore clearing
+	GSList *used_stores;		//private to filestore's mutex-protected deferred cleanup
 	GList *taskhistory;
 //#ifndef E2_FILES_UTF8ONLY
 //	gboolean utf8_filenames;	//TRUE when filesystem coding is utf-8 or ascii only

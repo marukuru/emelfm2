@@ -132,6 +132,7 @@ typedef struct _E2_RefreshInfo
 //#endif
 
 static gpointer _e2_filestore_update (ViewInfo *view);
+static pthread_mutex_t old_stores_mutex = PTHREAD_MUTEX_INITIALIZER;
 
 #ifdef E2_SELTXT_RECOLOR
 extern GDKCOLOR selectedtext;
@@ -939,13 +940,21 @@ void e2_filestore_start_refresh_checks (void)
 
 @return FALSE, to stop the callbacks
 */
-gboolean e2_filestore_clear_old_stores (gpointer user_data)
+static gboolean _e2_filestore_clear_old_stores (gpointer user_data)
 {
 	GSList *tmp;
+	pthread_mutex_lock (&old_stores_mutex);
+	GSList *stores = app.used_stores;
+	app.used_stores = NULL;
+	pthread_mutex_unlock (&old_stores_mutex);
+
+	//Own this detached batch; producers may queue the next one meanwhile.
+	//Never wait for the UI lock while holding the queue mutex.
+	CLOSEBGL
 #ifdef DEBUG_MESSAGES
-	gint debug = g_slist_length (app.used_stores);
+	gint debug = g_slist_length (stores);
 #endif
-	for (tmp = app.used_stores; tmp != NULL; tmp = tmp->next)
+	for (tmp = stores; tmp != NULL; tmp = tmp->next)
 	{
 		GtkListStore *store = tmp->data;
 		GtkTreeModel *mdl = GTK_TREE_MODEL (store);
@@ -965,10 +974,25 @@ gboolean e2_filestore_clear_old_stores (gpointer user_data)
 		//CHECKME clear filtermodel, if any ?
 		g_object_unref (G_OBJECT (store));
 	}
-	g_slist_free (app.used_stores);
-	app.used_stores = NULL;
+	OPENBGL
+	g_slist_free (stores);
 	printd (DEBUG, "%d old liststore(s) cleared", debug);
 	return FALSE;
+}
+/**
+@brief transfer an owned store reference to deferred cleanup
+May be called by workers or with the UI lock held. The caller must no longer
+use the store after queuing it; no extra reference is taken here.
+@param store old store whose FileInfo payloads and reference are to be released
+*/
+void e2_filestore_queue_old_store (GtkListStore *store)
+{
+	pthread_mutex_lock (&old_stores_mutex);
+	gboolean newtimer = (app.used_stores == NULL);
+	app.used_stores = g_slist_prepend (app.used_stores, store);
+	if (newtimer)
+		g_idle_add (_e2_filestore_clear_old_stores, NULL);
+	pthread_mutex_unlock (&old_stores_mutex);
 }
 /**
 @brief create and populate filelist-compatible list store with rows for each item in @a entries
@@ -1960,14 +1984,8 @@ loopstart:
 					gtk_tree_sortable_set_sort_column_id (sortable, view->sort_column,
 						view->sort_order);
 					OPENBGL
-					gboolean newtimer = (app.used_stores == NULL);
 			//CHECKME not all entries' member->data are cleared with newstore
-					app.used_stores = g_slist_append (app.used_stores, newstore);
-					if (newtimer)
-					{
-						printd (DEBUG, "setup to clear stores later");
-						g_idle_add (e2_filestore_clear_old_stores, NULL);
-					}
+					e2_filestore_queue_old_store (newstore);
 				}
 				else //newstore = NULL
 				{

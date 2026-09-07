@@ -59,7 +59,7 @@ void e2_filestore_enable_refresh (void);
 gboolean e2_filestore_request_refresh (gchar *dir, gboolean immediate);
 //void e2_filestore_request_focus (GtkWidget *focus_wid);
 gboolean e2_filestore_check_dirty (gpointer userdata);
-gboolean e2_filestore_clear_old_stores (gpointer user_data);
+void e2_filestore_queue_old_store (GtkListStore *store);
 GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view) G_GNUC_MALLOC;
 GtkListStore *e2_filestore_make (void) G_GNUC_MALLOC;
 #ifdef E2_VFS
