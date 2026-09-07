@@ -200,13 +200,6 @@ typedef struct _E2_CDwatch
 	E2_CDType *completed_flag;	//store for flag to set when completion detected
 } E2_CDwatch;
 
-typedef struct _E2_DRead
-{
-	pthread_t aid;	//read thread ID, 0 when stopped
-	pthread_t mid;	//monitor thread ID, 0 when stopped
-	GtkWidget *dialog;	//too-slow dialog widget, or NULL
-} E2_DRead;
-
 typedef struct _E2_SelectPattern
 {
 	GPatternSpec *pspec;

@@ -81,6 +81,20 @@ typedef struct _E2_DRFuncArgs
 	GDestroyNotify free_data_func;	//function to call at end of scan, to clean @a cb_data, or NULL
 } E2_DRFuncArgs;
 
+typedef struct _E2_DRead
+{
+	pthread_t aid; //reader ID, retained until joined by the caller
+	pthread_t mid; //joinable monitor ID, owned only by the caller
+	GtkWidget *dialog; //protected by the UI lock
+	E2_DRFuncArgs *args;
+	pthread_mutex_t mutex;
+	pthread_cond_t condition;
+	gboolean stop; //protected by mutex
+	gboolean read_finished; //protected by mutex, set before the reader exits
+	gboolean read_joined; //caller only
+	gboolean monitor_started; //caller only
+} E2_DRead;
+
 #if 0
 /**
 @brief check if any x permission flag is set in @a mode
@@ -1466,128 +1480,187 @@ static gpointer _e2_fs_read_mounted_dir (E2_DRFuncArgs *data)
 	return entries;
 }
 /**
-@brief callback for responses from too-slow-dialog @a dialog
-This approach eliminates gtk_main() (which hates being aborted) from the dialog
-@param dialog the dialog from which the response was initiated
-@param response the response enumerator
-@param data task-data specified when the callback was connected
-@return
+@brief mark reader completion before its thread ID can be reaped
+Also runs when the reader is cancelled. The mutex serializes completion with
+requests to cancel the reader, so callbacks cannot cancel a reused thread ID.
+*/
+static void _e2_fs_read_finished (gpointer user_data)
+{
+	E2_DRead *data = user_data;
+	pthread_mutex_lock (&data->mutex);
+	data->read_finished = TRUE;
+	pthread_cond_broadcast (&data->condition);
+	pthread_mutex_unlock (&data->mutex);
+}
+
+static gpointer _e2_fs_read_mounted_thread (gpointer user_data)
+{
+	E2_DRead *data = user_data;
+	gpointer entries;
+	pthread_cleanup_push (_e2_fs_read_finished, data);
+	entries = _e2_fs_read_mounted_dir (data->args);
+	pthread_cleanup_pop (1);
+	return entries;
+}
+
+static void _e2_fs_read_dialog_destroyed (GtkWidget *dialog, E2_DRead *data)
+{
+	data->dialog = NULL;
+	g_signal_handlers_disconnect_by_data (dialog, data);
+}
+
+/**
+@brief handle a slow-directory-read dialog response
+The monitor exits cooperatively; only the caller joins its child threads.
 */
 static void _e2_fs_slowread_response_cb (GtkDialog *dialog, gint response,
 	E2_DRead *data)
 {
-	pthread_t ID;
-	GtkWidget *wid;
 	CLOSEBGL
-	switch (response)
+	pthread_mutex_lock (&data->mutex);
+	gboolean finished = data->stop || data->read_finished;
+	if (!finished && response == GTK_RESPONSE_NO)
+		pthread_cancel (data->aid);
+	if (response == E2_RESPONSE_USER1)
 	{
-		case GTK_RESPONSE_NO:	//abort the operation
-			ID = data->aid;
-			data->aid = 0;
-			if (ID > 0)	//operation still not finished
-			{
-				pthread_cancel (ID); //shutdown action thread
-				printd (DEBUG,"dir read thread aborted by user");
-				//after this cancellation, the main thread will cleanup
-			}
-			break;
-		case E2_RESPONSE_USER1:	//no more reminders
-//CHECKME pthread_mutex_lock (&?_mutex);
-			wid = data->dialog; 	//race-management
-			data->dialog = NULL;
-			if (GTK_IS_WIDGET (wid))
-				gtk_widget_destroy (wid);	//== (GTK_WIDGET(dialog)
-//			pthread_mutex_unlock (&?_mutex);
-			//if the racy action-thread ends about now, signal to main
-			//thread that it doesn't need to abort the monitor thread
-			ID = data->mid;
-			data->mid = 0;
-			if (ID > 0) //race-management
-				pthread_cancel (ID);
-			break;
-		default:
-//		case GTK_RESPONSE_YES:	//keep waiting
-//			pthread_mutex_lock (&?_mutex);
-			wid = data->dialog; //race-management
-			data->dialog = NULL;
-			if (wid != NULL)
-			{
-				gtk_widget_hide (wid);
-				data->dialog = wid;
-//				WAIT_FOR_EVENTS;	//make the hide work
-			}
-//			pthread_mutex_unlock (&?_mutex);
-			break;
+		data->stop = TRUE;
+		pthread_cond_broadcast (&data->condition);
 	}
+	pthread_mutex_unlock (&data->mutex);
+
+	if (response == E2_RESPONSE_USER1)
+	{
+		GtkWidget *wid = data->dialog;
+		data->dialog = NULL;
+		if (wid != NULL)
+		{
+			g_signal_handlers_disconnect_by_data (wid, data);
+			gtk_widget_destroy (wid);
+		}
+	}
+	else if (!finished && response != GTK_RESPONSE_NO && data->dialog != NULL)
+		gtk_widget_hide (data->dialog);
 	OPENBGL
 }
+
 /**
-@brief thread function to manage timeout when reading a directory
-Assumes BGL is open, and @a data ->dialog is NULLED before 1st use
-@param data pointer to data struct with thread id's etc
-
-@return never happens - this must be cancelled by some other thread
+@brief monitor a directory read until completion or a cooperative stop request
+Never acquire the UI lock while holding the state mutex.
 */
-static gpointer _e2_fs_progress_monitor (E2_DRead *data)
+static gpointer _e2_fs_progress_monitor (gpointer user_data)
 {
-	struct timespec timeout; //data for timeout value for the wait function
-
-	e2_utils_block_thread_signals ();	//block all allowed signals to this thread
-
-	//these are not used externally, but are needed for the wait
-	pthread_mutex_t condition_mutex = PTHREAD_MUTEX_INITIALIZER;	//no recurse
-	pthread_cond_t wait_cond = PTHREAD_COND_INITIALIZER;
-
-	gint secs = 10;	//initial wait = 10 secs
+	E2_DRead *data = user_data;
+	gint secs = 10;
+	e2_utils_block_thread_signals ();
 
 	while (TRUE)
 	{
-//		sleep (secs);	//CHECKME more effective to use cond wait with timeout ?
-		pthread_mutex_lock (&condition_mutex);
+		struct timespec timeout;
 		clock_gettime (CLOCK_REALTIME, &timeout);
 		timeout.tv_sec += secs;
-		pthread_cond_timedwait (&wait_cond, &condition_mutex, &timeout);
-		pthread_mutex_unlock (&condition_mutex);
-		printd (DEBUG,"dir-monitor-thread (ID=%lu) %d-sec sleep ended", (gulong) data->mid, secs);
+		pthread_mutex_lock (&data->mutex);
+		gint wait_result = 0;
+		while (!data->stop && !data->read_finished && wait_result == 0)
+			wait_result = pthread_cond_timedwait (&data->condition,
+				&data->mutex, &timeout);
+		gboolean finished = data->stop || data->read_finished;
+		pthread_mutex_unlock (&data->mutex);
+		if (finished || wait_result != ETIMEDOUT)
+			break;
 
+		CLOSEBGL
+		//Completion or Quiet may have arrived while waiting for the UI lock.
+		pthread_mutex_lock (&data->mutex);
+		finished = data->stop || data->read_finished;
+		pthread_mutex_unlock (&data->mutex);
+		if (finished)
+		{
+			OPENBGL
+			break;
+		}
 		gboolean shown = (data->dialog != NULL &&
 #ifdef USE_GTK2_18
 			gtk_widget_get_visible (data->dialog));
 #else
 			GTK_WIDGET_VISIBLE (data->dialog));
 #endif
-		if (data->dialog == NULL) //once-only, create the dialog
+		if (data->dialog == NULL)
 		{
-			CLOSEBGL
 			data->dialog = e2_dialog_slow (_("Reading directory data"),
 				_("directory read"),
 				(ResponseFunc)_e2_fs_slowread_response_cb, data);
-			OPENBGL
+			if (data->dialog != NULL)
+				g_signal_connect (data->dialog, "destroy",
+					G_CALLBACK (_e2_fs_read_dialog_destroyed), data);
 		}
-
 		if (data->dialog != NULL &&
 #ifdef USE_GTK2_18
-			!gtk_widget_get_visible (data->dialog));
+			!gtk_widget_get_visible (data->dialog))
 #else
 			!GTK_WIDGET_VISIBLE (data->dialog))
 #endif
 		{
-			CLOSEBGL
 			gtk_widget_show (data->dialog);
 			gtk_window_present (GTK_WINDOW (data->dialog));
-//			WAIT_FOR_EVENTS;
-			OPENBGL
-			WAIT_FOR_EVENTS_UNLOCKED_SLOWLY;
-			printd (DEBUG,"dir-monitor-thread dialog presented");
 		}
+		OPENBGL
 
-		//initially, progressively lengthen interval between dialog popups
-		if (!shown //dialog was not shown already when this loop was traversed
-				&& secs < 30)
+		//Keep dialogs responsive for callers that are waiting in the main thread,
+		//but do not keep dispatching events after the operation has finished.
+		GMainContext *context = g_main_context_default ();
+		while (g_main_context_pending (context))
+		{
+			pthread_mutex_lock (&data->mutex);
+			finished = data->stop || data->read_finished;
+			pthread_mutex_unlock (&data->mutex);
+			if (finished)
+				break;
+			g_main_context_iteration (context, FALSE);
+		}
+		if (!shown && secs < 30)
 			secs += 10;
 	}
-	//never get to here
 	return NULL;
+}
+
+/**
+@brief stop and join children before their caller's stack data expires
+Runs on normal completion and caller cancellation, with the UI lock open.
+The normal caller restores its cancellation state after this cleanup returns.
+*/
+static void _e2_fs_read_cleanup (gpointer user_data)
+{
+	E2_DRead *data = user_data;
+	pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
+	pthread_mutex_lock (&data->mutex);
+	data->stop = TRUE;
+	pthread_cond_broadcast (&data->condition);
+	if (!data->read_finished)
+		pthread_cancel (data->aid);
+	pthread_mutex_unlock (&data->mutex);
+
+	//Joining must not hold either lock: children/callbacks may need them.
+	if (!data->read_joined)
+	{
+		gpointer entries;
+		pthread_join (data->aid, &entries);
+		if (entries != PTHREAD_CANCELED && !E2DREAD_FAILED (entries))
+			e2_list_free_with_data ((GList **) &entries);
+	}
+	if (data->monitor_started)
+		pthread_join (data->mid, NULL);
+
+	CLOSEBGL
+	GtkWidget *wid = data->dialog;
+	data->dialog = NULL;
+	if (wid != NULL)
+	{
+		g_signal_handlers_disconnect_by_data (wid, data);
+		gtk_widget_destroy (wid);
+	}
+	OPENBGL
+	pthread_cond_destroy (&data->condition);
+	pthread_mutex_destroy (&data->mutex);
 }
 /**
 @brief create a list of some or almost all items in the directory @a localpath
@@ -1635,76 +1708,39 @@ gpointer e2_fs_dir_foreach (VPATH *localpath, E2_FsReadWatch monitor,
 		if (!slowdir)	//no timeout-monitoring needed
 			return (_e2_fs_read_mounted_dir (&args));
 
-		//slow (FUSE) dirs use same func as native dirs, but with timeout checking
-		//create joinable read thread, not with glib thread funcs, as we need to
-		//kill thread(s)
-		pthread_t ID;
-		if (pthread_create (&ID, NULL,
-			(gpointer(*)(gpointer))_e2_fs_read_mounted_dir, &args) == 0)
-				printd (DEBUG,"read-dir-thread (ID=%lu) started", ID);
-		else
+		//Both joinable children must finish before data and args leave this frame.
+		E2_DRead data = { .args = &args,
+			.mutex = PTHREAD_MUTEX_INITIALIZER,
+			.condition = PTHREAD_COND_INITIALIZER };
+		if (pthread_create (&data.aid, NULL, _e2_fs_read_mounted_thread, &data) != 0)
 		{
-			//FIXME message to user
-			printd (WARN,"read-dir-thread create error!");
-			printd (DEBUG,"exiting function e2_fs_dir_foreach () with error result");
+			pthread_cond_destroy (&data.condition);
+			pthread_mutex_destroy (&data.mutex);
+			printd (WARN, "read-dir-thread create error!");
 			return GINT_TO_POINTER (E2DREAD_ENOTH);
 		}
 
-		//FIXME use a E2_DRead already produced elsewhere
-		//or since this thread joins the others, it can be stacked ...
-//		E2_DRead *data = ALLOCATE0 (E2_DRead);
-//		CHECKALLOCATEDWARN (data, return (GINT_TO_POINTER (E2DREAD_ENOMEM));)
-//		data->aid = ID;
-
+		gint old_cancelstate;
+		pthread_cleanup_push (_e2_fs_read_cleanup, &data);
 		e2_window_show_status_message (_("Reading directory data")
 #ifdef USE_GTK2_20
 			, FALSE
 #endif
 		);
-		//make status message show, at session start at least
-		WAIT_FOR_EVENTS_UNLOCKED	//_SLOWLY
-
-		//create monitor thread
-		//redundant if read-thread has finished already, but then it gets killed
-		//immediately, anyhow
-		E2_DRead data = { ID, 0, NULL };
-
-		pthread_attr_t attr;
-		pthread_attr_init (&attr);
-		pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
-
-		if (pthread_create (&data.mid, &attr,
-			(gpointer(*)(gpointer))_e2_fs_progress_monitor, &data) == 0)
-				printd (DEBUG,"dir-monitor-thread (ID=%lu) started", data.mid);
-		else
+		WAIT_FOR_EVENTS_UNLOCKED
+		data.monitor_started = (pthread_create (&data.mid, NULL,
+			_e2_fs_progress_monitor, &data) == 0);
+		if (!data.monitor_started)
 		{
-			//FIXME message to user with BGL management
-			printd (WARN,"read-dir-thread-create error!");
+			printd (WARN, "directory-monitor-thread create error!");
 		}
-		//block until read is finished or cancelled
-		printd (DEBUG,"main thread blocking until read ends or times out");
-		pthread_join (ID, &entries);
 
-		pthread_attr_destroy (&attr);
-
-		e2_window_clear_status_message ();	//no BGL management neeeded
-		EXTRA_WAIT_FOR_EVENTS_UNLOCKED;
-		//some race-minimisation here
-		GtkWidget *wid = data.dialog;
-		data.dialog = NULL;
-		if (GTK_IS_WIDGET (wid))
-		{
-			CLOSEBGL
-			gtk_widget_destroy (wid);
-			OPENBGL
-		}
-		ID = data.mid;
-		data.mid = 0;
-		if (ID > 0)
-			pthread_cancel (ID);
-		printd (DEBUG,"exiting function e2_fs_dir_foreach () with read result");
-//		DEALLOCATE (E2_DRead, data);
-		printd (DEBUG,"dir read data cleaned up in main thread");
+		pthread_join (data.aid, &entries);
+		data.read_joined = TRUE;
+		pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, &old_cancelstate);
+		pthread_cleanup_pop (1);
+		e2_window_clear_status_message ();
+		pthread_setcancelstate (old_cancelstate, NULL);
 		if (entries == PTHREAD_CANCELED)
 			entries = GINT_TO_POINTER (E2DREAD_DNF);
 #ifdef E2_VFS
