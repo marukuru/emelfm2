@@ -3951,6 +3951,11 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 		   case the old dir will the same as the new one, and the
 		   selection and visible rect data will be meaningless*/
 
+		//Keep selection, model iterators and FileInfo reads in one UI-locked snapshot.
+		//SYNC_DEBUG already retains the lock acquired for e2_fs_cd_isok().
+#ifndef SYNC_DEBUG
+		CLOSEBGL
+#endif
 		GtkTreePath *path;
 		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (view->treeview),
 			0, 0, &path, NULL, NULL, NULL))
@@ -4029,6 +4034,9 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 			hist_entry->case_sensitive_names = E2FSCASE_UNKNOWN;
 		else
 			hist_entry->case_sensitive_names = view->case_sensitive_names;
+#ifndef SYNC_DEBUG
+		OPENBGL
+#endif
 		HISTORY_LOCK
 		saved_entry->toprow = snapshot.toprow;
 		saved_entry->selrow = snapshot.selrow;
