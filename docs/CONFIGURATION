@@ -239,7 +239,13 @@ The respective tooltips give reasonable guidance about the application of those 
 
 [interface]
 
-The 'columns' page allows the various columns in file-panes 1 or 2 to be (un)hidden. It always shows the columns in the default order. To change the displayed column-order, in the relevant file-pane, drag the relevant column header to the desired place. To change the width of a column, drag the relevant column header separator to the desired width. There is a minimum size, related to the width of the header label.
+The 'columns' page allows the various columns in file-panes 1 or 2 to be (un)hidden. It always shows the columns in the default order. To change the displayed column-order, in the relevant file-pane, drag the relevant column header to the desired place. To change the width of an unlocked, non-flexible column, drag the relevant column header separator to the desired width. There is a minimum size, related to the width of the header label.
+
+Right-click a column header for its sizing menu. 'Lock' freezes its current width and disables resizing and 'Optimal column width'. 'Optimal column width' fits the widest displayed value, including rows outside the viewport, and the header; it also restores automatic sizing as the directory contents change. Dragging a separator switches that column to manual sizing.
+
+'Flexible' assigns the remaining pane space to one column. Filename is flexible by default, while the other columns are automatically fitted. The available space accounts for the vertical scrollbar. Uncheck 'Flexible' on the current column before assigning it to another column in the same pane. A flexible column cannot be resized by dragging. Locking it suspends flexible sizing until it is unlocked; choosing 'Optimal column width' clears its flexible setting. If no visible, unlocked column is flexible, spare space stays blank. Horizontal scrolling is still needed when the other columns and the flexible column's minimum width exceed the available space.
+
+Widths, locks, automatic sizing and the flexible column are remembered independently for each pane between sessions.
 
 [icons]
 Icons used in toolbar buttons, dialog buttons, menu items etc can be gtk "stock" icons or custom icons. A number of the latter are supplied with the application.

@@ -1562,6 +1562,7 @@ void e2_window_create (E2_WindowRuntime *rt)
 #endif
 		};
 	e2_cache_array_register ("columns-width", MAX_COLUMNS*2, (gint *)col_width_store, widths);
+	e2_fileview_columns_register_cache ();
 
 	e2_cache_int_register ("pane1-sort-column", &app.pane1.view.sort_column, FILENAME);
 	if (app.pane1.view.sort_column < 0)	//may've been cached when columns were unsorted

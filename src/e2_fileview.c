@@ -631,7 +631,7 @@ gboolean e2_fileview_sort_column (gint colnum, ViewInfo *view)
 		return FALSE;
 
 	gint realcol = (colnum == EXTENSION) ? FILENAME : colnum;
-	GList *cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (view->treeview));
+	GList *cols = e2_fileview_get_columns (GTK_TREE_VIEW (view->treeview));
 	GtkTreeViewColumn *col = g_list_nth_data (cols, realcol);
 	g_list_free (cols);
 	gboolean visible;
@@ -756,6 +756,13 @@ static gboolean _e2_fileview_column_header_buttonpress_cb (
 	GtkWidget *header, GdkEventButton *event, ViewInfo *view)
 {
 	printd (DEBUG, "callback: column header button press");
+	if (event->button == 3)
+	{
+		header_button = -1; //consume this event before GTK can click or drag
+		if (view != curr_view)
+			e2_pane_activate_other ();
+		return e2_fileview_column_menu (GTK_TREE_VIEW (view->treeview), header, event);
+	}
 	NEEDCLOSEBGL
 	e2_utils_generic_press_cb (header, event, view);
 	NEEDOPENBGL
@@ -778,6 +785,8 @@ static gboolean _e2_fileview_column_header_buttonrel_cb (
 	GtkWidget *header, GdkEventButton *event, ViewInfo *view)
 {
 	printd (DEBUG, "callback: column header button release");
+	if (event->button == 3)
+		return TRUE;
 
 	NEEDCLOSEBGL
 	if (!e2_utils_check_release (event))
@@ -834,7 +843,7 @@ static void _e2_fileview_column_header_clicked_cb (GtkTreeViewColumn *col,
 
 	NEEDCLOSEBGL
 	//get which column was cliicked
-	GList *cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (view->treeview));
+	GList *cols = e2_fileview_get_columns (GTK_TREE_VIEW (view->treeview));
 	gint clicked_col = g_list_index (cols, (gpointer) col);
 	g_list_free (cols);
 
@@ -955,7 +964,7 @@ static void _e2_fileview_col_change_cb (GtkTreeView *treeview, ViewInfo *view)
 	gint *order_array = (view == &app.pane1.view) ?
 		displayed_col_order[0] : displayed_col_order[1];
 	NEEDCLOSEBGL
-	GList *cols = gtk_tree_view_get_columns (treeview);
+	GList *cols = e2_fileview_get_columns (treeview);
 	GList *tmp;
 	const gchar *title;
 	gint colnum = 0;
@@ -990,7 +999,7 @@ static void _e2_fileview_col_change_cb (GtkTreeView *treeview, ViewInfo *view)
 	printd (DEBUG, "slave-view column change");
 	g_signal_handlers_block_by_func (G_OBJECT (slave_view->treeview),
 		_e2_fileview_col_change_cb, slave_view);
-	cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (slave_view->treeview));
+	cols = e2_fileview_get_columns (GTK_TREE_VIEW (slave_view->treeview));
 	for (colnum = 0; colnum < MAX_COLUMNS; colnum++)
 	{
 		gint current_col = order_array[colnum];
@@ -1012,7 +1021,7 @@ static void _e2_fileview_col_change_cb (GtkTreeView *treeview, ViewInfo *view)
 							moved_col, prior_col);
 					//this approach seems too complex, but several simpler tries failed !!
 					g_list_free (cols);
-					cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (slave_view->treeview));
+					cols = e2_fileview_get_columns (GTK_TREE_VIEW (slave_view->treeview));
 					j = colnum;
 					for (tmp = g_list_nth (cols, j); tmp != NULL; tmp=tmp->next)
 					{
@@ -2639,7 +2648,7 @@ gchar *e2_fileview_get_row_name (ViewInfo *view, gint row)
 static void _e2_fileview_set_font (ViewInfo *view, gchar *fontstr)
 {
 	GList* columns, *renderers, *base1, *base2;
-	columns = base1 = gtk_tree_view_get_columns (GTK_TREE_VIEW (view->treeview));
+	columns = base1 = e2_fileview_get_columns (GTK_TREE_VIEW (view->treeview));
 	for (; columns != NULL ; columns = columns->next)
 	{
 		GtkTreeViewColumn *column = columns->data;
@@ -2738,56 +2747,8 @@ List format is: pane1 {order, width, ...}, pane2 {order, width, ...}
 */
 void e2_fileview_update_col_cachedata (void)
 {
-	//get current column widths
-	GtkTreeViewColumn *col, *last;
-#ifdef USE_GLIB2_30
-	const gchar *title;
-#else
-	G_CONST_RETURN gchar *title;
-#endif
-	gint i, lc;
-	GList *columns = gtk_tree_view_get_columns (GTK_TREE_VIEW (app.pane1.view.treeview));
-	GList *base = columns;
-	lc = 0;
-	last = (GtkTreeViewColumn *)columns->data;
-	for (; columns != NULL; columns=columns->next)
-	{
-		col = columns->data;
-		title = gtk_tree_view_column_get_title (col);
-		//title is "0" ... "7", for cols 0 ... 7
-		i = atoi (title);
-		col_width_store [0][i] = gtk_tree_view_column_get_width (col);
-		//remember this one if it's a candidate for last-displayed column
-		if (col_width_store [0][i] > 0)
-		{
-			lc = i;
-			last = col;
-		}
-	}
-	//for last-displayed column, cache the user-specified width, not the
-	//expanded-to-fill width
-	col_width_store [0][lc] = gtk_tree_view_column_get_fixed_width (last);
-	g_list_free (base);
-
-	columns = gtk_tree_view_get_columns (GTK_TREE_VIEW (app.pane2.view.treeview));
-	base = columns;
-	lc = 0;
-	last = (GtkTreeViewColumn *)columns->data;
-	for (; columns != NULL; columns=columns->next)
-	{
-		col = columns->data;
-		title = gtk_tree_view_column_get_title (col);
-		i = atoi (title);
-		col_width_store [1][i] = gtk_tree_view_column_get_width (col);
-		//remember this one if it's a candidate for last-displayed column
-		if (col_width_store [1][i] > 0)
-		{
-			lc = i;
-			last = col;
-		}
-	}
-	col_width_store [1][lc] = gtk_tree_view_column_get_fixed_width (last);
-	g_list_free (base);
+	//The sizing controller records requested widths, including hidden columns.
+	//Do not cache GTK's expanded width or its minimal flexible-column request.
 	//get columns displayed order
 	e2_fileview_translate_cols_array (displayed_col_order[0], stored_col_order[0], MAX_COLUMNS);
 	e2_fileview_translate_cols_array (displayed_col_order[1], stored_col_order[1], MAX_COLUMNS);
@@ -2820,7 +2781,7 @@ Scans column titles, looking for "0"
 */
 /* gint e2_fileview_find_name_col (ViewInfo *view)
 {
-	GList *cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (view->treeview));
+	GList *cols = e2_fileview_get_columns (GTK_TREE_VIEW (view->treeview));
 	GList *base = cols;
 #ifdef USE_GLIB2_30
 	const gchar *title;
@@ -4502,7 +4463,7 @@ void e2_fileview_set_arrow (ViewInfo *view, GtkArrowType arrow)
 		}
 	}
 
-	GList *cols = gtk_tree_view_get_columns (GTK_TREE_VIEW (view->treeview));
+	GList *cols = e2_fileview_get_columns (GTK_TREE_VIEW (view->treeview));
 	GtkTreeViewColumn *col = g_list_nth_data (cols, m);
 	g_list_free (cols);
 
@@ -4669,14 +4630,6 @@ GtkWidget *e2_fileview_create_list (ViewInfo *view)
 		if (thiswidth == 0)
 			thiswidth = e2_all_columns[m].size;
 
-		/* It would be nice to allocate spare treeview space to the filename
-			column (TRUE "expand" property) instead of the last-shown column.
-			However we then also need to manage the column's "min-width" property
-			so that the column isn't the first to be resized out of existence.
-			Sadly there's no API for detecting only manual (dragged) column-width
-			changes, or other reasonable work-around that we can find, to allow
-			the minimum to be dynamically revised in accord with user's changes */
-
 		g_object_set (G_OBJECT (column),
 			"sizing", GTK_TREE_VIEW_COLUMN_FIXED,
 			"resizable", TRUE,
@@ -4745,6 +4698,7 @@ GtkWidget *e2_fileview_create_list (ViewInfo *view)
 	//FIXME do this once, not for both panes
 	button2updir = e2_option_bool_get ("button2-updir");
 #endif
+	e2_fileview_columns_init (GTK_TREE_VIEW (tvw), array_row);
 	g_signal_connect (tvw, "columns-changed",
 		G_CALLBACK(_e2_fileview_col_change_cb), view);
 

@@ -269,7 +269,7 @@ void e2_pane_flag_active (void)
 				gchar *color = e2_utils_color2str(active_btncolor);
 #endif
 				GList *member;
-				GList *columns = gtk_tree_view_get_columns (GTK_TREE_VIEW (curr_view->treeview));
+				GList *columns = e2_fileview_get_columns (GTK_TREE_VIEW (curr_view->treeview));
 				for (member = columns; member !=NULL; member = member->next)
 				{
 #ifdef USE_GTK2_14
@@ -304,7 +304,7 @@ void e2_pane_flag_active (void)
 #endif
 				g_list_free (columns);
 				//revert all inactive columns' header color to default
-				columns = gtk_tree_view_get_columns (GTK_TREE_VIEW (other_view->treeview));
+				columns = e2_fileview_get_columns (GTK_TREE_VIEW (other_view->treeview));
 				for (member = columns; member != NULL; member = member->next)
 				{
 #ifdef USE_GTK2_14

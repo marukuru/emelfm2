@@ -2680,6 +2680,18 @@ msgstr "アクセス"
 msgid "Changed"
 msgstr "変更"
 
+#: e2_fileview_columns.c:450
+msgid "Lock"
+msgstr ""
+
+#: e2_fileview_columns.c:454
+msgid "Optimal column width"
+msgstr ""
+
+#: e2_fileview_columns.c:458
+msgid "Flexible"
+msgstr ""
+
 #: e2_fs.c:784
 #, c-format
 msgid "'%s' is not a directory"
@@ -5557,7 +5569,7 @@ msgstr "個を表示 & %d 個を非表示 "
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d 個のアイテムを選択 (%d %sin %s)"
 
-#: e2_window.c:1721
+#: e2_window.c:1722
 msgid "WhoAmI"
 msgstr ""
 

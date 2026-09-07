@@ -226,6 +226,11 @@ typedef struct _E2_SelectPattern
 gint e2_fileview_ext_sort (GtkTreeModel *model, GtkTreeIter *a, GtkTreeIter *b,
 	GtkSortType *direction);
 gboolean e2_fileview_sort_column (gint colnum, ViewInfo *view);
+GList *e2_fileview_get_columns (GtkTreeView *treeview);
+void e2_fileview_columns_register_cache (void);
+void e2_fileview_columns_init (GtkTreeView *treeview, gint pane);
+gboolean e2_fileview_column_menu (GtkTreeView *treeview, GtkWidget *header,
+	GdkEventButton *event);
 void e2_fileview_refilter_list (ViewInfo *view);
 void e2_fileview_filter_dirs_cb (GtkCheckMenuItem *widget, ViewInfo *view);
 void e2_fileview_remove_filters_cb (GtkMenuItem *widget, ViewInfo *view);

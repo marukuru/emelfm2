@@ -80,7 +80,9 @@ The file panes can re-sized, or hidden, by dragging the separator or clicking a 
 
 You can change the order of columns displayed in either file pane. Press the mouse left-button while the mouse cursor is on the header of the column you want to move. Then drag it to where you want. Such change will be remembered between sessions.
 
-You can change the width of any column by dragging the relevant column-separator. (There is a minimum size, related to the size of the column label.) You can hide any column by un-checking the corresponding column on the 'columns' page of the configuration dialog. Such changes will be remembered between sessions.
+Right-click a column header to choose 'Lock', 'Optimal column width' or 'Flexible'. Filename is flexible by default and uses the remaining pane width, accounting for the vertical scrollbar. The other columns automatically fit their widest displayed text, including rows below the viewport. Each pane can have one flexible column; uncheck its 'Flexible' option before choosing another. Lock freezes the current width, suspending flexible sizing until unlocked. 'Optimal column width' restores automatic fitting and clears flexibility on that column.
+
+You can change the width of an unlocked, non-flexible column by dragging the relevant column-separator. This switches the column to manual sizing. You can hide any column by un-checking the corresponding column on the 'columns' page of the configuration dialog. Column settings are remembered independently for each pane between sessions.
 
 You can sort a file list according to the data in any column, by left-clicking on the column's header. Repeated clicks toggle the sort-order. The actual order that results depends on the user's locale settings. The result might be different from the 'traditional' way.
 

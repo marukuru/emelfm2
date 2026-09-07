@@ -2747,6 +2747,18 @@ msgstr "Dostępny"
 msgid "Changed"
 msgstr "Zmieniany"
 
+#: e2_fileview_columns.c:450
+msgid "Lock"
+msgstr ""
+
+#: e2_fileview_columns.c:454
+msgid "Optimal column width"
+msgstr ""
+
+#: e2_fileview_columns.c:458
+msgid "Flexible"
+msgstr ""
+
 #: e2_fs.c:784
 #, c-format
 msgid "'%s' is not a directory"
@@ -5770,7 +5782,7 @@ msgstr "wyświetlonych i %d ukrytych"
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d zaznaczonych elementów z %d %s w '%s'"
 
-#: e2_window.c:1721
+#: e2_window.c:1722
 msgid "WhoAmI"
 msgstr ""
 

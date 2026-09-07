@@ -2732,6 +2732,18 @@ msgstr "Считан"
 msgid "Changed"
 msgstr "Создан"
 
+#: e2_fileview_columns.c:450
+msgid "Lock"
+msgstr ""
+
+#: e2_fileview_columns.c:454
+msgid "Optimal column width"
+msgstr ""
+
+#: e2_fileview_columns.c:458
+msgid "Flexible"
+msgstr ""
+
 #: e2_fs.c:784
 #, c-format
 msgid "'%s' is not a directory"
@@ -5708,7 +5720,7 @@ msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d элементов выбраны из %d %sв %s"
 
 # It seems, I don't need to translate.
-#: e2_window.c:1721
+#: e2_window.c:1722
 msgid "WhoAmI"
 msgstr "WhoAmI"
 

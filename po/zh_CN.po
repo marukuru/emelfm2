@@ -2691,6 +2691,18 @@ msgstr "访问"
 msgid "Changed"
 msgstr "改变"
 
+#: e2_fileview_columns.c:450
+msgid "Lock"
+msgstr ""
+
+#: e2_fileview_columns.c:454
+msgid "Optimal column width"
+msgstr ""
+
+#: e2_fileview_columns.c:458
+msgid "Flexible"
+msgstr ""
+
 #: e2_fs.c:784
 #, c-format
 msgid "'%s' is not a directory"
@@ -5574,7 +5586,7 @@ msgstr "显示 & %d 隐藏 "
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s 已选择 %d 总数 %d %s 当前文件夹 %s"
 
-#: e2_window.c:1721
+#: e2_window.c:1722
 msgid "WhoAmI"
 msgstr ""
 
