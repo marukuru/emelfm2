@@ -79,7 +79,7 @@ msgstr ""
 msgid "usage"
 msgstr "использование"
 
-#: e2_about_dialog.c:199 e2_option.c:1296 e2_output.c:2894
+#: e2_about_dialog.c:199 e2_option.c:1296 e2_output.c:2900
 msgid "commands"
 msgstr "команды"
 
@@ -621,11 +621,11 @@ msgstr "Готово. Нажмите ввод "
 msgid "xx"
 msgstr "xx"
 
-#: e2_alias.c:330 e2_output.c:2899
+#: e2_alias.c:330 e2_output.c:2905
 msgid "keys"
 msgstr "клавиши"
 
-#: e2_alias.c:332 e2_output.c:2905
+#: e2_alias.c:332 e2_output.c:2911
 msgid "buttons"
 msgstr "кнопки"
 
@@ -1577,7 +1577,7 @@ msgstr "_Действия"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:880 e2_icons.c:1133
-#: e2_option_tree_context_menu.c:287 e2_output.c:1731 e2_toolbar.c:3419
+#: e2_option_tree_context_menu.c:287 e2_output.c:1737 e2_toolbar.c:3419
 #: e2_tree_dialog.c:1200 e2_view_dialog.c:1033 e2p_copy.c:750
 msgid "_Copy"
 msgstr "_Копировать"
@@ -1905,7 +1905,7 @@ msgstr "в центре"
 msgid "mouse"
 msgstr "на курсоре"
 
-#: e2_dialog.c:1753 e2_output.c:4201 e2_toolbar.c:3341
+#: e2_dialog.c:1753 e2_output.c:4207 e2_toolbar.c:3341
 msgid "none"
 msgstr "нет"
 
@@ -2040,7 +2040,7 @@ msgstr "_Замена…"
 msgid "Find and replace matching text"
 msgstr "Найти и заменить текст"
 
-#: e2_edit_dialog.c:940 e2_edit_dialog.c:1775 e2_output.c:1691
+#: e2_edit_dialog.c:940 e2_edit_dialog.c:1775 e2_output.c:1697
 #: e2_view_dialog.c:1797
 msgid "_Hide"
 msgstr "Спря_тать"
@@ -2110,7 +2110,7 @@ msgid "Save modified file ?"
 msgstr "Сохранить изменённый файл ?"
 
 #: e2_edit_dialog.c:1016 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:893 e2_icons.c:1146 e2_output.c:1739
+#: e2_filetype_dialog.c:1197 e2_icons.c:893 e2_icons.c:1146 e2_output.c:1745
 msgid "_Edit"
 msgstr "_Редактировать"
 
@@ -2345,12 +2345,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Недоступен %s, вместо этого перехожу в %s"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1413 e2_task.c:4252 e2_task_backend.c:1894
+#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1897
 msgid "<directory>"
 msgstr "<каталог>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1744
-#: e2_output.c:1461 e2_task.c:4258
+#: e2_output.c:1467 e2_task.c:4258
 msgid "<executable>"
 msgstr "<исполняемый>"
 
@@ -2365,7 +2365,7 @@ msgstr "каталоги"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:934 e2_icons.c:1187
-#: e2_output.c:1742 e2_view_dialog.c:714
+#: e2_output.c:1748 e2_view_dialog.c:714
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -2755,67 +2755,67 @@ msgstr "Чтение каталога"
 msgid "directory read"
 msgstr "чтение каталога"
 
-#: e2_fs.c:2411
+#: e2_fs.c:2414
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "Невозможно открыть '%s' для записи — %s"
 
-#: e2_fs.c:2456
+#: e2_fs.c:2459
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "Ошибка записи в файл '%s' — %s"
 
-#: e2_fs.c:2583 e2_fs.c:2635 e2_fs.c:2941 e2_view_dialog.c:609 e2p_config.c:693
+#: e2_fs.c:2586 e2_fs.c:2638 e2_fs.c:2944 e2_view_dialog.c:609 e2p_config.c:693
 #: e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Ошибка при чтении файла %s"
 
-#: e2_fs.c:2618 e2_fs.c:2892 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1516 e2_task_backend.c:1223
+#: e2_fs.c:2621 e2_fs.c:2895 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_output.c:1522 e2_task_backend.c:1226
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Невозможно получить информацию о %s"
 
-#: e2_fs.c:2625
+#: e2_fs.c:2628
 #, c-format
 msgid "Cannot open file %s"
 msgstr "Невозможно открыть файл %s"
 
-#: e2_fs.c:2753 e2_fs.c:2881
+#: e2_fs.c:2756 e2_fs.c:2884
 #, c-format
 msgid "Cannot create file %s"
 msgstr "Невозможно создать файл %s"
 
-#: e2_fs.c:2765 e2_fs.c:2956 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2768 e2_fs.c:2959 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Ошибка при записи в файл %s"
 
-#: e2_fs.c:2867 e2p_dircmp.c:403
+#: e2_fs.c:2870 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "Невозможно открыть '%s' для чтения"
 
-#: e2_fs.c:3016
+#: e2_fs.c:3019
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "Невозможно открыть pipe для команды '%s'"
 
-#: e2_fs.c:3037
+#: e2_fs.c:3040
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "Ошибка команды %s: не хватает памяти"
 
-#: e2_fs.c:3209
+#: e2_fs.c:3212
 msgid "-rwxrwxrwx"
 msgstr "-rwxrwxrwx"
 
-#: e2_fs.c:3214
+#: e2_fs.c:3217
 msgid "ldbcfs"
 msgstr "ldbcfs"
 
-#: e2_fs.c:3219
+#: e2_fs.c:3222
 msgid "TtSs"
 msgstr "TtSs"
 
@@ -3284,7 +3284,7 @@ msgstr "но неразумно использовать подстановоч�
 msgid "directories will be created"
 msgstr "каталоги будут созданы"
 
-#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:876
+#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:879
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Невозможно создать каталог %s"
@@ -3903,11 +3903,11 @@ msgstr "разноцветный фон"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "Если включено, то строки в списке файлов будут разных цветов"
 
-#: e2_option__default.c:264 e2_output.c:4216 e2_view_dialog.c:2177
+#: e2_option__default.c:264 e2_output.c:4222 e2_view_dialog.c:2177
 msgid "use custom font"
 msgstr "использовать особый шрифт"
 
-#: e2_option__default.c:265 e2_output.c:4217 e2_view_dialog.c:2178
+#: e2_option__default.c:265 e2_output.c:4223 e2_view_dialog.c:2178
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4306,113 +4306,113 @@ msgstr "Ниче_го в меню"
 msgid "Hide all listed plugins from menu"
 msgstr "Убрать все модули из меню"
 
-#: e2_output.c:1225
+#: e2_output.c:1231
 #, c-format
 msgid "Cannot find any output from process %s"
 msgstr "Невозможно найти вывод процесса %s"
 
-#: e2_output.c:1692
+#: e2_output.c:1698
 msgid "Do not show the output pane"
 msgstr "Не показывать панель вывода"
 
-#: e2_output.c:1695
+#: e2_output.c:1701
 msgid "_Toggle full"
 msgstr "_На весь экран"
 
-#: e2_output.c:1698
+#: e2_output.c:1704
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Переключить панель вывода в/из полноэкранного режима"
 
-#: e2_output.c:1702
+#: e2_output.c:1708
 msgid "_New tab"
 msgstr "_Новая вкладка"
 
-#: e2_output.c:1703
+#: e2_output.c:1709
 msgid "Add another tab for the output pane"
 msgstr "Добавить новую вкладку к панели вывода"
 
-#: e2_output.c:1706
+#: e2_output.c:1712
 msgid "_Remove tab"
 msgstr "_Удалить вкладку"
 
-#: e2_output.c:1707
+#: e2_output.c:1713
 msgid "Close this this tab"
 msgstr "Закрыть эту вкладку"
 
-#: e2_output.c:1715
+#: e2_output.c:1721
 msgid "_Attach"
 msgstr "_Присоединить"
 
-#: e2_output.c:1716
+#: e2_output.c:1722
 msgid "Move this tab back to output pane"
 msgstr "Вернуть эту вкладку обратно в панель вывода"
 
-#: e2_output.c:1723 e2_output.c:1727
+#: e2_output.c:1729 e2_output.c:1733
 msgid "C_lear"
 msgstr "_Очистить"
 
-#: e2_output.c:1724 e2_output.c:1728
+#: e2_output.c:1730 e2_output.c:1734
 msgid "Clear this tab"
 msgstr "Очистить эту вкладку"
 
-#: e2_output.c:1732 e2_view_dialog.c:1034
+#: e2_output.c:1738 e2_view_dialog.c:1034
 msgid "Copy selected text"
 msgstr "Копировать выделенный текст"
 
-#: e2_output.c:1740
+#: e2_output.c:1746
 msgid "Edit the tab contents"
 msgstr "Редактировать содержимое вкладки"
 
-#: e2_output.c:1782
+#: e2_output.c:1788
 msgid "Co_mmand output"
 msgstr "_Вывод команды"
 
-#: e2_output.c:1783
+#: e2_output.c:1789
 msgid "Show output from a completed command"
 msgstr "Показать вывод завершённой команды"
 
-#: e2_output.c:1796 e2_view_dialog.c:1045
+#: e2_output.c:1802 e2_view_dialog.c:1045
 msgid "_Settings"
 msgstr "_Настройка"
 
-#: e2_output.c:1807
+#: e2_output.c:1813
 msgid "_Other"
 msgstr "_Дополнительно"
 
-#: e2_output.c:1808
+#: e2_output.c:1814
 msgid "Open the configuration dialog at the output options page"
 msgstr "Открыть диалог настройки на странице параметров вывода"
 
-#: e2_output.c:2745
+#: e2_output.c:2751
 msgid "output tabs"
 msgstr "вкладки вывода"
 
-#: e2_output.c:3379
+#: e2_output.c:3385
 msgid "-- end-of-output --"
 msgstr "-- конец-вывода --"
 
-#: e2_output.c:4171
+#: e2_output.c:4177
 msgid "show output pane when a new message appears"
 msgstr "показывать панель вывода когда появляется новое сообщение"
 
-#: e2_output.c:4172
+#: e2_output.c:4178
 msgid "This will ensure you don't miss any messages"
 msgstr "Позволяет быть уверенным, что вы не пропустите ни одного сообщения"
 
-#: e2_output.c:4175
+#: e2_output.c:4181
 msgid "show output pane if the command line is focused"
 msgstr "показывать панель вывода, если командная строка активна"
 
-#: e2_output.c:4176
+#: e2_output.c:4182
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "Заставляет панель вывода открываться, когда вы набираете команду"
 
-#: e2_output.c:4180
+#: e2_output.c:4186
 msgid "hide output pane if the command line is unfocused"
 msgstr "скрывать панель вывода, если командная строка не активна"
 
-#: e2_output.c:4181
+#: e2_output.c:4187
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4420,30 +4420,30 @@ msgstr ""
 "Заставляет панель вывода закрываться, когда вы перестаёте работать с "
 "командной строкой"
 
-#: e2_output.c:4184
+#: e2_output.c:4190
 msgid "show commands"
 msgstr "показывать команды"
 
-#: e2_output.c:4185
+#: e2_output.c:4191
 msgid "This echoes the commands that are run and their exit value"
 msgstr "Выводит названия запущенных команд и их возвращаемые значения"
 
-#: e2_output.c:4187
+#: e2_output.c:4193
 msgid "scroll to new output"
 msgstr "перемещаться за новыми сообщениями"
 
-#: e2_output.c:4188
+#: e2_output.c:4194
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr ""
 "Включает автоматическую прокрутку вниз, чтобы показывать новые сообщения"
 
-#: e2_output.c:4190
+#: e2_output.c:4196
 msgid "only scroll when really following"
 msgstr "перемещаться только когда действительно необходимо"
 
-#: e2_output.c:4191
+#: e2_output.c:4197
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4451,11 +4451,11 @@ msgstr ""
 "Останавливает автоматическую прокрутку вниз, когда вы прокручиваете окно "
 "вручную"
 
-#: e2_output.c:4194
+#: e2_output.c:4200
 msgid "only scroll when new output is at the end"
 msgstr "перемещаться только если в конце появились новые сообщения"
 
-#: e2_output.c:4195
+#: e2_output.c:4201
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4463,11 +4463,11 @@ msgstr ""
 "Останавливает прокрутку, если другой процесс выводит текст после текущей "
 "позиции вставки"
 
-#: e2_output.c:4198
+#: e2_output.c:4204
 msgid "auto-selection boundary characters"
 msgstr "символы границы автоматически выбранного текста"
 
-#: e2_output.c:4199
+#: e2_output.c:4205
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
@@ -4475,19 +4475,19 @@ msgstr ""
 "Символ(ы), обычно знак препинания, любой из которых установит границу для "
 "автоматически выбранного текста."
 
-#: e2_output.c:4201
+#: e2_output.c:4207
 msgid "everywhere"
 msgstr "в любом месте"
 
-#: e2_output.c:4201
+#: e2_output.c:4207
 msgid "words"
 msgstr "по словам"
 
-#: e2_output.c:4203
+#: e2_output.c:4209
 msgid "line wrap mode"
 msgstr "режим переноса строк"
 
-#: e2_output.c:4204
+#: e2_output.c:4210
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "will only break the line between words"
@@ -4495,36 +4495,36 @@ msgstr ""
 "Если включен режим 'нет', то будет доступна горизонтальня линия прокрутки. В "
 "режиме 'слова' строки будут разбиваться между словами"
 
-#: e2_output.c:4207
+#: e2_output.c:4213
 msgid "left margin (pixels)"
 msgstr "отступ слева (пиксели)"
 
-#: e2_output.c:4208
+#: e2_output.c:4214
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "Отступ слева между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4211
+#: e2_output.c:4217
 msgid "right margin (pixels)"
 msgstr "отступ справа (пиксели)"
 
-#: e2_output.c:4212
+#: e2_output.c:4218
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "Отступ справа между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4220
+#: e2_output.c:4226
 msgid "custom output font"
 msgstr "особый шрифт"
 
-#: e2_output.c:4221
+#: e2_output.c:4227
 msgid "This is the font used for text in the output pane"
 msgstr "Шрифт, используемый для текста в окне вывода"
 
-#: e2_output.c:4226
+#: e2_output.c:4232
 msgid "positive color"
 msgstr "положительный цвет"
 
-#: e2_output.c:4227
+#: e2_output.c:4233
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4532,11 +4532,11 @@ msgstr ""
 "Этот цвет используется для сообщений об успешных операциях или о других "
 "положительных событиях"
 
-#: e2_output.c:4230
+#: e2_output.c:4236
 msgid "negative color"
 msgstr "отрицательный цвет"
 
-#: e2_output.c:4231
+#: e2_output.c:4237
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -4544,20 +4544,20 @@ msgstr ""
 "Этот цвет используется для ошибок, предупреждений и других сообщений, "
 "которые должны привлекать внимание"
 
-#: e2_output.c:4234
+#: e2_output.c:4240
 msgid "commands color"
 msgstr "цвет команд"
 
-#: e2_output.c:4235
+#: e2_output.c:4241
 msgid "This color is used for echoing issued commands"
 msgstr ""
 "Этот цвет используется для подсветки названий элементов и других надписей"
 
-#: e2_output.c:4238
+#: e2_output.c:4244
 msgid "unimportant color"
 msgstr "нейтральный цвет"
 
-#: e2_output.c:4239
+#: e2_output.c:4245
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -4893,78 +4893,78 @@ msgstr "прервать"
 msgid "Cannot change ownership of %s"
 msgstr "Невозможно изменить владельца %s"
 
-#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1576
+#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1579
 #: e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "Невозможно удалить %s"
 
-#: e2_task_backend.c:603 e2_task_backend.c:1541
+#: e2_task_backend.c:606 e2_task_backend.c:1544
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "Невозможно удалить существующий %s"
 
-#: e2_task_backend.c:662
+#: e2_task_backend.c:665
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "Невозможно создать специальный файл %s"
 
-#: e2_task_backend.c:677
+#: e2_task_backend.c:680
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "Невозможно создать FIFO %s"
 
-#: e2_task_backend.c:825
+#: e2_task_backend.c:828
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "Невозможно создать новую ссылку на %s"
 
-#: e2_task_backend.c:836
+#: e2_task_backend.c:839
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "Невозможно получить иформацию о ссылке %s"
 
-#: e2_task_backend.c:1319
+#: e2_task_backend.c:1322
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "Невозможно ничего скопировать из %s"
 
-#: e2_task_backend.c:1336
+#: e2_task_backend.c:1339
 msgid "incomplete"
 msgstr "незавершено"
 
-#: e2_task_backend.c:1426
+#: e2_task_backend.c:1429
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "Невозможно переместить %s в %s"
 
-#: e2_task_backend.c:1481
+#: e2_task_backend.c:1484
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "Невозможно создать ссылку на %s"
 
-#: e2_task_backend.c:1529
+#: e2_task_backend.c:1532
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "Невозможно переименовать %s в %s"
 
-#: e2_task_backend.c:1612 e2_task_backend.c:1728 e2p_crypt.c:2971
+#: e2_task_backend.c:1615 e2_task_backend.c:1731 e2p_crypt.c:2971
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "Невозможно получить текущую дату для %s"
 
-#: e2_task_backend.c:1663
+#: e2_task_backend.c:1666
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "Невозможно изменить права у %s"
 
-#: e2_task_backend.c:1682
+#: e2_task_backend.c:1685
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "Невозможно получить текущие права для %s"
 
-#: e2_task_backend.c:1798
+#: e2_task_backend.c:1801
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Невозможно изменить владельца у %s"

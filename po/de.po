@@ -73,7 +73,7 @@ msgstr ""
 msgid "usage"
 msgstr "Benutzung"
 
-#: e2_about_dialog.c:199 e2_option.c:1296 e2_output.c:2894
+#: e2_about_dialog.c:199 e2_option.c:1296 e2_output.c:2900
 msgid "commands"
 msgstr "Befehle"
 
@@ -615,11 +615,11 @@ msgstr "Abgeschlossen. Drücke ENTER."
 msgid "xx"
 msgstr "XX"
 
-#: e2_alias.c:330 e2_output.c:2899
+#: e2_alias.c:330 e2_output.c:2905
 msgid "keys"
 msgstr "Tasten"
 
-#: e2_alias.c:332 e2_output.c:2905
+#: e2_alias.c:332 e2_output.c:2911
 msgid "buttons"
 msgstr "Buttons"
 
@@ -1601,7 +1601,7 @@ msgstr "_Aktionen"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:880 e2_icons.c:1133
-#: e2_option_tree_context_menu.c:287 e2_output.c:1731 e2_toolbar.c:3419
+#: e2_option_tree_context_menu.c:287 e2_output.c:1737 e2_toolbar.c:3419
 #: e2_tree_dialog.c:1200 e2_view_dialog.c:1033 e2p_copy.c:750
 msgid "_Copy"
 msgstr "_Kopieren"
@@ -1929,7 +1929,7 @@ msgstr "Bildschirmmitte"
 msgid "mouse"
 msgstr "Am Mauszeiger"
 
-#: e2_dialog.c:1753 e2_output.c:4201 e2_toolbar.c:3341
+#: e2_dialog.c:1753 e2_output.c:4207 e2_toolbar.c:3341
 msgid "none"
 msgstr "ohne"
 
@@ -2068,7 +2068,7 @@ msgstr "_Ersetzen..."
 msgid "Find and replace matching text"
 msgstr "Text suchen und ersetzen"
 
-#: e2_edit_dialog.c:940 e2_edit_dialog.c:1775 e2_output.c:1691
+#: e2_edit_dialog.c:940 e2_edit_dialog.c:1775 e2_output.c:1697
 #: e2_view_dialog.c:1797
 msgid "_Hide"
 msgstr "Vers_tecken"
@@ -2138,7 +2138,7 @@ msgid "Save modified file ?"
 msgstr "Geänderte Datei speichern?"
 
 #: e2_edit_dialog.c:1016 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:893 e2_icons.c:1146 e2_output.c:1739
+#: e2_filetype_dialog.c:1197 e2_icons.c:893 e2_icons.c:1146 e2_output.c:1745
 msgid "_Edit"
 msgstr "_Bearbeiten"
 
@@ -2380,12 +2380,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Fehler beim Zugriff auf %s, gehe deshalb zu %s!"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1413 e2_task.c:4252 e2_task_backend.c:1894
+#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1897
 msgid "<directory>"
 msgstr "<Verzeichnis>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1744
-#: e2_output.c:1461 e2_task.c:4258
+#: e2_output.c:1467 e2_task.c:4258
 msgid "<executable>"
 msgstr "<ausführbar>"
 
@@ -2400,7 +2400,7 @@ msgstr "Verzeichnisse"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:934 e2_icons.c:1187
-#: e2_output.c:1742 e2_view_dialog.c:714
+#: e2_output.c:1748 e2_view_dialog.c:714
 msgid "_Open"
 msgstr "_Öffnen"
 
@@ -2791,67 +2791,67 @@ msgstr "Verzeichnisdaten lesen"
 msgid "directory read"
 msgstr "Verzeichnis lesen"
 
-#: e2_fs.c:2411
+#: e2_fs.c:2414
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "Fehler beim Öffnen von '%s' zum Schreiben -%s!"
 
-#: e2_fs.c:2456
+#: e2_fs.c:2459
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "Fehler beim Schreiben der Datei '%s' - %s!"
 
-#: e2_fs.c:2583 e2_fs.c:2635 e2_fs.c:2941 e2_view_dialog.c:609 e2p_config.c:693
+#: e2_fs.c:2586 e2_fs.c:2638 e2_fs.c:2944 e2_view_dialog.c:609 e2p_config.c:693
 #: e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Fehler beim Lesen der Datei '%s'!"
 
-#: e2_fs.c:2618 e2_fs.c:2892 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1516 e2_task_backend.c:1223
+#: e2_fs.c:2621 e2_fs.c:2895 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_output.c:1522 e2_task_backend.c:1226
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Kann keine Informationen erhalten über %s"
 
-#: e2_fs.c:2625
+#: e2_fs.c:2628
 #, c-format
 msgid "Cannot open file %s"
 msgstr "Fehler beim Öffnen der Datei %s"
 
-#: e2_fs.c:2753 e2_fs.c:2881
+#: e2_fs.c:2756 e2_fs.c:2884
 #, c-format
 msgid "Cannot create file %s"
 msgstr "Erstellen der Datei '%s' nicht möglich!"
 
-#: e2_fs.c:2765 e2_fs.c:2956 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2768 e2_fs.c:2959 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Fehler beim Schreiben der Datei '%s'!"
 
-#: e2_fs.c:2867 e2p_dircmp.c:403
+#: e2_fs.c:2870 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "Fehler beim Öffnen von '%s' zum Lesen!"
 
-#: e2_fs.c:3016
+#: e2_fs.c:3019
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "Fehler beim Erzeugen der Pipe für den Befehl '%s'!"
 
-#: e2_fs.c:3037
+#: e2_fs.c:3040
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "Kommando %s konnte nicht ausgeführt werden: nicht genug Speicher"
 
-#: e2_fs.c:3209
+#: e2_fs.c:3212
 msgid "-rwxrwxrwx"
 msgstr "-rwxrwxrwx"
 
-#: e2_fs.c:3214
+#: e2_fs.c:3217
 msgid "ldbcfs"
 msgstr ""
 
-#: e2_fs.c:3219
+#: e2_fs.c:3222
 msgid "TtSs"
 msgstr ""
 
@@ -3322,7 +3322,7 @@ msgstr "aber es ist nicht ratsam Platzhalterzeichen zu verwenden"
 msgid "directories will be created"
 msgstr "Verzeichnisse werden erstellt"
 
-#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:876
+#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:879
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Erstellen des Verzeichnisses '%s' nicht möglich!"
@@ -3953,11 +3953,11 @@ msgstr ""
 "Wenn aktiviert, so wird jede zweite Zeile im Fenster durch einen anderen "
 "Hintergrund hervorgehoben."
 
-#: e2_option__default.c:264 e2_output.c:4216 e2_view_dialog.c:2177
+#: e2_option__default.c:264 e2_output.c:4222 e2_view_dialog.c:2177
 msgid "use custom font"
 msgstr "Eigene Schriftart verwenden"
 
-#: e2_option__default.c:265 e2_output.c:4217 e2_view_dialog.c:2178
+#: e2_option__default.c:265 e2_output.c:4223 e2_view_dialog.c:2178
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4365,116 +4365,116 @@ msgstr "Alle im Menü _verstecken"
 msgid "Hide all listed plugins from menu"
 msgstr "Alle Plugins im Menü verstecken"
 
-#: e2_output.c:1225
+#: e2_output.c:1231
 #, c-format
 msgid "Cannot find any output from process %s"
 msgstr "Keine Meldungen des Prozesses %s gefunden!"
 
-#: e2_output.c:1692
+#: e2_output.c:1698
 msgid "Do not show the output pane"
 msgstr "Ausgabebereich verstecken"
 
-#: e2_output.c:1695
+#: e2_output.c:1701
 msgid "_Toggle full"
 msgstr "_Ausgabe maxi-/minimieren"
 
-#: e2_output.c:1698
+#: e2_output.c:1704
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Umschalten des Ausgabebereiches auf maximale und minimale Größe"
 
-#: e2_output.c:1702
+#: e2_output.c:1708
 msgid "_New tab"
 msgstr "Tab _hinzufügen"
 
-#: e2_output.c:1703
+#: e2_output.c:1709
 msgid "Add another tab for the output pane"
 msgstr "Weiteren Tab für den Ausgabebereich hinzufügen"
 
-#: e2_output.c:1706
+#: e2_output.c:1712
 msgid "_Remove tab"
 msgstr "Tab _entfernen"
 
-#: e2_output.c:1707
+#: e2_output.c:1713
 msgid "Close this this tab"
 msgstr "Diesen Tab schließen"
 
-#: e2_output.c:1715
+#: e2_output.c:1721
 msgid "_Attach"
 msgstr "_Anwenden"
 
-#: e2_output.c:1716
+#: e2_output.c:1722
 msgid "Move this tab back to output pane"
 msgstr "Tab zurück zum Ausgabebereich verschieben"
 
-#: e2_output.c:1723 e2_output.c:1727
+#: e2_output.c:1729 e2_output.c:1733
 msgid "C_lear"
 msgstr "_Löschen"
 
-#: e2_output.c:1724 e2_output.c:1728
+#: e2_output.c:1730 e2_output.c:1734
 msgid "Clear this tab"
 msgstr "Entfernt den Inhalt dieses Tabs"
 
-#: e2_output.c:1732 e2_view_dialog.c:1034
+#: e2_output.c:1738 e2_view_dialog.c:1034
 msgid "Copy selected text"
 msgstr "Kopiert den ausgewählten Text in die Zwischenablage"
 
-#: e2_output.c:1740
+#: e2_output.c:1746
 msgid "Edit the tab contents"
 msgstr "Bearbeitet den Inhalt dieses Tabs"
 
-#: e2_output.c:1782
+#: e2_output.c:1788
 msgid "Co_mmand output"
 msgstr "Kindprozess-_Meldungen"
 
-#: e2_output.c:1783
+#: e2_output.c:1789
 msgid "Show output from a completed command"
 msgstr "Zeige die Ausgabe eines beendeten Kindprozesses"
 
-#: e2_output.c:1796 e2_view_dialog.c:1045
+#: e2_output.c:1802 e2_view_dialog.c:1045
 msgid "_Settings"
 msgstr "_Einstellungen"
 
-#: e2_output.c:1807
+#: e2_output.c:1813
 msgid "_Other"
 msgstr "_Andere"
 
-#: e2_output.c:1808
+#: e2_output.c:1814
 msgid "Open the configuration dialog at the output options page"
 msgstr "Öffnet die Konfigurationsseite des Ausgabebereiches"
 
-#: e2_output.c:2745
+#: e2_output.c:2751
 msgid "output tabs"
 msgstr "Tabs des Ausgabebereiches"
 
-#: e2_output.c:3379
+#: e2_output.c:3385
 msgid "-- end-of-output --"
 msgstr "-- Ende-der-Ausgabe --"
 
-#: e2_output.c:4171
+#: e2_output.c:4177
 msgid "show output pane when a new message appears"
 msgstr "Ausgabebereich bei einer neuen Nachricht anzeigen"
 
-#: e2_output.c:4172
+#: e2_output.c:4178
 msgid "This will ensure you don't miss any messages"
 msgstr ""
 "Wenn aktiviert, wird der Ausgabebereich bei einer neuen Nachricht geöffnet.\n"
 "Damit können Sie keine Nachricht verpassen."
 
-#: e2_output.c:4175
+#: e2_output.c:4181
 msgid "show output pane if the command line is focused"
 msgstr "Ausgabebereich beim Aktivieren der Befehlszeile zeigen"
 
-#: e2_output.c:4176
+#: e2_output.c:4182
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 "Wenn aktiviert, wird der Ausgabebereich bei Eingabe eines Befehles geöffnet."
 
-#: e2_output.c:4180
+#: e2_output.c:4186
 msgid "hide output pane if the command line is unfocused"
 msgstr "Ausgabebereich beim Verlassen der Befehlszeile verbergen"
 
-#: e2_output.c:4181
+#: e2_output.c:4187
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4482,21 +4482,21 @@ msgstr ""
 "Wenn aktiviert, wird der Ausgabebereich bei Verlassen der Befehlszeile "
 "geschlossen."
 
-#: e2_output.c:4184
+#: e2_output.c:4190
 msgid "show commands"
 msgstr "Befehle anzeigen"
 
-#: e2_output.c:4185
+#: e2_output.c:4191
 msgid "This echoes the commands that are run and their exit value"
 msgstr ""
 "Wenn aktiviert, werden sowohl die Befehle als auch deren Rückgabewerte im "
 "Ausgabebereich angezeigt."
 
-#: e2_output.c:4187
+#: e2_output.c:4193
 msgid "scroll to new output"
 msgstr "Springe automatisch zu neuen Nachrichten"
 
-#: e2_output.c:4188
+#: e2_output.c:4194
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
@@ -4504,11 +4504,11 @@ msgstr ""
 "Wenn aktiviert, wird im Ausgabebereich automatisch zur neuesten Nachricht "
 "gesprungen."
 
-#: e2_output.c:4190
+#: e2_output.c:4196
 msgid "only scroll when really following"
 msgstr "Springe nicht zu neuen Nachrichten, wenn manuell eingriffen wird"
 
-#: e2_output.c:4191
+#: e2_output.c:4197
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4516,13 +4516,13 @@ msgstr ""
 "Wenn aktiviert, wird im Ausgabebereich nicht mehr automatisch zur neuesten "
 "Nachricht gesprungen, sobald Sie manuell darin blättern."
 
-#: e2_output.c:4194
+#: e2_output.c:4200
 msgid "only scroll when new output is at the end"
 msgstr ""
 "Springe nur zu neuen Nachrichten, wenn diese am Ende des Ausgabebereiches "
 "sind"
 
-#: e2_output.c:4195
+#: e2_output.c:4201
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4531,11 +4531,11 @@ msgstr ""
 "Nachricht gesprungen, sobald ein anderer Prozess danach eine Nachricht "
 "einfügt."
 
-#: e2_output.c:4198
+#: e2_output.c:4204
 msgid "auto-selection boundary characters"
 msgstr "Begrenzungszeichen für die automatische Textauswahl:"
 
-#: e2_output.c:4199
+#: e2_output.c:4205
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
@@ -4543,19 +4543,19 @@ msgstr ""
 "Textbegrenzungszeichen (meist Satzzeichen), welche als Begrenzung für die "
 "automatische Textwahl verwendet werden."
 
-#: e2_output.c:4201
+#: e2_output.c:4207
 msgid "everywhere"
 msgstr "überall"
 
-#: e2_output.c:4201
+#: e2_output.c:4207
 msgid "words"
 msgstr "Wort"
 
-#: e2_output.c:4203
+#: e2_output.c:4209
 msgid "line wrap mode"
 msgstr "Zeilenumbruch"
 
-#: e2_output.c:4204
+#: e2_output.c:4210
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "will only break the line between words"
@@ -4565,40 +4565,40 @@ msgstr ""
 "Wenn 'Wort' eingestellt ist, so erfolgt nur zwischen Wörtern ein Umbruch.\n"
 "Wenn 'überall' eingestellt ist, so erfolgt auch mitten im Wort ein Umbruch."
 
-#: e2_output.c:4207
+#: e2_output.c:4213
 msgid "left margin (pixels)"
 msgstr "Linker Rand (Pixel)"
 
-#: e2_output.c:4208
+#: e2_output.c:4214
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr ""
 "Hier stellen Sie die Spanne zwischen dem linken Rand des Ausgabebereiches "
 "und dem Text darin ein."
 
-#: e2_output.c:4211
+#: e2_output.c:4217
 msgid "right margin (pixels)"
 msgstr "Rechter Rand (Pixel)"
 
-#: e2_output.c:4212
+#: e2_output.c:4218
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr ""
 "Hier stellen Sie die Spanne zwischen dem rechten Rand des Ausgabebereiches "
 "und dem Text darin ein."
 
-#: e2_output.c:4220
+#: e2_output.c:4226
 msgid "custom output font"
 msgstr "Schriftart des Ausgabebereiches"
 
-#: e2_output.c:4221
+#: e2_output.c:4227
 msgid "This is the font used for text in the output pane"
 msgstr "Hier wird die Schriftart zu Darstellung im Ausgabebereich festgelegt."
 
-#: e2_output.c:4226
+#: e2_output.c:4232
 msgid "positive color"
 msgstr "Positive Mitteilungen"
 
-#: e2_output.c:4227
+#: e2_output.c:4233
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4606,11 +4606,11 @@ msgstr ""
 "Mitteilungen erfolgreicher Operationen oder anderer positiven Ereignisse "
 "werden in dieser Farbe dargestellt."
 
-#: e2_output.c:4230
+#: e2_output.c:4236
 msgid "negative color"
 msgstr "Negative Mitteilungen"
 
-#: e2_output.c:4231
+#: e2_output.c:4237
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -4618,19 +4618,19 @@ msgstr ""
 "Fehler, Warnungen und andere wichtige Nachrichten werden in dieser Frabe "
 "dargestellt."
 
-#: e2_output.c:4234
+#: e2_output.c:4240
 msgid "commands color"
 msgstr "Kommandos/Befehle"
 
-#: e2_output.c:4235
+#: e2_output.c:4241
 msgid "This color is used for echoing issued commands"
 msgstr "Diese Farbe wird zur Ausgabe eingegebener Kommandos/Befehle verwendet."
 
-#: e2_output.c:4238
+#: e2_output.c:4244
 msgid "unimportant color"
 msgstr "Unwichtige Mitteilungen"
 
-#: e2_output.c:4239
+#: e2_output.c:4245
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -4969,78 +4969,78 @@ msgstr "Abbrechen"
 msgid "Cannot change ownership of %s"
 msgstr "Ändern des Eigentümers von '%s' nicht möglich!"
 
-#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1576
+#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1579
 #: e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "Löschen von '%s' nicht möglich!"
 
-#: e2_task_backend.c:603 e2_task_backend.c:1541
+#: e2_task_backend.c:606 e2_task_backend.c:1544
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "Löschen von '%s' nicht möglich!"
 
-#: e2_task_backend.c:662
+#: e2_task_backend.c:665
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "Erstellen der speziellen Datei '%s' nicht möglich!"
 
-#: e2_task_backend.c:677
+#: e2_task_backend.c:680
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "Erstellen des FIFO '%s' nicht möglich!"
 
-#: e2_task_backend.c:825
+#: e2_task_backend.c:828
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "Erstellen des neuen Links nach '%s' nicht möglich!"
 
-#: e2_task_backend.c:836
+#: e2_task_backend.c:839
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "Keine Ziel-Informationen des Links '%s' gefunden!"
 
-#: e2_task_backend.c:1319
+#: e2_task_backend.c:1322
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "Das Kopieren aller Objekte in %s ist nicht möglich!"
 
-#: e2_task_backend.c:1336
+#: e2_task_backend.c:1339
 msgid "incomplete"
 msgstr "teilweise"
 
-#: e2_task_backend.c:1426
+#: e2_task_backend.c:1429
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "Verschieben von '%s' nach '%s' nicht möglich!"
 
-#: e2_task_backend.c:1481
+#: e2_task_backend.c:1484
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "Erstellen des Links nach '%s' nicht möglich!"
 
-#: e2_task_backend.c:1529
+#: e2_task_backend.c:1532
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "Umbenennen von '%s' nach '%s' nicht möglich!"
 
-#: e2_task_backend.c:1612 e2_task_backend.c:1728 e2p_crypt.c:2971
+#: e2_task_backend.c:1615 e2_task_backend.c:1731 e2p_crypt.c:2971
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "Fehler beim Erhalten aktueller Daten von %s!"
 
-#: e2_task_backend.c:1663
+#: e2_task_backend.c:1666
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "Das Ändern der Zugriffsrechte aller Objekte in %s ist nicht möglich!"
 
-#: e2_task_backend.c:1682
+#: e2_task_backend.c:1685
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "Fehler beim Erhalten aktueller Zugriffsrechte von %s!"
 
-#: e2_task_backend.c:1798
+#: e2_task_backend.c:1801
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Das Ändern der Eigentümer aller Objekte in %s ist nicht möglich!"
