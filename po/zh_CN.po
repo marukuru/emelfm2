@@ -2293,15 +2293,15 @@ msgid ""
 "Pattern provided to strftime() to format date/time strings in the dialog"
 msgstr "由 strftime() 解释的用于显示对话框中日期/时间的格式字符串"
 
-#: e2_filestore.c:1190 e2_toolbar.c:2064
+#: e2_filestore.c:1214 e2_toolbar.c:2064
 msgid "k"
 msgstr ""
 
-#: e2_filestore.c:1195 e2_toolbar.c:2069
+#: e2_filestore.c:1219 e2_toolbar.c:2069
 msgid "M"
 msgstr ""
 
-#: e2_filestore.c:1590 e2_pane.c:617
+#: e2_filestore.c:1620 e2_pane.c:617
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "无法访问 %s, 用 %s 代替"
@@ -2703,90 +2703,95 @@ msgstr ""
 msgid "Flexible"
 msgstr ""
 
-#: e2_fs.c:784
+#: e2_fs.c:798
 #, c-format
 msgid "'%s' is not a directory"
 msgstr "'%s' 不是文件夹"
 
-#: e2_fs.c:793
+#: e2_fs.c:807
 #, c-format
 msgid "Cannot access directory '%s' - No permission"
 msgstr "无法访问文件夹 %s - 无权限"
 
-#: e2_fs.c:802
+#: e2_fs.c:816
 #, c-format
 msgid "Directory '%s' does not exist"
 msgstr "文件夹 '%s' 不存在"
 
-#: e2_fs.c:1562 e2_fs.c:1659
+#: e2_fs.c:1598 e2_fs.c:1736
 msgid "Reading directory data"
 msgstr "正在读取文件夹数据"
 
-#: e2_fs.c:1563
+#: e2_fs.c:1599
 msgid "directory read"
 msgstr "读文件夹"
 
-#: e2_fs.c:2414
+#: e2_fs.c:2461
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "无法打开文件 '%s' 写入 - %s"
 
-#: e2_fs.c:2459
+#: e2_fs.c:2506
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "发生写错误, 文件  '%s' - %s"
 
-#: e2_fs.c:2586 e2_fs.c:2638 e2_fs.c:2944 e2_view_dialog.c:609 e2p_config.c:693
-#: e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:609
+#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "读取文件 %s 时, 发生错误"
 
-#: e2_fs.c:2621 e2_fs.c:2895 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
 #: e2_output.c:1522 e2_task_backend.c:1226
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "无法获取 %s 的信息"
 
-#: e2_fs.c:2628
+#: e2_fs.c:2685
 #, c-format
 msgid "Cannot open file %s"
 msgstr "无法打开文件 %s"
 
-#: e2_fs.c:2756 e2_fs.c:2884
-#, c-format
-msgid "Cannot create file %s"
-msgstr "无法新建文件 %s"
-
-#: e2_fs.c:2768 e2_fs.c:2959 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "写文件 %s 发生错误"
 
-#: e2_fs.c:2870 e2p_dircmp.c:403
+#: e2_fs.c:3026 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "无法读文件'%s'"
 
-#: e2_fs.c:3019
+#: e2_fs.c:3040
+#, c-format
+msgid "Cannot create file %s"
+msgstr "无法新建文件 %s"
+
+#: e2_fs.c:3168
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "无法打开命令管道'%s'"
 
-#: e2_fs.c:3040
+#: e2_fs.c:3215
+#, fuzzy, c-format
+msgid "Command %s failed: error reading output"
+msgstr "执行命令 %s 失败: 内存不足"
+
+#: e2_fs.c:3233
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "执行命令 %s 失败: 内存不足"
 
-#: e2_fs.c:3212
+#: e2_fs.c:3358
 msgid "-rwxrwxrwx"
 msgstr ""
 
-#: e2_fs.c:3217
+#: e2_fs.c:3363
 msgid "ldbcfs"
 msgstr ""
 
-#: e2_fs.c:3222
+#: e2_fs.c:3368
 msgid "TtSs"
 msgstr ""
 
@@ -4492,46 +4497,46 @@ msgstr "编辑位置(_E)"
 msgid "both"
 msgstr "两个面板"
 
-#: e2_pane.c:2625
+#: e2_pane.c:2627
 msgid "At startup, show a specific directory in this pane"
 msgstr "启动时, 在这个面板显示指定的文件夹"
 
-#: e2_pane.c:2626
+#: e2_pane.c:2628
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
 msgstr "启动时显示的下面定义的文件夹, 而不是用最后打开的文件夹"
 
-#: e2_pane.c:2631
+#: e2_pane.c:2633
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "面板 %d 的启动文件夹:"
 
-#: e2_pane.c:2633
+#: e2_pane.c:2635
 msgid "This is the directory to show in this pane, at session start"
 msgstr "这个文件夹将在程序启动时显示"
 
-#: e2_pane.c:2641
+#: e2_pane.c:2643
 msgid "this pane is like pane 2"
 msgstr "跟面板2 一样"
 
-#: e2_pane.c:2643 e2_pane.c:2653
+#: e2_pane.c:2645 e2_pane.c:2655
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
 "to pane %d"
 msgstr "这使面板 %d 的选项(不包括工具栏的放置选项和内容)应用到面板 %d"
 
-#: e2_pane.c:2651
+#: e2_pane.c:2653
 msgid "this pane is like pane 1"
 msgstr "跟面板1 一样"
 
-#: e2_pane.c:2664
+#: e2_pane.c:2666
 #, c-format
 msgid "show %s column"
 msgstr "显示 %s 列"
 
-#: e2_pane.c:2665
+#: e2_pane.c:2667
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "选择的列将被显示在面板 %d (duh ...)"
@@ -6741,27 +6746,27 @@ msgstr "销毁(_S)"
 msgid "Thoroughly delete selected items"
 msgstr "彻底删除所选择的文件"
 
-#: e2p_tag.c:198
+#: e2p_tag.c:216
 msgid "tag"
 msgstr ""
 
-#: e2p_tag.c:199
+#: e2p_tag.c:217
 msgid "_Tag"
 msgstr "标记(_T)"
 
-#: e2p_tag.c:200
+#: e2p_tag.c:218
 msgid "Log the items selected in active pane"
 msgstr "把当前面板中所选择的文件记入日志"
 
-#: e2p_tag.c:202
+#: e2p_tag.c:220
 msgid "retag"
 msgstr ""
 
-#: e2p_tag.c:203
+#: e2p_tag.c:221
 msgid "_Retag"
 msgstr "再标记(_R)"
 
-#: e2p_tag.c:204
+#: e2p_tag.c:222
 msgid "Re-select any items logged in active pane"
 msgstr "把当前面板中再次选择的文件记入日志"
 

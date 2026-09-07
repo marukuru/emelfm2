@@ -2366,15 +2366,15 @@ msgstr ""
 "Dieser Formatierungsstring wird von der Funktion strftime() für Dateidatum "
 "und -zeit interpretiert."
 
-#: e2_filestore.c:1190 e2_toolbar.c:2064
+#: e2_filestore.c:1214 e2_toolbar.c:2064
 msgid "k"
 msgstr "k"
 
-#: e2_filestore.c:1195 e2_toolbar.c:2069
+#: e2_filestore.c:1219 e2_toolbar.c:2069
 msgid "M"
 msgstr "M"
 
-#: e2_filestore.c:1590 e2_pane.c:617
+#: e2_filestore.c:1620 e2_pane.c:617
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "Fehler beim Zugriff auf %s, gehe deshalb zu %s!"
@@ -2780,90 +2780,95 @@ msgstr "Optimale Spaltenbreite"
 msgid "Flexible"
 msgstr "Flexible Spaltenbreite"
 
-#: e2_fs.c:784
+#: e2_fs.c:798
 #, c-format
 msgid "'%s' is not a directory"
 msgstr "'%s' ist kein Verzeichnis!"
 
-#: e2_fs.c:793
+#: e2_fs.c:807
 #, c-format
 msgid "Cannot access directory '%s' - No permission"
 msgstr "Zugriff auf Verzeichnis '%s' nicht möglich!"
 
-#: e2_fs.c:802
+#: e2_fs.c:816
 #, c-format
 msgid "Directory '%s' does not exist"
 msgstr "Das Verzeichnis '%s' existiert nicht!"
 
-#: e2_fs.c:1562 e2_fs.c:1659
+#: e2_fs.c:1598 e2_fs.c:1736
 msgid "Reading directory data"
 msgstr "Verzeichnisdaten lesen"
 
-#: e2_fs.c:1563
+#: e2_fs.c:1599
 msgid "directory read"
 msgstr "Verzeichnis lesen"
 
-#: e2_fs.c:2414
+#: e2_fs.c:2461
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "Fehler beim Öffnen von '%s' zum Schreiben -%s!"
 
-#: e2_fs.c:2459
+#: e2_fs.c:2506
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "Fehler beim Schreiben der Datei '%s' - %s!"
 
-#: e2_fs.c:2586 e2_fs.c:2638 e2_fs.c:2944 e2_view_dialog.c:609 e2p_config.c:693
-#: e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:609
+#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Fehler beim Lesen der Datei '%s'!"
 
-#: e2_fs.c:2621 e2_fs.c:2895 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
 #: e2_output.c:1522 e2_task_backend.c:1226
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Kann keine Informationen erhalten über %s"
 
-#: e2_fs.c:2628
+#: e2_fs.c:2685
 #, c-format
 msgid "Cannot open file %s"
 msgstr "Fehler beim Öffnen der Datei %s"
 
-#: e2_fs.c:2756 e2_fs.c:2884
-#, c-format
-msgid "Cannot create file %s"
-msgstr "Erstellen der Datei '%s' nicht möglich!"
-
-#: e2_fs.c:2768 e2_fs.c:2959 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Fehler beim Schreiben der Datei '%s'!"
 
-#: e2_fs.c:2870 e2p_dircmp.c:403
+#: e2_fs.c:3026 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "Fehler beim Öffnen von '%s' zum Lesen!"
 
-#: e2_fs.c:3019
+#: e2_fs.c:3040
+#, c-format
+msgid "Cannot create file %s"
+msgstr "Erstellen der Datei '%s' nicht möglich!"
+
+#: e2_fs.c:3168
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "Fehler beim Erzeugen der Pipe für den Befehl '%s'!"
 
-#: e2_fs.c:3040
+#: e2_fs.c:3215
+#, fuzzy, c-format
+msgid "Command %s failed: error reading output"
+msgstr "Kommando %s konnte nicht ausgeführt werden: nicht genug Speicher"
+
+#: e2_fs.c:3233
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "Kommando %s konnte nicht ausgeführt werden: nicht genug Speicher"
 
-#: e2_fs.c:3212
+#: e2_fs.c:3358
 msgid "-rwxrwxrwx"
 msgstr "-rwxrwxrwx"
 
-#: e2_fs.c:3217
+#: e2_fs.c:3363
 msgid "ldbcfs"
 msgstr ""
 
-#: e2_fs.c:3222
+#: e2_fs.c:3368
 msgid "TtSs"
 msgstr ""
 
@@ -4679,11 +4684,11 @@ msgstr "_Orte bearbeiten..."
 msgid "both"
 msgstr "beide"
 
-#: e2_pane.c:2625
+#: e2_pane.c:2627
 msgid "At startup, show a specific directory in this pane"
 msgstr "Beim Start ein bestimmtes Verzeichnis in diesem Fester zeigen"
 
-#: e2_pane.c:2626
+#: e2_pane.c:2628
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
@@ -4691,20 +4696,20 @@ msgstr ""
 "Wenn aktiviert, wird beim Start von emelFM2 ein bestimmtes Verzeichnis "
 "anstatt des zuletzt geöffneten angezeigt."
 
-#: e2_pane.c:2631
+#: e2_pane.c:2633
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "Fenster %d Start-Verzeichnis:"
 
-#: e2_pane.c:2633
+#: e2_pane.c:2635
 msgid "This is the directory to show in this pane, at session start"
 msgstr "Dieses Verzeichnis wird beim Starten von emelFM2 im Fenster angezeigt."
 
-#: e2_pane.c:2641
+#: e2_pane.c:2643
 msgid "this pane is like pane 2"
 msgstr "Dieses Fenster wie Fenster 2"
 
-#: e2_pane.c:2643 e2_pane.c:2653
+#: e2_pane.c:2645 e2_pane.c:2655
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
@@ -4713,16 +4718,16 @@ msgstr ""
 "Wenn aktiviert, werden die Einstellungen des %d. Fensters auch vom %d. "
 "Fenster übernommen."
 
-#: e2_pane.c:2651
+#: e2_pane.c:2653
 msgid "this pane is like pane 1"
 msgstr "Dieses Fenster wie Fenster 1"
 
-#: e2_pane.c:2664
+#: e2_pane.c:2666
 #, c-format
 msgid "show %s column"
 msgstr "%s anzeigen"
 
-#: e2_pane.c:2665
+#: e2_pane.c:2667
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "Wenn aktiviert, wird die genannte Spalte in Fenster %d angezeigt."
@@ -7011,27 +7016,27 @@ msgstr "Sicheres _Löschen"
 msgid "Thoroughly delete selected items"
 msgstr "Ausgewählte Objekte gründlich entfernen"
 
-#: e2p_tag.c:198
+#: e2p_tag.c:216
 msgid "tag"
 msgstr "Merken"
 
-#: e2p_tag.c:199
+#: e2p_tag.c:217
 msgid "_Tag"
 msgstr "_Merken"
 
-#: e2p_tag.c:200
+#: e2p_tag.c:218
 msgid "Log the items selected in active pane"
 msgstr "Markierte Objekte des aktiven Fensters merken"
 
-#: e2p_tag.c:202
+#: e2p_tag.c:220
 msgid "retag"
 msgstr "Markieren"
 
-#: e2p_tag.c:203
+#: e2p_tag.c:221
 msgid "_Retag"
 msgstr "Mar_kieren"
 
-#: e2p_tag.c:204
+#: e2p_tag.c:222
 msgid "Re-select any items logged in active pane"
 msgstr "Gemerkte Objekte des aktiven Fensters markieren"
 

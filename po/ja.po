@@ -2279,15 +2279,15 @@ msgid ""
 "Pattern provided to strftime() to format date/time strings in the dialog"
 msgstr "strftime() に渡す日付/時刻の形式"
 
-#: e2_filestore.c:1190 e2_toolbar.c:2064
+#: e2_filestore.c:1214 e2_toolbar.c:2064
 msgid "k"
 msgstr "k"
 
-#: e2_filestore.c:1195 e2_toolbar.c:2069
+#: e2_filestore.c:1219 e2_toolbar.c:2069
 msgid "M"
 msgstr "M"
 
-#: e2_filestore.c:1590 e2_pane.c:617
+#: e2_filestore.c:1620 e2_pane.c:617
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "%s にアクセスできません。代わりに·%s·に行きます"
@@ -2692,90 +2692,95 @@ msgstr ""
 msgid "Flexible"
 msgstr ""
 
-#: e2_fs.c:784
+#: e2_fs.c:798
 #, c-format
 msgid "'%s' is not a directory"
 msgstr "'%s' はディレクトリではありません"
 
-#: e2_fs.c:793
+#: e2_fs.c:807
 #, c-format
 msgid "Cannot access directory '%s' - No permission"
 msgstr "ディレクトリ '%s' にアクセスできません- 権限なし"
 
-#: e2_fs.c:802
+#: e2_fs.c:816
 #, c-format
 msgid "Directory '%s' does not exist"
 msgstr "ディレクトリ '%s' はありません"
 
-#: e2_fs.c:1562 e2_fs.c:1659
+#: e2_fs.c:1598 e2_fs.c:1736
 msgid "Reading directory data"
 msgstr "ディレクトリのデータを読む"
 
-#: e2_fs.c:1563
+#: e2_fs.c:1599
 msgid "directory read"
 msgstr "ディレクトリを読む"
 
-#: e2_fs.c:2414
+#: e2_fs.c:2461
 #, c-format
 msgid "Cannot open '%s' for writing - %s"
 msgstr "書き込み用に '%s' を開けません - %s"
 
-#: e2_fs.c:2459
+#: e2_fs.c:2506
 #, c-format
 msgid "Error writing file '%s' - %s"
 msgstr "ファイル '%s' の書き込みエラー - %s"
 
-#: e2_fs.c:2586 e2_fs.c:2638 e2_fs.c:2944 e2_view_dialog.c:609 e2p_config.c:693
-#: e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:609
+#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "ファイル %s の読み込みエラー"
 
-#: e2_fs.c:2621 e2_fs.c:2895 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
 #: e2_output.c:1522 e2_task_backend.c:1226
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "%s の情報を得られません"
 
-#: e2_fs.c:2628
+#: e2_fs.c:2685
 #, c-format
 msgid "Cannot open file %s"
 msgstr "ファイル %s を開けません"
 
-#: e2_fs.c:2756 e2_fs.c:2884
-#, c-format
-msgid "Cannot create file %s"
-msgstr "ファイル %s を作れません"
-
-#: e2_fs.c:2768 e2_fs.c:2959 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2944 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "ファイル %s の書き込みエラー"
 
-#: e2_fs.c:2870 e2p_dircmp.c:403
+#: e2_fs.c:3026 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "'%s' を読み込み用に開けません"
 
-#: e2_fs.c:3019
+#: e2_fs.c:3040
+#, c-format
+msgid "Cannot create file %s"
+msgstr "ファイル %s を作れません"
+
+#: e2_fs.c:3168
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "コマンド '%s' のパイプを開けません"
 
-#: e2_fs.c:3040
+#: e2_fs.c:3215
+#, fuzzy, c-format
+msgid "Command %s failed: error reading output"
+msgstr "コマンド %s に失敗: メモリが足りません"
+
+#: e2_fs.c:3233
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "コマンド %s に失敗: メモリが足りません"
 
-#: e2_fs.c:3212
+#: e2_fs.c:3358
 msgid "-rwxrwxrwx"
 msgstr "-rwxrwxrwx"
 
-#: e2_fs.c:3217
+#: e2_fs.c:3363
 msgid "ldbcfs"
 msgstr "ldbcfs"
 
-#: e2_fs.c:3222
+#: e2_fs.c:3368
 msgid "TtSs"
 msgstr "TtSs"
 
@@ -4474,46 +4479,46 @@ msgstr "場所を編集(_E)"
 msgid "both"
 msgstr "両方"
 
-#: e2_pane.c:2625
+#: e2_pane.c:2627
 msgid "At startup, show a specific directory in this pane"
 msgstr "指定したディレクトリを起動時にこのペインに表示"
 
-#: e2_pane.c:2626
+#: e2_pane.c:2628
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
 msgstr ""
 
-#: e2_pane.c:2631
+#: e2_pane.c:2633
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "ペイン %d の起動時のディレクトリ:"
 
-#: e2_pane.c:2633
+#: e2_pane.c:2635
 msgid "This is the directory to show in this pane, at session start"
 msgstr "セッション開始時にこのペインに表示するディレクトリ"
 
-#: e2_pane.c:2641
+#: e2_pane.c:2643
 msgid "this pane is like pane 2"
 msgstr "このペインをペイン2のようにする"
 
-#: e2_pane.c:2643 e2_pane.c:2653
+#: e2_pane.c:2645 e2_pane.c:2655
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
 "to pane %d"
 msgstr ""
 
-#: e2_pane.c:2651
+#: e2_pane.c:2653
 msgid "this pane is like pane 1"
 msgstr "このペインをペイン1のようにする"
 
-#: e2_pane.c:2664
+#: e2_pane.c:2666
 #, c-format
 msgid "show %s column"
 msgstr "%s 欄を表示する"
 
-#: e2_pane.c:2665
+#: e2_pane.c:2667
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr ""
@@ -6716,27 +6721,27 @@ msgstr ""
 msgid "Thoroughly delete selected items"
 msgstr "選んだアイテムを完全に削除"
 
-#: e2p_tag.c:198
+#: e2p_tag.c:216
 msgid "tag"
 msgstr "タグ"
 
-#: e2p_tag.c:199
+#: e2p_tag.c:217
 msgid "_Tag"
 msgstr "タグ(_T)"
 
-#: e2p_tag.c:200
+#: e2p_tag.c:218
 msgid "Log the items selected in active pane"
 msgstr "アクティブペインで選択したアイテムを記録"
 
-#: e2p_tag.c:202
+#: e2p_tag.c:220
 msgid "retag"
 msgstr "再タグ"
 
-#: e2p_tag.c:203
+#: e2p_tag.c:221
 msgid "_Retag"
 msgstr "再タグ(_R)"
 
-#: e2p_tag.c:204
+#: e2p_tag.c:222
 msgid "Re-select any items logged in active pane"
 msgstr "アクティブペインで記録したアイテムを再選択"
 
