@@ -1016,7 +1016,7 @@ GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view)
 	struct tm *tm_ptr;
 	struct passwd *pwd_buf;
 	struct group *grp_buf;
-	gchar size_buf[20];	//enough for 999 Tb
+	gchar size_buf[32];	//uint64: 20 digits + 6 separators + terminating zero
 	gchar modified_buf[25];
 	gchar accessed_buf[25];
 	gchar changed_buf[25];
@@ -1206,7 +1206,7 @@ GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view)
 			if (infoptr->statbuf.st_size < 1024) //less than 1k
 			{
 			  g_snprintf(size_buf, sizeof(size_buf), "%"PRIu64,
-					infoptr->statbuf.st_size);
+					(uint64_t) infoptr->statbuf.st_size);
 			}
 			else if (infoptr->statbuf.st_size < 1048576) //less than a meg
 			{
@@ -1227,11 +1227,11 @@ GtkListStore *e2_filestore_fill (GList *entries, ViewInfo *view)
 		else
 		{	//use actual size, with commas
 			g_snprintf(size_buf, sizeof(size_buf), "%"PRIu64,
-				infoptr->statbuf.st_size);
+				(uint64_t) infoptr->statbuf.st_size);
 
 			guint len = strlen (size_buf);
 			guint ths = len-1;  //0-based index
-			while (ths > 2 && len < sizeof(size_buf))
+			while (ths > 2 && len + 1 < sizeof(size_buf))
 			{
 				for (i = len-1; i > ths-3; i--)
 					size_buf[i+1] = size_buf[i];
