@@ -39,6 +39,12 @@ ToDo
 #include <string.h>
 #include <pthread.h>
 #include <ctype.h>
+#warning "CHECK_USE_GTK3_0"
+#ifdef USE_GTK3_0
+#warning "GTK3 IS DEFINED"
+#else
+#warning "GTK3 IS NOT DEFINED"
+#endif
 #include "e2_output.h"
 #include "e2_dialog.h"
 //for pane-text activation

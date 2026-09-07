@@ -522,6 +522,9 @@ Assumes BGL is open
 //CHECKME always return TRUE so the process tries to continue?
 static gboolean _e2_task_backend_delete (VPATH *localpath E2_ERR_ARG())
 {
+	if (localpath == NULL || VPCSTR(localpath) == NULL)
+		return FALSE;
+
 	if (e2_fs_mount_is_mountpoint (localpath))
 		return FALSE;
 	//decide whether or not item is a dir, not looking through links

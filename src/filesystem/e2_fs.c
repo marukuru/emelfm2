@@ -2025,6 +2025,7 @@ gint e2_fs_symlink (VPATH *target, VPATH *name, GError **E2_ERR_NAME)
 gint e2_fs_unlink (VPATH *localpath, GError **E2_ERR_NAME)
 {
 	gint result;
+	if (localpath == NULL || VPCSTR(localpath) == NULL) return -1;
 	if (e2_fs_item_is_mounted (localpath))
 	{
 		result = unlink (VPCSTR(localpath));
@@ -2053,6 +2054,7 @@ gint e2_fs_unlink (VPATH *localpath, GError **E2_ERR_NAME)
 gint e2_fs_remove (VPATH *localpath, GError **E2_ERR_NAME)
 {
 	gint result;
+	if (localpath == NULL || VPCSTR(localpath) == NULL) return -1;
 	if (e2_fs_item_is_mounted (localpath))
 	{
 		result = remove (VPCSTR(localpath));
@@ -2081,6 +2083,7 @@ gint e2_fs_remove (VPATH *localpath, GError **E2_ERR_NAME)
 gint e2_fs_rmdir (VPATH *localpath, GError **E2_ERR_NAME)
 {
 	gint result;
+	if (localpath == NULL || VPCSTR(localpath) == NULL) return -1;
 	if (e2_fs_item_is_mounted (localpath))
 	{
 		result = rmdir (VPCSTR(localpath));
