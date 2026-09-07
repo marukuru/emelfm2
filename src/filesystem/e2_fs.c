@@ -2788,7 +2788,11 @@ ssize_t e2_fs_write (gint descriptor, gpointer buffer, /*size_t*/ gulong bufsize
 }
 /**
 @brief write whole file @a localpath, from memory starting at @a contents
-No overwrite checking is done, no data syncing is done
+Local saves replace the destination atomically after writing and closing a sibling
+temporary file. Existing symlinks are followed; dangling links are rejected.
+Owner, group and ordinary permissions are preserved, but ACLs, extended attributes
+and other hard links are not carried over to the replacement inode. No data syncing
+is done. Caller cancellation is delayed until the save or rollback has completed.
 @param localpath path of file to be write, localised string
 @param contents ptr to the start of the data to save
 @param contlength byte-length of data to save
@@ -2804,47 +2808,126 @@ gboolean e2_fs_set_file_contents (VPATH *localpath, gpointer contents,
 	if (e2_fs_item_is_mounted (localpath))
 	{
 #endif
-		retval = TRUE;
-		const gchar *fmt = NULL;
-		gint fdesc = e2_fs_safeopen (VPCSTR(localpath), O_WRONLY | O_CREAT, mode);
+		const gchar *path = VPCSTR (localpath);
+		gchar resolved[PATH_MAX];
+		gchar *parent = NULL, *temporary = NULL;
+		gint fdesc = -1, saved_errno = 0;
+		gboolean temporary_owned = FALSE;
+		struct stat original;
+		gboolean exists;
+		const gchar *fmt = _("Error writing file %s");
+		//Finish or roll back this transaction before honoring caller cancellation.
+		gint old_cancelstate;
+		pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, &old_cancelstate);
+		retval = FALSE;
+
+		if (lstat (path, &original) == 0)
+		{
+			//Follow existing symlinks, without replacing the link itself.
+			if (realpath (path, resolved) == NULL)
+				goto save_failed;
+			path = resolved;
+			if (stat (path, &original) != 0)
+				goto save_failed;
+			if (!S_ISREG (original.st_mode))
+			{
+				errno = EINVAL;
+				goto save_failed;
+			}
+			//Retain the old requirement that the destination itself is writable.
+			fdesc = e2_fs_safeopen (path, O_WRONLY | O_NONBLOCK, 0);
+			if (fdesc < 0)
+				goto save_failed;
+			gint close_result = close (fdesc);
+			fdesc = -1; //do not retry close: the descriptor may have been released
+			if (close_result != 0)
+				goto save_failed;
+			exists = TRUE;
+		}
+		else if (errno == ENOENT)
+			exists = FALSE;
+		else
+			goto save_failed;
+
+		parent = g_path_get_dirname (path);
+		//O_EXCL establishes ownership; the kernel applies umask for new files.
+		mode_t create_mode = exists ? 0600 : ((mode == (mode_t)-1) ? 0777 : mode);
+		guint attempt;
+		for (attempt = 0; attempt < 128; attempt++)
+		{
+			g_free (temporary);
+			temporary = g_strdup_printf ("%s/.emelfm2-save-%08x%08x", parent,
+				g_random_int (), g_random_int ());
+			fdesc = e2_fs_safeopen (temporary, O_WRONLY | O_CREAT | O_EXCL, create_mode);
+			if (fdesc >= 0)
+			{
+				temporary_owned = TRUE;
+				break;
+			}
+			if (errno != EEXIST)
+				goto save_failed;
+		}
 		if (fdesc < 0)
-		{
-			retval = FALSE;
-			fmt = _("Cannot create file %s");
-		}
+			goto save_failed;
 
-		if (retval)
+		size_t offset = 0;
+		while (offset < contlength)
 		{
-			ssize_t written = 0;
-			while (written < contlength)
+			size_t count = MIN (contlength - offset, (size_t) G_MAXSSIZE);
+			ssize_t written = write (fdesc, (const gchar *) contents + offset, count);
+			if (written < 0 && errno == EINTR)
+				continue;
+			if (written <= 0)
 			{
-				written = TEMP_FAILURE_RETRY (write (fdesc, contents, contlength));
-				if (written < 0)
-				{
-					retval = FALSE;
-					fmt = _("Error writing file %s");
-					break;
-				}
+				if (written == 0)
+					errno = EIO;
+				goto save_failed;
 			}
-			if (retval)
-			{
-				//CHECKME e2_fs_writeflush (fdesc);
-				TEMP_FAILURE_RETRY (ftruncate (fdesc, written));
-			}
-			e2_fs_safeclose (fdesc);
+			offset += (size_t) written;
 		}
+		//A fresh temporary file needs no truncation, even for an empty save.
+		if (exists)
+		{
+			struct stat created;
+			if (fstat (fdesc, &created) != 0)
+				goto save_failed;
+			if ((created.st_uid != original.st_uid || created.st_gid != original.st_gid)
+				&& fchown (fdesc, original.st_uid, original.st_gid) != 0)
+				goto save_failed;
+			//Writing new data must not restore set-user/group-ID privileges.
+			if (fchmod (fdesc, original.st_mode & ALLPERMS & ~(S_ISUID | S_ISGID)) != 0)
+				goto save_failed;
+		}
+		gint close_result = close (fdesc);
+		fdesc = -1;
+		if (close_result != 0)
+			goto save_failed;
+		if (rename (temporary, path) != 0)
+			goto save_failed;
+		temporary_owned = FALSE;
+		retval = TRUE;
+		goto save_cleanup;
 
+save_failed:
+		saved_errno = errno;
+save_cleanup:
+		if (fdesc >= 0)
+			close (fdesc);
+		if (temporary_owned)
+			unlink (temporary);
+		g_free (temporary);
+		g_free (parent);
 		if (!retval)
 		{
-//			unlink (VPCSTR(localpath));
+			errno = saved_errno;
 			E2_ERR_BACKUP (localerr);
 #ifdef E2_VFS
 			e2_fs_set_error_from_errno (E2_ERR_NAME);
 #endif
 			e2_fs_error_local (fmt, localpath E2_ERR_MSGC());
 			E2_ERR_CLEARBACKUP (localerr);
-			unlink (VPCSTR(localpath));
 		}
+		pthread_setcancelstate (old_cancelstate, NULL);
 #ifdef E2_VFS
 	}
 	else	//item is virtual
