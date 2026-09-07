@@ -2766,25 +2766,54 @@ Error messages expect BGL open/off
 }
 */
 /**
+@brief write every byte, advancing past partial writes
+Returns FALSE with errno set on failure; zero progress is an I/O error.
+An error after a partial write does not roll back bytes already written.
+*/
+static gboolean _e2_fs_write_all (gint descriptor, gconstpointer buffer, size_t length)
+{
+	size_t offset = 0;
+	while (offset < length)
+	{
+		size_t count = MIN (length - offset, (size_t) G_MAXSSIZE);
+		ssize_t written = write (descriptor, (const gchar *) buffer + offset, count);
+		if (written < 0)
+		{
+			if (errno == EINTR)
+				continue;
+			return FALSE;
+		}
+		if (written == 0)
+		{
+			errno = EIO;
+			return FALSE;
+		}
+		offset += (size_t) written;
+	}
+	return TRUE;
+}
+/**
 @brief write from buffer to file
 
 @param descriptor file descriptor of file to write
 @param buffer start of memory holding the write data
 @param bufsize size of @a buffer
 
-@return no. of bytes written, < 0 on error
+@return bufsize on complete success, -1 on error (possibly after a partial write).
+Sizes exceeding the signed return type fail with EOVERFLOW before any write.
 */
 ssize_t e2_fs_write (gint descriptor, gpointer buffer, /*size_t*/ gulong bufsize E2_ERR_ARG())
 {
 #ifdef E2_VFSTMP
 	//no version of this available yet
 #endif
-	ssize_t written;
-	if (bufsize == 0)
-		return 0;
-	do written = write (descriptor, buffer, bufsize);
-		while ((written < bufsize && written >= 0) || errno == EINTR);
-	return written;
+	if (bufsize > (gulong) G_MAXSSIZE)
+	{
+		errno = EOVERFLOW;
+		return -1;
+	}
+	return _e2_fs_write_all (descriptor, buffer, (size_t) bufsize) ?
+		(ssize_t) bufsize : -1;
 }
 /**
 @brief write whole file @a localpath, from memory starting at @a contents
@@ -2870,21 +2899,8 @@ gboolean e2_fs_set_file_contents (VPATH *localpath, gpointer contents,
 		if (fdesc < 0)
 			goto save_failed;
 
-		size_t offset = 0;
-		while (offset < contlength)
-		{
-			size_t count = MIN (contlength - offset, (size_t) G_MAXSSIZE);
-			ssize_t written = write (fdesc, (const gchar *) contents + offset, count);
-			if (written < 0 && errno == EINTR)
-				continue;
-			if (written <= 0)
-			{
-				if (written == 0)
-					errno = EIO;
-				goto save_failed;
-			}
-			offset += (size_t) written;
-		}
+		if (!_e2_fs_write_all (fdesc, contents, contlength))
+			goto save_failed;
 		//A fresh temporary file needs no truncation, even for an empty save.
 		if (exists)
 		{
@@ -3087,23 +3103,16 @@ gboolean e2_fs_copy_file (VPATH *src, const struct stat *src_sb,
 				break;
 			}
 
-			ssize_t n_write = 0;
-			while (n_write < n_read)
+			if (!_e2_fs_write_all (dest_desc, buf, (size_t) n_read))
 			{
-				n_write = TEMP_FAILURE_RETRY (write (dest_desc, buf, n_read));	//(potential cancellation point, LEAKS)
-				if (n_write < 0)
-				{
 #ifdef E2_VFS
-					e2_fs_set_error_from_errno (E2_ERR_NAME);
+				e2_fs_set_error_from_errno (E2_ERR_NAME);
 #endif
-					e2_fs_error_local (_("Error writing file %s"),
-						dest E2_ERR_MSGC());
-					retval = FALSE;
-					break;
-				}
-			}
-			if (!retval)
+				e2_fs_error_local (_("Error writing file %s"),
+					dest E2_ERR_MSGC());
+				retval = FALSE;
 				break;
+			}
 //			pthread_testcancel ();	//swap threads, cancel if instructed (leaks if so)
 		}
 		TEMP_FAILURE_RETRY (close (src_desc));

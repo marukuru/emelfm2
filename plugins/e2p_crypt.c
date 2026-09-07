@@ -2936,7 +2936,7 @@ static gboolean _e2pcr_write_buffer (VPATH *localpath, gint descriptor,
 		E2_ERR_DECLARE
 		ssize_t bytes_written = e2_fs_write (descriptor, buffer,
 			buffersize E2_ERR_PTR());
-		if ((gulong)bytes_written < buffersize)
+		if (bytes_written < 0 || (gulong) bytes_written != buffersize)
 		{
 #ifdef E2_VFS
 			e2_fs_set_error_from_errno (&E2_ERR_NAME);
