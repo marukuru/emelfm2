@@ -3182,65 +3182,62 @@ Error message expects BGL to be closed
 */
 gboolean e2_fs_get_command_output (gchar *command, gpointer *output)
 {
+	*output = NULL;
 	E2_FILE *pipe = e2_fs_open_pipe (command);
 	if (pipe == NULL)
 		return FALSE;
-	gchar *msg = g_strdup_printf (
-			_("Command %s failed: not enough memory"), command);
-	size_t total = 0;
-	size_t bsize = 4096;	//block size
-	gpointer buf = g_try_malloc ((gulong) bsize);
-	if (buf == NULL)
-	{
-		e2_output_print_error (msg, TRUE);
-		e2_fs_pipe_close (pipe);
-		return FALSE;
-	}
-	gpointer store = buf;
-	ssize_t bytes_read;
-	while ((bytes_read = fread (store, 1, bsize, pipe)) > 0)
-	{
-		if (bytes_read == bsize)
-		{
-			total += bsize;
-			buf = g_try_realloc (buf, total+bsize);
-			if (buf == NULL)
-			{
-				e2_output_print_error (msg, TRUE);
-				e2_fs_pipe_close (pipe);
-				return FALSE;
-			}
-			store = buf + total;
-		}
-		else
-		{
-			*((gchar *)store+bytes_read) = '\0';
-			bytes_read++;
-			total += bytes_read;
-			buf = g_try_realloc (buf, total);
-			if (buf == NULL)
-			{
-				e2_output_print_error (msg, TRUE);
-				e2_fs_pipe_close (pipe);
-				return FALSE;
-			}
-			break;
-		}
-	}
 
-	g_free (msg);
+	gchar block[4096];
+	gchar *buf = NULL;
+	size_t total = 0, capacity = 0, bytes_read;
+	const gchar *error_format = NULL;
+	while ((bytes_read = fread (block, 1, sizeof (block), pipe)) > 0)
+	{
+		//Reserve the terminator as well as the payload, without size overflow.
+		if (bytes_read > G_MAXSIZE - total - 1)
+			goto memory_error;
+		size_t needed = total + bytes_read + 1;
+		if (needed > capacity)
+		{
+			size_t grown = (capacity == 0) ? sizeof (block) + 1 :
+				((capacity <= G_MAXSIZE / 2) ? capacity * 2 : G_MAXSIZE);
+			gchar *replacement = g_try_realloc (buf, MAX (needed, grown));
+			if (replacement == NULL)
+				goto memory_error;
+			buf = replacement;
+			capacity = MAX (needed, grown);
+		}
+		memcpy (buf + total, block, bytes_read);
+		total += bytes_read;
+	}
+	if (ferror (pipe))
+	{
+		error_format = _("Command %s failed: error reading output");
+		goto failed;
+	}
 	e2_fs_pipe_close (pipe);
 	if (total == 0)
-		g_free (buf);
-	else
 	{
-		store = g_try_realloc (buf, total);	//maybe we can make it smaller
-		if (store != NULL)
-			buf = store;
-		*output = buf;
+		g_free (buf);
+		return FALSE;
 	}
-	return (total > 0);
+
+	buf[total] = '\0'; //also required when the output fills an exact block count
+	gchar *replacement = g_try_realloc (buf, total + 1);
+	if (replacement != NULL)
+		buf = replacement; //shrinking is optional; keep the owned buffer on failure
+	*output = buf;
+	return TRUE;
+
+memory_error:
+	error_format = _("Command %s failed: not enough memory");
+failed:
+	g_free (buf);
+	e2_fs_pipe_close (pipe);
+	e2_output_print_error (g_strdup_printf (error_format, command), TRUE);
+	return FALSE;
 }
+
 /* *
 @brief blockwize read from stdin into memory
 A terminating 0 is always added
