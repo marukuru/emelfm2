@@ -2603,12 +2603,28 @@ GPtrArray *e2_fileview_get_selected (ViewInfo *view)
 	}
 	return NULL;
 }
+static void _e2_fileview_copy_history_name (gpointer key, gpointer value,
+	gpointer copy)
+{
+	g_hash_table_insert (copy, g_strdup (key), value);
+}
+/**
+@brief copy a saved selection for use outside HISTORY_LOCK
+The caller must hold HISTORY_LOCK while copying a shared table and destroy
+the returned table when finished. NULL input returns NULL.
+*/
+GHashTable *e2_fileview_copy_history_names (GHashTable *names)
+{
+	if (names == NULL)
+		return NULL;
+	GHashTable *copy = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	g_hash_table_foreach (names, _e2_fileview_copy_history_name, copy);
+	return copy;
+}
+
 /**
 @brief cleanup one dir-history item, during app.dir_history destruction
-
 @param data ptr to the struct to be processed
-
-@return
 */
 void e2_fileview_clean1_history (gpointer data)
 {
@@ -3905,6 +3921,7 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 	//at session-start, view->dir = "", hence no match found in list
 	//this update will be redundant if the cd fails or is aborted, but that's ok
 	//we do it now anyway, to take up some time in case a competing activity is underway
+	HISTORY_LOCK
 #ifdef E2_VFSTMP
 	//CHECKME confirm v-dir history list is still in place
 	VPATH ddata = { view->dir, view->spacedata }; //CHECKME path encoding ?
@@ -3917,8 +3934,14 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 #else
 	hist_entry = g_hash_table_lookup (app.dir_history, view->dir);
 #endif
+	HISTORY_UNLOCK
 	if (G_LIKELY (hist_entry != NULL)) //should never fail
 	{
+		//Entries are never replaced during the session. Collect GTK data locally
+		//so the history mutex is not held across UI calls.
+		E2_DirHistoryEntry *saved_entry = hist_entry;
+		E2_DirHistoryEntry snapshot = {0};
+		hist_entry = &snapshot;
 		/*even though the sort-order and/or dir contents
 		  might change before we re-visit here,
 		  if there is a selection now, remember its start,
@@ -4006,6 +4029,18 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 			hist_entry->case_sensitive_names = E2FSCASE_UNKNOWN;
 		else
 			hist_entry->case_sensitive_names = view->case_sensitive_names;
+		HISTORY_LOCK
+		saved_entry->toprow = snapshot.toprow;
+		saved_entry->selrow = snapshot.selrow;
+		g_strlcpy (saved_entry->firstname, snapshot.firstname,
+			sizeof (saved_entry->firstname));
+		saved_entry->case_sensitive_names = snapshot.case_sensitive_names;
+#ifdef TAG_ALL
+		if (saved_entry->selitems != NULL)
+			g_hash_table_destroy (saved_entry->selitems);
+		saved_entry->selitems = snapshot.selitems;
+#endif
+		HISTORY_UNLOCK
 	}
 
 /*checks for overlapping cd/refresh/recreate now done externally
@@ -4088,12 +4123,23 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 		GtkTreeIter iter;
 		if (gtk_tree_model_get_iter_first (mdl, &iter))
 		{
+			E2_DirHistoryEntry snapshot;
+			HISTORY_LOCK
 #ifdef E2_VFSTMP
 			//CHECKME confirm v-dir history list is still in place
 			hist_entry = g_hash_table_lookup (app.dir_history, newvdir);
 #else
 			hist_entry = g_hash_table_lookup (app.dir_history, view->dir);
 #endif
+			if (hist_entry != NULL)
+			{
+				snapshot = *hist_entry;
+#ifdef TAG_ALL
+				snapshot.selitems = e2_fileview_copy_history_names (hist_entry->selitems);
+#endif
+				hist_entry = &snapshot;
+			}
+			HISTORY_UNLOCK
 			gboolean flag = e2_option_bool_get ("select-first-item");
 			if (G_LIKELY (hist_entry != NULL))
 			{  //new dir is in history list
@@ -4131,7 +4177,8 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 								FileInfo *info;
 								gtk_tree_model_get (model, &iter, FINFO, &info, -1);
 								//We only check for name, no other statbuf parameters are stored ATM
-								if (g_hash_table_lookup(hist_entry->selitems, info->filename) != NULL)
+								if (hist_entry->selitems != NULL &&
+									g_hash_table_lookup(hist_entry->selitems, info->filename) != NULL)
 									gtk_tree_selection_select_iter (sel, &iter);
 							} while (gtk_tree_model_iter_next (model, &iter));
 //						}
@@ -4216,6 +4263,10 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 			}
 			else //the new dir has never been opened in this session
 				e2_fileview_focus_row (view, 0, flag, FALSE, FALSE, FALSE);
+#ifdef TAG_ALL
+			if (hist_entry != NULL && snapshot.selitems != NULL)
+				g_hash_table_destroy (snapshot.selitems);
+#endif
 		}
 
 
@@ -4317,6 +4368,9 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 #endif
 //		printd (DEBUG, "_e2_fileview_change_dir update history");
 		//update goto-line-after-opening data
+		//Lookup and insertion must be atomic: replacing a shared entry would
+		//free data still referenced by either pane's opened-directory list.
+		HISTORY_LOCK
 #ifdef E2_VFSTMP
 		hist_entry = g_hash_table_lookup (app.dir_history, newvdir);
 #else
@@ -4325,7 +4379,6 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 		if (hist_entry == NULL)
 		{  //need a new entry for the history list
 			hist_entry = ALLOCATE0 (E2_DirHistoryEntry);
-			CHECKALLOCATEDWARNT (hist_entry, );
 			if (hist_entry != NULL)
 			{
 				//just set the [v]path, for now - other data set when dir is departed
@@ -4346,14 +4399,13 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 #ifdef E2_VFSTMP
 		//CHECKME relevant list for v-dir still in place
 #endif
-		if (history)
+		if (history && hist_entry != NULL)
 		{	//update the pane's opened-dirs history
 			//(apart from any other limitations, it should be a dir opened
 			//in-session i.e. not at session-start, and not a history
 			//forward/backward move
 			GList *tmp;
 			guint len;
-			HISTORY_LOCK
 			if (rt->opendirs != NULL)
 			{
 				/*reverse order of items before and including (i.e. open now or
@@ -4401,8 +4453,9 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 				len--;
 			}
 			rt->opendir_cur = len - 1;
-			HISTORY_UNLOCK
 		}
+		HISTORY_UNLOCK
+		CHECKALLOCATEDWARNT (hist_entry, );
 	}
 
 #ifndef E2_STATUS_BLOCK

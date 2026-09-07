@@ -164,6 +164,7 @@ typedef struct _E2_FileInfo
 
 typedef struct _E2_DirHistoryEntry
 {
+	//Published paths are immutable; mutable fields are protected by HISTORY_LOCK.
 	gchar path[PATH_MAX];	//must be at start of stuct (struct ptr sometimes used for lists of strings)
 #ifdef E2_VFS
 	PlaceInfo *spacedata;	//pointer to data in relevant member of vpaths cache
@@ -273,6 +274,7 @@ GtkWidget *e2_fileview_create_list (ViewInfo *view) G_GNUC_MALLOC;
 void e2_fileview_select_all (GtkWidget *widget, ViewInfo *view);
 void e2_fileview_clean_selected (GPtrArray *selected);
 void e2_fileview_clean1_history (gpointer data);
+GHashTable *e2_fileview_copy_history_names (GHashTable *names);
 void e2_fileview_clear_filter_patterns (ViewInfo *view);
 GPtrArray *e2_fileview_get_selected (ViewInfo *view) G_GNUC_MALLOC;
 GList *e2_fileview_get_selected_local (ViewInfo *view, gboolean updir) G_GNUC_MALLOC;

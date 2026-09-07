@@ -2333,11 +2333,11 @@ void e2_pane_create (E2_PaneRuntime *rt)
 			for (node = rt->opendirs; node != NULL; node = node->next)
 			{
 				gchar *dirpath = (gchar *)node->data;
+				HISTORY_LOCK
 				E2_DirHistoryEntry *hist_entry = g_hash_table_lookup (app.dir_history, dirpath);
 				if (hist_entry == NULL)
 				{//need a new entry for the history cache
 					hist_entry = ALLOCATE0 (E2_DirHistoryEntry);
-					CHECKALLOCATEDWARNT (hist_entry, );
 					if (hist_entry != NULL)
 					{
 						g_strlcpy (hist_entry->path, dirpath, sizeof(hist_entry->path));
@@ -2354,6 +2354,8 @@ void e2_pane_create (E2_PaneRuntime *rt)
 					g_free (dirpath); //clean redundant standalone data
 					node->data = hist_entry; //substitute shared data
 				}
+				HISTORY_UNLOCK
+				CHECKALLOCATEDWARNT (hist_entry, );
 			}
 		}
 		history_name = g_strconcat (rt->name, "-current", NULL);

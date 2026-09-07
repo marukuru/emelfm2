@@ -841,7 +841,8 @@ extern E2_OutputTabRuntime *curr_tab;	//currently-focused member of tabslist
 extern pthread_mutex_t list_mutex;
 #define LISTS_LOCK pthread_mutex_lock (&list_mutex);
 #define LISTS_UNLOCK pthread_mutex_unlock (&list_mutex);
-//CHECKME worth having a separate mutex for this ?
+//Protects the directory-history hash, mutable entry fields and pane history lists.
+//Release before GTK calls, callbacks or waiting for the UI lock.
 extern pthread_mutex_t history_mutex;
 #define HISTORY_LOCK pthread_mutex_lock (&history_mutex);
 #define HISTORY_UNLOCK pthread_mutex_unlock (&history_mutex);

@@ -90,14 +90,8 @@ static gboolean _e2p_tag_selected (gpointer from, E2_ActionRuntime *art)
 		return FALSE;
 	}
 
-#ifdef E2_VFS
-	hist = g_hash_table_lookup (app.dir_history, vdir);
-#else
-	hist = g_hash_table_lookup (app.dir_history, view->dir);
-#endif
-	if (hist->selitems != NULL)
-		g_hash_table_destroy (hist->selitems);
-	hist->selitems = selitems =
+	//Build privately, then publish the complete selection under the history lock.
+	selitems =
 		g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
 	for (rowpath = selpaths; rowpath != NULL; rowpath = rowpath->next)
@@ -117,9 +111,25 @@ static gboolean _e2p_tag_selected (gpointer from, E2_ActionRuntime *art)
 	}
 	g_list_free (selpaths);
 
+	HISTORY_LOCK
+#ifdef E2_VFS
+	hist = g_hash_table_lookup (app.dir_history, vdir);
+#else
+	hist = g_hash_table_lookup (app.dir_history, view->dir);
+#endif
+	gboolean recorded = (hist != NULL);
+	if (recorded)
+	{
+		if (hist->selitems != NULL)
+			g_hash_table_destroy (hist->selitems);
+		hist->selitems = selitems;
+	}
+	HISTORY_UNLOCK
+	if (!recorded)
+		g_hash_table_destroy (selitems);
 	e2_filestore_enable_one_refresh (p);
 
-	return TRUE;
+	return recorded;
 }
 
 /**
@@ -147,24 +157,31 @@ static gboolean _e2p_retag (gpointer from, E2_ActionRuntime *art)
 	vpath *vdir = g_hash_table_find (?, );
 	if (G_UNLIKELY(vdir == NULL))
 		return FALSE;
-	hist = g_hash_table_lookup (app.dir_history, vdir);
-#else
-	hist = g_hash_table_lookup (app.dir_history, view->dir);
 #endif
-	if (G_UNLIKELY(hist == NULL || hist->selitems == NULL))
-		return FALSE;	//should never happen
-
 	p = (rt == curr_pane) ? PANEACTIVE : PANEINACTIVE;
 	e2_filestore_disable_one_refresh (p);
 	WAIT_FOR_REFRESH(view)
 
+	HISTORY_LOCK
+#ifdef E2_VFS
+	hist = g_hash_table_lookup (app.dir_history, vdir);
+#else
+	hist = g_hash_table_lookup (app.dir_history, view->dir);
+#endif
+	GHashTable *selitems = (hist == NULL) ? NULL :
+		e2_fileview_copy_history_names (hist->selitems);
+	HISTORY_UNLOCK
+	if (G_UNLIKELY(selitems == NULL))
+	{
+		e2_filestore_enable_one_refresh (p);
+		return FALSE;
+	}
+
 	model = view->model;
 	if (gtk_tree_model_get_iter_first (model, &iter))
 	{	//it's not empty now
-		GHashTable *selitems;
 		GtkTreeSelection *sel;
 
-		selitems = hist->selitems;
 		sel = view->selection;
 		gtk_tree_selection_unselect_all (sel);	//start with clean slate
 		do
@@ -178,6 +195,7 @@ static gboolean _e2p_retag (gpointer from, E2_ActionRuntime *art)
 		} while (gtk_tree_model_iter_next (model, &iter));
 	}
 
+	g_hash_table_destroy (selitems);
 	e2_filestore_enable_one_refresh (p);
 
 	return TRUE;
