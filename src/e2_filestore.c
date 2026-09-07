@@ -1530,8 +1530,14 @@ nextmember:
 
 errexit:
 	//FIXME warning
-	e2_list_free_with_data (&member);	//get rid of remaining string data
-	g_list_foreach (*list, (GFunc) e2_filestore_cleaninfo, NULL);
+	//The current info has not been installed in the list yet.
+	if (info != NULL)
+		DEALLOCATE (FileInfo, info);
+	//Keep every node alive until both payload types have been cleaned.
+	for (GList *converted = *list; converted != member; converted = converted->next)
+		e2_filestore_cleaninfo ((FileInfo *) converted->data, NULL);
+	for (; member != NULL; member = member->next)
+		g_free (member->data);
 	g_list_free (*list);
 	*list = GINT_TO_POINTER (errval);
 	return FALSE;
