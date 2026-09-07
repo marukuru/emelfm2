@@ -2568,9 +2568,8 @@ ssize_t e2_fs_read (gint descriptor, gpointer buffer, /*size_t*/ gulong bufsize 
 }
 /**
 @brief read file @a localpath into memory
-Note the file needs to be size-limited, for local files at least, to what can be
-represented by a gulong, i.e. to ULONG_MAX. This is to allow allocation by g_...,
-to simplify later cleanups (not supposed to mix glib and glibc mamaory-management)
+Local file sizes must fit ssize_t, the signed result type of e2_fs_read().
+This also leaves allocation space for an optional trailing zero.
 Memory is allocated by g_try_malloc, not malloc, and needs to be cleared by g_free, not free
 Error messages expect BGL open/off
 @param localpath path of file to be read, localised string
@@ -2585,6 +2584,9 @@ gboolean e2_fs_get_file_contents (VPATH *localpath, gpointer *contents,
 {
 	gboolean retval;
 	const gchar *fmt;
+	*contents = NULL;
+	if (contlength != NULL)
+		*contlength = 0;
 #ifdef E2_VFS
 	if (e2_fs_item_is_mounted (localpath))
 	{
@@ -2595,12 +2597,20 @@ gboolean e2_fs_get_file_contents (VPATH *localpath, gpointer *contents,
 			struct stat sb;
 			if (!e2_fs_fstat (fdesc, &sb))
 			{
-				size_t nread, len = sb.st_size;
+				//The read result must fit ssize_t; leave room for a terminator.
+				if (sb.st_size < 0 || (guint64) sb.st_size > G_MAXSSIZE)
+				{
+					retval = FALSE;
+					fmt = _("Error reading file %s");
+					goto close_file;
+				}
+				ssize_t nread;
+				size_t len = (size_t) sb.st_size;
 				if (terminate)
 					len += sizeof (gchar);	//in case we need to append a 0
 
 //				*contents = malloc (len);	//not size-limited, but imposes cleanup hassles
-				*contents = g_try_malloc (len); //allows up to ULONG_MAX
+				*contents = g_try_malloc (MAX (len, 1)); //also own a buffer for empty files
 #if (CHECKALLOCATEDWARNT)
 				CHECKALLOCATEDWARNT (*contents, e2_fs_safeclose (fdesc); return FALSE;);
 #else
@@ -2623,8 +2633,7 @@ gboolean e2_fs_get_file_contents (VPATH *localpath, gpointer *contents,
 				if (sb.st_size > 0)
 				{
 					nread = e2_fs_read (fdesc, *contents, sb.st_size E2_ERR_SAMEARG());
-					if (nread < 0 //|| nread < (gulong)sb.st_size
-					   )
+					if (nread < 0)
 					{
 						g_free (*contents);	//or free() if needed
 						*contents = NULL;
@@ -2635,7 +2644,7 @@ gboolean e2_fs_get_file_contents (VPATH *localpath, gpointer *contents,
 					else if (terminate)
 					{
 						gchar *s;
-						if (nread >= sizeof (gchar))
+						if (nread > 0)
 						{
 							s = *contents + nread - sizeof (gchar);
 							if (*s == '\0')
@@ -2657,16 +2666,17 @@ gboolean e2_fs_get_file_contents (VPATH *localpath, gpointer *contents,
 				{
 					nread = 0;
 					if (terminate)
-						*contents = '\0';
+						*((gchar *) *contents) = '\0';
 				}
 				if (contlength != NULL)
-					*contlength = nread;
+					*contlength = (gulong) nread;
 			}
 			else	//stat failed
 			{
 				retval = FALSE;
 				fmt = _("Cannot get information about %s");
 			}
+		close_file:
 			e2_fs_safeclose (fdesc);
 		}
 		else	//open failed
