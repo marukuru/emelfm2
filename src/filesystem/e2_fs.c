@@ -1370,114 +1370,123 @@ To eliminate BGL-racing, no UI-change from here
 	return wanted;
 } */
 #endif
+typedef struct _E2_DRReadCleanup
+{
+	E2_DRFuncArgs *args;
+	DIR *directory;
+	GList *entries; //owned allocated names, including names produced by callbacks
+} E2_DRReadCleanup;
+
 /**
-@brief synchronous or thread-function to record some or all the items in a mounted directory
+@brief release resources on read failure, cancellation, or normal completion
+The dedicated reader has cancellation disabled here, including during callbacks.
+*/
+static void _e2_fs_read_resources_cleanup (gpointer user_data)
+{
+	E2_DRReadCleanup *cleanup = user_data;
+	if (cleanup->args->slowdir)
+		pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
+	if (cleanup->directory != NULL)
+	{
+		DIR *directory = cleanup->directory;
+		cleanup->directory = NULL;
+		closedir (directory);
+	}
+	e2_list_free_with_data (&cleanup->entries);
+	if (cleanup->args->free_data_func != NULL)
+	{
+		GDestroyNotify free_data_func = cleanup->args->free_data_func;
+		cleanup->args->free_data_func = NULL;
+		free_data_func (cleanup->args->cb_data);
+	}
+}
 
-This is called synchronously when the fstype of the directory being processed is
-FS_LOCAL, or as a thread if the fstype is FS_FUSE, or the parent function was
-called with argument E2_DIRWATCH_YES.
-To eliminate BGL-racing, no BGL- or UI-change here
+/**
+@brief allow cancellation only where the reader owns no unpublished resources
+Called only by the dedicated reader, with its resource cleanup handler installed.
+*/
+static void _e2_fs_read_cancel_point (void)
+{
+	pthread_setcancelstate (PTHREAD_CANCEL_ENABLE, NULL);
+	pthread_testcancel ();
+	pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
+}
 
-@param data pointer to operation data detailing directory path, filterer etc
+/**
+@brief record some or all the items in a mounted directory
+Called synchronously for local directories or by a dedicated monitored reader.
+The dedicated reader uses deferred cancellation only at explicit safe boundaries;
+filesystem calls, allocation and arbitrary callbacks run with cancellation disabled.
+A blocked filesystem call must return before cancellation can take effect.
 
-@return GList of allocated names of items (maybe NULL) in the directory,
- or pointerised error code if a problem occurred
+@param data operation data detailing directory path, filterer etc
+@return GList of allocated names (maybe NULL), or a pointerised error code
 */
 static gpointer _e2_fs_read_mounted_dir (E2_DRFuncArgs *data)
 {
-/*	Would be nice to prevent access-time updates purely due to refreshing, but
-	the atime really does change as a result of the refresh process, and if we
-	were to revert it, the ctime would be changed instead
-	Times are immediately shown in the other pane if it's the parent of this one
-	If we could suspend monitoring of such parent dir, we must not lose any
-	prior reports for there
-	QUERY can the changed atime itself trigger a report which causes a subsequent
-	refresh, creating an endless cycle?
-	Especially with multiple threads and/or processors ?
-	Assuming it can do so, we clear the reports 'queue' after the dir is opened
-	Would be nice if we could just clear any report(s) due to the refresh per se
-	- but the reporting is not that detailed
-*/
-
-	/*#ifdef E2_FAM_KERNEL
-	if (view->refresh)
-		e2_fs_FAM_cancel_monitor_dir (view->dir);
-#endif */
-/*#if defined (E2_FAM_DNOTIFY)
-	//cut down on spurious context changes
-	//block DNOTIFY_SIGNAL
-	sigprocmask (SIG_BLOCK, &dnotify_signal_set, NULL);
-#endif */
-
-	gboolean threaded = data->slowdir;	//monitoring needed, so this func is a thread
-	if (threaded)
-		e2_utils_block_thread_signals ();	//block all allowed signals to this thread
-
-	DIR *dp = opendir (data->localpath);
-	if (dp == NULL)
-	{
-		printd (WARN, "Unable to open directory: %s", data->localpath);
-		return GINT_TO_POINTER (E2DREAD_DNR);
-	}
-
-	gint oldtype = 0;
+	gboolean threaded = data->slowdir;
 	if (threaded)
 	{
-		pthread_setcanceltype (PTHREAD_CANCEL_ASYNCHRONOUS, &oldtype);
-//		pthread_cleanup_push ((gpointer)closedir, (gpointer)dp); can't be inside braces without corresponding pop
+		pthread_setcancelstate (PTHREAD_CANCEL_DISABLE, NULL);
+		pthread_setcanceltype (PTHREAD_CANCEL_DEFERRED, NULL);
+		e2_utils_block_thread_signals ();
 	}
 
-	struct dirent *entryptr;
-
+	E2_DRReadCleanup cleanup = { data, NULL, NULL };
+	gpointer result = GINT_TO_POINTER (E2DREAD_DNR);
 #ifdef E2_VFS
-	VPATH ddata;
-	ddata.spacedata = NULL;	//this func only handles local dirs
+	VPATH ddata = { data->localpath, NULL };
 #endif
 	gboolean (*processor) (VPATH *, const gchar *, GList **, gpointer) = data->callback;
-	GList *entries = NULL;
-//	if (threaded)
-//		pthread_cleanup_push ((gpointer)g_list_free, (gpointer)entries);	//this will leak list data
-
-	errno = 0;
-	while ((entryptr = readdir (dp)) != NULL)
+	pthread_cleanup_push (_e2_fs_read_resources_cleanup, &cleanup);
+	if (threaded)
+		_e2_fs_read_cancel_point ();
+	cleanup.directory = opendir (data->localpath);
+	if (cleanup.directory == NULL)
 	{
-		//one item we're not interested in
+		printd (WARN, "Unable to open directory: %s", data->localpath);
+		goto finished;
+	}
+
+	while (TRUE)
+	{
+		if (threaded)
+			_e2_fs_read_cancel_point ();
+		//Only readdir's errno describes a scan error, not a filter callback's.
+		errno = 0;
+		struct dirent *entryptr = readdir (cleanup.directory);
+		if (entryptr == NULL)
+		{
+			if (errno != 0)
+			{
+				result = GINT_TO_POINTER (E2DREAD_NS);
+				goto finished;
+			}
+			break;
+		}
 		if (entryptr->d_name[0] != '.' || entryptr->d_name[1] != '\0')
 		{
 			if (processor != NULL)
 			{
 #ifdef E2_VFS
-				ddata.path = data->localpath;
-				if (!processor (&ddata, entryptr->d_name, &entries, data->cb_data))
+				if (!processor (&ddata, entryptr->d_name, &cleanup.entries, data->cb_data))
 #else
-				if (!processor (data->localpath, entryptr->d_name, &entries, data->cb_data))
+				if (!processor (data->localpath, entryptr->d_name, &cleanup.entries, data->cb_data))
 #endif
-				break;
+					break;
 			}
 			else
-				//order is irrelevant, prepend is faster
-				entries = g_list_prepend (entries, g_strdup (entryptr->d_name));
+				cleanup.entries = g_list_prepend (cleanup.entries, g_strdup (entryptr->d_name));
 		}
 	}
-	if (errno == EBADF)
-	{
-		e2_list_free_with_data (&entries);
-		entries = GINT_TO_POINTER (E2DREAD_NS);
-	}
-	closedir (dp);
-//	E2_UNBLOCK
-
-	if (data->free_data_func != NULL)
-		data->free_data_func (data->cb_data);
-
-	if (threaded)	//this func is a thread
-	{
-//		pthread_cleanup_pop (0);	//free entries list
-//		pthread_cleanup_pop (0);	//close dp
-		pthread_setcanceltype (oldtype, NULL);
-	}
-
-	return entries;
+	if (threaded)
+		_e2_fs_read_cancel_point ();
+	result = cleanup.entries;
+	cleanup.entries = NULL; //transfer successful results; cleanup retains failures
+finished:
+	pthread_cleanup_pop (1);
+	//The dedicated reader keeps cancellation disabled through completion and exit.
+	return result;
 }
 /**
 @brief mark reader completion before its thread ID can be reaped
@@ -1717,6 +1726,8 @@ gpointer e2_fs_dir_foreach (VPATH *localpath, E2_FsReadWatch monitor,
 			pthread_cond_destroy (&data.condition);
 			pthread_mutex_destroy (&data.mutex);
 			printd (WARN, "read-dir-thread create error!");
+			if (free_data_func != NULL)
+				free_data_func (cb_data);
 			return GINT_TO_POINTER (E2DREAD_ENOTH);
 		}
 
