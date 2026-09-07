@@ -1643,17 +1643,18 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 		now we construct array to be populated with corresponding 'mode' data,
 		indicating whether and how the item needs to be processed in this refresh.
 */
-		guint i, indx, itemcount = g_list_length (entries);
+		guint i, indx, itemcount;
+		const guint allocated_count = g_list_length (entries);
 		GList *member;
 		E2_RefreshInfo *modes = (E2_RefreshInfo *)
 #ifdef USE_GLIB2_10
 			//can't use ALLOCATE0 cuz > 1 item
-			g_slice_alloc0 (sizeof (E2_RefreshInfo) * itemcount);
+			g_slice_alloc0 (sizeof (E2_RefreshInfo) * allocated_count);
 #elif defined (USE_GLIB2_8)
-			g_try_malloc0 (sizeof (E2_RefreshInfo) * itemcount);
+			g_try_malloc0 (sizeof (E2_RefreshInfo) * allocated_count);
 #else
 			//don't use calloc() so that g_free() is ok to clean up
-			g_try_malloc (sizeof (E2_RefreshInfo) * itemcount);
+			g_try_malloc (sizeof (E2_RefreshInfo) * allocated_count);
 #endif
 #if (CHECKALLOCATEDWARNT)
 		CHECKALLOCATEDWARNT (modes, {});
@@ -1662,7 +1663,7 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 		{
 			retval = 1; //initially assume successful completion
 #ifndef USE_GLIB2_8
-			memset (modes, 0, sizeof (E2_RefreshInfo) * itemcount);
+			memset (modes, 0, sizeof (E2_RefreshInfo) * allocated_count);
 #endif
 //			Now we convert item-names list into FileInfo's list
 
@@ -1676,7 +1677,7 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 				g_free (local);
 #ifdef USE_GLIB2_10
 				//can't use DEALLOCATE cuz > 1 item
-				g_slice_free1 (sizeof (E2_RefreshInfo) * itemcount, modes);
+				g_slice_free1 (sizeof (E2_RefreshInfo) * allocated_count, modes);
 #else
 				g_free (modes);
 #endif
@@ -1702,7 +1703,7 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 				g_free (local);
 #ifdef USE_GLIB2_10
 				//can't use DEALLOCATE cuz > 1 item
-				g_slice_free1 (sizeof (E2_RefreshInfo) * itemcount, modes);
+				g_slice_free1 (sizeof (E2_RefreshInfo) * allocated_count, modes);
 #else
 				g_free (modes);
 #endif
@@ -1723,7 +1724,7 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 			//do not free keys when destroying, they're not copies
 			GHashTable *newlookup = g_hash_table_new_full
 				(g_str_hash, g_str_equal, NULL, NULL);
-			FileInfo **entries_array = g_new(FileInfo *, itemcount);
+			FileInfo **entries_array = g_new(FileInfo *, allocated_count);
 			i = 0;
 			for (member = entries; member != NULL; member = member->next)
 			{
@@ -1732,6 +1733,10 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 					GUINT_TO_POINTER (i));
 				i++;
 			}
+
+			//Stat failures can remove entries after the arrays were sized.
+			//Only reconcile initialized slots; retain the allocation size for cleanup.
+			itemcount = i;
 
 			//this bit may separately apply to both views when they're the same
 			i = 0;
@@ -1988,7 +1993,7 @@ loopstart:
 			g_list_free (entries); //all data cleared or used before here
 #ifdef USE_GLIB2_10
 			//can't use DEALLOCATE cuz > 1 item
-			g_slice_free1 (sizeof (E2_RefreshInfo) * itemcount, modes);
+			g_slice_free1 (sizeof (E2_RefreshInfo) * allocated_count, modes);
 #else
 			g_free (modes);
 #endif
