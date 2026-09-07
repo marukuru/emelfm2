@@ -5772,17 +5772,21 @@ msgid "This causes search strings to be remembered between sessions"
 msgstr ""
 "Sprawia, że wyszukiwane zwroty będą pamiętane pomiędzy sesjami programu"
 
-#: e2_window.c:1150
+#: e2_window.c:139
+msgid "Equal panel sizes (1:1)"
+msgstr ""
+
+#: e2_window.c:1248
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "wyświetlonych i %d ukrytych"
 
-#: e2_window.c:1153
+#: e2_window.c:1251
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d zaznaczonych elementów z %d %s w '%s'"
 
-#: e2_window.c:1722
+#: e2_window.c:1820
 msgid "WhoAmI"
 msgstr ""
 

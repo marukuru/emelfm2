@@ -5801,17 +5801,21 @@ msgstr "Such-Chronik speichern"
 msgid "This causes search strings to be remembered between sessions"
 msgstr "Wenn aktiviert, merkt sich emelFM2 die letzten Suchstrings."
 
-#: e2_window.c:1150
+#: e2_window.c:139
+msgid "Equal panel sizes (1:1)"
+msgstr "Gleiche Paneelgrößen"
+
+#: e2_window.c:1248
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "angezeigten & %d versteckten "
 
-#: e2_window.c:1153
+#: e2_window.c:1251
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d ausgewählte(s) Objekt(e) von %d %sin %s"
 
-#: e2_window.c:1722
+#: e2_window.c:1820
 msgid "WhoAmI"
 msgstr ""
 

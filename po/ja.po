@@ -5559,17 +5559,21 @@ msgstr "検索履歴を保持"
 msgid "This causes search strings to be remembered between sessions"
 msgstr ""
 
-#: e2_window.c:1150
+#: e2_window.c:139
+msgid "Equal panel sizes (1:1)"
+msgstr ""
+
+#: e2_window.c:1248
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "個を表示 & %d 個を非表示 "
 
-#: e2_window.c:1153
+#: e2_window.c:1251
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d 個のアイテムを選択 (%d %sin %s)"
 
-#: e2_window.c:1722
+#: e2_window.c:1820
 msgid "WhoAmI"
 msgstr ""
 

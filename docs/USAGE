@@ -78,6 +78,8 @@ At any time, one of the two file panes will be 'active' (have focus). The active
 
 The file panes can re-sized, or hidden, by dragging the separator or clicking a relevant toolbar button. The output pane can be resized, up to the full window size, or hidden, likewise by dragging or clicking.
 
+Right-click the separator between the file panes and choose 'Equal panel sizes (1:1)' to divide the available space evenly, excluding the separator itself. The panes stay equal when the window is resized, until you move the separator or choose another pane ratio. If the available space is an odd number of pixels, the panes differ by one pixel.
+
 You can change the order of columns displayed in either file pane. Press the mouse left-button while the mouse cursor is on the header of the column you want to move. Then drag it to where you want. Such change will be remembered between sessions.
 
 Right-click a column header to choose 'Lock', 'Optimal column width' or 'Flexible'. Filename is flexible by default and uses the remaining pane width, accounting for the vertical scrollbar. The other columns automatically fit their widest displayed text, including rows below the viewport. Each pane can have one flexible column; uncheck its 'Flexible' option before choosing another. Lock freezes the current width, suspending flexible sizing until unlocked. 'Optimal column width' restores automatic fitting and clears flexibility on that column.

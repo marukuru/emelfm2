@@ -60,6 +60,95 @@ gint real_height;
  /***** utils *****/
 /*****************/
 
+/* Both children are packed with shrink=TRUE, so max-position is the space
+   available to the children, excluding the divider and container borders. */
+static void _e2_window_equalize_panes (GtkWidget *paned, E2_WindowRuntime *rt)
+{
+	gint maxpos;
+	g_object_get (paned, "max-position", &maxpos, NULL);
+	if (maxpos > 0)
+		gtk_paned_set_position (GTK_PANED (paned), maxpos / 2);
+	rt->panes_paned_ratio = rt->panes_paned_ratio_last = 0.5;
+}
+
+static void _e2_window_panes_max_position_cb (GtkWidget *paned,
+	GParamSpec *pspec, E2_WindowRuntime *rt)
+{
+	if (rt->panes_equal)
+	{
+		NEEDCLOSEBGL
+		_e2_window_equalize_panes (paned, rt);
+		NEEDOPENBGL
+	}
+}
+
+static void _e2_window_equal_panes_cb (GtkWidget *item, E2_WindowRuntime *rt)
+{
+	NEEDCLOSEBGL
+	rt->panes_equal = TRUE;
+	_e2_window_equalize_panes (rt->panes_paned, rt);
+	NEEDOPENBGL
+}
+
+static gboolean _e2_window_panes_move_handle_cb (GtkPaned *paned,
+	GtkScrollType scroll, E2_WindowRuntime *rt)
+{
+	rt->panes_equal = FALSE;
+	return FALSE;
+}
+
+static gboolean _e2_window_panes_menu_destroy (gpointer menu)
+{
+	gtk_widget_destroy (GTK_WIDGET (menu));
+	return FALSE;
+}
+
+static void _e2_window_panes_menu_done (GtkWidget *menu, gpointer unused)
+{
+	//Let the selected item's activation finish before destroying the menu.
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _e2_window_panes_menu_destroy,
+		g_object_ref (menu), g_object_unref);
+}
+
+static gboolean _e2_window_panes_button_cb (GtkWidget *paned,
+	GdkEventButton *event, E2_WindowRuntime *rt)
+{
+#ifdef USE_GTK2_22
+	GdkWindow *handle = gtk_paned_get_handle_window (GTK_PANED (paned));
+#else
+	GdkWindow *handle = GTK_PANED (paned)->handle;
+#endif
+	//Ignore events propagated from the file panes themselves.
+	if (event->window != handle || event->type != GDK_BUTTON_PRESS)
+		return FALSE;
+	if (event->button == 1)
+	{
+		rt->panes_equal = FALSE;
+		return FALSE;
+	}
+	if (event->button != 3)
+		return FALSE;
+
+	NEEDCLOSEBGL
+	GtkWidget *menu = gtk_menu_new ();
+	gtk_menu_attach_to_widget (GTK_MENU (menu), paned, NULL);
+	g_signal_connect_object (paned, "destroy", G_CALLBACK (gtk_widget_destroy),
+		menu, G_CONNECT_SWAPPED);
+	g_signal_connect (menu, "selection-done",
+		G_CALLBACK (_e2_window_panes_menu_done), NULL);
+	GtkWidget *item = gtk_menu_item_new_with_label (_("Equal panel sizes (1:1)"));
+	g_signal_connect (item, "activate", G_CALLBACK (_e2_window_equal_panes_cb), rt);
+	gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+	gtk_widget_show_all (menu);
+#ifdef USE_GTK3_22
+	gtk_menu_popup_at_pointer (GTK_MENU (menu), (GdkEvent *) event);
+#else
+	gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, event->button, event->time);
+#endif
+	NEEDOPENBGL
+	return TRUE;
+}
+
 /**
 @brief create (but not show) paned widget to contain the file panes, and surrounding containers
 
@@ -95,6 +184,12 @@ static void _e2_window_create_pane_boxes (E2_WindowRuntime *rt)
 		rt->panes_paned = gtk_hpaned_new ();
 	}
 #endif
+	g_signal_connect (rt->panes_paned, "button-press-event",
+		G_CALLBACK (_e2_window_panes_button_cb), rt);
+	g_signal_connect (rt->panes_paned, "move-handle",
+		G_CALLBACK (_e2_window_panes_move_handle_cb), rt);
+	g_signal_connect (rt->panes_paned, "notify::max-position",
+		G_CALLBACK (_e2_window_panes_max_position_cb), rt);
 	gtk_box_pack_start (GTK_BOX (rt->panes_inner_box), rt->panes_paned, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (rt->panes_outer_box), rt->panes_inner_box, TRUE, TRUE, 0);
 }
@@ -150,6 +245,8 @@ static gboolean _e2_window_adjust_panes_ratio (GtkPaned *paned,
 
 	retval = TRUE;
 	adjust_output = (paned == GTK_PANED (app.window.output_paned));
+	if (!adjust_output)
+		app.window.panes_equal = FALSE;
 
 	p1 = e2_utils_unquote_string (arg); //quotes may be there to protect '*'
 	p2 = strchr (p1,','); //is there a pair of args ?
@@ -379,7 +476,8 @@ static void _e2_window_pane1box_allocated_cb (GtkWidget *widget,
 //		printd (DEBUG, "_e2_window_pane1box_allocated_cb (widget:,alloc:x=%d,y=%d,w=%d,h=%d,rt:_)", alloc->x, alloc->y, alloc->width, alloc->height);
 		prev_size = (rt->panes_horizontal) ? alloc->height : alloc->width;
 		NEEDCLOSEBGL
-		rt->panes_paned_ratio = _e2_window_get_pos (rt->panes_paned);
+		rt->panes_paned_ratio = rt->panes_equal ? 0.5 :
+			_e2_window_get_pos (rt->panes_paned);
 		NEEDOPENBGL
 //		printd (DEBUG, "new panes ratio: %f", rt->panes_paned_ratio);
 		if (rt->panes_paned_ratio > 0.001 && rt->panes_paned_ratio < 0.999)

@@ -29,6 +29,7 @@ typedef struct _E2_WindowRuntime
 	GtkWidget *panes_paned;
 	gdouble panes_paned_ratio;
 	gdouble panes_paned_ratio_last;
+	gboolean panes_equal;
 	GtkWidget *output_paned;
 	gdouble output_paned_ratio;
 	gdouble output_paned_ratio_last;

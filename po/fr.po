@@ -5804,17 +5804,21 @@ msgstr ""
 "Ceci entraîne la mémorisation du texte recherché d'une session d'emelfm2 à "
 "l'autre."
 
-#: e2_window.c:1150
+#: e2_window.c:139
+msgid "Equal panel sizes (1:1)"
+msgstr ""
+
+#: e2_window.c:1248
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "affichés et %d cachés"
 
-#: e2_window.c:1153
+#: e2_window.c:1251
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d élément(s) sélectionné(s) sur %d %s de %s"
 
-#: e2_window.c:1722
+#: e2_window.c:1820
 msgid "WhoAmI"
 msgstr "WhoAmI"
 
