@@ -1470,6 +1470,9 @@ This is same for en- and de-cryption
 static gboolean _e2pcr_finalise_item (VPATH *localpath, VPATH *temppath, VPATH *newpath,
 	gboolean same_name, E2P_CryptOpts *options)
 {
+	//A different-name operation must have a destination before any rename/delete.
+	if (!same_name && (newpath == NULL || VPCSTR (newpath) == NULL))
+		return FALSE;
 #ifdef E2_VFS
 	VPATH otherpath;
 	otherpath.spacedata = localpath->spacedata;
@@ -2097,6 +2100,13 @@ othermode:
 	}
 	else
 		free_new_name = FALSE;
+	if (!use_same_name && newname == NULL)
+	{
+		//Do not pass a missing destination to strcmp/access or write partial output.
+		e2_output_print_error (_("Cannot determine the decrypted file name"), FALSE);
+		g_free (filebuffer);
+		return NO;
+	}
 	//overwrite check if relevant
 	if (check &&
 		!(use_same_name //no point in warning about re-use of same name
