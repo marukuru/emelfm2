@@ -850,8 +850,9 @@ static void _e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath,
 	data->view = (ViewInfo *)rt;
 	data->history = history;
 	data->hook = hook;
-	//now signal we're ready to do a new cd
-//	any prior data->newpath is copied and cleared downstream, when ready
+	//The worker clears newpath under this lock when it takes ownership.
+	//Any path still here is an unconsumed request superseded by this one.
+	g_free (data->newpath);
 	data->newpath = path;	//this is a copy
 	/*we use a timer, not a thread directly, to control the cd process cuz:
 		. we're happy to do the cd at a reasonably non-busy time

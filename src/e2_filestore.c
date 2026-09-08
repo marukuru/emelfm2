@@ -1730,6 +1730,8 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 #endif
 			{
 				printd (WARN, "Unable to stat directory: %s", view->dir);
+				g_list_foreach (entries, (GFunc) e2_filestore_cleaninfo, NULL);
+				g_list_free (entries);
 				g_free (local);
 #ifdef USE_GLIB2_10
 				//can't use DEALLOCATE cuz > 1 item
@@ -1975,6 +1977,14 @@ loopstart:
 							g_free (access);
 							g_free (change);
 							g_free (key);
+							if (foreground != NULL)
+							{
+#ifdef USE_GTK3_0
+								gdk_rgba_free (foreground);
+#else
+								gdk_color_free (foreground);
+#endif
+							}
 						}
 					}
 
