@@ -3320,6 +3320,22 @@ static DialogButtons _e2pcr_crypt1 (VPATH *localpath, E2P_CryptOpts *options)
 	return retval;
 }
 /**
+@brief borrow per-item path/stat data only for the synchronous crypt call
+Restore the caller's pointers while retaining option changes made during processing.
+*/
+static DialogButtons _e2pcr_crypt_with_stat (VPATH *localpath,
+	struct stat *statptr, E2P_CryptOpts *options)
+{
+	const gchar *saved_path = options->localpath;
+	struct stat *saved_stat = options->statptr;
+	options->localpath = VPCSTR (localpath);
+	options->statptr = statptr;
+	DialogButtons result = _e2pcr_crypt1 (localpath, options);
+	options->localpath = saved_path;
+	options->statptr = saved_stat;
+	return result;
+}
+/**
 @brief callback function for recursive directory processing
 This is called for each non-directory item in the directory to be processed.
 Treewalk is breadth-first, not physical
@@ -3406,10 +3422,8 @@ static E2_TwResult _e2pcr_task_twcb_crypt (VPATH *localpath,
 			if (S_ISREG (statptr->st_mode))
 			{
 				struct stat sb;
-				user_data->localpath = VPSTR (localpath);	//ok to throw away the original
 				sb = *statptr;	//get a non-const statbuf
-				user_data->statptr = &sb;
-				cryptresult = _e2pcr_crypt1 (localpath, user_data);
+				cryptresult = _e2pcr_crypt_with_stat (localpath, &sb, user_data);
 				if (cryptresult == NO_TO_ALL || cryptresult == NO) //NO == error
 					retval = E2TW_STOP;
 			}
@@ -3430,12 +3444,10 @@ static E2_TwResult _e2pcr_task_twcb_crypt (VPATH *localpath,
 					if (!e2_fs_stat (target, &sb E2_ERR_NONE()))
 #endif
 					{
-						user_data->localpath = VPSTR (localpath);	//ok to throw away the original
-						user_data->statptr = &sb;
 #ifdef E2_VFS
-						cryptresult = _e2pcr_crypt1 (&ddata, user_data);
+						cryptresult = _e2pcr_crypt_with_stat (&ddata, &sb, user_data);
 #else
-						cryptresult = _e2pcr_crypt1 (target, user_data);
+						cryptresult = _e2pcr_crypt_with_stat (target, &sb, user_data);
 #endif
 					}
 					else
@@ -3548,12 +3560,10 @@ static DialogButtons _e2pcr_apply (E2P_CryptOpts *options)
 			if (!e2_fs_stat (target, &sb E2_ERR_NONE()))
 #endif
 			{
-				options->localpath = target;	//ok to throw away the original
-				options->statptr = &sb;
 #ifdef E2_VFS
-				cryptresult = _e2pcr_crypt1 (&ddata, options);
+				cryptresult = _e2pcr_crypt_with_stat (&ddata, &sb, options);
 #else
-				cryptresult = _e2pcr_crypt1 (target, options);
+				cryptresult = _e2pcr_crypt_with_stat (target, &sb, options);
 #endif
 			}
 			else
