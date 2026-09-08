@@ -3647,195 +3647,80 @@ gboolean e2_fileview_cd_watch (E2_CDwatch *data)
 }
 */
 /**
-@brief change-directory timer-function
-This can be called for both dirs, at session start at least
-It handles any requested cd for either pane
-@param data pointer to cd data for the change
-
-@return TRUE if prior cd is not complete, or FALSE to shutdown timer
+@brief dispatch pending directory changes once, deferring busy panes to a timer
+This handles requests for both panes, active pane first. Never poll worker
+completion in this callback: GTK must regain control while a pane is busy.
+@param data pane data associated with the triggering timer
+@return FALSE to remove the current timer; pending work gets one later retry
 */
 gboolean e2_fileview_cd_manage (E2_Listman *data)
 {
-	E2_Listman *workdata;
-	gchar *dirnow;
-	pthread_t thisID;
-	pthread_attr_t attr;
-	gboolean one_active, flag;
-	guint fails = 0;
-
-	LISTS_LOCK
-	flag = app.pane1.view.listcontrols.cd_requested || app.pane2.view.listcontrols.cd_requested;
-	data->cd_requested = TRUE;	//mark this one to block any repeats
-	printd (DEBUG, "managing cd to %s", data->newpath);
-	LISTS_UNLOCK
-	if (flag)
-	{
-		//this is a timer callback which escaped the termination process below
-		//or (unlikely) is for the former-other pane and happened to arrive here
-		//at a useless moment
-		printd (NOTICE, "aborted cd timer, another one has precedence");	//, data->timer);
-		return FALSE;
-	}
-	//immediately stop the timer which called here, to prevent _any_ chance of
-	//parallel instances
-	while (g_source_remove_by_user_data (data))
-	{
-		printd (DEBUG, "shut down a cd-timer for this pane");
-	}
+	//Coalesce request timers for both panes, including the current source.
+	while (g_source_remove_by_user_data (&app.pane1.view.listcontrols)) {}
+	while (g_source_remove_by_user_data (&app.pane2.view.listcontrols)) {}
 
 	e2_utf8_set_name_conversion_if_requested ();
-
-//#ifndef E2_STATUS_DEMAND
-//	e2_window_disable_status_update ();	//prevents bad behaviour ??
-//#endif
-	//in case the active pane changes while we're here, get a snapshot
-	one_active = (curr_view == &app.pane1.view);
-	do
+	gboolean one_active = (curr_view == &app.pane1.view);
+	E2_Listman *panes[2] = {
+		(one_active) ? &app.pane1.view.listcontrols : &app.pane2.view.listcontrols,
+		(one_active) ? &app.pane2.view.listcontrols : &app.pane1.view.listcontrols
+	};
+	gboolean retry = FALSE;
+	guint i;
+	for (i = 0; i < G_N_ELEMENTS (panes); i++)
 	{
-		//try active pane first
-		workdata = (one_active) ? &app.pane1.view.listcontrols : &app.pane2.view.listcontrols;
+		E2_Listman *workdata = panes[i];
 		LISTS_LOCK
-		if (workdata->cd_requested)
-		{
-			dirnow = (one_active) ? app.pane1.view.dir : app.pane2.view.dir;
-			if (strcmp (workdata->newpath, dirnow) == 0)
-			{
-				LISTS_UNLOCK
-				workdata->cd_requested = FALSE;
-			}
-			else if (!(
-				g_atomic_int_get (&workdata->cd_working)
-			 || g_atomic_int_get (&workdata->refresh_working)
-#ifdef E2_STATUS_BLOCK
-			 || g_atomic_int_get (&app.status_working)
-#endif
-			))
-			{
-				LISTS_UNLOCK
-				printd (NOTICE, "Changing active pane to %s", workdata->newpath);
-				pthread_attr_init (&attr);
-				pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
-
-				if (pthread_create (&thisID, &attr,
-					(gpointer(*)(gpointer))_e2_fileview_change_dir, workdata) == 0)
-				{
-					printd (DEBUG,"change-dir-thread (ID=%lu) started", thisID);
-					//do this here too in case the thread gets underway later
-					LISTS_LOCK
-					workdata->cd_requested = FALSE;
-					LISTS_UNLOCK
-				}
-				else
-					fails++;
-				pthread_attr_destroy (&attr);
-			}
-			else	//busy
-				if ( (one_active && g_atomic_int_get (&app.pane2.view.listcontrols.cd_working))
-				  ||(!one_active && g_atomic_int_get (&app.pane1.view.listcontrols.cd_working)) )
-			{
-//				if ( (one_active && app.pane2.view.listcontrols.timer == 0)
-//				  ||(!one_active && app.pane1.view.listcontrols.timer == 0) )
-//				{	//there is no active timer for the other pane (should never happen)
-					printd (DEBUG,"active pane blocakge, restarting timer");
-					//data->timer =
-					g_timeout_add_full (G_PRIORITY_HIGH, 90,
-						(GSourceFunc) e2_fileview_cd_manage, data, NULL);
-//				}
-				LISTS_UNLOCK
-				return FALSE;	//wait for a timer to call back here
-			}
-			else
-			{
-				LISTS_UNLOCK
-			}
-		}
-		else
+		//A consumed path is NULL; an unconsumed path remains pending on retries.
+		workdata->cd_requested = (workdata->newpath != NULL);
+		if (!workdata->cd_requested)
 		{
 			LISTS_UNLOCK
+			continue;
 		}
-
-		//then try inactive pane
-		workdata = (one_active) ? &app.pane2.view.listcontrols : &app.pane1.view.listcontrols;
-		LISTS_LOCK
-		if (workdata->cd_requested)
-		{
-			dirnow = (one_active) ? app.pane2.view.dir : app.pane1.view.dir;
-			if (strcmp (workdata->newpath, dirnow) == 0)
-			{
-				LISTS_UNLOCK
-				workdata->cd_requested = FALSE;
-			}
-			else if (!(
-			   g_atomic_int_get (&workdata->cd_working)
+		if (g_atomic_int_get (&workdata->cd_working)
 			|| g_atomic_int_get (&workdata->refresh_working)
 #ifdef E2_STATUS_BLOCK
 			|| g_atomic_int_get (&app.status_working)
 #endif
-			))
-			{
-				LISTS_UNLOCK
-				printd (NOTICE, "Changing INactive pane to %s", workdata->newpath);
-				pthread_attr_init (&attr);
-				pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
-				if (pthread_create (&thisID, &attr,
-					(gpointer(*)(gpointer))_e2_fileview_change_dir, workdata) == 0)
-				{
-					printd (DEBUG,"change-dir-thread (ID=%lu) started", thisID);
-					LISTS_LOCK
-					workdata->cd_requested = FALSE;
-					LISTS_UNLOCK
-				}
-				else
-					fails++;
-				pthread_attr_destroy (&attr);
-			}
-			else	//busy
-				if ( (one_active && g_atomic_int_get (&app.pane1.view.listcontrols.cd_working))
-				  ||(!one_active && g_atomic_int_get (&app.pane2.view.listcontrols.cd_working)) )
-			{
-//				if ( (one_active && app.pane1.view.listcontrols.timer == 0)
-//				  ||(!one_active && app.pane2.view.listcontrols.timer == 0) )
-//				{	//there is no active timer for the other pane (should never happen)
-					printd (DEBUG,"INactive pane blocakge, restarting timer");
-					//data->timer =
-					g_timeout_add_full (G_PRIORITY_HIGH, 90,
-						(GSourceFunc) e2_fileview_cd_manage, data, NULL);
-//				}
-				LISTS_UNLOCK
-				return FALSE;	//wait for a timer to call back here
-			}
-			else
-			{
-				LISTS_UNLOCK
-			}
-		}
-		else
+		)
 		{
+			retry = TRUE;
 			LISTS_UNLOCK
+			continue;
+		}
+		if (strcmp (workdata->newpath, workdata->view->dir) == 0)
+		{
+			g_free (workdata->newpath);
+			workdata->newpath = NULL;
+			workdata->cd_requested = FALSE;
+			LISTS_UNLOCK
+			continue;
 		}
 
-		LISTS_LOCK
-		flag = app.pane1.view.listcontrols.cd_requested || app.pane2.view.listcontrols.cd_requested;
+		//Reserve the pane before creating the worker, which takes LISTS_LOCK
+		//to consume the request. Do not clear its flags after releasing the lock.
+		g_atomic_int_set (&workdata->cd_working, 1);
+		workdata->cd_requested = FALSE;
+		pthread_t thisID;
+		pthread_attr_t attr;
+		pthread_attr_init (&attr);
+		pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
+		gint result = pthread_create (&thisID, &attr,
+			(gpointer(*)(gpointer))_e2_fileview_change_dir, workdata);
+		pthread_attr_destroy (&attr);
+		if (result != 0)
+		{
+			g_atomic_int_set (&workdata->cd_working, 0);
+			workdata->cd_requested = TRUE;
+			retry = TRUE;
+			printd (WARN, "CD-thread creation error");
+		}
 		LISTS_UNLOCK
-	} while (flag && fails < 2);
-
-	if (flag && fails == 2)
-	{
-//		gchar *msg = ;
-//		CLOSEBGL
-//		e2_output_print_error (msg, FALSE);
-//		OPENBGL
-		printd (WARN, "CD-thread creation error");
 	}
-
-//#ifndef E2_STATUS_DEMAND
-//	printd (DEBUG,"resume status checking");
-//	e2_window_enable_status_update (-1);
-//#endif
-//	LISTS_LOCK
-//	data->timer = 0;	//now it's ok to allow other timers
-//	LISTS_UNLOCK
-
+	if (retry)
+		g_timeout_add_full (G_PRIORITY_HIGH, 90,
+			(GSourceFunc) e2_fileview_cd_manage, data, NULL);
 	return FALSE;
 }
 /**
@@ -3861,15 +3746,17 @@ static gpointer _e2_fileview_change_dir (E2_Listman *cddata)
 	//with repeated fast cd's, sometimes we arrive here with a NULL path still in place
 	if (newpath == NULL)
 	{
+		g_atomic_int_set (&cddata->cd_working, 0);
+		cddata->cd_requested = FALSE;
 		LISTS_UNLOCK
 		e2_filestore_enable_one_refresh ((cddata == &app.pane1.view.listcontrols) ?
 			PANE1:PANE2);
 		return NULL;
 	}
 	cddata->newpath = NULL;	//from now, non-NULL signals a new cd request
-	//CHECKME ok to overlap calls, hence defer setting these flags ?
-	g_atomic_int_set (&cddata->cd_working, 1);	//prevent re-entrant cd's
-	cddata->cd_requested = FALSE;	//this may preceed the change in e2_fileview_cd_manage()
+	//The manager reserved this pane before starting the worker.
+	g_atomic_int_set (&cddata->cd_working, 1);
+	cddata->cd_requested = FALSE;	//the worker has consumed the pending path
 	ViewInfo *view = cddata->view;
 	gboolean history = cddata->history;
 	gboolean hook = cddata->hook;
