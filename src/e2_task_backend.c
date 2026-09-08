@@ -2060,9 +2060,10 @@ don't need real path yet
 		}
 	}
 
+	//The conversion may alias usepath; resolve ownership before freeing it.
+	F_FREE (utf, usepath);
 	if (addpath)
 		g_free (usepath);
-	F_FREE (utf, usepath);
 	if (freeme != NULL)
 		g_free (freeme);
 	if (base != NULL)
