@@ -3193,6 +3193,7 @@ static DialogButtons _e2pcr_crypt1 (VPATH *localpath, E2P_CryptOpts *options)
 					}
 					use_same_name = TRUE;
 					F_FREE (newname, options->de_suffix);
+					newname = NULL;
 				}
 			}
 			else if (options->de_name_custom)
@@ -3202,7 +3203,10 @@ static DialogButtons _e2pcr_crypt1 (VPATH *localpath, E2P_CryptOpts *options)
 					newname = D_FILENAME_TO_LOCALE (options->de_name);
 					use_same_name = !strcmp (oldname, newname);
 					if (use_same_name)
+					{
 						g_free (newname);
+						newname = NULL;
+					}
 				}
 				else
 					use_same_name = TRUE;
