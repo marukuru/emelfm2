@@ -3272,7 +3272,10 @@ static DialogButtons _e2pcr_crypt1 (VPATH *localpath, E2P_CryptOpts *options)
 					newname = D_FILENAME_TO_LOCALE (options->en_name);
 					use_same_name = !strcmp (oldname, newname);
 					if (use_same_name)
+					{
 						g_free (newname);
+						newname = NULL;
+					}
 				}
 				else
 					use_same_name = TRUE;
