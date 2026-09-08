@@ -1308,11 +1308,13 @@ gboolean e2_task_backend_copy (VPATH *src, VPATH *dest, E2_FileTaskMode mode)
 					gchar *temp2, *temp3;
 					temp2 = g_strconcat (VPSTR(dest), "-",_("incomplete"), NULL);
 					temp3 = e2_task_tempname (temp2);
+					//Best-effort naming of partial output; the copy still fails
+					//regardless of whether this rename succeeds.
 #ifdef E2_VFS
 					VPATH t3data = { temp3, dest->spacedata };
-					retval = e2_task_backend_rename (&tdata, &t3data);
+					(void) e2_task_backend_rename (&tdata, &t3data);
 #else
-					retval = e2_task_backend_rename (data.newroot, temp3);
+					(void) e2_task_backend_rename (data.newroot, temp3);
 #endif
 					if (temp3 != temp2)
 						g_free (temp3);
