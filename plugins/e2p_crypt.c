@@ -3061,7 +3061,7 @@ cleanup:
 		gchar *t = strrchr (s, G_DIR_SEPARATOR);
 		t++;
 #ifdef E2_NEWCRYPT
-		guint8 iv[8];	//don't care about initial value
+		guint8 iv[8] = { 0 }; //defined input for post-wipe filename scrambling
 		_e2pcr_ivsetup (hashes, iv);
 		_e2pcr_crypt_bytes (hashes, (guint8 *)t, (guint8 *)t, (size_t) strlen (t));
 #else
