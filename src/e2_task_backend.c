@@ -418,88 +418,64 @@ static E2_TwResult _e2_task_twcb_chown (VPATH *localpath,
 	}
 	return retval;
 }
-/**
-@brief delete item as part of recursive directory delete
-This is a callback for the treewalk function
-The return value does not change after a failure to delete, so that everything
-possible will be deleted, The ultimate parent-deletion will generate an
-appropriate error message after any failure
-Downstream error messasge expects BGL open
-@param localpath absolute path of item reported by the walker, localised string
-@param statptr pointer to struct stat with data about @a localpath
-@param status code from the walker, indicating what type of report it is
-@param user_data UNUSED NULL pointer unless E2_VFS defined, in which case maybe a GError**
+typedef struct _E2_DeleteData
+{
+#ifdef E2_VFS
+	GError *error; //first member: E2TW_XERR treats user_data as a GError**
+#endif
+	gboolean failed; //retained across callbacks while deletion continues
+} E2_DeleteData;
 
-@return E2TW_CONTINUE or E2TW_SKIPSUB
+/**
+@brief delete an item while retaining failures for the whole recursive operation
+Continue after removal failures so other entries can still be deleted.
+Downstream error messages expect BGL open.
+@param localpath absolute path of item reported by the walker, localised string
+@param statptr stat data, unavailable for E2TW_NS
+@param status type of walker report
+@param user_data operation-wide E2_DeleteData
+@return continuation/skip flags for the walker, independently of removal success
 */
 static E2_TwResult _e2_task_twcb_delete (VPATH *localpath,
 	const struct stat *statptr, E2_TwStatus status, gpointer user_data)
 {
+	E2_DeleteData *data = user_data;
 	E2_TwResult retval = E2TW_CONTINUE;
 	E2_ERR_DECLARE
 
 	switch (status)
 	{
-		case E2TW_DP:	//dir completed
-			if (e2_fs_remove (localpath E2_ERR_PTR()))
-			{
-				e2_fs_error_local (_("Cannot delete %s"),
-					localpath E2_ERR_MSGL());
-#ifndef E2_VFS
-				E2_ERR_CLEAR
-#endif
-			}
-			break;
 		case E2TW_DRR:
-			retval = E2TW_DRKEEP;	//no need for walker to revert mode
-		case E2TW_D:	//directory
-			if (e2_fs_tw_adjust_dirmode (localpath, statptr, (W_OK | X_OK)) == 0)
-			{
-				//failed to set W and/or X perm, can't process any item in the dir
-				//no DP report after skip, so try to delete the dir, probably fails
-				if (e2_fs_remove (localpath E2_ERR_PTR()))
-				{
-					e2_fs_error_local (_("Cannot delete %s"),
-						localpath E2_ERR_MSGL());
-#ifndef E2_VFS
-					E2_ERR_CLEAR
-#endif
-				}
-				retval |= E2TW_SKIPSUB;
-			}
+			retval = E2TW_DRKEEP; //no need for walker to revert mode
+		case E2TW_D:
+			if (e2_fs_tw_adjust_dirmode (localpath, statptr, (W_OK | X_OK)) != 0)
+				return retval; //remove the directory after its children, at DP
+			//No DP follows a skipped directory: try removing it now if empty.
+			retval |= E2TW_SKIPSUB;
 			break;
-/*		case E2TW_F:	//not directory or link
-		case E2TW_SL:	//symbolic link
-		case E2TW_SLN:	//symbolic link naming non-existing file
-		try to delete these, fail if not empty etc
-		case E2TW_DL:	//dir, not opened due to tree-depth limit (reported upstream)
-		case E2TW_DM:	//dir, not opened due to different file system (reported upstream)
-		case E2TW_DNR:	//unreadable dir (for which, error is reported upstream)
-*/
+		case E2TW_DP:
+		case E2TW_NS: //statptr may be uninitialized; attempt removal directly
+			break;
 		default:
-			//don't care if this fails
+			//A permission adjustment failure is harmless if removal succeeds.
 			e2_fs_tw_adjust_dirmode (localpath, statptr, W_OK);
-		case E2TW_NS:	//un-stattable item (error reported upstream)
-			e2_fs_remove (localpath E2_ERR_PTR());	//no need for error check
 			break;
 	}
 
-#ifdef E2_VFS
-	if (user_data != NULL)
+	if (e2_fs_remove (localpath E2_ERR_PTR()) && E2_ERR_ISNOT (ENOENT))
 	{
-//		if (exec_flags & E2TW_XERR)
-//		{
-		GError **callerr = (GError **)user_data;
-		if (*callerr == NULL)
-			*callerr = E2_ERR_NAME;
-		else
-			E2_ERR_CLEAR
-//		}
-	}
-	else
-		E2_ERR_CLEAR
+		data->failed = TRUE;
+		e2_fs_error_local (_("Cannot delete %s"), localpath E2_ERR_MSGL());
+#ifdef E2_VFS
+		if (data->error == NULL)
+		{
+			data->error = E2_ERR_NAME;
+			E2_ERR_NAME = NULL;
+		}
 #endif
-
+	}
+	//ENOENT means another operation already removed the item; it is not failure.
+	E2_ERR_CLEAR
 	return retval;
 }
 /**
@@ -568,20 +544,14 @@ static gboolean _e2_task_backend_delete (VPATH *localpath E2_ERR_ARG())
 		}
 		E2_ERR_CLEAR
 */
-		//dir not empty, recursively delete its contents
-		//FIXME which errors to report and/or ignore
-		return (e2_fs_tw (localpath, _e2_task_twcb_delete,
-#ifdef E2_VFS
-		E2_ERR_NAME
-#else
-		NULL
-#endif
-		, -1,
-			//flags for: cb-error, no link follow, depth-first
+		E2_DeleteData data = { 0 };
+		gboolean walked = e2_fs_tw (localpath, _e2_task_twcb_delete, &data, -1,
 #ifdef E2_VFS
 			E2TW_XERR |
 #endif
-		E2TW_PHYS E2_ERR_SAMEARG()));
+			E2TW_PHYS E2_ERR_SAMEARG());
+		//Traversal completion alone does not mean every removal succeeded.
+		return walked && !data.failed;
 	}
 	else	//not dir
 		//FIXME which errors to report and/or ignore
