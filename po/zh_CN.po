@@ -551,7 +551,7 @@ msgstr ""
 msgid "child"
 msgstr ""
 
-#: e2_action.c:1271 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2_action.c:1271 e2_pane.c:1289 e2_pane.c:1441 e2_pane.c:1837 e2_task.c:2180
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr ""
@@ -2208,7 +2208,7 @@ msgstr "虚拟文件"
 msgid "Unknown"
 msgstr "未知"
 
-#: e2_file_info_dialog.c:644 e2p_crypt.c:4013
+#: e2_file_info_dialog.c:644 e2p_crypt.c:4040
 msgid "Directory"
 msgstr "文件夹"
 
@@ -2307,7 +2307,7 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "无法访问 %s, 用 %s 代替"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1897
+#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<文件夹>"
 
@@ -2654,7 +2654,7 @@ msgid "Enter a command with which to open the file"
 msgstr "输入用于打开这个文件的命令"
 
 #: e2_fileview.c:132 e2_ownership_dialog.c:341 e2_permissions_dialog.c:327
-#: e2_plugins.c:1724 e2p_crypt.c:4020 e2p_timeset.c:802
+#: e2_plugins.c:1724 e2p_crypt.c:4047 e2p_timeset.c:802
 msgid "Filename"
 msgstr "文件"
 
@@ -2737,13 +2737,13 @@ msgid "Error writing file '%s' - %s"
 msgstr "发生写错误, 文件  '%s' - %s"
 
 #: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:609
-#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "读取文件 %s 时, 发生错误"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1522 e2_task_backend.c:1226
+#: e2_output.c:1522 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "无法获取 %s 的信息"
@@ -2753,7 +2753,7 @@ msgstr "无法获取 %s 的信息"
 msgid "Cannot open file %s"
 msgstr "无法打开文件 %s"
 
-#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2954 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "写文件 %s 发生错误"
@@ -3257,7 +3257,7 @@ msgstr "但是不建议使用通配符"
 msgid "directories will be created"
 msgstr "文件夹将被建立"
 
-#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:879
+#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:849
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "无法新建文件夹 %s"
@@ -4485,67 +4485,67 @@ msgstr "用户"
 msgid "_Recurse"
 msgstr "含子文件夹(_R)"
 
-#: e2_pane.c:1721 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
+#: e2_pane.c:1722 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
 msgid "No trash directory is available"
 msgstr "无可用的回收站文件夹"
 
-#: e2_pane.c:1847
+#: e2_pane.c:1848
 msgid "_Edit places"
 msgstr "编辑位置(_E)"
 
-#: e2_pane.c:2226
+#: e2_pane.c:2227
 msgid "both"
 msgstr "两个面板"
 
-#: e2_pane.c:2627
+#: e2_pane.c:2628
 msgid "At startup, show a specific directory in this pane"
 msgstr "启动时, 在这个面板显示指定的文件夹"
 
-#: e2_pane.c:2628
+#: e2_pane.c:2629
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
 msgstr "启动时显示的下面定义的文件夹, 而不是用最后打开的文件夹"
 
-#: e2_pane.c:2633
+#: e2_pane.c:2634
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "面板 %d 的启动文件夹:"
 
-#: e2_pane.c:2635
+#: e2_pane.c:2636
 msgid "This is the directory to show in this pane, at session start"
 msgstr "这个文件夹将在程序启动时显示"
 
-#: e2_pane.c:2643
+#: e2_pane.c:2644
 msgid "this pane is like pane 2"
 msgstr "跟面板2 一样"
 
-#: e2_pane.c:2645 e2_pane.c:2655
+#: e2_pane.c:2646 e2_pane.c:2656
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
 "to pane %d"
 msgstr "这使面板 %d 的选项(不包括工具栏的放置选项和内容)应用到面板 %d"
 
-#: e2_pane.c:2653
+#: e2_pane.c:2654
 msgid "this pane is like pane 1"
 msgstr "跟面板1 一样"
 
-#: e2_pane.c:2666
+#: e2_pane.c:2667
 #, c-format
 msgid "show %s column"
 msgstr "显示 %s 列"
 
-#: e2_pane.c:2667
+#: e2_pane.c:2668
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "选择的列将被显示在面板 %d (duh ...)"
 
-#: e2_password_dialog.c:188 e2p_crypt.c:4047
+#: e2_password_dialog.c:188 e2p_crypt.c:4074
 msgid "Enter password:"
 msgstr "输入口令:"
 
-#: e2_password_dialog.c:278 e2p_crypt.c:4069
+#: e2_password_dialog.c:278 e2p_crypt.c:4096
 msgid "Confirm password:"
 msgstr "确认口令:"
 
@@ -4790,78 +4790,77 @@ msgstr "中断"
 msgid "Cannot change ownership of %s"
 msgstr "无法修改 %s 的所有者"
 
-#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1579
-#: e2p_shred.c:650 e2p_shred.c:666
+#: e2_task_backend.c:468 e2_task_backend.c:1551 e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "无法删除 %s"
 
-#: e2_task_backend.c:606 e2_task_backend.c:1544
+#: e2_task_backend.c:576 e2_task_backend.c:1516
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "无法删除已存在的 %s"
 
-#: e2_task_backend.c:665
+#: e2_task_backend.c:635
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "无法新建特殊的文件 %s"
 
-#: e2_task_backend.c:680
+#: e2_task_backend.c:650
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "无法新建 FIFO %s"
 
-#: e2_task_backend.c:828
+#: e2_task_backend.c:798
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "无法建立新的链接 %s"
 
-#: e2_task_backend.c:839
+#: e2_task_backend.c:809
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "无法获取链接 %s 的目标信息"
 
-#: e2_task_backend.c:1322
+#: e2_task_backend.c:1292
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "无法复制 %s 的全部"
 
-#: e2_task_backend.c:1339
+#: e2_task_backend.c:1309
 msgid "incomplete"
 msgstr "不完整"
 
-#: e2_task_backend.c:1429
+#: e2_task_backend.c:1401
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "无法移动 %s 到 %s"
 
-#: e2_task_backend.c:1484
+#: e2_task_backend.c:1456
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "无法新建链接 %s"
 
-#: e2_task_backend.c:1532
+#: e2_task_backend.c:1504
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "无法把 %s 更名为 %s"
 
-#: e2_task_backend.c:1615 e2_task_backend.c:1731 e2p_crypt.c:2971
+#: e2_task_backend.c:1587 e2_task_backend.c:1703 e2p_crypt.c:2981
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "无法获取 %s 的当前数据"
 
-#: e2_task_backend.c:1666
+#: e2_task_backend.c:1638
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "无法修改 %s 的全部文件的权限"
 
-#: e2_task_backend.c:1685
+#: e2_task_backend.c:1657
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "无法获取 %s 的 权限"
 
-#: e2_task_backend.c:1801
+#: e2_task_backend.c:1773
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "无法修改 %s 的全部文件的所有者"
@@ -5426,7 +5425,7 @@ msgstr "未找到匹配的 '$'"
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr ""
 
-#: e2_view_dialog.c:484 e2p_crypt.c:1576 e2p_crypt.c:1901
+#: e2_view_dialog.c:484 e2p_crypt.c:1579 e2p_crypt.c:1904
 #, c-format
 msgid "Cannot read '%s'"
 msgstr "无法读取 '%s'"
@@ -5800,41 +5799,46 @@ msgid ""
 "details"
 msgstr "复制选择的文件, 保留时间属性, 并显示详细的进程"
 
-#: e2p_crypt.c:1612
+#: e2p_crypt.c:1615
 #, c-format
 msgid "Compression failed for file %s"
 msgstr "压缩文件失败 %s"
 
-#: e2p_crypt.c:1637 e2p_crypt.c:3008 e2p_shred.c:494
+#: e2p_crypt.c:1640 e2p_crypt.c:3018 e2p_shred.c:494
 #, c-format
 msgid "Cannot open '%s' for writing"
 msgstr "无法打开文件 '%s' 写入"
 
-#: e2p_crypt.c:1990
+#: e2p_crypt.c:1993
 #, c-format
 msgid "Wrong password for %s"
 msgstr "错误的密码 %s"
 
-#: e2p_crypt.c:2150
+#: e2p_crypt.c:2106
+#, fuzzy
+msgid "Cannot determine the decrypted file name"
+msgstr "添加到加密的文件名(_A)"
+
+#: e2p_crypt.c:2160
 #, c-format
 msgid "Error decompressing file %s"
 msgstr "解压缩错误 %s"
 
-#: e2p_crypt.c:2380
+#: e2p_crypt.c:2390
 #, c-format
 msgid "Requested %s compression library not found or not compatible"
 msgstr "需要的 %s 压缩库文件没找到或者不兼容"
 
-#: e2p_crypt.c:2584 e2p_crypt.c:2615
+#: e2p_crypt.c:2594 e2p_crypt.c:2625
 msgid "Unknown compression library"
 msgstr "未知的压缩库文件"
 
-#: e2p_crypt.c:2614
+#: e2p_crypt.c:2624
 #, c-format
 msgid "No %s compression library"
 msgstr "没有 %s 压缩库文件"
 
-#: e2p_crypt.c:3163
+#: e2p_crypt.c:3173
 #, c-format
 msgid ""
 "%s does not end with \"%s\".\n"
@@ -5843,162 +5847,162 @@ msgstr ""
 "%s 没有结束符 \"%s\".\n"
 "继续吗?"
 
-#: e2p_crypt.c:3506
+#: e2p_crypt.c:3535
 #, c-format
 msgid "Cannot process all of %s"
 msgstr "无法对 %s 中所有的文件进行操作"
 
-#: e2p_crypt.c:3827 e2p_crypt.c:4256
+#: e2p_crypt.c:3854 e2p_crypt.c:4283
 msgid "_Encrypt"
 msgstr "加密(_E)"
 
-#: e2p_crypt.c:3841 e2p_crypt.c:4256
+#: e2p_crypt.c:3868 e2p_crypt.c:4283
 msgid "_Decrypt"
 msgstr "解密(_D)"
 
-#: e2p_crypt.c:3998
+#: e2p_crypt.c:4025
 msgid "en/decrypt file"
 msgstr "加密/解密文件"
 
-#: e2p_crypt.c:4016
+#: e2p_crypt.c:4043
 msgid "Symbolic link"
 msgstr "符号链接"
 
-#: e2p_crypt.c:4032
+#: e2p_crypt.c:4059
 #, c-format
 msgid " to %s"
 msgstr "到 %s"
 
-#: e2p_crypt.c:4039
+#: e2p_crypt.c:4066
 msgid "_encrypt"
 msgstr "加密(_E)"
 
-#: e2p_crypt.c:4042
+#: e2p_crypt.c:4069
 msgid "_decrypt"
 msgstr "解密(_D)"
 
-#: e2p_crypt.c:4094
+#: e2p_crypt.c:4121
 msgid "encrypted file will have _same name"
 msgstr "用同样的文件名加密文件(_S)"
 
-#: e2p_crypt.c:4099
+#: e2p_crypt.c:4126
 msgid "_append this to encrypted file name"
 msgstr "添加到加密的文件名(_A)"
 
-#: e2p_crypt.c:4114
+#: e2p_crypt.c:4141
 msgid "encrypted file _name will be"
 msgstr "加密后文件名为(_N)"
 
-#: e2p_crypt.c:4133
+#: e2p_crypt.c:4160
 msgid "decrypted file will have _same name"
 msgstr "用同样的文件名解密文件(_S)"
 
-#: e2p_crypt.c:4137
+#: e2p_crypt.c:4164
 msgid "decrypted file will have e_mbedded name, if any"
 msgstr "解密后的文件将使用嵌入的文件名, 如果有的话(_M)"
 
-#: e2p_crypt.c:4142
+#: e2p_crypt.c:4169
 msgid "strip this _from end of decrypted file name"
 msgstr "从解密后的文件名末尾删除(_F)"
 
-#: e2p_crypt.c:4158
+#: e2p_crypt.c:4185
 msgid "decrypted file _name will be"
 msgstr "解密文件名为(_N)"
 
-#: e2p_crypt.c:4171
+#: e2p_crypt.c:4198
 msgid "apply any stored permissions, owners, dates to decrypted file"
 msgstr "保留解密文件的权限, 所有者, 日期等"
 
-#: e2p_crypt.c:4171
+#: e2p_crypt.c:4198
 msgid "restore _properties"
 msgstr "恢复属性(_P)"
 
-#: e2p_crypt.c:4176
+#: e2p_crypt.c:4203
 msgid "compress"
 msgstr "压缩"
 
-#: e2p_crypt.c:4176 e2p_crypt.c:4180
+#: e2p_crypt.c:4203 e2p_crypt.c:4207
 msgid "compress file before encryption"
 msgstr "加密前压缩文件"
 
-#: e2p_crypt.c:4180
+#: e2p_crypt.c:4207
 msgid "_compress"
 msgstr "压缩(_C)"
 
-#: e2p_crypt.c:4188
+#: e2p_crypt.c:4215
 msgid "_validate"
 msgstr "验证(_V)"
 
-#: e2p_crypt.c:4188
+#: e2p_crypt.c:4215
 msgid "setup for validation when decrypting"
 msgstr "解密时验证"
 
-#: e2p_crypt.c:4191
+#: e2p_crypt.c:4218
 msgid "store _filename"
 msgstr "存储文件名(_F)"
 
-#: e2p_crypt.c:4191
+#: e2p_crypt.c:4218
 msgid "store current name for application after decryption"
 msgstr "解密后存储应用程序文件名"
 
-#: e2p_crypt.c:4193
+#: e2p_crypt.c:4220
 msgid "store _properties"
 msgstr "保存属性(_P)"
 
-#: e2p_crypt.c:4193
+#: e2p_crypt.c:4220
 msgid "store current permissions etc for application after decryption"
 msgstr "解密后保存当前的权限等"
 
-#: e2p_crypt.c:4196
+#: e2p_crypt.c:4223
 msgid "_backup"
 msgstr "备份(_B)"
 
-#: e2p_crypt.c:4196
+#: e2p_crypt.c:4223
 msgid "backup an existing file with the same name as the processed file"
 msgstr "用同样的文件名备份已存在的文件"
 
-#: e2p_crypt.c:4198
+#: e2p_crypt.c:4225
 msgid "_keep original"
 msgstr "保留原始文件(_K)"
 
-#: e2p_crypt.c:4198
+#: e2p_crypt.c:4225
 msgid "do not remove the original file, after processing it"
 msgstr "不移除原始文件"
 
-#: e2p_crypt.c:4201
+#: e2p_crypt.c:4228
 msgid "if file is a symlink, process its target"
 msgstr "如果是链接文件, 对链接指向的目标进行操作"
 
-#: e2p_crypt.c:4201
+#: e2p_crypt.c:4228
 msgid "through _links"
 msgstr "链接"
 
-#: e2p_crypt.c:4203
+#: e2p_crypt.c:4230
 msgid "_recurse directories"
 msgstr "文件夹(_R)"
 
-#: e2p_crypt.c:4459
+#: e2p_crypt.c:4486
 #, c-format
 msgid "You do not have authority to modify %s"
 msgstr "没有足够的权限修改  %s"
 
-#: e2p_crypt.c:4581
+#: e2p_crypt.c:4608
 msgid "crypt"
 msgstr "加密解密"
 
-#: e2p_crypt.c:4584
+#: e2p_crypt.c:4611
 msgid "_En/decrypt.."
 msgstr "加密/解密(_E).."
 
-#: e2p_crypt.c:4585
+#: e2p_crypt.c:4612
 msgid "Encrypt or decrypt selected items"
 msgstr "加密或者解密所选择的文件"
 
-#: e2p_crypt.c:4718
+#: e2p_crypt.c:4745
 msgid "compression type"
 msgstr "压缩类型"
 
-#: e2p_crypt.c:4719
+#: e2p_crypt.c:4746
 msgid "Use this form of compression before encryption"
 msgstr "加密前使用这个压缩表格"
 

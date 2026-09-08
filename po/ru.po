@@ -540,7 +540,7 @@ msgstr "открыть_на"
 msgid "child"
 msgstr "дочерний"
 
-#: e2_action.c:1271 e2_pane.c:1288 e2_pane.c:1440 e2_pane.c:1836 e2_task.c:2180
+#: e2_action.c:1271 e2_pane.c:1289 e2_pane.c:1441 e2_pane.c:1837 e2_task.c:2180
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr "ctrl"
@@ -2246,7 +2246,7 @@ msgstr "Виртуальный файл"
 msgid "Unknown"
 msgstr "Неизвестный"
 
-#: e2_file_info_dialog.c:644 e2p_crypt.c:4013
+#: e2_file_info_dialog.c:644 e2p_crypt.c:4040
 msgid "Directory"
 msgstr "Каталог"
 
@@ -2345,7 +2345,7 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Недоступен %s, вместо этого перехожу в %s"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1897
+#: e2_output.c:1419 e2_task.c:4252 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<каталог>"
 
@@ -2695,7 +2695,7 @@ msgid "Enter a command with which to open the file"
 msgstr "Введите команду, с помощью которой следует открыть этот файл"
 
 #: e2_fileview.c:132 e2_ownership_dialog.c:341 e2_permissions_dialog.c:327
-#: e2_plugins.c:1724 e2p_crypt.c:4020 e2p_timeset.c:802
+#: e2_plugins.c:1724 e2p_crypt.c:4047 e2p_timeset.c:802
 msgid "Filename"
 msgstr "Имя файла"
 
@@ -2778,13 +2778,13 @@ msgid "Error writing file '%s' - %s"
 msgstr "Ошибка записи в файл '%s' — %s"
 
 #: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:609
-#: e2p_config.c:693 e2p_crypt.c:2912 e2p_dircmp.c:443
+#: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Ошибка при чтении файла %s"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1522 e2_task_backend.c:1226
+#: e2_output.c:1522 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Невозможно получить информацию о %s"
@@ -2794,7 +2794,7 @@ msgstr "Невозможно получить информацию о %s"
 msgid "Cannot open file %s"
 msgstr "Невозможно открыть файл %s"
 
-#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2944 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2954 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Ошибка при записи в файл %s"
@@ -3301,7 +3301,7 @@ msgstr "но неразумно использовать подстановоч�
 msgid "directories will be created"
 msgstr "каталоги будут созданы"
 
-#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:879
+#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:849
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Невозможно создать каталог %s"
@@ -4597,23 +4597,23 @@ msgstr "Владелец"
 msgid "_Recurse"
 msgstr "_Рекурсивно"
 
-#: e2_pane.c:1721 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
+#: e2_pane.c:1722 e2_task.c:2158 e2_task.c:2350 e2_task.c:3190
 msgid "No trash directory is available"
 msgstr "Каталог «корзины» недоступен"
 
-#: e2_pane.c:1847
+#: e2_pane.c:1848
 msgid "_Edit places"
 msgstr "_Редактировать места"
 
-#: e2_pane.c:2226
+#: e2_pane.c:2227
 msgid "both"
 msgstr "обе"
 
-#: e2_pane.c:2627
+#: e2_pane.c:2628
 msgid "At startup, show a specific directory in this pane"
 msgstr "При запуске открывать указанный каталог в этой панели"
 
-#: e2_pane.c:2628
+#: e2_pane.c:2629
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
@@ -4621,20 +4621,20 @@ msgstr ""
 "Позволяет при запуске программы открывать каталог, указанный ниже, вместо "
 "последнего использовавшегося"
 
-#: e2_pane.c:2633
+#: e2_pane.c:2634
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "начальный каталог для панели %d:"
 
-#: e2_pane.c:2635
+#: e2_pane.c:2636
 msgid "This is the directory to show in this pane, at session start"
 msgstr "Каталог, который следует открыть в этой панели при запуске программы"
 
-#: e2_pane.c:2643
+#: e2_pane.c:2644
 msgid "this pane is like pane 2"
 msgstr "эта панель как панель 2"
 
-#: e2_pane.c:2645 e2_pane.c:2655
+#: e2_pane.c:2646 e2_pane.c:2656
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
@@ -4643,25 +4643,25 @@ msgstr ""
 "Настроит панель %d (кроме расположения панелей инструментов и их "
 "содержимого) также как %d"
 
-#: e2_pane.c:2653
+#: e2_pane.c:2654
 msgid "this pane is like pane 1"
 msgstr "эта панель как панель 1"
 
-#: e2_pane.c:2666
+#: e2_pane.c:2667
 #, c-format
 msgid "show %s column"
 msgstr "показывать столбец %s"
 
-#: e2_pane.c:2667
+#: e2_pane.c:2668
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "Включает показ указанного столбца в панели %d (duh ...)"
 
-#: e2_password_dialog.c:188 e2p_crypt.c:4047
+#: e2_password_dialog.c:188 e2p_crypt.c:4074
 msgid "Enter password:"
 msgstr "Введите пароль:"
 
-#: e2_password_dialog.c:278 e2p_crypt.c:4069
+#: e2_password_dialog.c:278 e2p_crypt.c:4096
 msgid "Confirm password:"
 msgstr "Подтвердите пароль:"
 
@@ -4910,78 +4910,77 @@ msgstr "прервать"
 msgid "Cannot change ownership of %s"
 msgstr "Невозможно изменить владельца %s"
 
-#: e2_task_backend.c:446 e2_task_backend.c:462 e2_task_backend.c:1579
-#: e2p_shred.c:650 e2p_shred.c:666
+#: e2_task_backend.c:468 e2_task_backend.c:1551 e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "Невозможно удалить %s"
 
-#: e2_task_backend.c:606 e2_task_backend.c:1544
+#: e2_task_backend.c:576 e2_task_backend.c:1516
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "Невозможно удалить существующий %s"
 
-#: e2_task_backend.c:665
+#: e2_task_backend.c:635
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "Невозможно создать специальный файл %s"
 
-#: e2_task_backend.c:680
+#: e2_task_backend.c:650
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "Невозможно создать FIFO %s"
 
-#: e2_task_backend.c:828
+#: e2_task_backend.c:798
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "Невозможно создать новую ссылку на %s"
 
-#: e2_task_backend.c:839
+#: e2_task_backend.c:809
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "Невозможно получить иформацию о ссылке %s"
 
-#: e2_task_backend.c:1322
+#: e2_task_backend.c:1292
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "Невозможно ничего скопировать из %s"
 
-#: e2_task_backend.c:1339
+#: e2_task_backend.c:1309
 msgid "incomplete"
 msgstr "незавершено"
 
-#: e2_task_backend.c:1429
+#: e2_task_backend.c:1401
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "Невозможно переместить %s в %s"
 
-#: e2_task_backend.c:1484
+#: e2_task_backend.c:1456
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "Невозможно создать ссылку на %s"
 
-#: e2_task_backend.c:1532
+#: e2_task_backend.c:1504
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "Невозможно переименовать %s в %s"
 
-#: e2_task_backend.c:1615 e2_task_backend.c:1731 e2p_crypt.c:2971
+#: e2_task_backend.c:1587 e2_task_backend.c:1703 e2p_crypt.c:2981
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "Невозможно получить текущую дату для %s"
 
-#: e2_task_backend.c:1666
+#: e2_task_backend.c:1638
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "Невозможно изменить права у %s"
 
-#: e2_task_backend.c:1685
+#: e2_task_backend.c:1657
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "Невозможно получить текущие права для %s"
 
-#: e2_task_backend.c:1801
+#: e2_task_backend.c:1773
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Невозможно изменить владельца у %s"
@@ -5555,7 +5554,7 @@ msgstr "Не найдено соответствующего '$' в тексте
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr "KEYS_фисвуапршолдбтщзйкыегмцхня"
 
-#: e2_view_dialog.c:484 e2p_crypt.c:1576 e2p_crypt.c:1901
+#: e2_view_dialog.c:484 e2p_crypt.c:1579 e2p_crypt.c:1904
 #, c-format
 msgid "Cannot read '%s'"
 msgstr "Невозможно прочитать '%s'"
@@ -5937,41 +5936,46 @@ msgstr ""
 "Копировать выбранные элементы с сохранением временных свойств, показывая "
 "детали процесса"
 
-#: e2p_crypt.c:1612
+#: e2p_crypt.c:1615
 #, c-format
 msgid "Compression failed for file %s"
 msgstr "Не удалось упаковать файл %s"
 
-#: e2p_crypt.c:1637 e2p_crypt.c:3008 e2p_shred.c:494
+#: e2p_crypt.c:1640 e2p_crypt.c:3018 e2p_shred.c:494
 #, c-format
 msgid "Cannot open '%s' for writing"
 msgstr "Невозможно открыть '%s' для записи"
 
-#: e2p_crypt.c:1990
+#: e2p_crypt.c:1993
 #, c-format
 msgid "Wrong password for %s"
 msgstr "Неверный пароль для %s"
 
-#: e2p_crypt.c:2150
+#: e2p_crypt.c:2106
+#, fuzzy
+msgid "Cannot determine the decrypted file name"
+msgstr "_добавить это к имени зашифрованного файла"
+
+#: e2p_crypt.c:2160
 #, c-format
 msgid "Error decompressing file %s"
 msgstr "Ошибка при распаковке файла %s"
 
-#: e2p_crypt.c:2380
+#: e2p_crypt.c:2390
 #, c-format
 msgid "Requested %s compression library not found or not compatible"
 msgstr "Запрошенная библиотека сжатия %s отсутствует или несовместима"
 
-#: e2p_crypt.c:2584 e2p_crypt.c:2615
+#: e2p_crypt.c:2594 e2p_crypt.c:2625
 msgid "Unknown compression library"
 msgstr "Неизвестная библиотека сжатия"
 
-#: e2p_crypt.c:2614
+#: e2p_crypt.c:2624
 #, c-format
 msgid "No %s compression library"
 msgstr "Нет библиотеки сжатия %s"
 
-#: e2p_crypt.c:3163
+#: e2p_crypt.c:3173
 #, c-format
 msgid ""
 "%s does not end with \"%s\".\n"
@@ -5980,162 +5984,162 @@ msgstr ""
 "%s не заканчивается на \"%s\".\n"
 "Обработать файл, несмотря на это?"
 
-#: e2p_crypt.c:3506
+#: e2p_crypt.c:3535
 #, c-format
 msgid "Cannot process all of %s"
 msgstr "Невозможно ничего обработать из %s"
 
-#: e2p_crypt.c:3827 e2p_crypt.c:4256
+#: e2p_crypt.c:3854 e2p_crypt.c:4283
 msgid "_Encrypt"
 msgstr "_Зашифровать"
 
-#: e2p_crypt.c:3841 e2p_crypt.c:4256
+#: e2p_crypt.c:3868 e2p_crypt.c:4283
 msgid "_Decrypt"
 msgstr "_Расшифровать"
 
-#: e2p_crypt.c:3998
+#: e2p_crypt.c:4025
 msgid "en/decrypt file"
 msgstr "за/расшифровать файл"
 
-#: e2p_crypt.c:4016
+#: e2p_crypt.c:4043
 msgid "Symbolic link"
 msgstr "Символьная ссылка"
 
-#: e2p_crypt.c:4032
+#: e2p_crypt.c:4059
 #, c-format
 msgid " to %s"
 msgstr " на %s"
 
-#: e2p_crypt.c:4039
+#: e2p_crypt.c:4066
 msgid "_encrypt"
 msgstr "_зашифровать"
 
-#: e2p_crypt.c:4042
+#: e2p_crypt.c:4069
 msgid "_decrypt"
 msgstr "_расшифровать"
 
-#: e2p_crypt.c:4094
+#: e2p_crypt.c:4121
 msgid "encrypted file will have _same name"
 msgstr "зашифрованный файл будет иметь _то же имя"
 
-#: e2p_crypt.c:4099
+#: e2p_crypt.c:4126
 msgid "_append this to encrypted file name"
 msgstr "_добавить это к имени зашифрованного файла"
 
-#: e2p_crypt.c:4114
+#: e2p_crypt.c:4141
 msgid "encrypted file _name will be"
 msgstr "зашифрованный файл будет иметь _имя"
 
-#: e2p_crypt.c:4133
+#: e2p_crypt.c:4160
 msgid "decrypted file will have _same name"
 msgstr "расшифрованный файл будет иметь _то же имя"
 
-#: e2p_crypt.c:4137
+#: e2p_crypt.c:4164
 msgid "decrypted file will have e_mbedded name, if any"
 msgstr "расшифрованный файл будет иметь _вложенное имя"
 
-#: e2p_crypt.c:4142
+#: e2p_crypt.c:4169
 msgid "strip this _from end of decrypted file name"
 msgstr "удалить _это из имени зашифрованного файла"
 
-#: e2p_crypt.c:4158
+#: e2p_crypt.c:4185
 msgid "decrypted file _name will be"
 msgstr "расшифрованный файл будет иметь _имя"
 
-#: e2p_crypt.c:4171
+#: e2p_crypt.c:4198
 msgid "apply any stored permissions, owners, dates to decrypted file"
 msgstr "применить все права, владельцев, даты к зашифрованному файлу"
 
-#: e2p_crypt.c:4171
+#: e2p_crypt.c:4198
 msgid "restore _properties"
 msgstr "восстановить _свойства"
 
-#: e2p_crypt.c:4176
+#: e2p_crypt.c:4203
 msgid "compress"
 msgstr "сжать"
 
-#: e2p_crypt.c:4176 e2p_crypt.c:4180
+#: e2p_crypt.c:4203 e2p_crypt.c:4207
 msgid "compress file before encryption"
 msgstr "сжать файл перед зашифровкой"
 
-#: e2p_crypt.c:4180
+#: e2p_crypt.c:4207
 msgid "_compress"
 msgstr "_сжать"
 
-#: e2p_crypt.c:4188
+#: e2p_crypt.c:4215
 msgid "_validate"
 msgstr "_проверить"
 
-#: e2p_crypt.c:4188
+#: e2p_crypt.c:4215
 msgid "setup for validation when decrypting"
 msgstr "включить проверку при расшифровывании"
 
-#: e2p_crypt.c:4191
+#: e2p_crypt.c:4218
 msgid "store _filename"
 msgstr "хранить _имя файла"
 
-#: e2p_crypt.c:4191
+#: e2p_crypt.c:4218
 msgid "store current name for application after decryption"
 msgstr "сохранить текущие имя программы после расшифровывания"
 
-#: e2p_crypt.c:4193
+#: e2p_crypt.c:4220
 msgid "store _properties"
 msgstr "сохранить _свойства"
 
-#: e2p_crypt.c:4193
+#: e2p_crypt.c:4220
 msgid "store current permissions etc for application after decryption"
 msgstr "сохранить текущие права и т. д. для программы после расшифровывания"
 
-#: e2p_crypt.c:4196
+#: e2p_crypt.c:4223
 msgid "_backup"
 msgstr "_резервная копия"
 
-#: e2p_crypt.c:4196
+#: e2p_crypt.c:4223
 msgid "backup an existing file with the same name as the processed file"
 msgstr "сделать копию файла с таким же именем, как обрабатываемый файл"
 
-#: e2p_crypt.c:4198
+#: e2p_crypt.c:4225
 msgid "_keep original"
 msgstr "_оставить оригинал"
 
-#: e2p_crypt.c:4198
+#: e2p_crypt.c:4225
 msgid "do not remove the original file, after processing it"
 msgstr "не удалять оригинальный файл после обработки"
 
-#: e2p_crypt.c:4201
+#: e2p_crypt.c:4228
 msgid "if file is a symlink, process its target"
 msgstr "если файл — символьная ссылка, то обработать её цель"
 
-#: e2p_crypt.c:4201
+#: e2p_crypt.c:4228
 msgid "through _links"
 msgstr "обрабатывать _ссылки"
 
-#: e2p_crypt.c:4203
+#: e2p_crypt.c:4230
 msgid "_recurse directories"
 msgstr "_вложенные каталоги"
 
-#: e2p_crypt.c:4459
+#: e2p_crypt.c:4486
 #, c-format
 msgid "You do not have authority to modify %s"
 msgstr "Вы не авторизованы, чтобы изменить %s"
 
-#: e2p_crypt.c:4581
+#: e2p_crypt.c:4608
 msgid "crypt"
 msgstr "зашифровать"
 
-#: e2p_crypt.c:4584
+#: e2p_crypt.c:4611
 msgid "_En/decrypt.."
 msgstr "_За/Расшифровать…"
 
-#: e2p_crypt.c:4585
+#: e2p_crypt.c:4612
 msgid "Encrypt or decrypt selected items"
 msgstr "Зашифровать или расшифровать выбранные элементы"
 
-#: e2p_crypt.c:4718
+#: e2p_crypt.c:4745
 msgid "compression type"
 msgstr "тип сжатия"
 
-#: e2p_crypt.c:4719
+#: e2p_crypt.c:4746
 msgid "Use this form of compression before encryption"
 msgstr "Использовать этот метод сжатия перед зашифровкой"
 
