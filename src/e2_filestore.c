@@ -368,7 +368,7 @@ void e2_filestore_timer_shutdown (gpointer data)
 #if 1
 /**
 @brief thread-function which updates a filelist if possible
-If refreshing is blocked, there is no deferral
+If refreshing is blocked, leave the request pending for a later attempt.
 @param view pointer to data struct related to the filelist to be refreshed
 @return NULL always
 */
@@ -399,7 +399,8 @@ retest:
 				printd (DEBUG, "accepted request to refresh %s", view->dir);
 #endif
 				//refresh function expects BGL open
-				if (_e2_filestore_update (view) == GINT_TO_POINTER(1))
+				gpointer result = _e2_filestore_update (view);
+				if (result == GINT_TO_POINTER(1))
 				{
 					hook = TRUE;	//send it downstream
 					//maybe again/now/still want to do this pane
@@ -412,7 +413,11 @@ retest:
 						goto retest;
 					}
 				}
+				else if (result == NULL)
+					g_atomic_int_set (&view->listcontrols.refresh_requested, 1);
 			}
+			else
+				g_atomic_int_set (&view->listcontrols.refresh_requested, 1);
 			//initiate refresh hooklist here, not downstream, so that refreshes are batched,
 			//and in idle to avoid any UI impact
 			//(i.e. small risk of cd / another refresh starting before hook is called)
@@ -1585,13 +1590,15 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 {
 	//no check for cd-working
 	gboolean busy =
-	   g_atomic_int_get (&view->listcontrols.refresh_refcount)
-	|| g_atomic_int_get (&view->listcontrols.refresh_working);
+	   g_atomic_int_get (&view->listcontrols.refresh_refcount);
 #ifdef E2_STATUS_BLOCK
 	if (!busy)
 		busy = (view == curr_view && g_atomic_int_get (&app.status_working));
 #endif
-	if (busy)
+	//Claim this view before taking any locks or scanning the directory. Separate
+	//tests and assignments let overlapping refresh requests both update its store.
+	if (busy || !g_atomic_int_compare_and_exchange (
+		&view->listcontrols.refresh_working, 0, 1))
 	{
 		printd (DEBUG, "BLOCKED start refresh filelist for %s", view->dir);
 		return NULL;	//refresh is disabled, or the view is still being processed from last time
@@ -1631,12 +1638,12 @@ static gpointer _e2_filestore_update (ViewInfo *view)
 		PlaceInfo *spacedata = NULL;
 		e2_pane_change_space_pointer (rt, spacedata);
 #endif
+		g_atomic_int_set (&view->listcontrols.refresh_working, 0);
 		e2_pane_change_dir (rt, utf);
 		g_free (utf);
 		return GINT_TO_POINTER (2);	//non-NULL to signal no more refresh needed
 	}
 
-	g_atomic_int_set (&view->listcontrols.refresh_working, 1);
 	E2_ListChoice pnum = (view == &app.pane1.view) ? PANE1:PANE2;
 #ifdef E2_REFRESH_DEBUG
 	printd (DEBUG, "disable one refresh, fileview_refresh list");

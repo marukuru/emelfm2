@@ -26,18 +26,12 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #include "e2_filestore.h"
 #include "e2_icons.h"
 
-//option-pointers shared by all mkdir dialogs in the session
-//FIXME make sure these are NULL'd if optionsets are ever renewed
-static E2_OptionSet *follow_pane = NULL;
-static E2_OptionSet *suggest_dir = NULL;
-static E2_OptionSet *show_last = NULL;
-static E2_OptionSet *connected = NULL;
-
 static GList *mkdir_history = NULL;
 
 static gboolean _e2_mkdirdlg_change_dir_hook (gchar *path, E2_MkdirDialogRuntime *rt);
 static gboolean _e2_mkdirdlg_change_focus_hook (E2_PaneRuntime *pane_rt, E2_MkdirDialogRuntime *rt);
 static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed);
+static void _e2_mkdirdlg_changed_cb (GtkEditable *editable, E2_MkdirDialogRuntime *rt);
 
   /*****************/
  /***** utils *****/
@@ -245,7 +239,7 @@ This is called from several places, all with BGL closed
 */
 static void _e2_mkdirdlg_update_dialog_size (E2_MkdirDialogRuntime *rt)
 {
-	WAIT_FOR_EVENTS
+	//Do not dispatch events here: a response can end the task and invalidate rt.
 	GtkAllocation alloc;
 #ifdef USE_GTK2_18
 	gtk_widget_get_allocation (rt->dialog, &alloc);
@@ -767,11 +761,27 @@ static void _e2_mkdirdlg_response_cb (GtkDialog *dialog, gint response,
 	printd (DEBUG, "mkdir dialog response_cb (dialog:_,response:%d,rt:_)", response);
 	GtkWidget *entry;
 
+	if (response != E2_RESPONSE_MORE)
+	{
+		//Stop updates on every closing response, including Escape and window close.
+		//Disconnect first, as macro expansion below may change the entry again.
+		entry =
+#ifdef USE_GTK2_14
+			gtk_bin_get_child (GTK_BIN (rt->combo));
+#else
+			GTK_BIN (rt->combo)->child;
+#endif
+		g_signal_handlers_disconnect_by_func (entry, _e2_mkdirdlg_changed_cb, rt);
+		if (rt->idle_id > 0)
+		{
+			g_source_remove (rt->idle_id);
+			rt->idle_id = 0;
+		}
+	}
+
 	switch (response)
 	{
 		case GTK_RESPONSE_YES:
-			if (rt->idle_id > 0)
-				g_source_remove (rt->idle_id);	//no more UI-update callbacks when we're finishing
 		case E2_RESPONSE_MORE:
 			entry =
 #ifdef USE_GTK2_14
@@ -818,14 +828,14 @@ static void _e2_mkdirdlg_response_cb (GtkDialog *dialog, gint response,
 */
 static gboolean _e2_mkdirdlg_deferred_change_cb (E2_MkdirDialogRuntime *rt)
 {
+	CLOSEBGL
 	rt->idle_id = 0;	//allow sequential changes ASAP
 	if (GTK_IS_DIALOG (rt->dialog))
 	{
-		CLOSEBGL
 		_e2_mkdirdlg_update_status (rt);
 		_e2_mkdirdlg_update_dialog_size (rt);
-		OPENBGL
 	}
+	OPENBGL
 	return FALSE;
 }
 /**
@@ -905,7 +915,7 @@ static void _e2_mkdirdlg_toggled1_cb (GtkWidget *menu_item, E2_MkdirDialogRuntim
 	NEEDOPENBGL
 	gpointer p = g_object_get_data (G_OBJECT (rt->dialog), "e2-controller-blocked");
 	if (!GPOINTER_TO_INT (p))
-		e2_option_bool_set_direct (follow_pane, state);
+		e2_option_bool_set ("dialog-mkdir-follow-pane", state);
 }
 /**
 @brief callback for context menu item for toggling "show last entry"
@@ -924,7 +934,7 @@ static void _e2_mkdirdlg_toggled2_cb (GtkWidget *menu_item, E2_MkdirDialogRuntim
 	NEEDOPENBGL
 	gpointer p = g_object_get_data (G_OBJECT (rt->dialog), "e2-controller-blocked");
 	if (!GPOINTER_TO_INT (p))
-		e2_option_bool_set_direct (show_last, rt->opt_show_last);
+		e2_option_bool_set ("dialog-mkdir-show-last", rt->opt_show_last);
 }
 /**
 @brief callback for context menu item for toggling "suggest dir"
@@ -943,7 +953,7 @@ static void _e2_mkdirdlg_toggled3_cb (GtkWidget *menu_item, E2_MkdirDialogRuntim
 	NEEDOPENBGL
 	gpointer p = g_object_get_data (G_OBJECT (rt->dialog), "e2-controller-blocked");
 	if (!GPOINTER_TO_INT (p))
-		e2_option_bool_set_direct (suggest_dir, rt->opt_suggest_dir);
+		e2_option_bool_set ("dialog-mkdir-suggest-directory", rt->opt_suggest_dir);
 }
 /**
 @brief callback for info expander opened or closed
@@ -1029,8 +1039,10 @@ static gboolean _e2_mkdir_dialog_create (gpointer from, E2_ActionRuntime *art)
 }
 static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 {
-	E2_MkdirDialogRuntime rt;
+	E2_MkdirDialogRuntime rt = {0};
 
+	//The task runs in a worker thread. Keep all dialog setup under the UI lock.
+	CLOSEBGL
 	rt.history = e2_list_copy_with_data (mkdir_history);
 #ifdef E2_VFSTMP
 	//FIXME path for non-mounted dirs
@@ -1041,11 +1053,10 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 	rt.creation_possible = TRUE;
 	rt.idle_id = 0;	//value allows initial idle to be applied
 
-//tag DEBUGfreeze;
-
 	//create dialog
-	CLOSEBGL
 	rt.dialog = e2_dialog_create (_("create directory"), STOCK_NAME_DIALOG_QUESTION, (ResponseFunc)_e2_mkdirdlg_response_cb, &rt, _("What is the new directory's name?"));
+	//Keep the dialog valid until the task has disconnected its callbacks.
+	g_object_ref (rt.dialog);
 
 	GtkWidget *vbox = e2_dialog_add_sw (rt.dialog);
 
@@ -1054,9 +1065,6 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 	rt.combo = e2_combobox_add (vbox, FALSE, E2_PADDING,
 		(ActivateFunc)_e2_mkdirdlg_activated_cb, &rt, &mkdir_history,
 		E2_COMBOBOX_HAS_ENTRY | E2_COMBOBOX_FOCUS_ON_CHANGE);
-#ifndef USE_GTK3_0
-	OPENBGL
-#endif
 
 	rt.scrolled = gtk_widget_get_ancestor (vbox, GTK_TYPE_SCROLLED_WINDOW);
 	rt.info_expander = gtk_expander_new (_("info"));
@@ -1093,28 +1101,18 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 	g_object_unref (G_OBJECT (group));
 	rt.info_label2 = e2_widget_add_label (hbox, "", 0.0, 0.0, TRUE, E2_PADDING_SMALL);
 
-	if (follow_pane == NULL)
-		follow_pane = e2_option_get ("dialog-mkdir-follow-pane");
-	if (suggest_dir == NULL)
-		suggest_dir = e2_option_get ("dialog-mkdir-suggest-directory");
-	if (show_last == NULL)
-		show_last = e2_option_get ("dialog-mkdir-show-last");
-	if (connected == NULL)
-		connected = e2_option_get ("dialog-mkdir-connected");
+	//Configuration reloads replace the option sets, so look them up for each dialog.
+	E2_OptionSet *follow_pane = e2_option_get ("dialog-mkdir-follow-pane");
+	E2_OptionSet *suggest_dir = e2_option_get ("dialog-mkdir-suggest-directory");
+	E2_OptionSet *show_last = e2_option_get ("dialog-mkdir-show-last");
+	E2_OptionSet *connected = e2_option_get ("dialog-mkdir-connected");
 
-#ifndef USE_GTK3_0
-	CLOSEBGL
-#endif
-	//CHECKME seems that this needs BGL closed
 	rt.menu = e2_menu_create_options_menu (rt.dialog, NULL,
 		follow_pane, _e2_mkdirdlg_toggled1_cb, &rt,
 		suggest_dir, _e2_mkdirdlg_toggled3_cb, &rt,
 		show_last, _e2_mkdirdlg_toggled2_cb, &rt,
 		connected, e2_menu_control_cb, rt.dialog,
 		NULL);
-#ifndef USE_GTK3_0
-	OPENBGL
-#endif
 	//arrange menu cleanup
 	g_object_set_data_full (G_OBJECT (rt.dialog), "menu", rt.menu,
 		(GDestroyNotify) e2_menu_selection_done_cb);
@@ -1122,24 +1120,13 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 	g_signal_connect (G_OBJECT (rt.dialog), "button-press-event",
 		G_CALLBACK (_e2_mkdirdlg_button_press_cb), rt.menu);
 
-//do this after create button is created ?
-//tag DEBUGfreeze
-#ifndef USE_GTK3_0
-	CLOSEBGL
-#endif
 	//this updates status but not the suggested dir name
 	_e2_mkdirdlg_update_follow_dir (&rt, e2_option_bool_get_direct (follow_pane));
-//tag DEBUGfreeze
-	OPENBGL
 	e2_option_connect (rt.dialog, e2_option_bool_get_direct (connected));
 	rt.opt_show_last = e2_option_bool_get_direct (show_last);
 	rt.opt_suggest_dir = e2_option_bool_get_direct (suggest_dir);
 
-//tag DEBUGfreeze
-	CLOSEBGL
 	_e2_mkdirdlg_update_name (&rt);
-//tag DEBUGfreeze
-	OPENBGL
 
 	E2_Button local_btn;
 	local_btn = E2_BUTTON_MORE;
@@ -1168,16 +1155,13 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 	if (!e2_option_bool_get_direct (infoshow))
 		gtk_widget_hide (rt.info_box);
 
-//	NEEDOPENBGL
-	_e2_mkdirdlg_deferred_change_cb (&rt);	//init dialog widgets
-//	NEEDCLOSEBGL
-	CLOSEBGL
+	_e2_mkdirdlg_update_status (&rt);
+	_e2_mkdirdlg_update_dialog_size (&rt);
 #ifdef GTK3_COMBO_FIX
 	gtk_widget_grab_focus (gtk_bin_get_child (GTK_BIN(rt.combo)));
 #endif
 	e2_dialog_setup (rt.dialog, app.main_window);
 	e2_dialog_run (rt.dialog, NULL, E2_DIALOG_DONT_SHOW_ALL);
-	OPENBGL
 
 	//connect signal after showing, to reduce repetition during setup
 	GtkWidget *entry =
@@ -1190,21 +1174,26 @@ static gboolean _e2_task_mkdirQ (E2_ActionTaskData *qed)
 		G_CALLBACK (_e2_mkdirdlg_changed_cb), &rt);
 
 	*qed->status = E2_TASK_PAUSED;
-	e2_dialog_wait (rt.dialog, FALSE, TRUE, FALSE, FALSE);  //CHECKME TRUE maincontext ?
+	e2_dialog_wait (rt.dialog, TRUE, TRUE, FALSE, FALSE);
 	*qed->status = E2_TASK_RUNNING;
 
-	if (GTK_IS_DIALOG (rt.dialog))
-	{	//not explicitly closed by the user
-		CLOSEBGL
-		gtk_widget_destroy (rt.dialog);
-		OPENBGL
+	//Also cover an interrupted wait, before the stack runtime goes out of scope.
+	if (rt.idle_id > 0)
+	{
+		g_source_remove (rt.idle_id);
+		rt.idle_id = 0;
 	}
-
-	g_free (rt.path);
-	e2_list_free_with_data (&rt.history);
 	e2_hook_unregister (&app.pane1.hook_change_dir, (HookFunc)_e2_mkdirdlg_change_dir_hook, &rt, TRUE);
 	e2_hook_unregister (&app.pane2.hook_change_dir, (HookFunc)_e2_mkdirdlg_change_dir_hook, &rt, TRUE);
 	e2_hook_unregister (&app.hook_pane_focus_changed, (HookFunc)_e2_mkdirdlg_change_focus_hook, &rt, TRUE);
+	//Destroy the menu now, while its callbacks' runtime and option sets are valid.
+	g_object_steal_data (G_OBJECT (rt.dialog), "menu");
+	gtk_widget_destroy (rt.menu);
+	gtk_widget_destroy (rt.dialog);
+	g_object_unref (rt.dialog);
+	g_free (rt.path);
+	e2_list_free_with_data (&rt.history);
+	OPENBGL
 
 	return TRUE;
 }
