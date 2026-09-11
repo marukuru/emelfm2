@@ -315,7 +315,7 @@ msgstr ""
 msgid "goto_top"
 msgstr ""
 
-#: e2_action.c:1211 e2_mkdir_dialog.c:1062
+#: e2_action.c:1211 e2_mkdir_dialog.c:1070
 msgid "info"
 msgstr ""
 
@@ -822,7 +822,7 @@ msgstr "O_dświerz"
 msgid "_Close"
 msgstr "_Zamknij"
 
-#: e2_button.c:44 e2_mkdir_dialog.c:1155
+#: e2_button.c:44 e2_mkdir_dialog.c:1142
 msgid "C_reate"
 msgstr "U_twórz"
 
@@ -2343,15 +2343,15 @@ msgid ""
 "Pattern provided to strftime() to format date/time strings in the dialog"
 msgstr ""
 
-#: e2_filestore.c:1214 e2_toolbar.c:2064
+#: e2_filestore.c:1219 e2_toolbar.c:2064
 msgid "k"
 msgstr "k"
 
-#: e2_filestore.c:1219 e2_toolbar.c:2069
+#: e2_filestore.c:1224 e2_toolbar.c:2069
 msgid "M"
 msgstr "M"
 
-#: e2_filestore.c:1620 e2_pane.c:617
+#: e2_filestore.c:1627 e2_pane.c:617
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "Brak dostępu do %s, przechodzę do %s"
@@ -3298,90 +3298,90 @@ msgstr "_Usuń wszystkie filtry"
 msgid "Menu"
 msgstr ""
 
-#: e2_mkdir_dialog.c:58
+#: e2_mkdir_dialog.c:52
 msgid "new directory"
 msgstr "nowy katalog"
 
-#: e2_mkdir_dialog.c:334 e2_option__default.c:182
+#: e2_mkdir_dialog.c:328 e2_option__default.c:182
 msgid "yes"
 msgstr "tak"
 
-#: e2_mkdir_dialog.c:339 e2_option__default.c:182
+#: e2_mkdir_dialog.c:333 e2_option__default.c:182
 msgid "no"
 msgstr "nie"
 
-#: e2_mkdir_dialog.c:425
+#: e2_mkdir_dialog.c:419
 #, c-format
 msgid "cannot write to '%s' - %s"
 msgstr "nie mogę zapisać do '%s' - %s"
 
-#: e2_mkdir_dialog.c:433
+#: e2_mkdir_dialog.c:427
 #, c-format
 msgid "cannot write to parent directory - %s"
 msgstr "nie mogę zapisać do nadrzędnego katalogu - %s"
 
-#: e2_mkdir_dialog.c:441
+#: e2_mkdir_dialog.c:435
 #, c-format
 msgid "only '%s' exists - %s"
 msgstr "tylko '%s' estnieje - %s"
 
-#: e2_mkdir_dialog.c:471
+#: e2_mkdir_dialog.c:465
 #, fuzzy
 msgid "the directory already exists"
 msgstr "katalog już istnieje."
 
-#: e2_mkdir_dialog.c:473
+#: e2_mkdir_dialog.c:467
 #, fuzzy
 msgid "something is in the way"
 msgstr "coś się jeszcze nie zakończyło."
 
-#: e2_mkdir_dialog.c:484
+#: e2_mkdir_dialog.c:478
 msgid "but it's unwise to use wildcard char(s)"
 msgstr "lecz jest nierozważnym używanie znaków specjalnych"
 
-#: e2_mkdir_dialog.c:487
+#: e2_mkdir_dialog.c:481
 msgid "directories will be created"
 msgstr "foldery zostaną utworzone"
 
-#: e2_mkdir_dialog.c:690 e2_mkdir_dialog.c:736 e2_task_backend.c:849
+#: e2_mkdir_dialog.c:684 e2_mkdir_dialog.c:730 e2_task_backend.c:849
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Nie mogę utworzyć katalogu %s"
 
-#: e2_mkdir_dialog.c:1048
+#: e2_mkdir_dialog.c:1057
 msgid "What is the new directory's name?"
 msgstr "Jaka będzie nazwa nowego katalogu?"
 
-#: e2_mkdir_dialog.c:1048
+#: e2_mkdir_dialog.c:1057
 msgid "create directory"
 msgstr "utwórz katalog"
 
-#: e2_mkdir_dialog.c:1084
+#: e2_mkdir_dialog.c:1092
 msgid "<small>parent directory:</small>"
 msgstr "<small>katalog nadrzędny:</small>"
 
-#: e2_mkdir_dialog.c:1091
+#: e2_mkdir_dialog.c:1099
 msgid "<small>creation possible:</small>"
 msgstr "<small>utworzenie możliwe:</small>"
 
-#: e2_mkdir_dialog.c:1146
+#: e2_mkdir_dialog.c:1133
 msgid "Create and continue"
 msgstr "Utwórz i kontynuuj"
 
-#: e2_mkdir_dialog.c:1229
+#: e2_mkdir_dialog.c:1218
 msgid "open info frame"
 msgstr "otwórz ramkę informacyjną"
 
-#: e2_mkdir_dialog.c:1230
+#: e2_mkdir_dialog.c:1219
 msgid ""
 "This causes make-directory dialogs to start with extra information displayed"
 msgstr "W dialogach tworzenia katalogów będą widoczne dodatkowe opcje"
 
-#: e2_mkdir_dialog.c:1233
+#: e2_mkdir_dialog.c:1222
 msgid "follow active-pane directory"
 msgstr "następca katalogu widocznego w aktywnym oknie"
 
-#: e2_mkdir_dialog.c:1234
+#: e2_mkdir_dialog.c:1223
 msgid ""
 "This makes the parent directory for new directories the same as the one in "
 "the active pane, even if the latter changes"
@@ -3389,11 +3389,11 @@ msgstr ""
 "Nadrzędny katalog dla nowo tworzonych katalogów będzie taki jak w aktywnym "
 "oknie"
 
-#: e2_mkdir_dialog.c:1238
+#: e2_mkdir_dialog.c:1227
 msgid "suggest directory name"
 msgstr "sugeruj nazwę katalogu"
 
-#: e2_mkdir_dialog.c:1239
+#: e2_mkdir_dialog.c:1228
 msgid ""
 "This presents a suggested name for each new directory, based on the last-"
 "created directory with an increasing number appended"
@@ -3401,21 +3401,21 @@ msgstr ""
 "Przedstawia sugerowaną nazwę nowego katalogu, tworzoną na podstawie nazwy "
 "ostatnio utworzonego katalogu i liczby o zwiększanej wartości"
 
-#: e2_mkdir_dialog.c:1243
+#: e2_mkdir_dialog.c:1232
 msgid "show last directory name"
 msgstr "pokazuj ostatnią nazwę katalogu"
 
-#: e2_mkdir_dialog.c:1244
+#: e2_mkdir_dialog.c:1233
 msgid ""
 "This causes the name of the last-created directory to be shown in the entry "
 "field, after opening the dialog or when creating another directory"
 msgstr "W polu nazwy będzie przedstawiona nazwa katalogu tworzonego ostatnio"
 
-#: e2_mkdir_dialog.c:1247
+#: e2_mkdir_dialog.c:1236
 msgid "replicate changes"
 msgstr "replikuj zmiany"
 
-#: e2_mkdir_dialog.c:1248
+#: e2_mkdir_dialog.c:1237
 msgid ""
 "This causes option-changes to be replicated in other mkdir dialogs. "
 "Otherwise such changes will be confined to the current dialog"
