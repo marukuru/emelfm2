@@ -263,6 +263,15 @@ lCFLAGS += $(shell $(PKG_CONFIG) --cflags gtk+-3.0 gdk-3.0)
 else
 lCFLAGS += $(shell $(PKG_CONFIG) --cflags gtk+-2.0)
 endif
+# Xlib has its own per-display locks, separate from the GTK UI mutex.
+ifneq ($(GTK3),0)
+GDK_TARGETS = $(shell $(PKG_CONFIG) --variable=targets gdk-3.0)
+else
+GDK_TARGETS = $(shell $(PKG_CONFIG) --variable=target gdk-2.0)
+endif
+ifneq ($(filter x11,$(GDK_TARGETS)),)
+lCFLAGS += $(shell $(PKG_CONFIG) --cflags x11)
+endif
 ifneq ($(EXTGTHREAD),0)
 lCFLAGS += $(shell $(PKG_CONFIG) --cflags gthread-2.0)
 endif
@@ -293,6 +302,9 @@ lLIBS = $(shell $(PKG_CONFIG) --libs gtk+-3.0 gdk-3.0)
  endif
 else
 lLIBS = $(shell $(PKG_CONFIG) --libs gtk+-2.0)
+endif
+ifneq ($(filter x11,$(GDK_TARGETS)),)
+lLIBS += $(shell $(PKG_CONFIG) --libs x11)
 endif
 ifneq ($(EXTGTHREAD),0)
  lLIBS += $(shell $(PKG_CONFIG) --libs gthread-2.0 gmodule-2.0)

@@ -109,6 +109,9 @@ The following items are covered:
 */
 
 #include "emelfm2.h"
+#ifdef GDK_WINDOWING_X11
+#include <X11/Xlib.h>
+#endif
 
 E2_MainData app;
 E2_PaneRuntime *curr_pane;
@@ -671,6 +674,15 @@ gboolean e2_main_loop_abort (pthread_t ID)
 */
 gint main (gint argc, gchar *argv[])
 {
+#ifdef GDK_WINDOWING_X11
+	//Worker threads use the display too. GTK's UI mutex does not initialize
+	//Xlib's request-queue locking; this must precede every GTK/Xlib call.
+	if (!XInitThreads ())
+	{
+		g_printerr ("Cannot initialize X11 thread support.\n");
+		return EXIT_FAILURE;
+	}
+#endif
 	//threads needed
 	pthread_mutexattr_t attr;
 	//setup mutex to protect threaded access to cd functionality

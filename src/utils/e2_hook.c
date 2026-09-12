@@ -40,7 +40,8 @@ static gboolean _e2_hook_unregister (GHookList *hook_list, GHook *hook)
 	if (hook != NULL)
 	{
 		g_hook_destroy_link (hook_list, hook);
-		return (!G_HOOK_IS_VALID (hook));
+		//Destroying the link may free the hook when its last reference is dropped.
+		return TRUE;
 	}
 	return FALSE;
 }
