@@ -24,6 +24,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 #include "e2_bookmark.h"
 #include <string.h>
+#include <time.h>
 #include "e2_dialog.h"
 #include "e2_task.h"
 #include "e2_icons.h"
@@ -35,6 +36,61 @@ static E2_OptionSet *bookmarks_set;
  /***** utils *****/
 /*****************/
 
+/**
+@brief expand date variables in a bookmark path using the current local date
+@param path UTF-8 bookmark path, unchanged by this function
+@return newly-allocated path, to be freed by the caller
+*/
+static gchar *_e2_bookmark_expand_date (const gchar *path)
+{
+	if (strchr (path, '%') == NULL)
+		return g_strdup (path);
+
+	time_t now = time (NULL);
+	struct tm date;
+	if (now == (time_t) -1 || localtime_r (&now, &date) == NULL)
+		return g_strdup (path);
+
+	GString *expanded = g_string_sized_new (strlen (path));
+	const gchar *p = path;
+	while (*p != '\0')
+	{
+		//Match longer variables first, before their shorter prefixes.
+		if (strncmp (p, "%YYYY", 5) == 0)
+		{
+			g_string_append_printf (expanded, "%04d", date.tm_year + 1900);
+			p += 5;
+		}
+		else if (strncmp (p, "%YY", 3) == 0)
+		{
+			g_string_append_printf (expanded, "%02d", (date.tm_year + 1900) % 100);
+			p += 3;
+		}
+		else if (strncmp (p, "%MM", 3) == 0)
+		{
+			g_string_append_printf (expanded, "%02d", date.tm_mon + 1);
+			p += 3;
+		}
+		else if (strncmp (p, "%M", 2) == 0)
+		{
+			g_string_append_printf (expanded, "%d", date.tm_mon + 1);
+			p += 2;
+		}
+		else if (strncmp (p, "%DD", 3) == 0)
+		{
+			g_string_append_printf (expanded, "%02d", date.tm_mday);
+			p += 3;
+		}
+		else if (strncmp (p, "%D", 2) == 0)
+		{
+			g_string_append_printf (expanded, "%d", date.tm_mday);
+			p += 2;
+		}
+		else
+			g_string_append_c (expanded, *p++);
+	}
+	return g_string_free (expanded, FALSE);
+}
 /**
 @brief re-create all toolbars which have bookmarks
 Way too comlicated to create mechanism to replace only specific
@@ -454,7 +510,9 @@ gboolean e2_bookmark_button_press_cb (GtkWidget *widget, GdkEventButton *event,
 					if (0)
 						e2_pane_change_space_byuri (other_pane, "some string");
 #endif
-					e2_pane_change_dir (other_pane, mdata->mark_path);	//mark string is UTF-8
+					gchar *path = _e2_bookmark_expand_date (mdata->mark_path);
+					e2_pane_change_dir (other_pane, path);	//mark string is UTF-8
+					g_free (path);
 					if (e2_option_bool_get ("bookmarks-focus-after-open"))
 					{
 						NEEDCLOSEBGL
@@ -634,21 +692,23 @@ static gboolean _e2_bookmark_open (gpointer from, E2_ActionRuntime *art)
 	E2_PaneRuntime *rt = e2_pane_get_runtime (from, art->data, &newpath);
 	if (rt == NULL || newpath == NULL)
 		return FALSE;
-	printd (DEBUG, "_e2_bookmark_open (path:%s)", newpath);
+	gchar *path = _e2_bookmark_expand_date (newpath);
+	printd (DEBUG, "_e2_bookmark_open (path:%s)", path);
 	//bookmark may be bad now ...
-	if (e2_fs_cd_isok ((gchar *)newpath E2_ERR_NONE()))
+	gboolean result = e2_fs_cd_isok (path E2_ERR_NONE());
+	if (result)
 	{
 #ifdef E2_VFSTMP
 		//FIXME handle case where pane is non-mounted
 		if (0)
 			e2_pane_change_space_byuri (rt, "someplace");
 #endif
-		e2_pane_change_dir (rt, newpath);
+		e2_pane_change_dir (rt, path);
 		if (rt != curr_pane && e2_option_bool_get ("bookmarks-focus-after-open"))
 			e2_pane_activate_other ();
-		return TRUE;
 	}
-	return FALSE;
+	g_free (path);
+	return result;
 }
 /**
 @brief open a dialog showing bookmarks config data

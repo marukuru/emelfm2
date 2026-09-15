@@ -36,6 +36,8 @@ The 'path' is the actual path to to bookmark. It may be '~' or start with '~/'. 
 
 The 'tooltip' and/or 'path' field may include variable(s), like $VAR or ${VAR}. (or $[var], but why would you want an e2 option value, in this context?)
 
+The 'path' field may also include date variables: %YYYY (4-digit year), %YY (2-digit year), %MM (month with zero padding), %M (month without zero padding), %DD (day with zero padding), and %D (day without zero padding). These use the current local date each time the bookmark is opened, including by middle-click. For example, /archive/%YYYY/%MM/%DD opens /archive/2026/09/05 on September 5, 2026.
+
 Bookmarks which are children of the first item are shown on the taskbar. Do not change the name of that first item, or else the bookmarks will not be shown.
 
 [aliases]
