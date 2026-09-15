@@ -89,7 +89,8 @@ binary-arch: build install
 	dh_installmenu
 	dh_installman
 	dh_strip
-	dh_compress
+	# The built-in help viewer opens these documents as plain text by name.
+	dh_compress -XUSAGE -XCONFIGURATION -XACTIONS -XCREDITS
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps
