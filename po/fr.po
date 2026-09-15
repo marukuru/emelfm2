@@ -99,7 +99,7 @@ msgstr "signet"
 msgid "command"
 msgstr "commande"
 
-#: e2_action.c:1154 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1154 e2_bookmark.c:441 e2_option_tree.c:1527
 msgid "children"
 msgstr "fils"
 
@@ -163,7 +163,7 @@ msgstr "greffon"
 msgid "toggle"
 msgstr "basculer"
 
-#: e2_action.c:1170 e2_bookmark.c:716
+#: e2_action.c:1170 e2_bookmark.c:776
 msgid "trash"
 msgstr "corbeille"
 
@@ -533,7 +533,7 @@ msgstr "voir_de_nouveau"
 msgid "view_at"
 msgstr "voir_à"
 
-#: e2_action.c:1270 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1270 e2_bookmark.c:441 e2_option_tree.c:1527
 msgid "child"
 msgstr "fils"
 
@@ -648,112 +648,112 @@ msgstr "Arrêt"
 msgid "Replace"
 msgstr "Remplacement"
 
-#: e2_bookmark.c:383
+#: e2_bookmark.c:439
 msgid "Are you sure that you want to delete the bookmark"
 msgstr "Êtes-vous sûr que vous voulez détruire ce signet ?"
 
-#: e2_bookmark.c:385 e2p_du.c:276
+#: e2_bookmark.c:441 e2p_du.c:276
 msgid "and"
 msgstr "et"
 
-#: e2_bookmark.c:385 e2_bookmark.c:387 e2_dialog.c:1470 e2_dialog.c:1600
+#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1470 e2_dialog.c:1600
 #: e2_dialog.c:1606 e2_dialog.c:1677 e2_dialog.c:1718 e2_edit_dialog.c:781
-#: e2_edit_dialog.c:1010 e2_main.c:961 e2_option_tree.c:1520
+#: e2_edit_dialog.c:1010 e2_main.c:973 e2_option_tree.c:1520
 #: e2_option_tree.c:1527 e2p_crypt.c:852 e2p_rename.c:1100
 msgid "confirm"
 msgstr "confirmer"
 
-#: e2_bookmark.c:490
+#: e2_bookmark.c:548
 msgid "_Add child"
 msgstr "Ajouter un _enfant"
 
-#: e2_bookmark.c:491
+#: e2_bookmark.c:549
 msgid "Bookmark the current directory a child of the selected item"
 msgstr "Ajouter le dossier courant en tant qu'enfant du signet sélectionné"
 
-#: e2_bookmark.c:496
+#: e2_bookmark.c:554
 msgid "_Add after"
 msgstr "_Ajouter après"
 
-#: e2_bookmark.c:497
+#: e2_bookmark.c:555
 msgid "Bookmark the current directory after the selected item"
 msgstr "Ajouter le dossier courant après le signet sélectionné"
 
-#: e2_bookmark.c:501 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:882
+#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:882
 #: e2_icons.c:1135 e2p_unpack.c:777
 msgid "_Delete"
 msgstr "_Supprimer"
 
-#: e2_bookmark.c:502
+#: e2_bookmark.c:560
 msgid "Delete the selected bookmark, and its children if any"
 msgstr "Supprimer le signet sélectionné et ses fils s'il en a"
 
-#: e2_bookmark.c:704
+#: e2_bookmark.c:764
 msgid "_home"
 msgstr "_Espace personnel"
 
-#: e2_bookmark.c:707
+#: e2_bookmark.c:767
 msgid "cdrom"
 msgstr "cdrom"
 
-#: e2_bookmark.c:709
+#: e2_bookmark.c:769
 msgid "root"
 msgstr "root"
 
-#: e2_bookmark.c:710
+#: e2_bookmark.c:770
 msgid "Your home directory"
 msgstr "Votre dossier personnel"
 
-#: e2_bookmark.c:710
+#: e2_bookmark.c:770
 msgid "home"
 msgstr "Espace personnel"
 
-#: e2_bookmark.c:711
+#: e2_bookmark.c:771
 msgid "media"
 msgstr "media"
 
-#: e2_bookmark.c:712
+#: e2_bookmark.c:772
 msgid "mnt"
 msgstr "mnt"
 
-#: e2_bookmark.c:713
+#: e2_bookmark.c:773
 msgid "usr"
 msgstr "usr"
 
-#: e2_bookmark.c:714
+#: e2_bookmark.c:774
 msgid "usr/local"
 msgstr "usr/local"
 
-#: e2_bookmark.c:716
+#: e2_bookmark.c:776
 msgid "default trash directory"
 msgstr "dossier Corbeille par défaut"
 
-#: e2_bookmark.c:734 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
+#: e2_bookmark.c:794 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
 #: e2_toolbar.c:3454 e2_toolbar.c:3526 e2_toolbar.c:3692
 msgid "Label"
 msgstr "Étiquette"
 
-#: e2_bookmark.c:736 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
+#: e2_bookmark.c:796 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
 #: e2_toolbar.c:3456 e2_toolbar.c:3528 e2_toolbar.c:3694
 msgid "Icon"
 msgstr "Icône"
 
-#: e2_bookmark.c:738 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3458
+#: e2_bookmark.c:798 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3458
 #: e2_toolbar.c:3530 e2_toolbar.c:3696
 msgid "Tooltip"
 msgstr "Info-bulle"
 
-#: e2_bookmark.c:740
+#: e2_bookmark.c:800
 msgid "Path"
 msgstr "Chemin"
 
-#: e2_bookmark.c:748
+#: e2_bookmark.c:808
 msgid "open bookmark in other pane on middle-button click"
 msgstr ""
 "ouvrir le signet dans l'autre panneau en cliquant sur le bouton du milieu de "
 "la souris"
 
-#: e2_bookmark.c:749
+#: e2_bookmark.c:809
 msgid ""
 "Clicking the middle mouse button on a bookmark will open it in the other "
 "file pane"
@@ -761,11 +761,11 @@ msgstr ""
 "Cliquer sur un signet avec le bouton du milieu de la souris l'ouvre dans "
 "l'autre panneau."
 
-#: e2_bookmark.c:753
+#: e2_bookmark.c:813
 msgid "focus file pane after opening a bookmark in it"
 msgstr "placer le focus sur le panneau après y avoir ouvert un signet"
 
-#: e2_bookmark.c:754
+#: e2_bookmark.c:814
 msgid ""
 "After opening a bookmark in the inactive file pane, that pane will become "
 "the active one"
@@ -773,19 +773,19 @@ msgstr ""
 "Après avoir ouvert un signet dans le panneau inactif, ce panneau deviendra "
 "actif."
 
-#: e2_bookmark.c:760
+#: e2_bookmark.c:820
 msgid "confirm any delete of a selected bookmark"
 msgstr "confirmer la suppression d'un signet sélectionné"
 
-#: e2_bookmark.c:761
+#: e2_bookmark.c:821
 msgid "You will be asked to confirm, before deleting any bookmark"
 msgstr "Une confirmation vous sera demandée avant suppression d'un signet."
 
-#: e2_bookmark.c:765
+#: e2_bookmark.c:825
 msgid "confirm any delete of multiple bookmarks"
 msgstr "confirmer la suppression de plusieurs signets en même temps"
 
-#: e2_bookmark.c:766
+#: e2_bookmark.c:826
 msgid ""
 "You will be asked to confirm, before deleting any bookmark that has "
 "'children'"
@@ -3089,7 +3089,7 @@ msgstr "_Rapporter"
 msgid "_Properties"
 msgstr "_Propriétés"
 
-#: e2_icons.c:949 e2_icons.c:1202 e2_main.c:966 e2_toolbar.c:3509
+#: e2_icons.c:949 e2_icons.c:1202 e2_main.c:978 e2_toolbar.c:3509
 msgid "_Quit"
 msgstr "_Quitter"
 
@@ -3194,12 +3194,12 @@ msgstr ""
 "Ceci fixe le délai limite (en millisecondes) pour accepter les raccourcis "
 "claviers enchaînés."
 
-#: e2_main.c:337
+#: e2_main.c:340
 #, c-format
 msgid "Your current locale is '%s'.\n"
 msgstr "Votre localisation courante est '%s'.\n"
 
-#: e2_main.c:339
+#: e2_main.c:342
 #, c-format
 msgid ""
 "You have set the environment variable G_BROKEN_FILENAMES, which\n"
@@ -3215,7 +3215,7 @@ msgstr ""
 "remédier en affectant une valeur aux variables d'environnement LANG ou "
 "LC_CTYPE !\n"
 
-#: e2_main.c:347
+#: e2_main.c:350
 #, c-format
 msgid ""
 "(Note: There is a command line option -i/--ignore-problems, but use it\n"
@@ -3225,7 +3225,7 @@ msgstr ""
 "mais si vous l'utilisez, c'est\n"
 "à vos risques et périls !)\n"
 
-#: e2_main.c:352
+#: e2_main.c:355
 #, c-format
 msgid ""
 "%s will ignore locale problems when reading filenames because\n"
@@ -3241,20 +3241,20 @@ msgstr ""
 "valeur aux variables d'environnement\n"
 "LANG ou LC_CTYPE.\n"
 
-#: e2_main.c:717
+#: e2_main.c:729
 msgid "emelFM2"
 msgstr "emelFM2"
 
-#: e2_main.c:961
+#: e2_main.c:973
 #, c-format
 msgid "%u process(es) are running"
 msgstr "Le ou les processus %u sont en cours"
 
-#: e2_main.c:963
+#: e2_main.c:975
 msgid "_Continue"
 msgstr "_Continuer"
 
-#: e2_main.c:964
+#: e2_main.c:976
 msgid "Continue working"
 msgstr "Continuer à travailler"
 

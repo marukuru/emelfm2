@@ -98,7 +98,7 @@ msgstr "zakładka"
 msgid "command"
 msgstr "komenda"
 
-#: e2_action.c:1154 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1154 e2_bookmark.c:441 e2_option_tree.c:1527
 msgid "children"
 msgstr "dzieci"
 
@@ -162,7 +162,7 @@ msgstr "wtyczka"
 msgid "toggle"
 msgstr "zaznacz"
 
-#: e2_action.c:1170 e2_bookmark.c:716
+#: e2_action.c:1170 e2_bookmark.c:776
 msgid "trash"
 msgstr "śmietnik"
 
@@ -531,7 +531,7 @@ msgstr ""
 msgid "view_at"
 msgstr ""
 
-#: e2_action.c:1270 e2_bookmark.c:385 e2_option_tree.c:1527
+#: e2_action.c:1270 e2_bookmark.c:441 e2_option_tree.c:1527
 msgid "child"
 msgstr ""
 
@@ -644,113 +644,113 @@ msgstr "Zatrzymaj"
 msgid "Replace"
 msgstr "Zastąp"
 
-#: e2_bookmark.c:383
+#: e2_bookmark.c:439
 msgid "Are you sure that you want to delete the bookmark"
 msgstr "Czy jesteś pewien, że chcesz usunąć zakładkę"
 
-#: e2_bookmark.c:385 e2p_du.c:276
+#: e2_bookmark.c:441 e2p_du.c:276
 msgid "and"
 msgstr "i"
 
-#: e2_bookmark.c:385 e2_bookmark.c:387 e2_dialog.c:1470 e2_dialog.c:1600
+#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1470 e2_dialog.c:1600
 #: e2_dialog.c:1606 e2_dialog.c:1677 e2_dialog.c:1718 e2_edit_dialog.c:781
-#: e2_edit_dialog.c:1010 e2_main.c:961 e2_option_tree.c:1520
+#: e2_edit_dialog.c:1010 e2_main.c:973 e2_option_tree.c:1520
 #: e2_option_tree.c:1527 e2p_crypt.c:852 e2p_rename.c:1100
 msgid "confirm"
 msgstr "potwierdź"
 
-#: e2_bookmark.c:490
+#: e2_bookmark.c:548
 msgid "_Add child"
 msgstr ""
 
-#: e2_bookmark.c:491
+#: e2_bookmark.c:549
 #, fuzzy
 msgid "Bookmark the current directory a child of the selected item"
 msgstr ""
 "Dodaj do zakładek aktualny katalog jako podzakładkę zaznaczonej zakładki"
 
-#: e2_bookmark.c:496
+#: e2_bookmark.c:554
 msgid "_Add after"
 msgstr "_Dodaj po"
 
-#: e2_bookmark.c:497
+#: e2_bookmark.c:555
 #, fuzzy
 msgid "Bookmark the current directory after the selected item"
 msgstr "Dodaj do zakładek aktualny katalog po zaznaczonej zakładce"
 
-#: e2_bookmark.c:501 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:882
+#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:882
 #: e2_icons.c:1135 e2p_unpack.c:777
 msgid "_Delete"
 msgstr "Usuń"
 
-#: e2_bookmark.c:502
+#: e2_bookmark.c:560
 msgid "Delete the selected bookmark, and its children if any"
 msgstr "Usuń zaznaczoną zakładkę wraz z wszystkimi podzakładkami"
 
-#: e2_bookmark.c:704
+#: e2_bookmark.c:764
 msgid "_home"
 msgstr "_domowy"
 
-#: e2_bookmark.c:707
+#: e2_bookmark.c:767
 msgid "cdrom"
 msgstr ""
 
-#: e2_bookmark.c:709
+#: e2_bookmark.c:769
 msgid "root"
 msgstr ""
 
-#: e2_bookmark.c:710
+#: e2_bookmark.c:770
 msgid "Your home directory"
 msgstr "Twój katalog domowy"
 
-#: e2_bookmark.c:710
+#: e2_bookmark.c:770
 msgid "home"
 msgstr ""
 
-#: e2_bookmark.c:711
+#: e2_bookmark.c:771
 msgid "media"
 msgstr ""
 
-#: e2_bookmark.c:712
+#: e2_bookmark.c:772
 msgid "mnt"
 msgstr ""
 
-#: e2_bookmark.c:713
+#: e2_bookmark.c:773
 msgid "usr"
 msgstr ""
 
-#: e2_bookmark.c:714
+#: e2_bookmark.c:774
 msgid "usr/local"
 msgstr ""
 
-#: e2_bookmark.c:716
+#: e2_bookmark.c:776
 msgid "default trash directory"
 msgstr "domyślny kosz"
 
-#: e2_bookmark.c:734 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
+#: e2_bookmark.c:794 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
 #: e2_toolbar.c:3454 e2_toolbar.c:3526 e2_toolbar.c:3692
 msgid "Label"
 msgstr "Etykieta"
 
-#: e2_bookmark.c:736 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
+#: e2_bookmark.c:796 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
 #: e2_toolbar.c:3456 e2_toolbar.c:3528 e2_toolbar.c:3694
 msgid "Icon"
 msgstr "Ikona"
 
-#: e2_bookmark.c:738 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3458
+#: e2_bookmark.c:798 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3458
 #: e2_toolbar.c:3530 e2_toolbar.c:3696
 msgid "Tooltip"
 msgstr "Podpowiedź"
 
-#: e2_bookmark.c:740
+#: e2_bookmark.c:800
 msgid "Path"
 msgstr "Ścieżka"
 
-#: e2_bookmark.c:748
+#: e2_bookmark.c:808
 msgid "open bookmark in other pane on middle-button click"
 msgstr "otwórz zakładkę w drugim oknie środkowym przyciskiem myszki"
 
-#: e2_bookmark.c:749
+#: e2_bookmark.c:809
 msgid ""
 "Clicking the middle mouse button on a bookmark will open it in the other "
 "file pane"
@@ -758,29 +758,29 @@ msgstr ""
 "Kliknięcie środkowym przyciskiem myszki na zakładce, otworzy ją w drugim "
 "oknie"
 
-#: e2_bookmark.c:753
+#: e2_bookmark.c:813
 msgid "focus file pane after opening a bookmark in it"
 msgstr "uaktywnij okno po otworzeniu w nim zakładki"
 
-#: e2_bookmark.c:754
+#: e2_bookmark.c:814
 msgid ""
 "After opening a bookmark in the inactive file pane, that pane will become "
 "the active one"
 msgstr "Po otworzeniu zakładki w nieaktywnym oknie, to okno stanie się aktywne"
 
-#: e2_bookmark.c:760
+#: e2_bookmark.c:820
 msgid "confirm any delete of a selected bookmark"
 msgstr "potwierdź jakiekolwiek usunięcie zaznaczonej zakładki"
 
-#: e2_bookmark.c:761
+#: e2_bookmark.c:821
 msgid "You will be asked to confirm, before deleting any bookmark"
 msgstr "Zostaniesz poproszony o potwierdzenie usunięcia jakiejolwiek zakładki"
 
-#: e2_bookmark.c:765
+#: e2_bookmark.c:825
 msgid "confirm any delete of multiple bookmarks"
 msgstr "potwierdź jakiekolwiek usunięcie wielu zakładek jednocześnie"
 
-#: e2_bookmark.c:766
+#: e2_bookmark.c:826
 msgid ""
 "You will be asked to confirm, before deleting any bookmark that has "
 "'children'"
@@ -3092,7 +3092,7 @@ msgstr "eksportuj"
 msgid "_Properties"
 msgstr "zachowaj _właściwości"
 
-#: e2_icons.c:949 e2_icons.c:1202 e2_main.c:966 e2_toolbar.c:3509
+#: e2_icons.c:949 e2_icons.c:1202 e2_main.c:978 e2_toolbar.c:3509
 msgid "_Quit"
 msgstr "Wyjście"
 
@@ -3204,12 +3204,12 @@ msgstr ""
 "Ustawia okres czasu oczekiwania (w milisekundach), na wprowadzenie "
 "'łączonego' skrótu klawiaturowego"
 
-#: e2_main.c:337
+#: e2_main.c:340
 #, c-format
 msgid "Your current locale is '%s'.\n"
 msgstr "Aktualna wartość 'locale' to '%s'.\n"
 
-#: e2_main.c:339
+#: e2_main.c:342
 #, c-format
 msgid ""
 "You have set the environment variable G_BROKEN_FILENAMES, which\n"
@@ -3224,7 +3224,7 @@ msgstr ""
 "Jednakże, locale systemu nie jest ustawione. Zrób to proszę poprzez\n"
 "ustawienie zmiennej systemowej LANG lub LC_CTYPE!\n"
 
-#: e2_main.c:347
+#: e2_main.c:350
 #, c-format
 msgid ""
 "(Note: There is a command line option -i/--ignore-problems, but use it\n"
@@ -3234,7 +3234,7 @@ msgstr ""
 "jej\n"
 "na własną odpowiedzialność!)\n"
 
-#: e2_main.c:352
+#: e2_main.c:355
 #, c-format
 msgid ""
 "%s will ignore locale problems when reading filenames because\n"
@@ -3249,20 +3249,20 @@ msgstr ""
 "zmienną\n"
 "LANG lub zmienną LC_CTYPE.\n"
 
-#: e2_main.c:717
+#: e2_main.c:729
 msgid "emelFM2"
 msgstr ""
 
-#: e2_main.c:961
+#: e2_main.c:973
 #, c-format
 msgid "%u process(es) are running"
 msgstr "%u proces(ów) jest uruchomionych"
 
-#: e2_main.c:963
+#: e2_main.c:975
 msgid "_Continue"
 msgstr "_Kontynuuj"
 
-#: e2_main.c:964
+#: e2_main.c:976
 msgid "Continue working"
 msgstr "Kontynuuj pracę"
 
