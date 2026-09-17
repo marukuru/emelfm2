@@ -722,6 +722,8 @@ Any '~' that is at the start of a command or command-argument, and is followed b
 
 Any un-escaped '*' or '?' in a command argument will be assumed to be part of a wildcard filename, and the argument in question will be expanded into a series of matching filenames (if any)
 
+Matched filenames are quoted before command parsing, so spaces, quotes, backslashes and other special characters in a filename remain part of a single argument. For example, 'rm -- *.png' removes matching PNG files even when their names contain these characters. Quoted or escaped wildcards, such as "*.png" or \*.png, are literal. An unmatched pattern is kept as an argument.
+
 COMMUNICATION WITH CHILD PROCESSES
 
 A command of the form 'pid:message' will pipe 'message' to the process with process id 'pid' (the process has to be a child of e2). The piped message will be encoded as utf-8.

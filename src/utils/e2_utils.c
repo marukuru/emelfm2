@@ -2686,15 +2686,14 @@ static gboolean _e2_utils_drcb_match_wild_last (VPATH *parent,
 		gchar *utfname = F_FILENAME_FROM_LOCALE (itemname);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-		if (g_pattern_match_string (pattern, utfname))
+		gboolean matched = g_pattern_match_string (pattern, utfname);
 #pragma GCC diagnostic pop
+		if (matched)
 		{
-			gchar *escname;
 			gboolean all = GPOINTER_TO_INT (pair->a);
 			if (all)
 			{
-				escname = e2_utf8_escape (utfname, ' ');
-				*found = g_list_append (*found, escname);
+				*found = g_list_append (*found, g_strdup (utfname));
 			}
 			else
 			{
@@ -2706,8 +2705,7 @@ static gboolean _e2_utils_drcb_match_wild_last (VPATH *parent,
 				if (e2_fs_is_dir3 (freeme E2_ERR_NONE()))
 #endif
 				{
-					escname = e2_utf8_escape (utfname, ' ');
-					*found = g_list_append (*found, escname);
+					*found = g_list_append (*found, g_strdup (utfname));
 				}
 				g_free (freeme);
 			}
@@ -2728,7 +2726,9 @@ Expects BGL to be on/closed on arrival here
 @param all TRUE to match any type of item, FALSE to match dirs only
 
 @return list of utf8 names which match, or 0x1 if if no match was found,
-or NULL if there is no wildcard in @a arg or an error occurred
+or NULL if there is no wildcard in @a arg or an error occurred.
+Names in the returned list are not quoted or escaped. Quote the complete
+pathname when inserting a match into command text.
 */
 static GList *_e2_utils_match_wild_last (gchar *arg, gboolean all)
 {
@@ -2742,7 +2742,7 @@ static GList *_e2_utils_match_wild_last (gchar *arg, gboolean all)
 	path = g_path_get_dirname (arg);
 //	dirtype = FS_LOCAL;	//FIXME
 #endif
-	if (!strcmp (path, "."))
+	if (!strcmp (path, ".") && strchr (arg, G_DIR_SEPARATOR) == NULL)
 	{	//no path in arg
 		g_free (path);
 		if (strchr (arg, '*') == NULL && strchr (arg, '?') == NULL)
@@ -2836,8 +2836,9 @@ static gboolean _e2_utils_drcb_match_wild_path (VPATH *parent,
 		gchar *utfname = F_FILENAME_FROM_LOCALE (itemname);
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-		if (g_pattern_match_string (pattern, utfname))
+		gboolean matched = g_pattern_match_string (pattern, utfname);
 #pragma GCC diagnostic pop
+		if (matched)
 			*found = g_list_append (*found, g_strdup (itemname));
 
 		F_FREE (utfname, itemname);
@@ -2943,7 +2944,25 @@ Assumes BGL is closed, here (for error msgs) and downstream
 */
 static gchar *_e2_utils_match_wild_segment (gchar *string)
 {
-	if (strchr (string, '*') == NULL && strchr (string, '?') == NULL)
+	// Escaped and quoted wildcard characters are literal filename characters.
+	gchar quote = '\0';
+	gboolean wild = FALSE;
+	const gchar *scan;
+	for (scan = string; *scan != '\0'; scan++)
+	{
+		if (*scan == '\\' && quote != '\'' && scan[1] != '\0')
+			scan++;
+		else if (quote != '\0')
+		{
+			if (*scan == quote)
+				quote = '\0';
+		}
+		else if (*scan == '\'' || *scan == '"')
+			quote = *scan;
+		else if (*scan == '*' || *scan == '?')
+			wild = TRUE;
+	}
+	if (!wild)
 		return (g_strdup (string));
 	gint len = strlen (string);
 	if (*string == '"' && *(string + len - 1) == '"')
@@ -2963,7 +2982,7 @@ static gchar *_e2_utils_match_wild_segment (gchar *string)
 	//FIXME path when not mounted local
 #endif
 	path = g_path_get_dirname (string);	//no trailing separator
-	if (strcmp (path, "."))
+	if (strcmp (path, ".") || strchr (string, G_DIR_SEPARATOR) != NULL)
 	{	//the string has a path
 		gboolean abs = g_path_is_absolute (path);
 		if (strchr (path, '*') != NULL || strchr (path, '?') != NULL)
@@ -3025,7 +3044,7 @@ static gchar *_e2_utils_match_wild_segment (gchar *string)
 			for (i = 1; i < count; i++)
 			{
 				s = wdata.path_elements[i];
-				if (strchr (s, '*') != NULL || strchr (s, '*') != NULL)
+				if (strchr (s, '*') != NULL || strchr (s, '?') != NULL)
 				{
 					if (wdata.first_wild_depth == 0)
 						wdata.first_wild_depth = i;//highest level that has a wildcard char
@@ -3130,31 +3149,42 @@ static gchar *_e2_utils_match_wild_segment (gchar *string)
 
 		//now expand the last segment in the supplied path string
 		gchar *name = g_path_get_basename (string);
-		if (strchr (name, '*') != NULL || strchr (name, '*') != NULL)
+		if (strchr (name, '*') != NULL || strchr (name, '?') != NULL)
 		{	//last path segment is wild
 			freeme = g_strconcat (parent_path, name, NULL);
 			matches = _e2_utils_match_wild_last (freeme, TRUE);
 			g_free (freeme);
 			if (matches == NULL //error
 				|| matches == GINT_TO_POINTER (0x1)) //no match found
-				//send back is what we have now
-				expanded = g_strconcat (parent_path, name, NULL);
+			{
+				//The resolved parent can itself contain shell metacharacters.
+				freeme = g_strconcat (parent_path, name, NULL);
+				expanded = g_shell_quote (freeme);
+				g_free (freeme);
+			}
 			else
 			{	//append each matched item to matched path
 				expanded = g_strdup ("");
 				GList *tmp;
 				for (tmp = matches; tmp != NULL; tmp = tmp->next)
 				{
+					gchar *fullname = g_strconcat (parent_path, (gchar *)tmp->data, NULL);
+					gchar *quoted = g_shell_quote (fullname);
 					freeme = expanded;
-					expanded = g_strconcat (freeme, " ", parent_path,
-						(gchar*)tmp->data, NULL);
+					expanded = g_strconcat (freeme, " ", quoted, NULL);
 					g_free (freeme);
+					g_free (quoted);
+					g_free (fullname);
 				}
 				e2_list_free_with_data (&matches);
 			}
 		}
-		else	//last path segment is explicit
-			expanded = g_strconcat (parent_path, name, NULL);
+		else	//last path segment is explicit, but its parent may have been expanded
+		{
+			freeme = g_strconcat (parent_path, name, NULL);
+			expanded = g_shell_quote (freeme);
+			g_free (freeme);
+		}
 
 		g_free (parent_path);
 		g_free (name);
@@ -3165,16 +3195,18 @@ static gchar *_e2_utils_match_wild_segment (gchar *string)
 		if (matches == NULL) //no wildcard in the name (or error)
 			expanded = g_strdup (string);
 		else if (matches == GINT_TO_POINTER (0x1)) //no match
-			expanded = g_strdup ("");
+			expanded = g_strdup (string);
 		else
 		{
 			expanded = g_strdup ("");
 			GList *tmp;
 			for (tmp = matches; tmp != NULL; tmp = tmp->next)
 			{
+				gchar *quoted = g_shell_quote ((gchar *)tmp->data);
 				freeme = expanded;
-				expanded = g_strconcat (freeme, " ", (gchar*)tmp->data, NULL);
+				expanded = g_strconcat (freeme, " ", quoted, NULL);
 				g_free (freeme);
+				g_free (quoted);
 			}
 			e2_list_free_with_data (&matches);
 		}
@@ -3203,58 +3235,40 @@ gchar *e2_utils_replace_wildcards (gchar *raw)
 		&& strchr (raw, '?') == NULL)	//if always ascii ;, don't need g_utf8_strchr()
 		return raw;
 
-	gchar *p, *s, *freeme, *expanded = g_strdup ("");
-	gchar sep[2] = {'\0', '\0'};
-	gint cnt1 = 0; //counter for ' chars
-	gint cnt2 = 0; //counter for " chars
-
-	s = p = raw;
+	GString *expanded = g_string_new (NULL);
+	const gchar *p = raw;
 	while (*p != '\0')
 	{
-		if (*p == '\'')
+		if (*p == ' ' || *p == '\t' || *p == '\n')
 		{
-			if (p == raw || *(p-1) != '\\')
-				cnt1++;
+			g_string_append_c (expanded, *p++);
+			continue;
 		}
-		else if (*p == '"')
+		const gchar *start = p;
+		gchar quote = '\0';
+		while (*p != '\0')
 		{
-			if (p == raw || *(p-1) != '\\')
-				cnt2++;
-		}
-		else if (*p == ' ' || *p == '\t')
-		{	//check if separator seems to be outside parentheses
-			if (cnt1 % 2 == 0 && cnt2 % 2 == 0)
-			{ //found a gap in the command string
-				sep[0] = *p;
-				*p = '\0';
-				s = _e2_utils_match_wild_segment (s);
-				freeme = expanded;
-				expanded = g_strconcat (freeme, s, sep, NULL);
-				g_free (s);
-				g_free (freeme);
-				*p = sep[0];
-				//resume scanning
-				s = e2_utils_pass_whitespace (p+1);
-				if (s == NULL) 	//irrelevant trailing whitespace
-					break;
-				p = s;
-				continue;
+			if (*p == '\\' && quote != '\'' && p[1] != '\0')
+				p++;
+			else if (quote != '\0')
+			{
+				if (*p == quote)
+					quote = '\0';
 			}
+			else if (*p == '\'' || *p == '"')
+				quote = *p;
+			else if (*p == ' ' || *p == '\t' || *p == '\n')
+				break;
+			p++;
 		}
-		p++;
-	}
-	if (s != NULL && *s != '\0')
-	{
-		//process last (or only) command_element
-		s = _e2_utils_match_wild_segment (s);
-		//append string to buffer
-		freeme = expanded;
-		expanded = g_strconcat (freeme, s, NULL);
-		g_free (s);
-		g_free (freeme);
+		gchar *segment = g_strndup (start, p - start);
+		gchar *matches = _e2_utils_match_wild_segment (segment);
+		g_string_append (expanded, matches);
+		g_free (matches);
+		g_free (segment);
 	}
 
-	return expanded;
+	return g_string_free (expanded, FALSE);
 }
 /**
 @brief get a single variable value
