@@ -992,12 +992,12 @@ static void notification_call (GDBusConnection *connection, const gchar *sender,
 	}
 	notifications_received++;
 	GVariant *actions = g_variant_get_child_value (parameters, 5);
-	g_assert_cmpuint (g_variant_n_children (actions), ==, 4);
+	g_assert_cmpuint (g_variant_n_children (actions), ==, 2);
 	const gchar *action;
 	g_variant_get_child (actions, 0, "&s", &action);
-	g_assert_cmpstr (action, ==, "default");
-	g_variant_get_child (actions, 2, "&s", &action);
 	g_assert_cmpstr (action, ==, "review");
+	g_variant_get_child (actions, 1, "&s", &action);
+	g_assert_cmpstr (action, ==, _("Review"));
 	g_variant_unref (actions);
 	GVariant *hints = g_variant_get_child_value (parameters, 6);
 	gboolean silent = FALSE;

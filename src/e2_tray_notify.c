@@ -87,7 +87,9 @@ static void _e2_tray_notification_bus_ready (GObject *source,
 	g_variant_builder_init (&hints, G_VARIANT_TYPE ("a{sv}"));
 	g_variant_builder_add (&hints, "{sv}", "suppress-sound", g_variant_new_boolean (TRUE));
 	g_variant_builder_add (&hints, "{sv}", "urgency", g_variant_new_byte (0));
-	const gchar *actions[] = { "default", _("Review"), "review", _("Review"), NULL };
+	/* Some notification servers render the default action as a button too.
+	   Advertise just one explicit Review action to avoid duplicate buttons. */
+	const gchar *actions[] = { "review", _("Review"), NULL };
 	gchar *summary = g_strdup_printf (_("%s: needs attention (%u)"), PROGNAME, notification_count);
 	gchar *icon = e2_icons_get_application_path ();
 	g_dbus_connection_call (bus, "org.freedesktop.Notifications",
