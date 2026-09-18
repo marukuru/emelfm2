@@ -48,6 +48,7 @@ static gboolean notifications;
 static gboolean animate_attention = TRUE;
 static gint mode;
 static guint quit_count;
+static gboolean quit_again;
 static gchar *icon_path;
 static GdkPixbuf *app_icon;
 static guint registrations;
@@ -73,8 +74,13 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean save, gboolean doexit)
 {
 	g_assert_false (compulsory);
 	g_assert_true (save && doexit);
-	g_assert_true (gtk_widget_get_visible (app.main_window));
+	g_assert_false (gtk_widget_get_visible (app.main_window));
 	quit_count++;
+	if (quit_again)
+	{
+		quit_again = FALSE;
+		_e2_tray_quit_cb (NULL, NULL);
+	}
 	return FALSE; /* Simulate cancelling the running-process warning. */
 }
 
@@ -117,6 +123,7 @@ static void test_x11 (void)
 	menu_activate (2);
 	g_assert_cmpuint (quit_count, ==, 1);
 	g_assert_nonnull (status_icon);
+	g_assert_false (gtk_widget_get_visible (app.main_window));
 	menu_activate (0);
 	enabled = FALSE;
 	e2_tray_sync ();
@@ -499,6 +506,10 @@ static void test_indicator (void)
 		g_variant_unref (layout);
 		g_variant_unref (property);
 		g_assert_false (gtk_widget_get_visible (app.main_window));
+		guint previous_quits = quit_count;
+		remote_menu_click (connection, "_Quit");
+		g_assert_cmpuint (quit_count, ==, previous_quits + 1);
+		g_assert_false (gtk_widget_get_visible (app.main_window));
 		GtkWidget *pending = gtk_dialog_new ();
 		gtk_window_set_title (GTK_WINDOW (pending), "Overwrite some_file");
 		g_assert_true (e2_tray_defer_dialog (pending, TRUE, TRUE));
@@ -717,6 +728,89 @@ static GtkWidget *new_question (const gchar *title)
 	g_signal_connect (dialog, "map", G_CALLBACK (question_mapped), NULL);
 	g_signal_connect (dialog, "response", G_CALLBACK (question_answered), NULL);
 	return dialog;
+}
+
+static void count_window_maps (GtkWidget *widget, guint *count) { (*count)++; }
+
+typedef struct
+{
+	GtkWidget *dialog, *progress, *pending;
+	gint response;
+} QuitDialogTest;
+
+static gboolean answer_quit_dialog (gpointer data)
+{
+	QuitDialogTest *test = data;
+	g_assert_true (gtk_widget_get_visible (test->dialog));
+	g_assert_true (gtk_window_get_modal (GTK_WINDOW (test->dialog)));
+	g_assert_null (gtk_window_get_transient_for (GTK_WINDOW (test->dialog)));
+	g_assert_false (gtk_window_get_skip_taskbar_hint (GTK_WINDOW (test->dialog)));
+	g_assert_false (gtk_widget_get_visible (app.main_window));
+	g_assert_false (gtk_widget_get_visible (test->progress));
+	g_assert_false (gtk_widget_get_visible (test->pending));
+	g_assert_true (e2_tray_is_hidden ());
+	/* Rescanning windows must not hide the quit prompt or queue it behind
+	   a background question. Its wait ends only on the explicit response. */
+	e2_tray_windows_sync (TRUE);
+	e2_tray_windows_hide ();
+	g_assert_true (gtk_widget_get_visible (test->dialog));
+	g_assert_false (e2_tray_defer_dialog (test->dialog, TRUE, TRUE));
+	gtk_dialog_response (GTK_DIALOG (test->dialog), test->response);
+	return FALSE;
+}
+
+static void test_quit_hidden (void)
+{
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	e2_tray_sync ();
+	GtkWidget *progress = gtk_dialog_new ();
+	e2_tray_register_transfer (progress);
+	gtk_widget_show (progress);
+	menu_activate (0);
+	guint maps = 0, previous = quit_count;
+	gulong main_handler = g_signal_connect (app.main_window, "map", G_CALLBACK (count_window_maps), &maps);
+	gulong progress_handler = g_signal_connect (progress, "map", G_CALLBACK (count_window_maps), &maps);
+	quit_again = TRUE;
+	menu_activate (2);
+	g_assert_cmpuint (quit_count, ==, previous + 1);
+	g_assert_cmpuint (maps, ==, 0);
+	g_assert_true (e2_tray_is_hidden ());
+	GtkWidget *pending = gtk_dialog_new ();
+	g_assert_true (e2_tray_defer_dialog (pending, TRUE, TRUE));
+	drain ();
+	/* Exercise the real dialog setup/wait/destruction used by shutdown,
+	   with both Continue and Quit responses and another pending question. */
+	const gint responses[] = { GTK_RESPONSE_YES, GTK_RESPONSE_NO };
+	guint i;
+	for (i = 0; i < G_N_ELEMENTS (responses); i++)
+	{
+		GtkWidget *dialog = gtk_dialog_new ();
+		e2_tray_prepare_quit_dialog (dialog);
+		e2_dialog_setup (dialog, NULL);
+		QuitDialogTest test = { dialog, progress, pending, responses[i] };
+		g_timeout_add (50, answer_quit_dialog, &test);
+		CLOSEBGL
+		DialogButtons result = e2_dialog_run (dialog, NULL, E2_DIALOG_BLOCKED | E2_DIALOG_FREE);
+		OPENBGL
+		g_assert_cmpint (result, ==, i == 0 ? OK : CANCEL);
+		drain ();
+		g_assert_cmpuint (maps, ==, 0);
+		g_assert_cmpuint (attention_count, ==, 1);
+		g_assert_true (e2_tray_is_hidden ());
+		g_assert_false (gtk_widget_get_visible (pending));
+	}
+	/* Cancelling shutdown leaves the tray available for another Quit. */
+	menu_activate (2);
+	g_assert_cmpuint (quit_count, ==, previous + 2);
+	g_assert_cmpuint (maps, ==, 0);
+	g_signal_handler_disconnect (app.main_window, main_handler);
+	g_signal_handler_disconnect (progress, progress_handler);
+	gtk_widget_destroy (pending);
+	gtk_widget_destroy (progress);
+	enabled = FALSE;
+	e2_tray_sync ();
+	drain ();
 }
 
 static void test_deferred_windows (void)
@@ -1006,6 +1100,10 @@ int main (int argc, char **argv)
 	app.vbox_main = gtk_vbox_new (FALSE, 0);
 #endif
 	gtk_container_add (GTK_CONTAINER (app.main_window), app.vbox_main);
+	curr_view = &app.pane1.view;
+	curr_view->treeview = gtk_tree_view_new ();
+	gtk_container_add (GTK_CONTAINER (app.vbox_main), curr_view->treeview);
+	gtk_widget_show (curr_view->treeview);
 	gtk_widget_show (app.vbox_main);
 	gtk_widget_show (app.main_window);
 	app_icon = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 32, 32);
@@ -1017,6 +1115,7 @@ int main (int argc, char **argv)
 	g_test_add_func ("/tray/attention", test_attention);
 	g_test_add_func ("/tray/indicator", test_indicator);
 	g_test_add_func ("/tray/xfce-service", test_xfce_service);
+	g_test_add_func ("/tray/quit-hidden", test_quit_hidden);
 	g_test_add_func ("/tray/deferred-windows", test_deferred_windows);
 	g_test_add_func ("/tray/notifications", test_notifications);
 	g_test_add_func ("/tray/dialog-wait", test_dialog_wait);

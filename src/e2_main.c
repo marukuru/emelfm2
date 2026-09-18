@@ -980,7 +980,13 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 				E2_Button no_btn = { _("_Quit"), STOCK_NAME_QUIT,
 					NULL, 0, 0, E2_BUTTON_NO.response };
 
-				DialogButtons choice = e2_dialog_show (dialog, app.main_window,
+				GtkWidget *parent = app.main_window;
+				if (e2_tray_is_hidden ())
+				{
+					e2_tray_prepare_quit_dialog (dialog);
+					parent = NULL;
+				}
+				DialogButtons choice = e2_dialog_show (dialog, parent,
 					E2_DIALOG_BLOCKED | E2_DIALOG_FREE,
 					&yes_btn, &no_btn, NULL);
 

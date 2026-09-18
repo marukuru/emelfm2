@@ -73,9 +73,15 @@ static void _e2_tray_toggle_cb (gpointer object, gpointer data)
 static void _e2_tray_quit_cb (GtkMenuItem *item, gpointer data)
 {
 	NEEDCLOSEBGL
-	/* Keep shutdown confirmation dialogs reachable when the window is hidden. */
-	_e2_tray_show ();
-	e2_main_closedown (FALSE, TRUE, TRUE);
+	/* Shutdown can run a confirmation loop. Ignore another Quit activation
+	   until that loop ends, and never restore windows just to close them. */
+	static gboolean quitting;
+	if (!quitting)
+	{
+		quitting = TRUE;
+		e2_main_closedown (FALSE, TRUE, TRUE);
+		quitting = FALSE;
+	}
 	NEEDOPENBGL
 }
 

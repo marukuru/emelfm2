@@ -42,6 +42,9 @@ owner and omit separate taskbar entries. Hiding to tray also hides visible
 non-modal windows. Transfers continue, and 'Transfers' in the tray menu opens
 their progress windows. Showing the application restores windows that were
 visible before hiding; it does not automatically open pending questions.
+Quitting from the tray leaves hidden windows hidden. If running processes need
+confirmation, only the quit confirmation appears, with its own taskbar entry.
+Choosing Continue leaves the application in the tray with its operations intact.
 
 Questions raised while hidden, such as overwrite confirmations, wait without
 opening a window, taking focus, or installing a modal input grab. The operation

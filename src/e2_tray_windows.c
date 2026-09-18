@@ -10,6 +10,7 @@ typedef struct
 	GtkWidget *window;
 	gboolean restore, question, pending, reviewing, show_all;
 	gboolean old_skip, managed, added_parent, transfer;
+	gboolean quit_dialog;
 } E2_TrayWindow;
 
 static GList *windows;
@@ -36,6 +37,7 @@ static void _e2_tray_schedule (void);
 
 static void _e2_tray_manage (E2_TrayWindow *record, gboolean enabled)
 {
+	enabled = enabled && !record->quit_dialog;
 	GtkWindow *window = GTK_WINDOW (record->window);
 	if (enabled && !record->managed)
 	{
@@ -101,6 +103,19 @@ void e2_tray_register_window (GtkWidget *window)
 	_e2_tray_manage (record, managing);
 }
 
+/* Quit is an explicit user request. Its confirmation must be reachable on
+   its own, without restoring the main window or any background questions. */
+void e2_tray_prepare_quit_dialog (GtkWidget *window)
+{
+	e2_tray_register_window (window);
+	E2_TrayWindow *record = _e2_tray_window (window);
+	record->quit_dialog = TRUE;
+	_e2_tray_manage (record, FALSE);
+	gtk_window_set_transient_for (GTK_WINDOW (window), NULL);
+	gtk_window_set_skip_taskbar_hint (GTK_WINDOW (window), FALSE);
+	gtk_window_set_modal (GTK_WINDOW (window), TRUE);
+}
+
 /* Called before showing a dialog or making it modal. A queued question keeps
    its existing operation wait loop, but has neither a GTK grab nor a map. */
 gboolean e2_tray_defer_dialog (GtkWidget *window, gboolean question,
@@ -108,6 +123,8 @@ gboolean e2_tray_defer_dialog (GtkWidget *window, gboolean question,
 {
 	e2_tray_register_window (window);
 	E2_TrayWindow *record = _e2_tray_window (window);
+	if (record->quit_dialog)
+		return FALSE;
 	record->question = question;
 	record->show_all = show_all;
 	gboolean other_pending = FALSE;
@@ -166,6 +183,8 @@ void e2_tray_windows_hide (void)
 	for (iter = windows; iter != NULL; iter = iter->next)
 	{
 		E2_TrayWindow *record = iter->data;
+		if (record->quit_dialog)
+			continue;
 		if (_e2_tray_visible (record->window))
 		{
 			if (record->question || gtk_window_get_modal (GTK_WINDOW (record->window)))

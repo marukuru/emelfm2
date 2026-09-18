@@ -13,6 +13,7 @@ void e2_tray_show_for_review (void);
 void e2_tray_set_attention (guint count);
 void e2_tray_register_window (GtkWidget *window);
 void e2_tray_register_transfer (GtkWidget *window);
+void e2_tray_prepare_quit_dialog (GtkWidget *window);
 gboolean e2_tray_defer_dialog (GtkWidget *window, gboolean question, gboolean show_all);
 void e2_tray_wait_dialog (GtkWidget *window);
 void e2_tray_windows_hide (void);
