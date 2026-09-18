@@ -5,6 +5,10 @@
 #include <gio/gio.h>
 #include <glib/gstdio.h>
 #include "e2_dialog.h"
+#ifdef GDK_WINDOWING_X11
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#endif
 
 E2_MainData app;
 pthread_mutex_t display_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -123,6 +127,102 @@ static void test_x11 (void)
 	g_assert_true (gtk_widget_get_visible (app.main_window));
 	e2_tray_cleanup ();
 	e2_tray_cleanup ();
+}
+
+static void test_x11_docked (void)
+{
+#ifdef GDK_WINDOWING_X11
+	/* A separate X connection acts as the desktop's tray host. A real docked
+	   GtkTrayIcon is a GtkPlug in GTK's toplevel list, not an app dialog. */
+	Display *display = XOpenDisplay (NULL);
+	g_assert_nonnull (display);
+	Window host = XCreateSimpleWindow (display, DefaultRootWindow (display),
+		0, 0, 64, 64, 0, 0, 0);
+	gchar *selection_name = g_strdup_printf ("_NET_SYSTEM_TRAY_S%d", DefaultScreen (display));
+	Atom selection = XInternAtom (display, selection_name, False);
+	g_free (selection_name);
+	Atom opcode = XInternAtom (display, "_NET_SYSTEM_TRAY_OPCODE", False);
+	XSetSelectionOwner (display, selection, host, CurrentTime);
+	XMapWindow (display, host);
+	XSync (display, False);
+	gint animation;
+	for (animation = 0; animation <= 1; animation++)
+	{
+		animate_attention = animation;
+		enabled = TRUE;
+		mode = E2_TRAY_X11;
+		e2_tray_sync ();
+		Window docked = None;
+		gint64 deadline = g_get_monotonic_time () + 3000000;
+		while (docked == None && g_get_monotonic_time () < deadline)
+		{
+			drain ();
+			while (XPending (display))
+			{
+				XEvent event;
+				XNextEvent (display, &event);
+				if (event.type == ClientMessage && event.xclient.message_type == opcode
+					&& event.xclient.data.l[1] == 0) /* SYSTEM_TRAY_REQUEST_DOCK */
+					docked = event.xclient.data.l[2];
+			}
+		}
+		g_assert_cmpuint (docked, !=, None);
+		XReparentWindow (display, docked, host, 0, 0);
+		XEvent embedded = { 0 };
+		embedded.xclient.type = ClientMessage;
+		embedded.xclient.window = docked;
+		embedded.xclient.message_type = XInternAtom (display, "_XEMBED", False);
+		embedded.xclient.format = 32;
+		embedded.xclient.data.l[0] = CurrentTime;
+		embedded.xclient.data.l[1] = 0; /* XEMBED_EMBEDDED_NOTIFY */
+		embedded.xclient.data.l[3] = host;
+		XSendEvent (display, docked, False, NoEventMask, &embedded);
+		XMapWindow (display, docked);
+		XSync (display, False);
+		drain ();
+		g_assert_true (gtk_status_icon_is_embedded (status_icon));
+		Window transient_for;
+		g_assert_false (XGetTransientForHint (display, docked, &transient_for));
+		XWindowAttributes attributes;
+		g_assert_true (XGetWindowAttributes (display, docked, &attributes));
+		g_assert_cmpint (attributes.map_state, ==, IsViewable);
+		GtkWidget *progress = gtk_dialog_new ();
+		e2_tray_register_transfer (progress);
+		gtk_widget_show (progress);
+		g_signal_emit_by_name (status_icon, "activate");
+		drain ();
+		g_assert_false (gtk_widget_get_visible (app.main_window));
+		g_assert_false (gtk_widget_get_visible (progress));
+		g_assert_true (XGetWindowAttributes (display, docked, &attributes));
+		g_assert_cmpint (attributes.map_state, ==, IsViewable);
+		/* Waiting questions and configuration sync must also leave it docked. */
+		GtkWidget *question = gtk_dialog_new ();
+		g_assert_true (e2_tray_defer_dialog (question, TRUE, TRUE));
+		e2_tray_sync ();
+		drain (); drain (); drain ();
+		g_assert_cmpuint (attention_count, ==, 1);
+		g_assert_false (gtk_widget_get_visible (question));
+		g_assert_true (XGetWindowAttributes (display, docked, &attributes));
+		g_assert_cmpint (attributes.map_state, ==, IsViewable);
+		g_signal_emit_by_name (status_icon, "activate");
+		drain ();
+		g_assert_true (gtk_widget_get_visible (app.main_window));
+		g_assert_true (gtk_widget_get_visible (progress));
+		g_assert_false (gtk_widget_get_visible (question));
+		g_assert_true (XGetWindowAttributes (display, docked, &attributes));
+		g_assert_cmpint (attributes.map_state, ==, IsViewable);
+		gtk_widget_destroy (question);
+		gtk_widget_destroy (progress);
+		enabled = FALSE;
+		e2_tray_sync ();
+		drain ();
+	}
+	XDestroyWindow (display, host);
+	XCloseDisplay (display);
+	drain ();
+#else
+	g_test_skip ("X11 backend is not available");
+#endif
 }
 
 static void watcher_call (GDBusConnection *connection, const gchar *sender,
@@ -724,6 +824,7 @@ int main (int argc, char **argv)
 	icon_path = g_build_filename (g_get_tmp_dir (), "emelfm2-tray-test.png", NULL);
 	g_assert_true (gdk_pixbuf_save (app_icon, icon_path, "png", NULL, NULL));
 	g_test_add_func ("/tray/x11", test_x11);
+	g_test_add_func ("/tray/x11-docked", test_x11_docked);
 	g_test_add_func ("/tray/attention", test_attention);
 	g_test_add_func ("/tray/indicator", test_indicator);
 	g_test_add_func ("/tray/deferred-windows", test_deferred_windows);

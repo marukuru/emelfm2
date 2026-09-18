@@ -1,6 +1,9 @@
 /* Application windows and deferred questions. GPL version 3 or later. */
 #include "emelfm2.h"
 #include "e2_tray.h"
+#if defined(USE_GTK3_0) && defined(GDK_WINDOWING_X11)
+#include <gtk/gtkx.h>
+#endif
 
 typedef struct
 {
@@ -81,6 +84,13 @@ void e2_tray_register_window (GtkWidget *window)
 	if (window == app.main_window || !GTK_IS_WINDOW (window)
 		|| _e2_tray_window (window) != NULL)
 		return;
+#ifdef GDK_WINDOWING_X11
+	/* GTK's toplevel list also contains GtkPlug windows, including the
+	   GtkStatusIcon's own GtkTrayIcon. The desktop owns their visibility:
+	   treating one as a dialog hides the tray icon along with the app. */
+	if (GTK_IS_PLUG (window))
+		return;
+#endif
 	E2_TrayWindow *record = g_new0 (E2_TrayWindow, 1);
 	record->window = window;
 	windows = g_list_append (windows, record);
