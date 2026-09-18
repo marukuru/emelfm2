@@ -46,13 +46,23 @@ visible before hiding; it does not automatically open pending questions.
 Questions raised while hidden, such as overwrite confirmations, wait without
 opening a window, taking focus, or installing a modal input grab. The operation
 waits for an answer; other independently running operations continue. The tray
-icon marks pending attention and the 'Needs attention' submenu lists questions.
+icon can mark pending attention and the 'Needs attention' submenu lists questions.
 The main window also shows a count and a Review button. Only an explicit Review
 opens a question and its parent. Review handles one question at a time; answering
 it does not automatically open the next. Hiding an open question queues it again.
 Cancellation removes its pending entry. Disabling tray support restores ordinary
 windows and leaves pending questions accessible through the main-window Review
 button.
+
+The 'animate tray icon when input is needed' option is available with tray support
+and defaults to on. A small amber dot on the application icon gently pulses three
+times over about five seconds, then stays steady until all pending questions are
+answered or cancelled. Only the dot changes brightness; the application icon
+stays visible. Additional questions and ordinary window/menu updates do not
+restart the animation. This works in X11, XFCE and GNOME modes without opening
+windows or taking focus. Disabling the option immediately restores the ordinary
+icon; the pending-question menu, tooltip and main-window Review button remain
+available. This option is independent of desktop notifications.
 
 The 'notify when a hidden operation needs attention' option is available with
 tray support and defaults to off. Enabling it sends one silent, low-urgency

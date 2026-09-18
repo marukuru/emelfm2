@@ -38,6 +38,7 @@ void e2_main_loop_run (E2_MainLoop *loop)
 }
 static gboolean enabled;
 static gboolean notifications;
+static gboolean animate_attention = TRUE;
 static gint mode;
 static guint quit_count;
 static gchar *icon_path;
@@ -45,7 +46,12 @@ static GdkPixbuf *app_icon;
 static guint registrations;
 static gchar *item_name, *item_path;
 
-gboolean e2_option_bool_get (gchar *name) { return !strcmp (name, "tray-notifications") ? notifications : enabled; }
+gboolean e2_option_bool_get (gchar *name)
+{
+	if (!strcmp (name, "tray-notifications")) return notifications;
+	if (!strcmp (name, "tray-attention")) return animate_attention;
+	return enabled;
+}
 gint e2_option_sel_get (gchar *name) { return mode; }
 GList *e2_icons_get_application (void)
 {
@@ -131,6 +137,101 @@ static void watcher_call (GDBusConnection *connection, const gchar *sender,
 	item_path = g_strdup (*service == '/' ? service : "/StatusNotifierItem");
 	registrations++;
 	g_dbus_method_invocation_return_value (invocation, NULL);
+}
+
+static void test_attention (void)
+{
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	animate_attention = FALSE;
+	e2_tray_sync ();
+	menu_activate (0);
+	GtkWidget *question = gtk_dialog_new ();
+	g_assert_true (e2_tray_defer_dialog (question, TRUE, TRUE));
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 1);
+	g_assert_cmpuint (attention_source, ==, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) == app_icon);
+	g_assert_true (gtk_widget_get_visible (questions_item));
+	/* Enabling attention for an existing question starts a bounded pulse. */
+	animate_attention = TRUE;
+	e2_tray_sync ();
+	guint source = attention_source;
+	g_assert_cmpuint (source, !=, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) != app_icon);
+	gint64 deadline = g_get_monotonic_time () + 7000000;
+	while (attention_tick == 0 && g_get_monotonic_time () < deadline)
+		drain ();
+	g_assert_cmpuint (attention_tick, >, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) != attention_frames[4]);
+	/* Reapplying options and adding another question must not restart it. */
+	guint tick = attention_tick;
+	e2_tray_sync ();
+	g_assert_cmpuint (attention_tick, ==, tick);
+	GtkWidget *second = gtk_dialog_new ();
+	g_assert_true (e2_tray_defer_dialog (second, TRUE, TRUE));
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 2);
+	g_assert_cmpuint (attention_source, ==, source);
+	g_assert_cmpuint (attention_tick, >=, tick);
+	/* Only the round badge area changes, not the source or the whole icon. */
+	gint x, y;
+	for (y = 0; y < 32; y++)
+		for (x = 0; x < 32; x++)
+		{
+			guchar *original = gdk_pixbuf_get_pixels (app_icon)
+				+ y * gdk_pixbuf_get_rowstride (app_icon) + x * 4;
+			g_assert_cmpuint (original[0], ==, 0x33);
+			g_assert_cmpuint (original[1], ==, 0x66);
+			g_assert_cmpuint (original[2], ==, 0x99);
+			g_assert_cmpuint (original[3], ==, 0xff);
+			if (x < 22 || y < 22 || (x == 31 && y == 31))
+			{
+				guchar *badged = gdk_pixbuf_get_pixels (attention_frames[4])
+					+ y * gdk_pixbuf_get_rowstride (attention_frames[4]) + x * 4;
+				g_assert_cmpint (memcmp (original, badged, 4), ==, 0);
+			}
+		}
+	while (attention_source != 0 && g_get_monotonic_time () < deadline)
+	{
+		drain ();
+		g_assert_false (gtk_widget_get_visible (app.main_window));
+		g_assert_false (gtk_widget_get_visible (question));
+		g_assert_false (gtk_window_get_modal (GTK_WINDOW (question)));
+	}
+	g_assert_cmpuint (attention_source, ==, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) == attention_frames[4]);
+	e2_tray_set_attention (2);
+	g_assert_cmpuint (attention_source, ==, 0);
+	gtk_widget_destroy (second);
+	drain ();
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) == attention_frames[4]);
+	g_assert_cmpuint (attention_source, ==, 0);
+	gtk_widget_destroy (question);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) == app_icon);
+	/* A fresh batch can pulse again; changing the toggle stops it immediately. */
+	question = gtk_dialog_new ();
+	e2_tray_defer_dialog (question, TRUE, TRUE);
+	drain ();
+	g_assert_cmpuint (attention_source, !=, 0);
+	animate_attention = FALSE;
+	e2_tray_sync ();
+	g_assert_cmpuint (attention_source, ==, 0);
+	g_assert_true (gtk_status_icon_get_pixbuf (status_icon) == app_icon);
+	g_assert_false (gtk_widget_get_visible (question));
+	animate_attention = TRUE;
+	e2_tray_sync ();
+	g_assert_cmpuint (attention_source, !=, 0);
+	/* Disabling the tray cleans a running timer and all cached frames. */
+	enabled = FALSE;
+	e2_tray_sync ();
+	g_assert_cmpuint (attention_source, ==, 0);
+	g_assert_null (attention_frames[0]);
+	g_assert_false (gtk_widget_get_visible (question));
+	gtk_widget_destroy (question);
+	drain ();
 }
 
 static GVariant *watcher_get (GDBusConnection *connection, const gchar *sender,
@@ -251,17 +352,63 @@ static void test_indicator (void)
 		property = remote_property (connection, "Status");
 		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, "NeedsAttention");
 		g_variant_unref (property);
+		property = remote_property (connection, "AttentionIconName");
+		gchar *first_frame = g_variant_dup_string (property, NULL);
+		g_variant_unref (property);
+		g_assert_cmpstr (first_frame, !=, icon_path);
+		GdkPixbuf *exported = gdk_pixbuf_new_from_file (first_frame, &error);
+		g_assert_no_error (error);
+		g_assert_nonnull (exported);
+		g_object_unref (exported);
+		drain (); drain ();
+		property = remote_property (connection, "AttentionIconName");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), !=, first_frame);
+		g_variant_unref (property);
+		/* Disabling only the cue clears both exported icons/status while
+		   leaving the question pending and the window hidden. */
+		animate_attention = FALSE;
+		e2_tray_sync ();
+		g_assert_false (g_file_test (first_frame, G_FILE_TEST_EXISTS));
+		g_free (first_frame);
+		g_assert_cmpuint (attention_source, ==, 0);
+		property = remote_property (connection, "Status");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, "Active");
+		g_variant_unref (property);
+		property = remote_property (connection, "IconName");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, icon_path);
+		g_variant_unref (property);
+		property = remote_property (connection, "AttentionIconName");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, icon_path);
+		g_variant_unref (property);
+		g_assert_cmpuint (attention_count, ==, 1);
+		g_assert_false (gtk_widget_get_visible (app.main_window));
+		animate_attention = TRUE;
+		e2_tray_sync ();
+		g_assert_cmpuint (attention_source, !=, 0);
+		gchar *cached_paths[5];
+		guint i;
+		for (i = 0; i < G_N_ELEMENTS (cached_paths); i++)
+			cached_paths[i] = g_strdup (attention_paths[i]);
 		g_assert_false (gtk_widget_get_visible (pending));
 		g_signal_emit_by_name (indicator, "connection-changed", FALSE);
 		g_assert_false (gtk_widget_get_visible (pending));
 		gtk_widget_destroy (pending);
 		drain ();
+		g_assert_cmpuint (attention_source, ==, 0);
+		property = remote_property (connection, "IconName");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, icon_path);
+		g_variant_unref (property);
 		g_assert_true (gtk_widget_get_visible (app.main_window));
 		menu_activate (0);
 		enabled = FALSE;
 		e2_tray_sync ();
 		g_assert_true (gtk_widget_get_visible (app.main_window));
 		g_assert_null (indicator);
+		for (i = 0; i < G_N_ELEMENTS (cached_paths); i++)
+		{
+			g_assert_false (g_file_test (cached_paths[i], G_FILE_TEST_EXISTS));
+			g_free (cached_paths[i]);
+		}
 		drain ();
 	}
 	g_bus_unown_name (owner);
@@ -577,6 +724,7 @@ int main (int argc, char **argv)
 	icon_path = g_build_filename (g_get_tmp_dir (), "emelfm2-tray-test.png", NULL);
 	g_assert_true (gdk_pixbuf_save (app_icon, icon_path, "png", NULL, NULL));
 	g_test_add_func ("/tray/x11", test_x11);
+	g_test_add_func ("/tray/attention", test_attention);
 	g_test_add_func ("/tray/indicator", test_indicator);
 	g_test_add_func ("/tray/deferred-windows", test_deferred_windows);
 	g_test_add_func ("/tray/notifications", test_notifications);
