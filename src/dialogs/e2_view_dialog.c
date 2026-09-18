@@ -17,6 +17,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 */
 
 #include "emelfm2.h"
+#include "e2_tray.h"
 #include <string.h>
 #include "e2_dialog.h"
 #include "e2_view_dialog.h"
@@ -2057,7 +2058,8 @@ static gboolean _e2_view_dialog_viewatQ (E2_ActionTaskData *qed)
 //		e2_dialog_show (dialog, app.main_window, E2_DIALOG_DONT_SHOW_ALL, NULL);
 		e2_dialog_setup (dialog, app.main_window);
 //		gtk_window_present (GTK_WINDOW (dialog));
-		gtk_widget_show (dialog);
+		if (!e2_tray_defer_dialog (dialog, FALSE, FALSE))
+			gtk_widget_show (dialog);
 		//insert the text now
 		gtk_text_view_set_buffer (GTK_TEXT_VIEW (vrt->textview), vrt->textbuffer);
 		g_object_unref (G_OBJECT (vrt->textbuffer)); //destroy buffer with view
@@ -2100,7 +2102,8 @@ gboolean e2_view_dialog_create (VPATH *localpath)
 //		e2_dialog_show (dialog, app.main_window, E2_DIALOG_DONT_SHOW_ALL, NULL);
 		e2_dialog_setup (dialog, app.main_window);
 //		gtk_window_present (GTK_WINDOW (dialog));
-		gtk_widget_show (dialog);
+		if (!e2_tray_defer_dialog (dialog, FALSE, FALSE))
+			gtk_widget_show (dialog);
 		gtk_text_view_set_buffer (GTK_TEXT_VIEW (vrt->textview), vrt->textbuffer);
 		g_object_unref (G_OBJECT (vrt->textbuffer)); //destroy buffer with view
 		//put cursor at start of buffer, for searching etc

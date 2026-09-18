@@ -17,6 +17,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 */
 
 #include "emelfm2.h"
+#include "e2_tray.h"
 #include <string.h>
 #include "e2_dialog.h"
 #include "e2_view_dialog.h"
@@ -795,7 +796,8 @@ static void _e2_edit_dialog_replace_cb (GtkWidget *menuitem,
 			{
 				if (confirm_before)
 				{
-					gtk_widget_show (dialog);
+					if (!e2_tray_defer_dialog (dialog, TRUE, FALSE))
+						gtk_widget_show (dialog);
 					choice = e2_dialog_wait (dialog, TRUE, TRUE, FALSE, TRUE);
 					if (GTK_IS_DIALOG (dialog)) //not explicitly closed by the user
 						gtk_widget_hide (dialog);
@@ -1967,7 +1969,8 @@ gboolean e2_edit_dialog_create (VPATH *localpath, GtkTextBuffer *buf)
 		if (vrt != NULL)
 		{
 			e2_dialog_setup (vrt->dialog, app.main_window);
-			gtk_widget_show (vrt->dialog);
+			if (!e2_tray_defer_dialog (vrt->dialog, FALSE, FALSE))
+				gtk_widget_show (vrt->dialog);
 			gtk_text_view_set_buffer (GTK_TEXT_VIEW (vrt->textview), vrt->textbuffer);
 			if (buf == NULL) //editing file
 				g_object_unref (G_OBJECT (vrt->textbuffer)); //destroy with view when editing a file

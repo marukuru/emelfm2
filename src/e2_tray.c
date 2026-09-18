@@ -14,6 +14,7 @@ static GObject *indicator;
 static GtkWidget *tray_menu;
 static gint tray_mode = -1;
 static gboolean hidden_by_tray;
+static guint attention_count;
 
 /* Optional runtime dependency, always matching the application's GTK ABI.
    These are the stable AppIndicator C ABI values: ApplicationStatus = 0,
@@ -23,12 +24,15 @@ static GObject *(*indicator_new) (const gchar *, const gchar *, gint);
 static void (*indicator_set_menu) (GObject *, GtkMenu *);
 static void (*indicator_set_status) (GObject *, gint);
 static void (*indicator_set_icon) (GObject *, const gchar *);
+static void (*indicator_set_attention_icon) (GObject *, const gchar *);
+static void (*indicator_set_label) (GObject *, const gchar *, const gchar *);
 
 static void _e2_tray_show (void)
 {
 	hidden_by_tray = FALSE;
 	gtk_widget_show (app.main_window);
 	gtk_window_deiconify (GTK_WINDOW (app.main_window));
+	e2_tray_windows_restore ();
 	gtk_window_present (GTK_WINDOW (app.main_window));
 }
 
@@ -46,6 +50,7 @@ static void _e2_tray_toggle_cb (gpointer object, gpointer data)
 		&& !(gdk_window_get_state (window) & GDK_WINDOW_STATE_ICONIFIED))
 	{
 		hidden_by_tray = TRUE;
+		e2_tray_windows_hide ();
 		gtk_widget_hide (app.main_window);
 	}
 	else
@@ -113,6 +118,8 @@ static gboolean _e2_tray_load_indicator (void)
 			&& g_module_symbol (module, "app_indicator_set_status", (gpointer*)&indicator_set_status)
 			&& g_module_symbol (module, "app_indicator_set_icon", (gpointer*)&indicator_set_icon))
 		{
+			g_module_symbol (module, "app_indicator_set_attention_icon", (gpointer*)&indicator_set_attention_icon);
+			g_module_symbol (module, "app_indicator_set_label", (gpointer*)&indicator_set_label);
 			g_module_make_resident (module);
 			indicator_module = module;
 			return TRUE;
@@ -127,9 +134,27 @@ static void _e2_tray_update_icon (void)
 	if (status_icon != NULL)
 	{
 		GList *icons = e2_icons_get_application ();
+		if (icons == NULL)
+		{
+			GdkPixbuf *themed = gtk_icon_theme_load_icon (gtk_icon_theme_get_default (),
+				BINNAME, 32, 0, NULL);
+			if (themed != NULL) icons = g_list_append (NULL, themed);
+		}
 		if (icons != NULL)
 		{
-			gtk_status_icon_set_from_pixbuf (status_icon, g_list_last (icons)->data);
+			GdkPixbuf *pixbuf = g_list_last (icons)->data;
+			if (attention_count != 0)
+			{
+				pixbuf = gdk_pixbuf_copy (pixbuf);
+				gint size = MAX (1, MIN (gdk_pixbuf_get_width (pixbuf), gdk_pixbuf_get_height (pixbuf)) / 3);
+				GdkPixbuf *badge = gdk_pixbuf_new_subpixbuf (pixbuf,
+					gdk_pixbuf_get_width (pixbuf) - size, gdk_pixbuf_get_height (pixbuf) - size,
+					size, size);
+				gdk_pixbuf_fill (badge, 0xffa000ff);
+				g_object_unref (badge);
+			}
+			gtk_status_icon_set_from_pixbuf (status_icon, pixbuf);
+			if (attention_count != 0) g_object_unref (pixbuf);
 			g_list_foreach (icons, (GFunc)g_object_unref, NULL);
 			g_list_free (icons);
 		}
@@ -140,6 +165,8 @@ static void _e2_tray_update_icon (void)
 	{
 		gchar *path = e2_icons_get_application_path ();
 		indicator_set_icon (indicator, path != NULL ? path : BINNAME);
+		if (indicator_set_attention_icon != NULL)
+			indicator_set_attention_icon (indicator, path != NULL ? path : BINNAME);
 		g_free (path);
 	}
 }
@@ -154,12 +181,14 @@ void e2_tray_sync (void)
 	if (mode == tray_mode)
 	{
 		_e2_tray_update_icon ();
+		e2_tray_windows_sync (mode >= 0);
 		return;
 	}
 	/* Restore a hidden window before removing its only way back. */
 	if (hidden_by_tray)
 		_e2_tray_show ();
 	e2_tray_cleanup ();
+	e2_tray_windows_sync (FALSE);
 	if (mode < 0)
 		return;
 	if (mode != E2_TRAY_X11 && !_e2_tray_load_indicator ())
@@ -180,6 +209,7 @@ void e2_tray_sync (void)
 	gtk_menu_shell_append (GTK_MENU_SHELL (tray_menu), item);
 	g_signal_connect (item, "activate", G_CALLBACK (_e2_tray_quit_cb), NULL);
 	gtk_widget_show_all (tray_menu);
+	e2_tray_windows_menu (tray_menu);
 
 	if (mode == E2_TRAY_X11)
 	{
@@ -201,6 +231,7 @@ void e2_tray_sync (void)
 		_e2_tray_update_icon ();
 		indicator_set_status (indicator, 1);
 	}
+	e2_tray_windows_sync (TRUE);
 #endif
 }
 
@@ -232,4 +263,71 @@ void e2_tray_cleanup (void)
 	tray_mode = -1;
 	hidden_by_tray = FALSE;
 #endif
+}
+
+/* Entry points shared with window and notification management. */
+gboolean e2_tray_is_active (void)
+{
+#ifdef USE_GTK2_10
+	return tray_mode >= 0;
+#else
+	return FALSE;
+#endif
+}
+
+gboolean e2_tray_is_hidden (void)
+{
+#ifdef USE_GTK2_10
+	return hidden_by_tray;
+#else
+	return FALSE;
+#endif
+}
+
+void e2_tray_show_main (void)
+{
+#ifdef USE_GTK2_10
+	_e2_tray_show ();
+#else
+	gtk_window_present (GTK_WINDOW (app.main_window));
+#endif
+}
+
+void e2_tray_set_attention (guint count)
+{
+#ifdef USE_GTK2_10
+	attention_count = count;
+	_e2_tray_update_icon ();
+	if (status_icon != NULL)
+	{
+		gchar *tip = count ? g_strdup_printf (_("%s: needs attention (%u)"), PROGNAME, count)
+			: g_strdup (PROGNAME);
+#ifdef USE_GTK2_16
+		gtk_status_icon_set_tooltip_text (status_icon, tip);
+#else
+		gtk_status_icon_set_tooltip (status_icon, tip);
+#endif
+		g_free (tip);
+	}
+	if (indicator != NULL)
+	{
+		indicator_set_status (indicator, count ? 2 : 1);
+		if (indicator_set_label != NULL)
+		{
+			gchar *label = count ? g_strdup_printf ("! %u", count) : g_strdup ("");
+			indicator_set_label (indicator, label, "! 99");
+			g_free (label);
+		}
+	}
+#endif
+}
+
+void e2_tray_show_for_review (void)
+{
+#ifdef USE_GTK2_10
+	hidden_by_tray = FALSE;
+#endif
+	gtk_widget_show (app.main_window);
+	gtk_window_deiconify (GTK_WINDOW (app.main_window));
+	gtk_window_present (GTK_WINDOW (app.main_window));
 }

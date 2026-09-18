@@ -990,6 +990,7 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 		}
 	}
 
+	e2_tray_windows_cleanup ();
 	e2_tray_cleanup ();
 	e2_task_cleanup (FALSE, pthread_self());	//cleanup action/command processing
 

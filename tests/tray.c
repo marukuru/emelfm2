@@ -1,10 +1,43 @@
 /* Exercise production tray callbacks and a real AppIndicator D-Bus export. */
 #include "../src/e2_tray.c"
+#include "../src/e2_tray_windows.c"
+#include "../src/e2_tray_notify.c"
 #include <gio/gio.h>
 #include <glib/gstdio.h>
+#include "e2_dialog.h"
 
 E2_MainData app;
+pthread_mutex_t display_mutex = PTHREAD_MUTEX_INITIALIZER;
+void e2_main_close_uilock (void) { pthread_mutex_lock (&display_mutex); }
+void e2_main_open_uilock (void) { pthread_mutex_unlock (&display_mutex); }
+
+ViewInfo *curr_view;
+void printd_raw (gint level, gchar *file, gint line, const gchar *format, ...) {}
+gint e2_option_int_get (gchar *name) { return GTK_WIN_POS_NONE; }
+E2_MainLoop *e2_main_loop_new (gboolean maincontext)
+{
+	E2_MainLoop *loop = g_new0 (E2_MainLoop, 1);
+	loop->maincontext = maincontext;
+	return loop;
+}
+void e2_main_loop_quit (E2_MainLoop *loop) { loop->finished = TRUE; }
+void e2_main_loop_run (E2_MainLoop *loop)
+{
+	OPENBGL
+	pthread_cleanup_push (g_free, loop);
+	while (!loop->finished)
+	{
+		if (loop->maincontext)
+			g_main_context_iteration (NULL, TRUE);
+		else
+			g_usleep (1000);
+	}
+	pthread_cleanup_pop (0);
+	CLOSEBGL
+	g_free (loop);
+}
 static gboolean enabled;
+static gboolean notifications;
 static gint mode;
 static guint quit_count;
 static gchar *icon_path;
@@ -12,7 +45,7 @@ static GdkPixbuf *app_icon;
 static guint registrations;
 static gchar *item_name, *item_path;
 
-gboolean e2_option_bool_get (gchar *name) { return enabled; }
+gboolean e2_option_bool_get (gchar *name) { return !strcmp (name, "tray-notifications") ? notifications : enabled; }
 gint e2_option_sel_get (gchar *name) { return mode; }
 GList *e2_icons_get_application (void)
 {
@@ -212,7 +245,17 @@ static void test_indicator (void)
 		g_variant_unref (layout);
 		g_variant_unref (property);
 		g_assert_false (gtk_widget_get_visible (app.main_window));
+		GtkWidget *pending = gtk_dialog_new ();
+		g_assert_true (e2_tray_defer_dialog (pending, TRUE, TRUE));
+		drain ();
+		property = remote_property (connection, "Status");
+		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, "NeedsAttention");
+		g_variant_unref (property);
+		g_assert_false (gtk_widget_get_visible (pending));
 		g_signal_emit_by_name (indicator, "connection-changed", FALSE);
+		g_assert_false (gtk_widget_get_visible (pending));
+		gtk_widget_destroy (pending);
+		drain ();
 		g_assert_true (gtk_widget_get_visible (app.main_window));
 		menu_activate (0);
 		enabled = FALSE;
@@ -227,11 +270,307 @@ static void test_indicator (void)
 	g_object_unref (connection);
 }
 
+static guint question_maps, question_responses;
+static void question_mapped (GtkWidget *widget, gpointer unused) { question_maps++; }
+static void question_answered (GtkDialog *widget, gint response, gpointer unused) { question_responses++; }
+
+static GtkWidget *new_question (const gchar *title)
+{
+	GtkWidget *dialog = gtk_dialog_new ();
+	gtk_window_set_title (GTK_WINDOW (dialog), title);
+	g_signal_connect (dialog, "map", G_CALLBACK (question_mapped), NULL);
+	g_signal_connect (dialog, "response", G_CALLBACK (question_answered), NULL);
+	return dialog;
+}
+
+static void test_deferred_windows (void)
+{
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	e2_tray_sync ();
+	GtkWidget *progress = gtk_dialog_new ();
+	GtkWidget *already_hidden = gtk_dialog_new ();
+	e2_tray_register_transfer (progress);
+	e2_tray_register_window (already_hidden);
+	gtk_widget_show (progress);
+	g_assert_true (gtk_window_get_skip_taskbar_hint (GTK_WINDOW (progress)));
+	g_assert_true (gtk_window_get_transient_for (GTK_WINDOW (progress)) == GTK_WINDOW (app.main_window));
+	menu_activate (0);
+	g_assert_false (gtk_widget_get_visible (progress));
+	GtkWidget *later = gtk_dialog_new ();
+	e2_tray_register_transfer (later);
+	g_assert_true (e2_tray_defer_dialog (later, FALSE, TRUE));
+	GtkWidget *first = new_question ("Copy: overwrite confirmation");
+	GtkWidget *second = new_question ("Move: overwrite confirmation");
+	g_assert_true (e2_tray_defer_dialog (first, TRUE, TRUE));
+	g_assert_true (e2_tray_defer_dialog (second, TRUE, TRUE));
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 2);
+	g_assert_cmpuint (question_maps, ==, 0);
+	g_assert_cmpuint (question_responses, ==, 0);
+	g_assert_false (gtk_window_get_modal (GTK_WINDOW (first)));
+	g_assert_false (gtk_widget_get_visible (app.main_window));
+	g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (banner_label)), ==, "Needs attention (2)");
+	g_assert_true (gtk_widget_get_visible (questions_item));
+	g_assert_true (gtk_widget_get_visible (transfers_item));
+	g_assert_null (notification_bus);
+	/* Merely restoring the application must not open a pending question. */
+	menu_activate (0);
+	g_assert_true (gtk_widget_get_visible (progress));
+	g_assert_true (gtk_widget_get_visible (later));
+	g_assert_false (gtk_widget_get_visible (already_hidden));
+	g_assert_false (gtk_widget_get_visible (first));
+	g_assert_false (gtk_widget_get_visible (second));
+	g_assert_true (gtk_widget_get_visible (banner));
+	GList *questions = gtk_container_get_children (GTK_CONTAINER (
+		gtk_menu_item_get_submenu (GTK_MENU_ITEM (questions_item))));
+	gtk_menu_item_activate (GTK_MENU_ITEM (questions->data));
+	g_list_free (questions);
+	g_assert_true (gtk_widget_get_visible (first));
+	g_assert_true (gtk_window_get_modal (GTK_WINDOW (first)));
+	g_assert_false (gtk_widget_get_visible (second));
+	/* Hiding an open modal question removes its grab and queues it again. */
+	menu_activate (0);
+	g_assert_false (gtk_widget_get_visible (first));
+	g_assert_false (gtk_window_get_modal (GTK_WINDOW (first)));
+	g_assert_true (gtk_grab_get_current () != first);
+	e2_tray_review_pending ();
+	g_assert_false (gtk_widget_get_visible (progress));
+	g_assert_false (gtk_widget_get_visible (later));
+	g_assert_true (e2_tray_defer_dialog (progress, FALSE, FALSE));
+	gtk_dialog_response (GTK_DIALOG (first), GTK_RESPONSE_NO);
+	gtk_widget_destroy (first);
+	drain ();
+	g_assert_cmpuint (question_responses, ==, 1);
+	g_assert_cmpuint (attention_count, ==, 1);
+	g_assert_false (gtk_widget_get_visible (second));
+	/* Disabling tray restores ordinary windows, not unanswered questions. */
+	menu_activate (0);
+	enabled = FALSE;
+	e2_tray_sync ();
+	drain ();
+	g_assert_true (gtk_widget_get_visible (app.main_window));
+	g_assert_true (gtk_widget_get_visible (progress));
+	g_assert_false (gtk_window_get_skip_taskbar_hint (GTK_WINDOW (progress)));
+	g_assert_false (gtk_widget_get_visible (second));
+	g_assert_true (gtk_widget_get_visible (banner));
+	/* Cancellation/destruction clears attention without inventing an answer. */
+	gtk_widget_destroy (second);
+	gtk_widget_destroy (later);
+	gtk_widget_destroy (progress);
+	gtk_widget_destroy (already_hidden);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 0);
+	g_assert_false (gtk_widget_get_visible (banner));
+	g_assert_cmpuint (question_responses, ==, 1);
+	e2_tray_cleanup ();
+}
+
+static gboolean answer_deferred (gpointer data)
+{
+	GtkWidget *dialog = data;
+	g_assert_true (e2_tray_is_hidden ());
+	g_assert_false (gtk_widget_get_visible (dialog));
+	g_assert_false (gtk_window_get_modal (GTK_WINDOW (dialog)));
+	e2_tray_show_main ();
+	g_assert_false (gtk_widget_get_visible (dialog));
+	e2_tray_review_pending ();
+	g_assert_true (gtk_widget_get_visible (dialog));
+	g_assert_true (gtk_window_get_modal (GTK_WINDOW (dialog)));
+	gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_NO);
+	return FALSE;
+}
+
+static gboolean destroy_deferred (gpointer dialog)
+{
+	g_assert_false (gtk_widget_get_visible (dialog));
+	gtk_widget_destroy (dialog);
+	return FALSE;
+}
+
+static void test_dialog_wait (void)
+{
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	e2_tray_sync ();
+	menu_activate (0);
+	GtkWidget *dialog = new_question ("Overwrite confirmation");
+	g_timeout_add (50, answer_deferred, dialog);
+	/* Exercise production presentation and wait code with a synchronous
+	   main-loop adapter. Nothing completes until an explicit response. */
+	CLOSEBGL
+	DialogButtons result = e2_dialog_run (dialog, app.main_window, E2_DIALOG_BLOCKED);
+	OPENBGL
+	g_assert_cmpint (result, ==, CANCEL);
+	gtk_widget_destroy (dialog);
+	menu_activate (0);
+	dialog = new_question ("Cancelled operation");
+	g_timeout_add (50, destroy_deferred, dialog);
+	CLOSEBGL
+	result = e2_dialog_run (dialog, app.main_window, E2_DIALOG_BLOCKED);
+	OPENBGL
+	g_assert_cmpint (result, ==, CANCEL);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 0);
+	enabled = FALSE;
+	e2_tray_sync ();
+}
+
+static gpointer wait_in_task (gpointer dialog)
+{
+	e2_dialog_run (dialog, app.main_window, E2_DIALOG_BLOCKED | E2_DIALOG_CLOSELOCK);
+	return NULL;
+}
+
+static void test_cancelled_task (void)
+{
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	e2_tray_sync ();
+	menu_activate (0);
+	GtkWidget *dialog = new_question ("Cancelled copy question");
+	g_object_ref (dialog);
+	pthread_t thread;
+	g_assert_cmpint (pthread_create (&thread, NULL, wait_in_task, dialog), ==, 0);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 1);
+	g_assert_cmpint (pthread_cancel (thread), ==, 0);
+	gpointer result;
+	g_assert_cmpint (pthread_join (thread, &result), ==, 0);
+	g_assert_true (result == PTHREAD_CANCELED);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 0);
+	g_assert_null (_e2_tray_window (dialog));
+	g_object_unref (dialog);
+	enabled = FALSE;
+	e2_tray_sync ();
+}
+
+static guint notifications_received, notifications_closed;
+static GDBusMethodInvocation *delayed_notification;
+static gboolean delay_notification;
+
+static void notification_call (GDBusConnection *connection, const gchar *sender,
+	const gchar *path, const gchar *interface, const gchar *method,
+	GVariant *parameters, GDBusMethodInvocation *invocation, gpointer data)
+{
+	if (!strcmp (method, "CloseNotification"))
+	{
+		notifications_closed++;
+		g_dbus_method_invocation_return_value (invocation, NULL);
+		return;
+	}
+	notifications_received++;
+	GVariant *actions = g_variant_get_child_value (parameters, 5);
+	g_assert_cmpuint (g_variant_n_children (actions), ==, 4);
+	const gchar *action;
+	g_variant_get_child (actions, 0, "&s", &action);
+	g_assert_cmpstr (action, ==, "default");
+	g_variant_get_child (actions, 2, "&s", &action);
+	g_assert_cmpstr (action, ==, "review");
+	g_variant_unref (actions);
+	GVariant *hints = g_variant_get_child_value (parameters, 6);
+	gboolean silent = FALSE;
+	g_assert_true (g_variant_lookup (hints, "suppress-sound", "b", &silent));
+	g_assert_true (silent);
+	g_variant_unref (hints);
+	if (delay_notification)
+		delayed_notification = g_object_ref (invocation);
+	else
+		g_dbus_method_invocation_return_value (invocation, g_variant_new ("(u)", 42));
+}
+
+static void test_notifications (void)
+{
+	GError *error = NULL;
+	GDBusConnection *bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+	g_assert_no_error (error);
+	const gchar *xml = "<node><interface name='org.freedesktop.Notifications'>"
+		"<method name='Notify'><arg type='s' direction='in'/><arg type='u' direction='in'/>"
+		"<arg type='s' direction='in'/><arg type='s' direction='in'/><arg type='s' direction='in'/>"
+		"<arg type='as' direction='in'/><arg type='a{sv}' direction='in'/><arg type='i' direction='in'/>"
+		"<arg type='u' direction='out'/></method>"
+		"<method name='CloseNotification'><arg type='u' direction='in'/></method>"
+		"<signal name='ActionInvoked'><arg type='u'/><arg type='s'/></signal>"
+		"</interface></node>";
+	GDBusNodeInfo *info = g_dbus_node_info_new_for_xml (xml, &error);
+	g_assert_no_error (error);
+	static const GDBusInterfaceVTable vtable = { notification_call, NULL, NULL };
+	guint object = g_dbus_connection_register_object (bus, "/org/freedesktop/Notifications",
+		info->interfaces[0], &vtable, NULL, NULL, &error);
+	g_assert_no_error (error);
+	guint owner = g_bus_own_name_on_connection (bus, "org.freedesktop.Notifications",
+		G_BUS_NAME_OWNER_FLAGS_NONE, NULL, NULL, NULL, NULL);
+	drain ();
+	enabled = TRUE;
+	mode = E2_TRAY_X11;
+	e2_tray_sync ();
+	menu_activate (0);
+	GtkWidget *first = new_question ("Copy question");
+	GtkWidget *second = new_question ("Move question");
+	e2_tray_defer_dialog (first, TRUE, TRUE);
+	drain (); drain (); drain ();
+	g_assert_cmpuint (notifications_received, ==, 0); /* default is disabled */
+	notifications = TRUE;
+	e2_tray_sync ();
+	drain (); drain (); drain ();
+	g_assert_cmpuint (notifications_received, ==, 1);
+	g_assert_cmpuint (notification_id, ==, 42);
+	g_assert_false (gtk_widget_get_visible (app.main_window));
+	e2_tray_defer_dialog (second, TRUE, TRUE);
+	drain (); drain (); drain ();
+	g_assert_cmpuint (notifications_received, ==, 1); /* no repeated reminders */
+	/* Dismissal does not answer the question. Only Review may reveal it. */
+	g_dbus_connection_emit_signal (bus, NULL, "/org/freedesktop/Notifications",
+		"org.freedesktop.Notifications", "ActionInvoked",
+		g_variant_new ("(us)", 42, "review"), &error);
+	g_assert_no_error (error);
+	drain ();
+	g_assert_true (gtk_widget_get_visible (first));
+	g_assert_false (gtk_widget_get_visible (second));
+	gtk_widget_destroy (first);
+	gtk_widget_destroy (second);
+	drain ();
+	g_assert_cmpuint (attention_count, ==, 0);
+	/* A response arriving after notifications are disabled must be withdrawn. */
+	delay_notification = TRUE;
+	menu_activate (0);
+	first = new_question ("Late question");
+	e2_tray_defer_dialog (first, TRUE, TRUE);
+	drain (); drain (); drain ();
+	g_assert_nonnull (delayed_notification);
+	notifications = FALSE;
+	e2_tray_sync ();
+	drain ();
+	guint previous = notifications_closed;
+	g_dbus_method_invocation_return_value (delayed_notification, g_variant_new ("(u)", 43));
+	g_object_unref (delayed_notification);
+	delayed_notification = NULL;
+	drain ();
+	g_assert_cmpuint (notifications_closed, ==, previous + 1);
+	g_assert_false (gtk_widget_get_visible (first));
+	gtk_widget_destroy (first);
+	enabled = FALSE;
+	e2_tray_sync ();
+	drain ();
+	g_bus_unown_name (owner);
+	g_dbus_connection_unregister_object (bus, object);
+	g_dbus_node_info_unref (info);
+	g_object_unref (bus);
+}
+
 int main (int argc, char **argv)
 {
 	gtk_init (&argc, &argv);
 	g_test_init (&argc, &argv, NULL);
 	app.main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+#ifdef USE_GTK3_0
+	app.vbox_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+#else
+	app.vbox_main = gtk_vbox_new (FALSE, 0);
+#endif
+	gtk_container_add (GTK_CONTAINER (app.main_window), app.vbox_main);
+	gtk_widget_show (app.vbox_main);
 	gtk_widget_show (app.main_window);
 	app_icon = gdk_pixbuf_new (GDK_COLORSPACE_RGB, TRUE, 8, 32, 32);
 	gdk_pixbuf_fill (app_icon, 0x336699ff);
@@ -239,7 +578,12 @@ int main (int argc, char **argv)
 	g_assert_true (gdk_pixbuf_save (app_icon, icon_path, "png", NULL, NULL));
 	g_test_add_func ("/tray/x11", test_x11);
 	g_test_add_func ("/tray/indicator", test_indicator);
+	g_test_add_func ("/tray/deferred-windows", test_deferred_windows);
+	g_test_add_func ("/tray/notifications", test_notifications);
+	g_test_add_func ("/tray/dialog-wait", test_dialog_wait);
+	g_test_add_func ("/tray/cancelled-task", test_cancelled_task);
 	gint result = g_test_run ();
+	e2_tray_windows_cleanup ();
 	e2_tray_cleanup ();
 	gtk_widget_destroy (app.main_window);
 	g_object_unref (app_icon);

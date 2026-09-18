@@ -31,6 +31,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #include <sys/shm.h>
 #include "e2_plugins.h"
 #include "e2_dialog.h"
+#include "e2_tray.h"
 #include "e2_option.h"
 #include "e2_filestore.h"
 #include "e2_task.h"
@@ -306,7 +307,10 @@ _e2p_mvbar_exec (VPATH *slocal, VPATH *dlocal, gboolean realmove,
 #else
 		if (!GTK_WIDGET_VISIBLE (wdata->dialog))
 #endif
-			gtk_widget_show (wdata->dialog);
+		{
+			if (!e2_tray_defer_dialog (wdata->dialog, FALSE, FALSE))
+				gtk_widget_show (wdata->dialog);
+		}
 		OPENBGL
 		g_free (shortsrc);
 		g_free (shortdest);
@@ -668,6 +672,9 @@ _e2p_mvbarQ (E2_ActionTaskData *qed)
 	windowdata.stop_btn = e2_dialog_add_defined_button (windowdata.dialog, &local_btn);
 	//show everything but the dialog itself
 	gtk_widget_show_all (dialog_vbox);
+	CLOSEBGL
+	e2_tray_register_transfer (windowdata.dialog);
+	OPENBGL
 
 	e2_dialog_set_negative_response (windowdata.dialog, E2_BUTTON_CANCEL.response);
 

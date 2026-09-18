@@ -32,6 +32,7 @@ ToDo - describe how dialogs work
 #include "emelfm2.h"
 #include <string.h>
 #include "e2_dialog.h"
+#include "e2_tray.h"
 #include "e2_option.h"
 #include "e2_filestore.h"
 #ifdef E2_MOUSECUSTOM
@@ -131,6 +132,14 @@ static void _e2_dialog_response_cb (GtkDialog *dialog, gint response,
 	}
 }
 
+/* Destruction (including parent/task cancellation) must also end a queued wait. */
+static void _e2_dialog_wait_destroy_cb (GtkWidget *dialog, E2_Wait *w)
+{
+	NEEDCLOSEBGL
+	e2_main_loop_quit (w->loopdata);
+	NEEDOPENBGL
+}
+
 static void _e2_dialog_wait_response2_cb (GtkDialog *dialog, gint response, E2_Wait *w)
 {
 	w->choice = response;
@@ -155,6 +164,33 @@ static void _e2_dialog_wait_response_cb (GtkDialog *dialog, gint response, E2_Wa
 	NEEDOPENBGL
 }
 
+typedef struct
+{
+	GtkWidget *dialog;
+	E2_Wait *wait;
+} E2_DialogWaitCleanup;
+
+/* Task threads can be cancelled while a question is queued. Remove handlers
+   pointing into their stacks before destroying the dialog and dropping refs. */
+static void _e2_dialog_wait_aborted (gpointer data)
+{
+	E2_DialogWaitCleanup *cleanup = data;
+	CLOSEBGL
+	g_signal_handlers_disconnect_by_func (cleanup->dialog, _e2_dialog_wait_response_cb, cleanup->wait);
+	g_signal_handlers_disconnect_by_func (cleanup->dialog, _e2_dialog_wait_response2_cb, cleanup->wait);
+	g_signal_handlers_disconnect_by_func (cleanup->dialog, _e2_dialog_wait_destroy_cb, cleanup->wait);
+	gtk_widget_destroy (cleanup->dialog);
+	g_object_unref (cleanup->dialog);
+	OPENBGL
+}
+
+static void _e2_dialog_run_aborted (gpointer dialog)
+{
+	CLOSEBGL
+	g_object_unref (dialog);
+	OPENBGL
+}
+
   /******************/
  /***** public *****/
 /******************/
@@ -173,7 +209,13 @@ DialogButtons e2_dialog_wait (GtkWidget *dialog,
 	gboolean lockednow, gboolean maincontext, gboolean multi, gboolean getresult)
 {
 	E2_Wait wdata;
+	if (!lockednow) { CLOSEBGL }
+	e2_tray_wait_dialog (dialog);
+	g_object_ref (dialog);
+	if (!lockednow) { OPENBGL }
 
+	E2_DialogWaitCleanup cleanup = { dialog, &wdata };
+	pthread_cleanup_push (_e2_dialog_wait_aborted, &cleanup);
 	wdata.loopdata = e2_main_loop_new (maincontext);
 	if (wdata.loopdata != NULL)
 	{
@@ -187,6 +229,7 @@ DialogButtons e2_dialog_wait (GtkWidget *dialog,
 			G_SIGNAL_MATCH_FUNC, 0, 0, NULL, _e2_dialog_response_cb, NULL);
 		g_signal_connect (G_OBJECT (dialog), "response",
 			G_CALLBACK (_e2_dialog_wait_response_cb), &wdata);
+		g_signal_connect (dialog, "destroy", G_CALLBACK (_e2_dialog_wait_destroy_cb), &wdata);
 
 #if 1
 		GET_EVENTS_CONTEXT
@@ -238,14 +281,14 @@ DialogButtons e2_dialog_wait (GtkWidget *dialog,
 
 		//prevent fatal multiple-callbacks if this func is repeatedly called
 		//on the same dialog e.g. inside a loop
-		if (GTK_IS_DIALOG(dialog))
-			g_signal_handlers_disconnect_matched (dialog,
-				G_SIGNAL_MATCH_FUNC | G_SIGNAL_MATCH_DATA,
-				0, 0, NULL, _e2_dialog_wait_response_cb, &wdata);
+		g_signal_handlers_disconnect_by_func (dialog, _e2_dialog_wait_response_cb, &wdata);
+		g_signal_handlers_disconnect_by_func (dialog, _e2_dialog_wait_destroy_cb, &wdata);
 	}
 	else
 		wdata.choice = (multi) ? NO_TO_ALL : CANCEL;
 
+	pthread_cleanup_pop (0);
+	g_object_unref (dialog);
 	return wdata.choice;
 }
 /**
@@ -359,6 +402,7 @@ void e2_dialog_setup (GtkWidget *dialog, GtkWidget *parent)
 	gtk_window_set_role (thiswindow, "dialog");
 	gtk_window_set_position (thiswindow, e2_option_int_get ("dialog-position"));
 	gtk_window_set_resizable (thiswindow, TRUE);
+	e2_tray_register_window (dialog);
 }
 /**
 @brief complete setup of, then run, @a dialog
@@ -419,14 +463,23 @@ DialogButtons e2_dialog_run (GtkWidget *dialog, GtkWidget *parent, E2_DialogFlag
 		CLOSEBGL
 	}
 
-	if (flags & E2_DIALOG_DONT_SHOW_ALL)
-		gtk_widget_show (dialog);	//this duplicates effect in gtk_dialog_run()
-	else
-		gtk_widget_show_all (dialog);
+	g_object_ref (dialog);
+	pthread_cleanup_push (_e2_dialog_run_aborted, dialog);
+	gboolean deferred = e2_tray_defer_dialog (dialog,
+		(flags & (E2_DIALOG_BLOCKED | E2_DIALOG_MODAL)) != 0,
+		!(flags & E2_DIALOG_DONT_SHOW_ALL));
+	if (!deferred)
+	{
+		if (flags & E2_DIALOG_DONT_SHOW_ALL)
+			gtk_widget_show (dialog);
+		else
+			gtk_widget_show_all (dialog);
+	}
 
 	if (flags & E2_DIALOG_BLOCKED)
 	{
-		gtk_window_present (GTK_WINDOW (dialog));	//sometimes, dialog is not focused
+		if (!deferred)
+			gtk_window_present (GTK_WINDOW (dialog));
 		printd (DEBUG, "start local wait for %s", (lock) ? "other context" : "main context" );
 		ret = e2_dialog_wait (dialog, TRUE, !lock, flags & E2_DIALOG_MULTI, TRUE);  //CHECKME TRUE maincontext
 		if (flags & E2_DIALOG_FREE)
@@ -438,12 +491,9 @@ DialogButtons e2_dialog_run (GtkWidget *dialog, GtkWidget *parent, E2_DialogFlag
 	}
 	else if (flags & E2_DIALOG_MODAL)
 	{
-		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-		if (parent != NULL)
-			gtk_widget_set_sensitive (parent, FALSE);
+		if (!deferred)
+			gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 		ret = e2_dialog_wait (dialog, TRUE, !lock, flags & E2_DIALOG_MULTI, TRUE);  //CHECKME TRUE maincontext
-		if (parent != NULL)
-			gtk_widget_set_sensitive (parent, TRUE);
 		//ret could be GTK_RESPONSE_NONE or GTK_RESPONSE_DELETE_EVENT !!
 		if (flags & E2_DIALOG_FREE)
 		{
@@ -453,6 +503,8 @@ DialogButtons e2_dialog_run (GtkWidget *dialog, GtkWidget *parent, E2_DialogFlag
 		}
 	}
 
+	pthread_cleanup_pop (0);
+	g_object_unref (dialog);
 	if (lock)
 	{
 		OPENBGL
@@ -469,21 +521,31 @@ Assumes BGL is closed
 gint e2_dialog_run_simple (GtkWidget *dialog, GtkWidget *parent)
 {
 	e2_dialog_setup (dialog, parent);
-	gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
-//	gtk_widget_show (dialog);	//this duplicates effect in gtk_dialog_run()
-	gtk_window_present (GTK_WINDOW (dialog));	//sometimes, dialog is not focused
+	if (!e2_tray_defer_dialog (dialog, TRUE, FALSE))
+	{
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+		gtk_window_present (GTK_WINDOW (dialog));
+	}
 
+	g_object_ref (dialog);
 	E2_Wait wdata;
 	//setup default result in case of abort
 	wdata.choice = IGNORE;
 
+	E2_DialogWaitCleanup cleanup = { dialog, &wdata };
+	pthread_cleanup_push (_e2_dialog_wait_aborted, &cleanup);
 	wdata.loopdata = e2_main_loop_new (TRUE);
 	if (wdata.loopdata != NULL)
 	{
 		g_signal_connect (G_OBJECT (dialog), "response",
 			G_CALLBACK (_e2_dialog_wait_response2_cb), &wdata);
+		g_signal_connect (dialog, "destroy", G_CALLBACK (_e2_dialog_wait_destroy_cb), &wdata);
 		e2_main_loop_run (wdata.loopdata);
+		g_signal_handlers_disconnect_by_func (dialog, _e2_dialog_wait_response2_cb, &wdata);
+		g_signal_handlers_disconnect_by_func (dialog, _e2_dialog_wait_destroy_cb, &wdata);
 	}
+	pthread_cleanup_pop (0);
+	g_object_unref (dialog);
 	return (gint) wdata.choice;
 }
 /**
@@ -1376,7 +1438,8 @@ DialogButtons e2_dialog_positioned_input (gchar* window_title, gchar *prompt,
 		_e2_dialog_setup_auth (dialog, (flags & E2_DIALOG_MULTI));
 
 	e2_dialog_setup (dialog, app.main_window);
-	gtk_widget_show_all (dialog);
+	if (!e2_tray_defer_dialog (dialog, TRUE, TRUE))
+		gtk_widget_show_all (dialog);
 	if (*horz >= 0 && *vert >= 0)
 		gtk_window_move (GTK_WINDOW (dialog), *horz, *vert);
 	//refreshing is always temporarily enabled downstream, while waiting
@@ -1608,6 +1671,7 @@ DialogButtons e2_dialog_ow_check (VPATH *slocal, VPATH *dlocal, OW_ButtonFlags e
 		g_free (dpath);
 	}
 
+	gtk_window_set_title (GTK_WINDOW (dialog), _("Overwrite confirmation"));
 	OPENBGL
 
 	F_FREE (utf, VPSTR(dlocal));
@@ -1739,7 +1803,11 @@ GtkWidget *e2_dialog_slow (gchar *prompt_type, gchar *tip_type,
 	e2_dialog_set_negative_response (dialog, GTK_RESPONSE_YES);
 
 	e2_dialog_setup (dialog, app.main_window);
-	gtk_widget_show_all (dialog);
+	e2_tray_register_transfer (dialog);
+	gtk_window_set_title (GTK_WINDOW (dialog), prompt_type);
+	/* The operation is still running; this is a non-modal progress window. */
+	if (!e2_tray_defer_dialog (dialog, FALSE, TRUE))
+		gtk_widget_show_all (dialog);
 
 	return dialog;
 }

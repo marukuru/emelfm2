@@ -85,6 +85,12 @@ void e2_option_default_register (void)
 		_("tray icon behaviour"),
 		_("X11: left click shows or hides the window, right click opens the menu. XFCE/GNOME: left click opens the menu; the desktop handles right click. Requires an indicator host and AppIndicator library."),
 		"tray-enabled", 0, tray_modes, E2_OPTION_FLAG_BASIC);
+#if GLIB_CHECK_VERSION(2,26,0)
+	e2_option_bool_register ("tray-notifications", group_name,
+		_("notify when a hidden operation needs attention"),
+		_("Show one quiet desktop notification for pending questions. Windows stay hidden until you choose Review."),
+		"tray-enabled", FALSE, E2_OPTION_FLAG_BASIC);
+#endif
 #endif
 	e2_option_bool_register ("auto-refresh-config", group_name,
 		_("reload config on external change"),

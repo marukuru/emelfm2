@@ -312,6 +312,12 @@ else
  lLIBS += $(shell $(PKG_CONFIG) --libs gmodule-2.0)
 endif
 # -lrt needed for clock_gettime(), explicit -lm, -ldl needed for some arch-linux distros
+# Asynchronous desktop notifications (optional on legacy GLib builds).
+ifeq ($(shell $(PKG_CONFIG) --atleast-version=2.26 glib-2.0 && echo yes),yes)
+lCFLAGS += $(shell $(PKG_CONFIG) --cflags gio-2.0)
+lLIBS += $(shell $(PKG_CONFIG) --libs gio-2.0)
+endif
+
 lLIBS += -lrt -lm -ldl
 ifneq ($(USE_GAMIN),0)
 #gamin code is a superset of FAM code, so gamin needs fam as well

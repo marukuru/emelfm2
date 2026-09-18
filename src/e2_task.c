@@ -22,6 +22,7 @@ some functions do not need TreeRowReferences
 */
 
 #include "e2_task.h"
+#include "e2_tray.h"
 #include <string.h>
 #include <pthread.h>
 #include <signal.h>
@@ -1424,8 +1425,11 @@ static gpointer _e2_task_progress_monitor (E2_TaskRuntime *rt)
 #endif
 			{
 				CLOSEBGL
-				gtk_widget_show (rt->dialog);
-				gtk_window_present (GTK_WINDOW (rt->dialog));
+				if (!e2_tray_defer_dialog (rt->dialog, FALSE, TRUE))
+				{
+					gtk_widget_show (rt->dialog);
+					gtk_window_present (GTK_WINDOW (rt->dialog));
+				}
 				OPENBGL
 			}
 		}

@@ -37,7 +37,31 @@ window, and right click opens the application menu (Show/hide window and Quit).
 XFCE and GNOME use AppIndicator: left click opens the application menu, while
 right click is handled by the desktop's panel/indicator host. The host controls
 the exact secondary-click menu. Closing the main window still quits normally.
-Disabling the tray restores a window hidden through the tray.
+While tray support is enabled, application dialogs use the main window as their
+owner and omit separate taskbar entries. Hiding to tray also hides visible
+non-modal windows. Transfers continue, and 'Transfers' in the tray menu opens
+their progress windows. Showing the application restores windows that were
+visible before hiding; it does not automatically open pending questions.
+
+Questions raised while hidden, such as overwrite confirmations, wait without
+opening a window, taking focus, or installing a modal input grab. The operation
+waits for an answer; other independently running operations continue. The tray
+icon marks pending attention and the 'Needs attention' submenu lists questions.
+The main window also shows a count and a Review button. Only an explicit Review
+opens a question and its parent. Review handles one question at a time; answering
+it does not automatically open the next. Hiding an open question queues it again.
+Cancellation removes its pending entry. Disabling tray support restores ordinary
+windows and leaves pending questions accessible through the main-window Review
+button.
+
+The 'notify when a hidden operation needs attention' option is available with
+tray support and defaults to off. Enabling it sends one silent, low-urgency
+desktop notification per continuous batch of pending questions. Review is its
+only action; dismissing or ignoring the notification never answers a question.
+Additional pending questions update the tray and main-window count without
+repeated notifications. Notifications require GLib/GIO 2.26 or later and a
+session desktop notification service. If notifications or their actions are not
+supported, the tray menu and main-window Review button remain available.
 
 Tray support requires GTK 2.10 or later. XFCE/GNOME additionally need an Ayatana
 AppIndicator or legacy AppIndicator runtime library built for the same GTK major
