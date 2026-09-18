@@ -95,6 +95,23 @@ static void _e2_icons_destroy_arrows (void)
 }
 #endif
 
+/* Return a full path from the same icon set used by the main window.
+   Indicators export filenames, rather than in-process pixbufs. */
+gchar *e2_icons_get_application_path (void)
+{
+	GArray *icons = g_hash_table_lookup (cached_icons, BINNAME);
+	const E2_Image *best = NULL;
+	guint i;
+	if (icons != NULL)
+		for (i = 0; i < icons->len; i++)
+		{
+			const E2_Image *icon = &g_array_index (icons, E2_Image, i);
+			if (icon->fullpath != NULL && (best == NULL || icon->psize > best->psize))
+				best = icon;
+		}
+	return best != NULL ? g_strdup (best->fullpath) : NULL;
+}
+
 /**
 @brief Get application icons
 

@@ -75,6 +75,17 @@ void e2_option_default_register (void)
 		_("show all options in config dialogs"), NULL,
 		NULL, FALSE,
 		E2_OPTION_FLAG_HIDDEN | E2_OPTION_FLAG_FREEGROUP);	//no rebuild
+#ifdef USE_GTK2_10
+	e2_option_bool_register ("tray-enabled", group_name,
+		_("show tray icon"),
+		_("Show the application icon in the desktop tray"),
+		NULL, FALSE, E2_OPTION_FLAG_BASIC);
+	const gchar *tray_modes[] = { "X11", "XFCE", "GNOME", NULL };
+	e2_option_sel_register ("tray-behaviour", group_name,
+		_("tray icon behaviour"),
+		_("X11: left click shows or hides the window, right click opens the menu. XFCE/GNOME: left click opens the menu; the desktop handles right click. Requires an indicator host and AppIndicator library."),
+		"tray-enabled", 0, tray_modes, E2_OPTION_FLAG_BASIC);
+#endif
 	e2_option_bool_register ("auto-refresh-config", group_name,
 		_("reload config on external change"),
 		_("This enables automatic reloading of the configuration data for this program, if that data is changed by another program instance"),

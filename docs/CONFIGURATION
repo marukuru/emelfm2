@@ -27,6 +27,26 @@ Where an option involves doing/running something, the text of the function (mean
 
 Note that for convenience when creating toolbars or menus, the actions list includes things that do not actually run anything directly. Part or all of their name is enclosed in <> - examples are 'command.<line>', '<submenu>', '<separator>'. These pseudo-actions may have argument(s) if appropriate.
 
+[general]
+Enable 'show tray icon' to put the main application icon in the desktop tray.
+The 'tray icon behaviour' selector is available while this option is enabled.
+Changes take effect when you apply or commit the configuration.
+
+X11 uses the traditional notification area: left click shows or hides the main
+window, and right click opens the application menu (Show/hide window and Quit).
+XFCE and GNOME use AppIndicator: left click opens the application menu, while
+right click is handled by the desktop's panel/indicator host. The host controls
+the exact secondary-click menu. Closing the main window still quits normally.
+Disabling the tray restores a window hidden through the tray.
+
+Tray support requires GTK 2.10 or later. XFCE/GNOME additionally need an Ayatana
+AppIndicator or legacy AppIndicator runtime library built for the same GTK major
+version as emelFM2. This library is loaded on demand, with no extra build-time
+dependency. XFCE needs its Status Tray or indicator panel plugin; GNOME Shell
+needs an AppIndicator/StatusNotifierItem extension enabled. Without a suitable
+host, the desktop cannot display an indicator (the library may use an X11 tray
+fallback). X11 mode requires a panel providing a traditional notification area.
+
 [bookmarks]
 The 'label' field holds the string that appears in the bookmarks menu. You may use a mnemonic key and/or markup in that field.
 

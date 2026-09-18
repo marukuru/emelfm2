@@ -167,6 +167,7 @@ GtkIconSize e2_icons_get_size (gint psize);
 #endif
 
 GList *e2_icons_get_application();
+gchar *e2_icons_get_application_path (void) G_GNUC_MALLOC;
 gchar *e2_icons_get_custom_path (gboolean withtrailer) G_GNUC_MALLOC;
 
 #endif //ndef __E2_ICONS_H__

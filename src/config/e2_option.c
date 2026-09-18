@@ -31,6 +31,7 @@ ToDo - description of how options work
 */
 
 #include "emelfm2.h"
+#include "e2_tray.h"
 #include <string.h>
 #include "e2_option.h"
 
@@ -317,6 +318,7 @@ void e2_option_refresh (gboolean reload, gboolean recreate)
 
 	e2_filetype_add_all ();
 
+	e2_tray_sync ();
 	e2_option_bool_set ("advanced-config", advanced);
 
 	e2_option_enable_config_checks (); //unblock

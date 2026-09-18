@@ -109,6 +109,7 @@ The following items are covered:
 */
 
 #include "emelfm2.h"
+#include "e2_tray.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
 #endif
@@ -938,6 +939,7 @@ WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reas
 //	e2_action_list_all ();
 
 	CLOSEBGL //gtk_main() opens lock before running loop
+	e2_tray_sync ();
 	gtk_main ();
 	OPENBGL
 
@@ -988,6 +990,7 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 		}
 	}
 
+	e2_tray_cleanup ();
 	e2_task_cleanup (FALSE, pthread_self());	//cleanup action/command processing
 
 #ifdef E2_FAM
