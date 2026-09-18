@@ -83,7 +83,7 @@ void e2_option_default_register (void)
 	const gchar *tray_modes[] = { "X11", "XFCE", "GNOME", NULL };
 	e2_option_sel_register ("tray-behaviour", group_name,
 		_("tray icon behaviour"),
-		_("X11: left click shows or hides the window, right click opens the menu. XFCE/GNOME: left click opens the menu; the desktop handles right click. Requires an indicator host and AppIndicator library."),
+		_("X11: left click shows or hides the window, right click opens the menu. XFCE/GNOME: left click opens the menu; the desktop handles right click. Requires a StatusNotifier/indicator host and libdbusmenu-glib."),
 		"tray-enabled", 0, tray_modes, E2_OPTION_FLAG_BASIC);
 	e2_option_bool_register ("tray-attention", group_name,
 		_("animate tray icon when input is needed"),

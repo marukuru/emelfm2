@@ -1,9 +1,12 @@
-/* Exercise production tray callbacks and a real AppIndicator D-Bus export. */
+/* Exercise tray callbacks, X11 docking and the real desktop D-Bus protocols. */
 #include "../src/e2_tray.c"
+#include "../src/e2_tray_indicator.c"
 #include "../src/e2_tray_windows.c"
 #include "../src/e2_tray_notify.c"
 #include <gio/gio.h>
 #include <glib/gstdio.h>
+#include <sys/wait.h>
+#include <signal.h>
 #include "e2_dialog.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
@@ -366,13 +369,60 @@ static GVariant *remote_property (GDBusConnection *connection, const gchar *name
 	return value;
 }
 
+static gint remote_menu_find (GVariant *node, const gchar *label)
+{
+	GVariant *properties = g_variant_get_child_value (node, 1);
+	const gchar *text;
+	gint id = -1;
+	if (g_variant_lookup (properties, "label", "&s", &text) && !strcmp (text, label))
+		g_variant_get_child (node, 0, "i", &id);
+	g_variant_unref (properties);
+	GVariant *children = g_variant_get_child_value (node, 2);
+	guint i;
+	for (i = 0; id == -1 && i < g_variant_n_children (children); i++)
+	{
+		GVariant *wrapped = g_variant_get_child_value (children, i);
+		GVariant *child = g_variant_get_variant (wrapped);
+		id = remote_menu_find (child, label);
+		g_variant_unref (child);
+		g_variant_unref (wrapped);
+	}
+	g_variant_unref (children);
+	return id;
+}
+
+static void remote_menu_click (GDBusConnection *connection, const gchar *label)
+{
+	GVariant *path = remote_property (connection, "Menu"), *reply = NULL;
+	g_dbus_connection_call (connection, item_name, g_variant_get_string (path, NULL),
+		"com.canonical.dbusmenu", "GetLayout",
+		g_variant_new ("(ii@as)", 0, -1, g_variant_new_strv (NULL, 0)), NULL,
+		G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &reply);
+	while (reply == NULL) g_main_context_iteration (NULL, TRUE);
+	GVariant *root = g_variant_get_child_value (reply, 1);
+	gint id = remote_menu_find (root, label);
+	g_assert_cmpint (id, >, 0);
+	g_variant_unref (root);
+	g_variant_unref (reply);
+	reply = NULL;
+	g_dbus_connection_call (connection, item_name, g_variant_get_string (path, NULL),
+		"com.canonical.dbusmenu", "Event",
+		g_variant_new ("(isvu)", id, "clicked", g_variant_new_int32 (0), 0), NULL,
+		G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &reply);
+	while (reply == NULL) g_main_context_iteration (NULL, TRUE);
+	g_variant_unref (reply);
+	g_variant_unref (path);
+}
+
 static void test_indicator (void)
 {
 	if (!_e2_tray_load_indicator ())
 	{
-		g_test_skip ("Matching AppIndicator runtime is not installed");
+		g_test_skip ("No D-Bus menu or AppIndicator runtime is installed");
 		return;
 	}
+	if (e2_tray_indicator_available ())
+		g_assert_true (indicator_new == e2_tray_indicator_new);
 	GError *error = NULL;
 	GDBusConnection *connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
 	g_assert_no_error (error);
@@ -413,6 +463,9 @@ static void test_indicator (void)
 		property = remote_property (connection, "Status");
 		g_assert_cmpstr (g_variant_get_string (property, NULL), ==, "Active");
 		g_variant_unref (property);
+		property = remote_property (connection, "ItemIsMenu");
+		g_assert_true (g_variant_get_boolean (property));
+		g_variant_unref (property);
 		property = remote_property (connection, "Menu");
 		g_assert_cmpstr (g_variant_get_string (property, NULL), !=, "/");
 		/* Fetch the exported menu, then activate its first item over D-Bus,
@@ -447,6 +500,7 @@ static void test_indicator (void)
 		g_variant_unref (property);
 		g_assert_false (gtk_widget_get_visible (app.main_window));
 		GtkWidget *pending = gtk_dialog_new ();
+		gtk_window_set_title (GTK_WINDOW (pending), "Overwrite some_file");
 		g_assert_true (e2_tray_defer_dialog (pending, TRUE, TRUE));
 		drain ();
 		property = remote_property (connection, "Status");
@@ -490,7 +544,25 @@ static void test_indicator (void)
 		for (i = 0; i < G_N_ELEMENTS (cached_paths); i++)
 			cached_paths[i] = g_strdup (attention_paths[i]);
 		g_assert_false (gtk_widget_get_visible (pending));
-		g_signal_emit_by_name (indicator, "connection-changed", FALSE);
+		/* Pending submenus are exported too, with literal filename underscores.
+		   Only an explicit menu action opens the deferred question. */
+		remote_menu_click (connection, "Overwrite some__file");
+		g_assert_true (gtk_widget_get_visible (pending));
+		g_assert_true (gtk_window_get_modal (GTK_WINDOW (pending)));
+		menu_activate (0);
+		g_assert_false (gtk_widget_get_visible (pending));
+		/* Losing and restarting the real watcher must restore access and
+		   register again, without opening pending questions. */
+		previous = registrations;
+		g_bus_unown_name (owner);
+		drain ();
+		g_assert_true (gtk_widget_get_visible (app.main_window));
+		owner = g_bus_own_name_on_connection (connection,
+			"org.kde.StatusNotifierWatcher", G_BUS_NAME_OWNER_FLAGS_NONE, NULL, NULL, NULL, NULL);
+		deadline = g_get_monotonic_time () + 3000000;
+		while (registrations == previous && g_get_monotonic_time () < deadline)
+			drain ();
+		g_assert_cmpuint (registrations, >, previous);
 		g_assert_false (gtk_widget_get_visible (pending));
 		gtk_widget_destroy (pending);
 		drain ();
@@ -515,6 +587,123 @@ static void test_indicator (void)
 	g_dbus_connection_unregister_object (connection, object);
 	g_dbus_node_info_unref (info);
 	g_object_unref (connection);
+}
+
+static GVariant *xfce_applications (GDBusConnection *bus)
+{
+	GVariant *reply = NULL;
+	g_dbus_connection_call (bus, "org.ayatana.indicator.application",
+		"/org/ayatana/indicator/application/service", "org.ayatana.indicator.application.service",
+		"GetApplications", NULL, NULL, G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &reply);
+	while (reply == NULL) g_main_context_iteration (NULL, TRUE);
+	GVariant *applications = g_variant_get_child_value (reply, 0);
+	g_variant_unref (reply);
+	return applications;
+}
+
+static void assert_xfce_registered (GDBusConnection *bus, guint count)
+{
+	GVariant *reply = NULL;
+	g_dbus_connection_call (bus, "org.kde.StatusNotifierWatcher", "/StatusNotifierWatcher",
+		"org.freedesktop.DBus.Properties", "Get",
+		g_variant_new ("(ss)", "org.kde.StatusNotifierWatcher", "RegisteredStatusNotifierItems"),
+		NULL, G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &reply);
+	while (reply == NULL) g_main_context_iteration (NULL, TRUE);
+	GVariant *items;
+	g_variant_get (reply, "(v)", &items);
+	g_assert_cmpuint (g_variant_n_children (items), ==, count);
+	g_variant_unref (items);
+	g_variant_unref (reply);
+}
+
+static void test_xfce_service (void)
+{
+	const gchar *service = "/usr/libexec/ayatana-indicator-application/ayatana-indicator-application-service";
+	if (!g_file_test (service, G_FILE_TEST_IS_EXECUTABLE) || !e2_tray_indicator_available ())
+	{
+		g_test_skip ("XFCE's application indicator service is not installed");
+		return;
+	}
+	/* This is the actual service used by xfce4-indicator-plugin, running on
+	   the test's private bus. It validates our item and publishes the icon
+	   and menu to the panel, even when this test is compiled with GTK 2. */
+	GError *error = NULL;
+	GPid pid;
+	gchar *argv[] = { (gchar*)service, NULL };
+	g_assert_true (g_spawn_async (NULL, argv, NULL, G_SPAWN_DO_NOT_REAP_CHILD,
+		NULL, NULL, &pid, &error));
+	g_assert_no_error (error);
+	GDBusConnection *bus = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, &error);
+	g_assert_no_error (error);
+	gboolean ready = FALSE;
+	gint64 deadline = g_get_monotonic_time () + 5000000;
+	while (!ready && g_get_monotonic_time () < deadline)
+	{
+		GVariant *reply = g_dbus_connection_call_sync (bus, "org.freedesktop.DBus",
+			"/org/freedesktop/DBus", "org.freedesktop.DBus", "NameHasOwner",
+			g_variant_new ("(s)", "org.ayatana.indicator.application"), NULL,
+			G_DBUS_CALL_FLAGS_NONE, 1000, NULL, &error);
+		g_assert_no_error (error);
+		g_variant_get (reply, "(b)", &ready);
+		g_variant_unref (reply);
+		drain ();
+	}
+	g_assert_true (ready);
+	for (mode = E2_TRAY_XFCE; mode <= E2_TRAY_GNOME; mode++)
+	{
+		enabled = TRUE;
+		e2_tray_sync ();
+		g_assert_true (indicator_new == e2_tray_indicator_new);
+		GVariant *applications = NULL;
+		deadline = g_get_monotonic_time () + 5000000;
+		do
+		{
+			if (applications != NULL) g_variant_unref (applications);
+			drain ();
+			applications = xfce_applications (bus);
+		} while (g_variant_n_children (applications) == 0 && g_get_monotonic_time () < deadline);
+		g_assert_cmpuint (g_variant_n_children (applications), ==, 1);
+		assert_xfce_registered (bus, 1);
+		GVariant *entry = g_variant_get_child_value (applications, 0);
+		const gchar *icon, *name, *menu, *hint;
+		g_variant_get_child (entry, 0, "&s", &icon);
+		g_variant_get_child (entry, 2, "&s", &name);
+		g_variant_get_child (entry, 3, "&o", &menu);
+		g_variant_get_child (entry, 8, "&s", &hint);
+		g_assert_cmpstr (icon, ==, icon_path);
+		g_assert_cmpstr (hint, ==, BINNAME);
+		GVariant *layout = NULL;
+		g_dbus_connection_call (bus, name, menu, "com.canonical.dbusmenu", "GetLayout",
+			g_variant_new ("(ii@as)", 0, -1, g_variant_new_strv (NULL, 0)), NULL,
+			G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &layout);
+		while (layout == NULL) g_main_context_iteration (NULL, TRUE);
+		g_variant_unref (layout);
+		g_variant_unref (entry);
+		g_variant_unref (applications);
+		enabled = FALSE;
+		e2_tray_sync ();
+		drain ();
+		applications = xfce_applications (bus);
+		g_assert_cmpuint (g_variant_n_children (applications), ==, 0);
+		assert_xfce_registered (bus, 0);
+		g_variant_unref (applications);
+	}
+	/* Disable before the async connection callback, then let it complete.
+	   A cancelled setup must not leave a ghost entry in the desktop panel. */
+	enabled = TRUE;
+	mode = E2_TRAY_XFCE;
+	e2_tray_sync ();
+	enabled = FALSE;
+	e2_tray_sync ();
+	drain ();
+	GVariant *applications = xfce_applications (bus);
+	g_assert_cmpuint (g_variant_n_children (applications), ==, 0);
+	g_variant_unref (applications);
+	kill (pid, SIGTERM);
+	waitpid (pid, NULL, 0);
+	g_spawn_close_pid (pid);
+	g_object_unref (bus);
+	drain ();
 }
 
 static guint question_maps, question_responses;
@@ -827,6 +1016,7 @@ int main (int argc, char **argv)
 	g_test_add_func ("/tray/x11-docked", test_x11_docked);
 	g_test_add_func ("/tray/attention", test_attention);
 	g_test_add_func ("/tray/indicator", test_indicator);
+	g_test_add_func ("/tray/xfce-service", test_xfce_service);
 	g_test_add_func ("/tray/deferred-windows", test_deferred_windows);
 	g_test_add_func ("/tray/notifications", test_notifications);
 	g_test_add_func ("/tray/dialog-wait", test_dialog_wait);

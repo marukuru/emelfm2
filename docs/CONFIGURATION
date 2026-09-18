@@ -34,7 +34,7 @@ Changes take effect when you apply or commit the configuration.
 
 X11 uses the traditional notification area: left click shows or hides the main
 window, and right click opens the application menu (Show/hide window and Quit).
-XFCE and GNOME use AppIndicator: left click opens the application menu, while
+XFCE and GNOME use StatusNotifierItem: left click opens the application menu, while
 right click is handled by the desktop's panel/indicator host. The host controls
 the exact secondary-click menu. Closing the main window still quits normally.
 While tray support is enabled, application dialogs use the main window as their
@@ -73,13 +73,20 @@ repeated notifications. Notifications require GLib/GIO 2.26 or later and a
 session desktop notification service. If notifications or their actions are not
 supported, the tray menu and main-window Review button remain available.
 
-Tray support requires GTK 2.10 or later. XFCE/GNOME additionally need an Ayatana
-AppIndicator or legacy AppIndicator runtime library built for the same GTK major
-version as emelFM2. This library is loaded on demand, with no extra build-time
-dependency. XFCE needs its Status Tray or indicator panel plugin; GNOME Shell
-needs an AppIndicator/StatusNotifierItem extension enabled. Without a suitable
-host, the desktop cannot display an indicator (the library may use an X11 tray
-fallback). X11 mode requires a panel providing a traditional notification area.
+Tray support requires GTK 2.10 or later. With GLib/GIO 2.26 or later, XFCE/GNOME
+export a StatusNotifierItem and D-Bus menu using libdbusmenu-glib.so.4, loaded on
+demand. No GTK-specific AppIndicator library is needed: a GTK 2 emelFM2 works
+with a GTK 3 panel. Older systems can use an Ayatana or legacy AppIndicator
+runtime built for emelFM2's GTK major version instead.
+
+XFCE's Status Tray supports StatusNotifierItem directly. xfce4-indicator-plugin
+(including 2.4.1) uses the application indicator service: enable its application
+indicators and run ayatana-indicator-application or the distribution's legacy
+indicator-application service. The panel plugin and service are separate desktop
+components; installing only the panel plugin does not provide an application
+indicator host. GNOME Shell needs an AppIndicator/StatusNotifierItem extension.
+emelFM2 registers when the host starts and re-registers after it restarts.
+X11 mode requires a panel providing a traditional notification area.
 
 [bookmarks]
 The 'label' field holds the string that appears in the bookmarks menu. You may use a mnemonic key and/or markup in that field.

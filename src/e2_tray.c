@@ -1,6 +1,7 @@
 /* Tray integration. Licensed under GPL version 3 or later. */
 #include "emelfm2.h"
 #include "e2_tray.h"
+#include "e2_tray_indicator.h"
 #include "e2_option.h"
 #include "e2_icons.h"
 #include "e2_output.h"
@@ -35,6 +36,8 @@ static void (*indicator_set_status) (GObject *, gint);
 static void (*indicator_set_icon) (GObject *, const gchar *);
 static void (*indicator_set_attention_icon) (GObject *, const gchar *);
 static void (*indicator_set_label) (GObject *, const gchar *, const gchar *);
+static void (*indicator_stop) (GObject *);
+static void (*indicator_update_menu) (GObject *, GtkMenu *);
 
 static void _e2_tray_show (void)
 {
@@ -105,6 +108,21 @@ static void _e2_tray_connected_cb (GObject *object, gboolean connected,
 
 static gboolean _e2_tray_load_indicator (void)
 {
+#if GLIB_CHECK_VERSION(2,26,0)
+	/* The desktop protocol is independent of GTK. Prefer this transport so
+	   a GTK 2 application works with a GTK 3 XFCE indicator plugin as well. */
+	if (e2_tray_indicator_available ())
+	{
+		indicator_new = e2_tray_indicator_new;
+		indicator_set_menu = indicator_update_menu = e2_tray_indicator_set_menu;
+		indicator_set_status = e2_tray_indicator_set_status;
+		indicator_set_icon = e2_tray_indicator_set_icon;
+		indicator_set_attention_icon = e2_tray_indicator_set_attention_icon;
+		indicator_set_label = e2_tray_indicator_set_label;
+		indicator_stop = e2_tray_indicator_stop;
+		return TRUE;
+	}
+#endif
 	if (indicator_module != NULL)
 		return TRUE;
 	const gchar *libraries[] = {
@@ -332,7 +350,7 @@ void e2_tray_sync (void)
 		return;
 	if (mode != E2_TRAY_X11 && !_e2_tray_load_indicator ())
 	{
-		e2_output_print_error (_("Tray support for XFCE and GNOME requires the Ayatana AppIndicator or AppIndicator library matching this application's GTK version."), FALSE);
+		e2_output_print_error (_("XFCE/GNOME tray support requires libdbusmenu-glib, or an AppIndicator library matching this application's GTK version."), FALSE);
 		return;
 	}
 
@@ -394,6 +412,7 @@ void e2_tray_cleanup (void)
 		g_signal_handlers_disconnect_by_func (indicator,
 			G_CALLBACK (_e2_tray_connected_cb), NULL);
 		indicator_set_status (indicator, 0);
+		if (indicator_stop != NULL) indicator_stop (indicator);
 		g_object_unref (indicator);
 		indicator = NULL;
 	}
@@ -455,6 +474,8 @@ void e2_tray_set_attention (guint count)
 	}
 	if (indicator != NULL)
 	{
+		if (indicator_update_menu != NULL)
+			indicator_update_menu (indicator, GTK_MENU (tray_menu));
 		indicator_set_status (indicator, attention_active ? 2 : 1);
 		if (indicator_set_label != NULL)
 		{
