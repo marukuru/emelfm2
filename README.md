@@ -37,3 +37,7 @@ Code is not committed to git or svn unless it is expected to build and run as in
 See files [CONSTRUCT](./docs/CONSTRUCT) and [Makefile.config](./Makefile.config).
 #### INSTALL, UNINSTALL
 See the [INSTALL](./docs/INSTALL) file.
+
+Optional embedded terminals for GTK 2 and GTK 3 are available with explicit
+`WITH_VTE=1`. The existing command panel remains the default. See
+[terminal build, usage and validation instructions](docs/TERMINAL).

@@ -36,6 +36,7 @@ ToDo
 */
 
 #include "emelfm2.h"
+#include "e2_terminal.h"
 #include <string.h>
 #include <pthread.h>
 #include <ctype.h>
@@ -4144,6 +4145,9 @@ GtkWidget *e2_output_initialise (void)
 */
 void e2_output_actions_register (void)
 {
+#ifdef E2_VTE
+	e2_terminal_actions_register ();
+#endif
 	E2_Action actions[] =
 	{
 	{g_strconcat(_A(10),".",_A(30),NULL),_e2_output_open_filetype,FALSE,E2_ACTION_TYPE_ITEM,0,NULL,NULL},
@@ -4172,6 +4176,9 @@ void e2_output_actions_register (void)
 */
 void e2_output_options_register (void)
 {
+#ifdef E2_VTE
+	e2_terminal_options_register ();
+#endif
 	gchar *group_name = g_strconcat(_C(6),".",_C(28),":",_C(26),NULL); //_("commands.output:miscellaneous"
 	e2_option_bool_register ("show-output-window-on-output", group_name,
 		_("show output pane when a new message appears"),

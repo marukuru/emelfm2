@@ -31,6 +31,7 @@ ToDo - description of how this works
 */
 
 #include "emelfm2.h"
+#include "e2_terminal.h"
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
@@ -744,9 +745,9 @@ static void _e2_window_show_cb (GtkWidget *window, E2_WindowRuntime *rt)
 	g_signal_connect (G_OBJECT (rt->panes_outer_box), "size-allocate",
 			G_CALLBACK (_e2_window_panesbox_allocated_cb), rt);
 	//ensure correct toggle button is displayed when pane divider is dragged
-	g_signal_connect (G_OBJECT (app.outbook), "map",
+	g_signal_connect (G_OBJECT (gtk_paned_get_child2 (GTK_PANED (rt->output_paned))), "map",
 			G_CALLBACK (_e2_window_map_output_cb), GINT_TO_POINTER (TRUE));
-	g_signal_connect (G_OBJECT (app.outbook), "unmap",
+	g_signal_connect (G_OBJECT (gtk_paned_get_child2 (GTK_PANED (rt->output_paned))), "unmap",
 			G_CALLBACK (_e2_window_map_output_cb), GINT_TO_POINTER (FALSE));
 
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (app.outbook), 0);
@@ -1491,6 +1492,10 @@ void e2_window_create (E2_WindowRuntime *rt)
 		app.main_window->allocation.width, app.main_window->allocation.height);
 #endif
 	gtk_window_set_resizable (GTK_WINDOW (app.main_window), TRUE);
+#ifdef E2_VTE
+	g_signal_connect (app.main_window, "key-press-event",
+		G_CALLBACK (e2_terminal_window_key), GUINT_TO_POINTER (1));
+#endif
 #ifdef E2_COMPOSIT
 	e2_window_set_opacity (app.main_window, -1);
 #endif
@@ -1560,6 +1565,9 @@ void e2_window_create (E2_WindowRuntime *rt)
 	e2_cache_double_register ("output-pane-ratio", &rt->output_paned_ratio, 0.85);
 	e2_cache_int_register ("output-pane-tabs", &app.tabcount, 1);
 	GtkWidget *wid = e2_output_initialise ();
+#ifdef E2_VTE
+	wid = e2_terminal_wrap_output (wid);
+#endif
 	//set visibility state
 	app.output.visible = (rt->output_paned_ratio != 1.0);
 #ifdef USE_GTK3_2

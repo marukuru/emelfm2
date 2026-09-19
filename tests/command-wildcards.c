@@ -189,6 +189,14 @@ static void test_execution (void)
 int main (int argc, char **argv)
 {
 	g_test_init (&argc, &argv, NULL);
+	/* Release builds call the mutex directly; match the application's recursive
+	 * UI lock instead of the non-recursive static test initializer. */
+	pthread_mutexattr_t attr;
+	pthread_mutexattr_init (&attr);
+	pthread_mutexattr_settype (&attr, PTHREAD_MUTEX_RECURSIVE);
+	pthread_mutex_destroy (&display_mutex);
+	pthread_mutex_init (&display_mutex, &attr);
+	pthread_mutexattr_destroy (&attr);
 	gchar *directory = g_dir_make_tmp ("emelfm2-wildcards-XXXXXX", NULL);
 	g_assert_nonnull (directory);
 	g_strlcpy (view.dir, directory, sizeof (view.dir));

@@ -220,6 +220,15 @@ LINC = $(foreach dir, $(DIRS), -I$(dir))
 lCFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_REENTRANT -I. $(LINC)
 
 ifneq ($(WITH_GTK2),0)
+ifneq ($(WITH_GTK3),0)
+$(error WITH_GTK2 and WITH_GTK3 conflict; select exactly one GTK generation)
+endif
+endif
+ifneq ($(filter $(WITH_VTE),0 1),$(WITH_VTE))
+$(error WITH_VTE must be 0 or 1)
+endif
+
+ifneq ($(WITH_GTK2),0)
 GTK2 = 1
 GTK3 = 0
 else
@@ -234,6 +243,26 @@ else
     GTK3 = 0
   endif
  endif
+endif
+
+# Resolve the backend only after resolving GTK. No VTE probes when disabled.
+SOURCES := $(filter-out src/command/e2_terminal%.c,$(SOURCES))
+ifeq ($(WITH_VTE),1)
+ifeq ($(GTK3),1)
+VTE_PACKAGE = vte-2.91
+VTE_MINIMUM = 0.48
+VTE_BACKEND = 3
+else
+VTE_PACKAGE = vte
+VTE_MINIMUM = 0.28
+VTE_BACKEND = 2
+endif
+ifeq ($(shell $(PKG_CONFIG) --atleast-version=$(VTE_MINIMUM) $(VTE_PACKAGE) && echo yes),)
+$(error WITH_VTE=1 requires $(VTE_PACKAGE) >= $(VTE_MINIMUM) for GTK $(VTE_BACKEND); install the matching VTE development package)
+endif
+lCFLAGS += $(shell $(PKG_CONFIG) --cflags $(VTE_PACKAGE))
+VTE_LIBS = $(shell $(PKG_CONFIG) --libs $(VTE_PACKAGE))
+SOURCES += src/command/e2_terminal.c src/command/e2_terminal_vte$(VTE_BACKEND).c
 endif
 
 ifneq ($(USE_WAYLAND),0)
@@ -318,7 +347,7 @@ lCFLAGS += $(shell $(PKG_CONFIG) --cflags gio-2.0)
 lLIBS += $(shell $(PKG_CONFIG) --libs gio-2.0)
 endif
 
-lLIBS += -lrt -lm -ldl
+lLIBS += -lrt -lm -ldl $(VTE_LIBS)
 ifneq ($(USE_GAMIN),0)
 #gamin code is a superset of FAM code, so gamin needs fam as well
 lLIBS += -lfam
@@ -360,6 +389,7 @@ BUILD_PARMS+=|WITH_DEVKIT=$(WITH_DEVKIT)|WITH_GTK2=$(WITH_GTK2)|WITH_GTK3=$(WITH
 BUILD_PARMS+=|WITH_LATEST=$(WITH_LATEST)|WITH_OUTPUTSTYLES=$(WITH_OUTPUTSTYLES)
 BUILD_PARMS+=|WITH_POLKIT=$(WITH_POLKIT)|WITH_THUMBLIB=$(WITH_THUMBLIB)|WITH_THUMBS=$(WITH_THUMBS)
 BUILD_PARMS+=|WITH_TRACKER=$(WITH_TRACKER)|WITH_TRANSPARENCY=$(WITH_TRANSPARENCY)|WITH_UDISKS=$(WITH_UDISKS)
+BUILD_PARMS+=|WITH_VTE=$(WITH_VTE)|GTK_BACKEND=$(GTK3)
 BUILD_PARMS+=|XDG_DESKTOP_DIR=$(XDG_DESKTOP_DIR)|XDG_INTEGRATION=$(XDG_INTEGRATION)
 
 .PHONY: all plugins install install_plugins uninstall uninstall_plugins doc \
@@ -439,7 +469,7 @@ distclean: clean
 clean:
 	@echo "cleaning up"
 	@rm -f $(TARGET)
-	@rm -f $(BUILD_FILE)
+	@rm -f $(BUILD_FILE) .build-config
 	@rm -f *.bak
 	@rm -f $(PO_DIR)/$(TARGET).pot
 	@rm -f $(PO_DIR)/*.mo
@@ -596,7 +626,22 @@ $(OBJECTS_DIR)/$(LIBS):
 $(DESKTOP_FILE):
 	@sed s~@BIN_DIR@~$(BIN_DIR)~g po/emelfm2.desktop.in > $(DESKTOP_FILE)
 
-$(BUILD_FILE):
+# Track compilation features, including plugins. Installation paths may be
+# staging prefixes; do not rebuild binaries with those paths during install.
+CONFIG_FEATURES = GTK3 WITH_VTE NEW_COMMAND WITH_LATEST USE_WAYLAND DEBUG DEBUG_LEVEL \
+ I18N WITH_ASSIST WITH_VFS WITH_UDISKS WITH_HAL WITH_POLKIT EDITOR_SPELLCHECK \
+ WITH_CUSTOMMOUSE WITH_OUTPUTSTYLES EXTRA_BINDINGS FILES_UTF8ONLY WITH_THUMBS \
+ WITH_THUMBLIB WITH_ACL WITH_TRACKER DOCS_VERSION PANES_HORIZONTAL USE_GAMIN \
+ WITH_KERNELFAM USE_INOTIFY USE_KQUEUE USE_PORTEVENT WITH_SYSTEM_ICONS XDG_INTEGRATION
+CONFIG_SIGNATURE = $(foreach feature,$(CONFIG_FEATURES),$(feature)=$($(feature))) CC=$(CC) CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS)
+.PHONY: FORCE_BUILD_CONFIG
+.build-config: FORCE_BUILD_CONFIG
+	@printf '%s\n' '$(CONFIG_SIGNATURE)' > $@.tmp
+	@cmp -s $@.tmp $@ && rm $@.tmp || mv $@.tmp $@
+
+$(OBJECTS) $(LIBS_OBJECTS) $(LIBS_XOBJECTS): $(BUILD_FILE) $(HEADERS) | $(OBJECTS_DIR)
+
+$(BUILD_FILE): .build-config Makefile Makefile.config
 	@echo "updating build info: '$(BUILD_FILE)'"
 	@mkdir -p $(dir $(BUILD_FILE))
 	@echo "#ifndef __BUILD_H__" > $(BUILD_FILE)
@@ -617,6 +662,10 @@ $(BUILD_FILE):
 	@echo "#define ICON_DIR \"$(ICON_DIR)\"" >> $(BUILD_FILE)
 	@echo "#define LOCALE_DIR \"$(LOCALE_DIR)\"" >> $(BUILD_FILE)
 	@echo "#define E2_DEBUG_LEVEL $(DEBUG_LEVEL)" >> $(BUILD_FILE)
+ifeq ($(WITH_VTE),1)
+	@echo "#define E2_VTE" >> $(BUILD_FILE)
+	@echo "#define E2_VTE$(VTE_BACKEND)" >> $(BUILD_FILE)
+endif
 
 ifneq ($(WITH_LATEST),0)
 	@echo "#define E2_CURRENTLIBS" >> $(BUILD_FILE)

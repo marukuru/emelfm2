@@ -55,8 +55,6 @@ ToDo
 #define CMDNAMELEN 30
 
 extern pthread_mutex_t task_mutex;
-static gint waitflags;	//waitpid() argument, tailored for user's system
-static gint block_count;	//refcount for [un]blocking child signals
 const gchar *shellcmd;	//the command interpreter to use for external shell
 //list of utf8 strings, each like "name-string=value-string", (not quoted), no whitespace surrounding "="
 static GList *variables;
@@ -68,185 +66,85 @@ static GList *variables;
 static gboolean _e2_command_watch (GIOChannel *ioc, GIOCondition cond,
 	E2_TaskRuntime *rt, gboolean error);
 #endif
-static void _e2_command_sigchld_handler (gint num, siginfo_t *info, void *context);
+/* Child completion belongs to the spawner. In particular, never install a
+ * process-wide SIGCHLD handler or wait for an arbitrary child: VTE, GLib
+ * synchronous spawns and popen each own their children. These compatibility
+ * entry points no longer alter the calling thread's signal mask. */
+void e2_command_block_childsignal (void) {}
+void e2_command_unblock_childsignal (void) {}
 
-//CHECKME need SIGPIPE management ??
-
-/**
-@brief set handler for SIGCHLD signals
-@return
-*/
-static void _e2_command_set_sigchild_handler (void)
+/* A blocking per-PID monitor also works when NEW_COMMAND's synchronous path
+ * joins its output thread and the GTK main context cannot dispatch a child
+ * watch. It retains stop/continue notifications. No GTK calls occur here and
+ * no task pointer survives an unlock, so clearing task history is safe. */
+static gpointer _e2_command_wait_child (gpointer data)
 {
-	struct sigaction sigdata;
-	sigdata.sa_sigaction = _e2_command_sigchld_handler;
-	sigemptyset (&sigdata.sa_mask);
-	sigdata.sa_flags = SA_RESTART | SA_SIGINFO; //SA_NOCLDSTOP not allowed;
-	sigaction (SIGCHLD, &sigdata, NULL);
-}
-/**
-@brief block incoming SIGCHLD signals
-@return
-*/
-void e2_command_block_childsignal (void)
-{
-	if (++block_count == 1)
-	{
-		sigset_t set;	//, oldset;
-		sigemptyset (&set);
-		sigaddset (&set, SIGCHLD);
-		sigprocmask (SIG_BLOCK, &set, NULL);	//&oldset);
-	}
-}
-/**
-@brief unblock incoming SIGCHLD signals
-@return
-*/
-void e2_command_unblock_childsignal (void)
-{
-	if (--block_count < 0)
-	{
-		printd (WARN, "child signal block refcount error");
-		block_count = 0;
-	}
-	if (block_count == 0)
-	{
-		sigset_t set;	//, oldset;
-		//re-install the signal handler (some systems need this?) WRONG
-//		_e2_command_set_sigchild_handler ();
-		//and unblock it
-		sigemptyset (&set);
-		sigaddset (&set, SIGCHLD);
-		sigprocmask (SIG_UNBLOCK, &set, NULL);	//&oldset);
-	}
-}
-/**
-@brief handle SIGCHILD signals
-Note that opened pipes etc will come here, even though they're not logged as
-children
-Remember that this may be called before all data from the child is flushed!
-@param num the signal number (17)
-@param info pointer to data struct with details about signal, or NULL
-@param context UNUSED
-
-@return
-*/
-static void _e2_command_sigchld_handler (gint num, siginfo_t *info, void *context)
-{
-	printd (DEBUG, "signal handler (signal num:%d)", num);
-	pid_t endpid;
-	gint exitstatus;
-
-	if (info != NULL)
-	{
-		//normally, the child's data is provided in signal data
-		endpid = info->si_pid;
-//		exitstatus = info->si_status;
-		waitpid (endpid, &exitstatus, waitflags);	//must reap
-	}
-	else
-	{
-rewait:
-		//get stopped, restarted and finished child(ren), if any
-		//(any error will abort this loop, ECHILD (10) is normal loop terminator)
-		endpid = waitpid (-1, &exitstatus, waitflags);
-		printd (DEBUG, "waitpid() for any children returned %d", endpid);
-	}
-
-	if (endpid > 0)
-	{
-		E2_TaskRuntime *rt = e2_task_find_running_task ((glong) endpid);
-		if (!(rt == NULL || rt->action))
-		{
-			printd (DEBUG, "ending after waitpid returned %d", endpid);
-			pthread_mutex_lock (&task_mutex);
-			if (WIFEXITED (exitstatus))
-			{
-				rt->pid = -2L;	//prevent further matches for this rt
-				rt->status = E2_TASK_COMPLETED;
-				rt->ex.command.exit = WEXITSTATUS (exitstatus);
-				printd (DEBUG, "signal handler detected '%s' ended normally with exit code %d",
-					rt->ex.command.command, WEXITSTATUS (exitstatus));
-				printd (DEBUG, "child status stored");
-			}
-			else if (WIFSTOPPED (exitstatus))
-			{
-# ifdef WCONTINUED	//linux >= 2.6.10
-				rt->status = E2_TASK_PAUSED;
-# endif
-				printd (DEBUG, "continuing after %d stopped by signal %d",
-					(gint)endpid, WSTOPSIG (exitstatus));
-			}
-			else if (WIFSIGNALED (exitstatus))
-			{
-				gint signal = WTERMSIG (exitstatus);
-				//CHECKME which other signals are acceptable ?
-				if (signal == SIGTTOU || signal == SIGTTIN)
-				{
-# ifdef WCONTINUED	//linux >= 2.6.10
-					rt->status = E2_TASK_PAUSED;
-# endif
-					//CHECKME do a select() and print messages after SIGTTOU/SIGTTIN signal ?
-					printd (DEBUG, "continuing after %d stopped by signal %d",
-						(gint)endpid, signal);
-				}
-				else
-				{
-					rt->pid = -2L;	//prevent further matches for this rt
-					rt->status = E2_TASK_INCOMPLETE;
-					rt->ex.command.exit = signal;
-					printd (DEBUG, "child-signal handler detected command '%s' terminated by signal %d (%s)",
-						rt->ex.command.command, signal, g_strsignal (signal));
-					printd (DEBUG, "child status (%d) stored", signal);
-				}
-			}
-# ifdef WCONTINUED
-			else if (WIFCONTINUED (exitstatus))
-			{
-				rt->status = E2_TASK_RUNNING;
-				printd (DEBUG, "process %d restarted", endpid);
-			}
-# endif
-			pthread_mutex_unlock (&task_mutex);
-#ifdef E2_SU_ACTIONS
-			if (!e2_task_revert_user (rt->flags))
-				rt->status = E2_TASK_INCOMPLETE;
+	/* Application termination handlers must stay out of this worker. */
+	sigset_t blocked, previous_mask;
+	sigfillset (&blocked);
+	pthread_sigmask (SIG_BLOCK, &blocked, &previous_mask);
+	pid_t pid = GPOINTER_TO_INT (data);
+	gint status, result;
+	gint flags = WUNTRACED;
+#ifdef WCONTINUED
+	flags |= WCONTINUED;
 #endif
-		}
-#ifdef E2_SU_ACTIONS
-		else if (rt != NULL && rt->action)
-		{
-			if (!e2_task_revert_user (rt->flags))
-				rt->status = E2_TASK_INCOMPLETE;
-		}
-#endif
-		else	//no matching running-command data (could be a sync command (old version))
-		{
-			printd (WARN, "received signal from unrecorded child process (%d)", (gint) endpid);
-			//in this handler, current signal is blocked, pass it on for other handlers
-			//kill (endpid, num);	//CHECKME
-		}
-		if (info == NULL && rt != NULL && !rt->action)
-			goto rewait;
-	} //end of endpid > 0
-	else if (endpid < 0)
+	for (;;)
 	{
-		if (errno == EINTR)
+		result = waitpid (pid, &status, flags);
+		if (result < 0)
 		{
-			printd (DEBUG, "re-checking after waitpid was interrupted");
-			goto rewait;
+			if (errno == EINTR) continue;
+#ifdef WCONTINUED
+			if (errno == EINVAL && (flags & WCONTINUED))
+			{
+				flags &= ~WCONTINUED;
+				continue;
+			}
+#endif
+			break;
 		}
-		else if (errno != ECHILD)
+		pthread_mutex_lock (&task_mutex);
+		GList *member;
+		for (member = app.taskhistory; member != NULL; member = member->next)
 		{
-			printd (DEBUG, "aborting after waitpid pid error %d (%s)", errno, g_strerror (errno));
-			//FIXME find which task it is and record error exit
-//			rt->status = E2_TASK_INCOMPLETE;
-//			rt->ex.command.exit = errno;
+			E2_TaskRuntime *rt = member->data;
+			if (rt == NULL || rt->action || rt->pid != pid) continue;
+			if (WIFEXITED (status) || WIFSIGNALED (status))
+			{
+				rt->pid = -2;
+				rt->ex.command.exit = WIFEXITED (status) ? WEXITSTATUS (status) : WTERMSIG (status);
+				rt->status = WIFEXITED (status) ? E2_TASK_COMPLETED : E2_TASK_INCOMPLETE;
+			}
+			else if (WIFSTOPPED (status)) rt->status = E2_TASK_PAUSED;
+#ifdef WCONTINUED
+			else if (WIFCONTINUED (status)) rt->status = E2_TASK_RUNNING;
+#endif
+			break;
 		}
+		pthread_mutex_unlock (&task_mutex);
+		if (WIFEXITED (status) || WIFSIGNALED (status)) break;
 	}
+	g_spawn_close_pid (pid);
+	pthread_sigmask (SIG_SETMASK, &previous_mask, NULL);
+	return NULL;
+}
 
-	//re-install the signal handler (some systems need this?)
-	_e2_command_set_sigchild_handler ();
+static void _e2_command_monitor_child (GPid pid)
+{
+	pthread_t thread;
+	pthread_attr_t attr;
+	pthread_attr_init (&attr);
+	pthread_attr_setdetachstate (&attr, PTHREAD_CREATE_DETACHED);
+	gint error = pthread_create (&thread, &attr, _e2_command_wait_child,
+		GINT_TO_POINTER (pid));
+	pthread_attr_destroy (&attr);
+	if (error != 0)
+	{
+		/* Do not leave an unowned child on resource exhaustion. */
+		kill (pid, SIGKILL);
+		_e2_command_wait_child (GINT_TO_POINTER (pid));
+	}
 }
 /**
 @brief print @a buffer contents
@@ -1164,6 +1062,7 @@ static gint _e2_command_fork (gchar *command, gchar **args, const gchar *cwd,
 		initial input, and the amount of interruption of the initial input loop when
 		that involves a lot of printing - so we use a 2-stage timer
 	*/
+		_e2_command_monitor_child (pid);
 		pthread_t wthreadID;
 		if (flags & E2_RUN_SYNC)
 		{
@@ -1578,7 +1477,11 @@ static gint _e2_command_run_async (gchar *command, gchar **args, const gchar *cw
 
 	if (rt == GINT_TO_POINTER (1))
 	{
-		//CHECKME cleanup the spawn ?
+		kill (pid, SIGKILL);
+		close (stdinfd);
+		close (stdoutfd);
+		close (stderrfd);
+		_e2_command_monitor_child (pid);
 		e2_command_unblock_childsignal ();
 		return 0;
 	}
@@ -1623,7 +1526,8 @@ static gint _e2_command_run_async (gchar *command, gchar **args, const gchar *cw
 		g_free (message);
 	}
 
-	usleep (100000);	//there may be some immediate messages to process before we want SIGCHILD
+	_e2_command_monitor_child (pid);
+	usleep (100000);	//allow initial output to arrive
 	e2_command_unblock_childsignal ();
 
 	return pid;
@@ -1727,7 +1631,7 @@ static gint _e2_command_run_sync (gchar *command, gchar **args, const gchar *cwd
 
 	//CHECKME revert CWD to curr_view->dir if that still exists ?
 	//FIXME this delay doesn't work properly
-	usleep (100000);	//there may be some immediate messages to process before we want SIGCHILD
+	usleep (100000);	//allow initial output to arrive
 	e2_command_unblock_childsignal ();
 
 	rt->ex.command.exit = exit;
@@ -1858,18 +1762,25 @@ retry2:
 */
 gboolean e2_command_kill_child (guint pid)
 {
-	E2_TaskRuntime *rt = e2_task_find_running_task ((glong)pid);
-	if (!(rt == NULL || rt->action))
-	{	//it's one of ours
-		if (!kill ((pid_t) pid, SIGTERM))	//or SIGKILL
+	gboolean killed = FALSE;
+	GList *member;
+	pthread_mutex_lock (&task_mutex);
+	for (member = app.taskhistory; member != NULL; member = member->next)
+	{
+		E2_TaskRuntime *rt = member->data;
+		if (rt != NULL && !rt->action && rt->pid == pid && pid > 0)
 		{
-			rt->pid = -2L;	//no more matching
-			rt->status = E2_TASK_ABORTED;
-			return TRUE;
+			if (kill ((pid_t) pid, SIGTERM) == 0)
+			{
+				rt->pid = -2;
+				rt->status = E2_TASK_ABORTED;
+				killed = TRUE;
+			}
+			break;
 		}
-		e2_output_print_strerrno ();
 	}
-	return FALSE;
+	pthread_mutex_unlock (&task_mutex);
+	return killed;
 }
 /**
 @brief check whether process with id @a pid is running
@@ -1878,8 +1789,7 @@ gboolean e2_command_kill_child (guint pid)
 */
 gboolean e2_command_find_process (guint pid)
 {
-	pid_t result = waitpid (pid, NULL, WNOHANG);
-	return (result == 0);	//will be -1 if finished before, result if finished now
+	return pid > 0 && (kill ((pid_t) pid, 0) == 0 || errno == EPERM);
 }
 /**
 @brief update all relevant child foreground-tab pointers after output pane tab change
@@ -1976,6 +1886,9 @@ gboolean e2_command_clear_pending (gpointer from, E2_ActionRuntime *art)
 		rt = (E2_TaskRuntime *) member->data;
 		if (rt->status <= E2_TASK_QUEUED)	//Q or none
 		{
+			pthread_mutex_lock (&task_mutex);
+			member->data = NULL;
+			pthread_mutex_unlock (&task_mutex);
 			//rt->pidstr not set yet for queued items
 			if (rt->action)
 			{
@@ -2012,7 +1925,6 @@ gboolean e2_command_clear_pending (gpointer from, E2_ActionRuntime *art)
 #endif
 			}
 			DEALLOCATE (E2_TaskRuntime, rt);
-			member->data = NULL;
 			retval = TRUE;
 		}
 		pthread_mutex_lock (&task_mutex);
@@ -3368,7 +3280,7 @@ void e2_command_actions_register (void)
 	e2_cache_list_register ("internal-variables", &variables);
 
 //#ifndef E2_NEW_COMMAND
-	_e2_command_set_sigchild_handler ();
+
 //#endif
 //#ifdef E2_NEW_COMMAND
 //	_e2_command_set_sigpoll_handler ();
@@ -3387,26 +3299,6 @@ void e2_command_actions_register (void)
 	else
 		shellcmd = "/bin/sh";
 
-	//setup waitpid() parameter, with check for glibc/kernel disconnect on WCONTINUED
-	waitflags = WNOHANG
-#ifdef WCONTINUED
-			| WCONTINUED
-#endif
-			| WUNTRACED;
-#ifdef WCONTINUED
-	if (waitpid (-1, NULL, waitflags) < 0 && errno == EINVAL)
-	{
-		printd (DEBUG, "this kernel does not support WCONTINUED");
-		waitflags = WNOHANG | WUNTRACED;
-	}
-#endif
-
-#ifdef __linux__
-# ifdef __WALL
-//	waitflags = waitflags | __WALL | __WNOTHREAD; causes failure
-	waitflags |= __WALL;
-# endif
-#endif
 	E2_Action actions[] =
 	{
 	{g_strconcat(_A(2),".",_A(61),NULL), _e2_command_list_children,    FALSE,E2_ACTION_TYPE_ITEM,0, NULL, NULL},

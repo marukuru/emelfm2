@@ -423,8 +423,9 @@ void e2_cl_option_process (gint argc, gchar *argv[])
 		subdir = TRUE;
 	}
 
-	//check dir is suitable (su etc may not adjust variable)
-	if (usedir != NULL && *usedir != '\0')
+	//Check autodetected directories (su etc may not adjust the environment).
+	//An explicit --config path may intentionally be outside the home directory.
+	if (e2_cl_options.config_dir == NULL && usedir != NULL && *usedir != '\0')
 	{
 		if (homedir != NULL && *homedir != '\0')
 		{
@@ -440,7 +441,7 @@ void e2_cl_option_process (gint argc, gchar *argv[])
 		freeme = g_build_filename (usedir, BINNAME, NULL);
 	else
 	{
-		freeme = (gchar*)usedir;
+		freeme = g_strdup (usedir);
 		printd (DEBUG, "setting config directory '%s'", freeme);
 	}
 

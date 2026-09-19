@@ -7,11 +7,23 @@
 
 # include /usr/share/dpatch/dpatch.make
 
+# Explicit feature profiles; default packages remain GTK 2 without VTE.
+ifneq ($(filter pkg.emelfm2.gtk3,$(DEB_BUILD_PROFILES)),)
+GTKOPTS = WITH_GTK2=0 WITH_GTK3=1
+else
+GTKOPTS = WITH_GTK2=1 WITH_GTK3=0
+endif
+ifneq ($(filter pkg.emelfm2.vte,$(DEB_BUILD_PROFILES)),)
+VTEOPT = WITH_VTE=1
+else
+VTEOPT = WITH_VTE=0
+endif
+
 # Default CFLAGS are specified in package file Makefile.config.
 # Any override must be passed to make as CFLAGS=<whatever> in MAKEOPTS
 MAKEOPTS = \
  CFLAGS="$(CFLAGS) -std=gnu17 -O2 -Wall -fcommon -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-deprecated-declarations" \
- WITH_GTK2=1 \
+ $(GTKOPTS) $(VTEOPT) \
  WITH_LATEST=1 NEW_COMMAND=1 \
  EXTRA_BINDINGS=0 \
  WITH_KERNELFAM=1 \
@@ -66,7 +78,7 @@ install: build
 	# Explicitly remove stale plugin binaries so freshly compiled .so files are always installed
 	$(RM) -r $(CURDIR)/debian/emelfm2/usr/lib/emelfm2/plugins
 
-	$(MAKE) install PREFIX=$(CURDIR)/debian/emelfm2/usr/
+	$(MAKE) install PREFIX=$(CURDIR)/debian/emelfm2/usr/ $(MAKEOPTS)
 	$(RM) $(CURDIR)/debian/emelfm2/usr/share/doc/emelfm2/INSTALL
 	$(RM) $(CURDIR)/debian/emelfm2/usr/share/doc/emelfm2/HACKING
 	$(RM) $(CURDIR)/debian/emelfm2/usr/share/doc/emelfm2/LGPL
@@ -90,7 +102,7 @@ binary-arch: build install
 	dh_installman
 	dh_strip
 	# The built-in help viewer opens these documents as plain text by name.
-	dh_compress -XUSAGE -XCONFIGURATION -XACTIONS -XCREDITS
+	dh_compress -XUSAGE -XCONFIGURATION -XACTIONS -XCREDITS -XTERMINAL
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps

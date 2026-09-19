@@ -84,6 +84,7 @@ space-character is identified by: space (not Space))
 ToDo - describe how this works
 */
 
+#include "e2_terminal.h"
 #include "e2_keybinding.h"
 #include "e2_option_tree.h"
 #include <string.h>
@@ -692,6 +693,9 @@ have been de-localised by e2_utils_translate_key_event() if that's relevant.
 static gboolean _e2_keybinding_key_press_cb (GtkWidget *widget,
 	GdkEventKey *event, gpointer user_data)
 {
+#ifdef E2_VTE
+	if (e2_terminal_has_focus ()) return FALSE;
+#endif
 	//not interested in modifier keys
 #ifdef USE_GTK2_10
 	if (event->is_modifier)

@@ -109,6 +109,7 @@ The following items are covered:
 */
 
 #include "emelfm2.h"
+#include "e2_terminal.h"
 #include "e2_tray.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
@@ -141,6 +142,7 @@ pthread_mutex_t display_mutex;
 #include "e2_icons.h"
 #include "../plugins/e2p_upgrade.h"
 
+extern pthread_mutex_t task_mutex;
 extern volatile gint cfg_refresh_refcount;
 extern GList *open_history;
 #ifdef USE_GLIB2_10
@@ -996,6 +998,10 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 		}
 	}
 
+#ifdef E2_VTE
+	if (!compulsory && !e2_terminal_confirm_shutdown ()) return FALSE;
+	e2_terminal_shutdown ();
+#endif
 	e2_tray_windows_cleanup ();
 	e2_tray_cleanup ();
 	e2_task_cleanup (FALSE, pthread_self());	//cleanup action/command processing
@@ -1070,12 +1076,17 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 	e2_complete_clear ();
 	e2_alias_clean ();
 	e2_command_line_clean_all ();
-	for (member = app.taskhistory; member != NULL; member = member->next)
+	/* Detach history under the same lock used by per-child completion monitors. */
+	pthread_mutex_lock (&task_mutex);
+	GList *history = app.taskhistory;
+	app.taskhistory = NULL;
+	pthread_mutex_unlock (&task_mutex);
+	for (member = history; member != NULL; member = member->next)
 	{
-		//also free the data in the rt ??
-		DEALLOCATE (E2_TaskRuntime, (E2_TaskRuntime *) member->data);
+		if (member->data != NULL)
+			DEALLOCATE (E2_TaskRuntime, (E2_TaskRuntime *) member->data);
 	}
-	e2_command_clear_pending (NULL, NULL);
+	g_list_free (history);
 	//output tabs
 	for (member = app.tabslist; member != NULL; member = member->next)
 		DEALLOCATE (E2_OutputTabRuntime, (E2_OutputTabRuntime *) member->data);

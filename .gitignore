@@ -20,3 +20,6 @@ debian/emelfm2.xpm
 src/build.h
 src/build/build.h
 patch-stamp
+
+.build-config
+.build-config.tmp

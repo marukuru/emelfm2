@@ -1189,17 +1189,11 @@ void e2_task_cleanup (gboolean stay, pthread_t mainID)
 			}
 			else
 			{
-				if (killchildren)
-					kill (
-//#ifdef E2_NEW_COMMAND
-//if process group is used when forking ...
-//					-
-//#endif
-					rt->pid, SIGTERM);	//cleanup command
-				/*else
-				 allowing running children to continue is consistent with other
-				 FM's, but the child's stdin, stdout, stderr will be disabled
-				 FIND A WAY TO REVERT CHILD'S STDIO FD'S TO DEFAULTS 0,1,2 */
+				pthread_mutex_lock (&task_mutex);
+				if (killchildren && rt->pid > 0)
+					kill (rt->pid, SIGTERM);
+				rt->pid = -2;
+				pthread_mutex_unlock (&task_mutex);
 				kills++;
 			}
 			rt->status = E2_TASK_ABORTED;

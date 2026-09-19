@@ -1,0 +1,163 @@
+Optional embedded terminals
+===========================
+
+The existing command entry, output tabs, command history, macros, aliases and
+background-task output remain the default interface. Embedded terminals are
+additional interactive PTY shells; terminal input is interpreted by the shell,
+not by emelFM2. Installing VTE does not enable this feature.
+
+Build one of the following configurations:
+
+  make WITH_GTK2=1 WITH_GTK3=0 WITH_VTE=0
+  make WITH_GTK2=1 WITH_GTK3=0 WITH_VTE=1
+  make WITH_GTK2=0 WITH_GTK3=1 WITH_VTE=0
+  make WITH_GTK2=0 WITH_GTK3=1 WITH_VTE=1
+
+WITH_VTE defaults to 0. GTK 2 terminals require pkg-config module vte >= 0.28
+(the tested legacy API is 0.28.2, Debian/Ubuntu package libvte-dev). GTK 3
+terminals require vte-2.91 >= 0.48 (libvte-2.91-dev). Missing dependencies and
+conflicting GTK selectors are errors; a requested terminal never silently
+falls back to the console. Only the selected adapter is compiled.
+
+Use separate clean checkouts for simultaneous configurations: build.h and the
+binary are shared within a checkout. Sequential feature changes invalidate the
+build header, objects, dependency files and plugins. Use make clean when changing
+installation paths or compiler infrastructure. Use the SAME feature flags for
+make and make install. Without VTE there are no VTE package checks, headers or
+linked libraries. NEW_COMMAND=0 and NEW_COMMAND=1 are both supported.
+
+Using terminals
+---------------
+
+The lower pane still starts on Application output. Use Open terminal here to
+start a new session in the active pane's directory. There is no automatic startup
+session and no automatic directory synchronization. Remote/unmounted locations
+cannot be used; select an existing local directory first. Each terminal keeps its
+own startup directory, scrollback and shell history. Navigating the file panes
+never writes a cd command into a terminal.
+
+The lower toolbar offers Open terminal here, Focus terminal, Close, Restart,
+Insert selected paths, Copy and Paste. Tabs show starting, running, failed or
+exited state. Failed/exited tabs stay available for inspection; Restart creates a
+new shell in that tab's original startup directory with current preferences.
+Application logs always go to the existing output views, including while a
+terminal has focus. Output tab detach/reattach continues to apply only to log
+views; terminal tabs cannot be detached.
+
+Configurable actions (usable in keybindings, toolbars and menus):
+  terminal.open_here
+  terminal.focus
+  terminal.close
+  terminal.restart
+  terminal.insert_paths
+
+Focused terminals receive Ctrl+C, Ctrl+Z, Tab and function keys directly.
+Ctrl+Shift+C copies, Ctrl+Shift+V pastes, Ctrl+Shift+F6 returns focus to the
+active file pane. Use Focus terminal (or a custom binding for terminal.focus)
+to return. The emelFM2 command entry retains its own completion and history.
+
+Preferences under commands/terminal apply to new and restarted sessions:
+  terminal-shell       executable path, without arguments; empty uses $SHELL,
+                       falling back to /bin/sh. Shells are started with -i.
+  terminal-scrollback  retained lines (default 10000)
+  terminal-font        default Monospace 10
+  terminal-foreground  default #dddddd
+  terminal-background  default #202020
+
+Use an executable path to sh, bash, dash, zsh, ksh, mksh or fish for pathname
+insertion. Other interactive executables may be started, but generated path
+insertion is disabled because their quoting rules are unknown. Selected paths
+are absolute (so leading hyphens do not become options) and shell-quoted, with
+no final Enter. Insert them at a shell prompt where arguments are expected.
+No emelFM2 macros, wildcard expansion or aliases are applied. Clipboard paste
+retains the backend's normal terminal paste behavior. The legacy backend and
+VTE versions before 0.68 lack the paste_text API; generated paths use direct
+PTY input.
+Legacy VTE reports that a shell exited but cannot supply its exit status.
+OSC 7 directory tracking and hyperlink actions are not implemented.
+
+Closing a running/starting terminal or quitting with live sessions asks before
+hanging up the shell and closing its PTY. A forced application shutdown closes
+terminals without a dialog. VTE owns terminal-child reaping even if a tab is
+closed during asynchronous startup. Jobs that deliberately detach from their
+terminal can survive a hangup; this is not a process-tree kill operation.
+
+Native command children have separate per-PID monitors, retaining stop/continue
+notifications. They do not install SIGCHLD handlers or reap arbitrary children.
+A monitor thread is used because NEW_COMMAND's synchronous execution can block
+the GTK main context. GTK and VTE operations stay on the main thread.
+
+Packaging and validation
+------------------------
+
+Default Debian packages remain GTK 2 without VTE. Optional build profiles:
+
+  DEB_BUILD_PROFILES=pkg.emelfm2.vte dpkg-buildpackage -us -uc -b
+  DEB_BUILD_PROFILES='pkg.emelfm2.gtk3 pkg.emelfm2.vte' dpkg-buildpackage -us -uc -b
+
+Use pkg.emelfm2.gtk3 alone for GTK 3 without terminals. Install build dependencies
+with the same profiles (e.g. apt-get build-dep -Ppkg.emelfm2.vte .). Profile
+restrictions choose exactly the matching GTK and VTE development package;
+dh_shlibdeps derives runtime dependencies from the actual linked binaries.
+
+AppImage dependency selection: tools/appimage-dependencies.sh GTK WITH_VTE.
+Stage a feature-specific build in a clean checkout using:
+  tools/stage-appimage.sh /tmp/emelfm2-AppDir 3 1
+Then run linuxdeploy with DEPLOY_GTK_VERSION=3 and its GTK plugin against that
+AppDir. Use 2 for legacy builds. linuxdeploy follows the binary's VTE dependency;
+never reuse AppDirs or plugin objects from the other GTK generation. Default
+release jobs explicitly use GTK 2 / WITH_VTE=0. Optional validation artifacts
+are distinct from releases and are never automatically published.
+
+The Validate build configurations workflow always builds GTK 2 and GTK 3 with
+VTE disabled and both NEW_COMMAND values. Its manual include_vte input defaults
+to false; enabling it adds both terminal backends. Ubuntu 22.04 provides both
+legacy VTE 0.28.2 and modern VTE. Dependency installation failures fail the job.
+
+Local tests after building the chosen configuration:
+  GTK_PACKAGE=gtk+-2.0 tests/run-terminal.sh
+  GTK_PACKAGE=gtk+-3.0 tests/run-terminal.sh
+  GTK_PACKAGE=gtk+-3.0 sh tests/run-command-wildcards.sh
+
+Terminal tests require Xvfb, xauth, dbus-run-session and a font. They exercise
+real PTYs, concurrent native/terminal exits, foreign-child ownership,
+stop/continue, spawn failure/cancellation, session close/restart, startup cwd,
+interactive insertion, Unicode, special-character quoting, top/htop and resize. Available sh,
+bash, dash, zsh and fish executables are tested separately.
+
+Manual acceptance checklist for both backends:
+- Run less/vim, resize, Ctrl+C, Ctrl+Z and fg; check job control and key routing.
+- Produce long Unicode output; scroll, select, copy and paste; open several tabs.
+- Run file operations and background commands while a terminal application runs.
+- Detach/reattach application-output tabs while terminal tabs remain open.
+- Change preferences and pane layout; confirm live sessions remain usable.
+- Cancel and accept close/quit with active jobs and during startup.
+- Test X11 for both GTK generations, and GTK 3 Wayland where supported by emelFM2.
+- Smoke-test installed Debian and AppImage artifacts; inspect linked libraries
+  for both the binary and bundled plugins, including a no-VTE dependency image.
+
+API references:
+https://gnome.pages.gitlab.gnome.org/vte/gtk3/method.Terminal.spawn_async.html
+https://gnome.pages.gitlab.gnome.org/vte/gtk3/method.Terminal.spawn_with_fds_async.html
+Legacy API/signals were checked against the libvte-dev 0.28.2 headers.
+The modern adapter was also compiled against the official VTE 0.48.4 headers.
+
+Initial validation (2026-09-19)
+-------------------------------
+
+All eight GTK 2/3 x WITH_VTE=0/1 x NEW_COMMAND=0/1 configurations built in
+separate source copies and passed wildcard and full-application smoke tests.
+VTE builds passed the PTY, ownership and session tests. Fullscreen top/htop,
+resize and shell job control were tested on X11 with both backends. Libraries:
+GTK 2.24.33 / VTE 0.28.2 and GTK 3.24.33 / VTE 0.68.0. The GTK 3 adapter also
+passed compilation against the official 0.48.4 headers (not a 0.48 runtime).
+
+Default GTK 2 and optional GTK 3/VTE Debian packages built, and extracted
+executables passed smoke tests with their matching packaged plugins. Default
+Debian dependencies contain no VTE; optional dependencies contain only modern
+VTE and GTK 3. The GTK 3/VTE AppImage staging script was exercised. Final
+AppImage execution and native Wayland remain manual acceptance checks.
+
+A simulated missing-VTE pkg-config wrapper verified that disabled builds make
+no VTE probes and enabled builds fail clearly. The CI jobs also select only the
+development packages needed by their explicit configuration.
