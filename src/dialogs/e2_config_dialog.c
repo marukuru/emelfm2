@@ -20,6 +20,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 #include "emelfm2.h"
 #include "e2_tray.h"
+#include "e2_single_instance.h"
 #include <string.h>
 #include "e2_dialog.h"
 #include "e2_config_dialog.h"
@@ -708,6 +709,7 @@ static gboolean _e2_confdlg_apply (gboolean close, E2_ConfigDialogRuntime *rt)
 		e2_filetype_apply_allnew ();
 
 	e2_tray_sync ();
+	e2_single_instance_sync ();
 
 	if (close)	//if this is a 'commit' button response
 	{

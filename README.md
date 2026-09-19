@@ -39,3 +39,7 @@ Optional embedded terminals for GTK 2 and GTK 3 are available with explicit
 - Date-variable expansion when opening bookmarks.
 - Updated compiler compatibility, Debian packaging, and automated DEB/AppImage releases.
 - Regression tests for command parsing, wildcard expansion, tray behavior, and terminals.
+
+Enable **general → miscellaneous → allow only one instance** to reuse the running
+window for the same configuration directory. Further launches quietly restore and
+focus it, including when it is hidden in the tray. This works without a session bus.

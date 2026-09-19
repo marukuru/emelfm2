@@ -111,6 +111,7 @@ The following items are covered:
 #include "emelfm2.h"
 #include "e2_terminal.h"
 #include "e2_tray.h"
+#include "e2_single_instance.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
 #endif
@@ -788,13 +789,17 @@ WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reas
 				else
 					printd (ERROR, "Can't find upgrade plugin "UPGRADE_PNAME", so can't upgrade the config file");
 			}
-			gchar **values = e2_list_to_strv (e2_cl_options.option_overrides);
-			e2_option_read_array (values);
-			g_strfreev (values);
 		}
 	//	else
 	//		app.keytrans = TRUE; //translate the newly-created keybindings, later on
 	}
+	/* Command-line overrides also apply to new profiles and factory defaults. */
+	gchar **values = e2_list_to_strv (e2_cl_options.option_overrides);
+	e2_option_read_array (values);
+	g_strfreev (values);
+	if (!e2_single_instance_start ())
+		return EXIT_SUCCESS;
+
 	//after config & updates, install default tree options where needed
 	e2_option_tree_install_defaults ();
 
@@ -1002,6 +1007,7 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 	if (!compulsory && !e2_terminal_confirm_shutdown ()) return FALSE;
 	e2_terminal_shutdown ();
 #endif
+	e2_single_instance_cleanup ();
 	e2_tray_windows_cleanup ();
 	e2_tray_cleanup ();
 	e2_task_cleanup (FALSE, pthread_self());	//cleanup action/command processing

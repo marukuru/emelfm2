@@ -75,6 +75,10 @@ void e2_option_default_register (void)
 		_("show all options in config dialogs"), NULL,
 		NULL, FALSE,
 		E2_OPTION_FLAG_HIDDEN | E2_OPTION_FLAG_FREEGROUP);	//no rebuild
+	e2_option_bool_register ("single-instance", group_name,
+		_("allow only one instance"),
+		_("Starting emelFM2 again with this configuration brings the existing window to the front"),
+		NULL, FALSE, E2_OPTION_FLAG_BASIC);
 #ifdef USE_GTK2_10
 	e2_option_bool_register ("tray-enabled", group_name,
 		_("show tray icon"),
