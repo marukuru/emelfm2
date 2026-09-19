@@ -4766,10 +4766,19 @@ msgstr "字节"
 msgid "kbytes"
 msgstr "千字节"
 
-#: e2_tabs.c:271
+#: e2_tabs.c:272
 #, fuzzy
 msgid "Close tab"
 msgstr "关闭(_C)"
+
+#: e2_tabs.c:424
+msgid "New tab (Ctrl+N)"
+msgstr ""
+
+#: e2_tabs.c:426
+#, fuzzy
+msgid "New tab"
+msgstr "新 TAB(_N)"
 
 #: e2_task.c:137
 msgid "<system default>"

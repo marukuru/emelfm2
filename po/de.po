@@ -4971,10 +4971,19 @@ msgstr "Byte"
 msgid "kbytes"
 msgstr "kB"
 
-#: e2_tabs.c:271
+#: e2_tabs.c:272
 #, fuzzy
 msgid "Close tab"
 msgstr "_Schließen"
+
+#: e2_tabs.c:424
+msgid "New tab (Ctrl+N)"
+msgstr ""
+
+#: e2_tabs.c:426
+#, fuzzy
+msgid "New tab"
+msgstr "Tab _hinzufügen"
 
 #: e2_task.c:137
 #, fuzzy

@@ -4885,10 +4885,19 @@ msgstr "байт"
 msgid "kbytes"
 msgstr "Кбайт"
 
-#: e2_tabs.c:271
+#: e2_tabs.c:272
 #, fuzzy
 msgid "Close tab"
 msgstr "_Закрыть"
+
+#: e2_tabs.c:424
+msgid "New tab (Ctrl+N)"
+msgstr ""
+
+#: e2_tabs.c:426
+#, fuzzy
+msgid "New tab"
+msgstr "_Новая вкладка"
 
 #: e2_task.c:137
 #, fuzzy
