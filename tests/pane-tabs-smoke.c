@@ -54,6 +54,9 @@ static void structure (void)
 {
 	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (book),
 		gtk_notebook_get_current_page (GTK_NOTEBOOK (book)));
+	g_assert_true (gtk_widget_get_child_visible (page));
+	g_assert_true (gtk_widget_get_mapped (app.pane1.view.treeview));
+	g_assert_true (gtk_widget_get_mapped (app.pane2.view.treeview));
 	g_assert_true (gtk_widget_is_ancestor (app.pane1.outer_box, page));
 	g_assert_true (gtk_widget_is_ancestor (app.pane2.outer_box, page));
 	g_assert_true (gtk_widget_is_ancestor (app.pane1.toolbar.toolbar_container, page));
@@ -91,6 +94,7 @@ static gboolean tick (gpointer data)
 			g_assert_true (GTK_IS_NOTEBOOK (book));
 			output = gtk_paned_get_child2 (GTK_PANED (app.window.output_paned));
 			commandbar = app.commandbar.toolbar_container;
+			g_assert_true (page_is (0, 1));
 			structure ();
 			path_is (&app.pane1, "alpha"); path_is (&app.pane2, "beta");
 			g_assert_cmpstr (label (0), ==, "alpha | beta");

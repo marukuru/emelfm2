@@ -362,10 +362,14 @@ static void _e2_tabs_schedule (void)
 static void _e2_tabs_switch (GtkNotebook *book, gpointer page, guint number, gpointer data)
 {
 	if (selecting || current == NULL) return;
+	E2_PaneTab *target = g_list_nth_data (tabs, number);
+	/* GTK may select the first page only when the notebook is shown. Let it
+	 * display the live page without deferring a switch back to itself. */
+	if (target == current) return;
 	/* Defer the actual selection until both directory workers are idle. */
 	g_signal_stop_emission_by_name (book, "switch-page");
 	NEEDCLOSEBGL
-	requested = g_list_nth_data (tabs, number);
+	requested = target;
 	_e2_tabs_schedule ();
 	NEEDOPENBGL
 }
