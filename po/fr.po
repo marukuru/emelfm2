@@ -14,7 +14,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3345
+#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3257
 msgid "help"
 msgstr "aide"
 
@@ -74,7 +74,7 @@ msgstr ""
 msgid "usage"
 msgstr "utilisation"
 
-#: e2_about_dialog.c:199 e2_option.c:1298 e2_output.c:2900
+#: e2_about_dialog.c:199 e2_option.c:1298 e2_output.c:2901
 msgid "commands"
 msgstr "commandes"
 
@@ -243,7 +243,7 @@ msgstr "vider_historique"
 msgid "complete"
 msgstr "compléter"
 
-#: e2_action.c:1192 e2_task.c:2072
+#: e2_action.c:1192 e2_task.c:2066
 msgid "copy"
 msgstr "copier"
 
@@ -284,7 +284,7 @@ msgstr "modifier_à_nouveau"
 msgid "filetype"
 msgstr "type_de_fichier"
 
-#: e2_action.c:1202 e2_task.c:4422 e2p_find.c:4200
+#: e2_action.c:1202 e2_task.c:4416 e2p_find.c:4200
 msgid "find"
 msgstr "chercher"
 
@@ -344,7 +344,7 @@ msgstr "nouveau_dossier"
 msgid "mountpoints"
 msgstr "points_de_montage"
 
-#: e2_action.c:1218 e2_task.c:2615
+#: e2_action.c:1218 e2_task.c:2609
 msgid "move"
 msgstr "déplacer"
 
@@ -400,7 +400,7 @@ msgstr "reprendre_rafraîchissement"
 msgid "refreshsuspend"
 msgstr "suspendre_rafraîchissement"
 
-#: e2_action.c:1232 e2_task.c:3260
+#: e2_action.c:1232 e2_task.c:3254
 msgid "rename"
 msgstr "renommer"
 
@@ -537,7 +537,7 @@ msgstr "voir_à"
 msgid "child"
 msgstr "fils"
 
-#: e2_action.c:1271 e2_pane.c:1289 e2_pane.c:1441 e2_pane.c:1837 e2_task.c:2184
+#: e2_action.c:1271 e2_pane.c:1289 e2_pane.c:1441 e2_pane.c:1837 e2_task.c:2178
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr "ctrl"
@@ -618,11 +618,11 @@ msgstr "Terminé. Appuyez sur Entrée"
 msgid "xx"
 msgstr "xx"
 
-#: e2_alias.c:330 e2_output.c:2905
+#: e2_alias.c:330 e2_output.c:2906
 msgid "keys"
 msgstr "raccourcis clavier"
 
-#: e2_alias.c:332 e2_output.c:2911
+#: e2_alias.c:332 e2_output.c:2912
 msgid "buttons"
 msgstr "boutons"
 
@@ -658,7 +658,7 @@ msgstr "et"
 
 #: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1533 e2_dialog.c:1663
 #: e2_dialog.c:1669 e2_dialog.c:1741 e2_dialog.c:1782 e2_edit_dialog.c:782
-#: e2_edit_dialog.c:1012 e2_main.c:975 e2_option_tree.c:1520
+#: e2_edit_dialog.c:1012 e2_main.c:977 e2_option_tree.c:1520
 #: e2_option_tree.c:1527 e2p_crypt.c:852 e2p_rename.c:1100
 msgid "confirm"
 msgstr "confirmer"
@@ -1007,109 +1007,109 @@ msgstr ""
 "Les options de démarrage doivent commencer par \"-\" ou \"--\", ou être un "
 "chemin\n"
 
-#: e2_command.c:755 e2_command.c:1422 e2_command.c:1769
+#: e2_command.c:653 e2_command.c:1321 e2_command.c:1673
 msgid "returned"
 msgstr "a renvoyé"
 
-#: e2_command.c:918
+#: e2_command.c:816
 #, c-format
 msgid "Command '%s' - %s"
 msgstr "Commande '%s' - %s"
 
-#: e2_command.c:1229
+#: e2_command.c:1128
 #, c-format
 msgid "Error while launching '%s'"
 msgstr "Erreur au lancement de '%s'"
 
-#: e2_command.c:1255
+#: e2_command.c:1154
 msgid "Cannot find last child process"
 msgstr "Impossible de trouver le dernier processus fils"
 
-#: e2_command.c:1263
+#: e2_command.c:1162
 #, c-format
 msgid "Cannot find child process with pid %ld"
 msgstr "Impossible de trouver le processus fils avec le pid %ld"
 
-#: e2_command.c:1266
+#: e2_command.c:1165
 #, c-format
 msgid "Cannot communicate to process %ld"
 msgstr "Impossible de communiquer avec le processus %d"
 
-#: e2_command.c:1281
+#: e2_command.c:1180
 msgid "Failed writing to child"
 msgstr "Erreur d'écriture vers le processus fils"
 
-#: e2_command.c:1777
+#: e2_command.c:1681
 #, c-format
 msgid "Strange error: could not run '%s'"
 msgstr "Erreur étrange : impossible de lancer '%s'"
 
-#: e2_command.c:1802
+#: e2_command.c:1706
 #, c-format
 msgid "The process with pid %ld is not our child"
 msgstr "Le processus avec le pid %d n'est pas un processus fils"
 
-#: e2_command.c:1822 e2_command.c:1840
+#: e2_command.c:1726 e2_command.c:1744
 #, c-format
 msgid "Failed writing to child: %s"
 msgstr "Erreur d'écriture vers le processus fils : %s"
 
-#: e2_command.c:2058
+#: e2_command.c:1970
 msgid "nothing is waiting"
 msgstr "pas de liste d'attente"
 
-#: e2_command.c:2062 e2_task.c:4529
+#: e2_command.c:1974 e2_task.c:4523
 msgid "task"
 msgstr "tâche"
 
-#: e2_command.c:2082 e2_command.c:2187 e2_command.c:2255 e2_menu.c:943
+#: e2_command.c:1994 e2_command.c:2099 e2_command.c:2167 e2_menu.c:943
 msgid "<selected items>"
 msgstr "<éléments sélectionnés>"
 
-#: e2_command.c:2156
+#: e2_command.c:2068
 msgid "nothing is running"
 msgstr "aucun traitement en cours"
 
-#: e2_command.c:2160
+#: e2_command.c:2072
 msgid " (pid)   task    directory"
 msgstr " (pid)   tâche   dossier"
 
-#: e2_command.c:2229
+#: e2_command.c:2141
 msgid "task @ directory || result"
 msgstr "tâche @ dossier || résultat"
 
-#: e2_command.c:2261 e2_command.c:2273
+#: e2_command.c:2173 e2_command.c:2185
 msgid "OK"
 msgstr "OK"
 
-#: e2_command.c:2261 e2_command.c:2276
+#: e2_command.c:2173 e2_command.c:2188
 msgid "error"
 msgstr "erreur"
 
-#: e2_command.c:2645
+#: e2_command.c:2557
 #, c-format
 msgid "Cannot run '%s'"
 msgstr "Échec du lancement de %s"
 
-#: e2_command.c:2795 e2p_du.c:333
+#: e2_command.c:2707 e2p_du.c:333
 msgid "Failed to expand macros"
 msgstr "Impossible de développer les macros"
 
-#: e2_command.c:3095
+#: e2_command.c:3007
 #, c-format
 msgid "Failed parsing command '%s' - %s"
 msgstr "Erreur de syntaxe dans la commande '%s' - %s"
 
-#: e2_command.c:3188
+#: e2_command.c:3100
 #, c-format
 msgid "Cannot send \"%s\" to a child process"
 msgstr "Impossible d'envoyer \"%s\" à un processus fils"
 
-#: e2_command.c:3430
+#: e2_command.c:3322
 msgid "x terminal emulator:"
 msgstr "émulateur de terminal X :"
 
-#: e2_command.c:3431
+#: e2_command.c:3323
 msgid ""
 "This is the external command/application that will be be run when emelFM2 is "
 "asked to open a terminal"
@@ -1117,11 +1117,11 @@ msgstr ""
 "C'est la commande externe qui sera exécutée quand il est demandé à emelFM2 "
 "d'ouvrir un terminal."
 
-#: e2_command.c:3434
+#: e2_command.c:3326
 msgid "use external file-viewer"
 msgstr "utiliser un afficheur de fichier externe"
 
-#: e2_command.c:3435
+#: e2_command.c:3327
 msgid ""
 "If activated, the command entered below will be run to view file content, "
 "instead of launching the internal viewer"
@@ -1129,11 +1129,11 @@ msgstr ""
 "Si activé, la commande ci-dessous sera utilisée pour afficher le contenu du "
 "fichier, au lieu de lancer l'afficheur interne."
 
-#: e2_command.c:3438
+#: e2_command.c:3330
 msgid "viewer command:"
 msgstr "commande de l'afficheur :"
 
-#: e2_command.c:3439
+#: e2_command.c:3331
 msgid ""
 "This is a command to run an external application for viewing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1143,11 +1143,11 @@ msgstr ""
 "Le premier fichier sélectionné sera fourni au programme comme premier "
 "argument"
 
-#: e2_command.c:3443
+#: e2_command.c:3335
 msgid "use external file-editor"
 msgstr "utiliser un éditeur de fichier externe"
 
-#: e2_command.c:3444
+#: e2_command.c:3336
 msgid ""
 "If activated, the command entered below will be run to edit file content, "
 "instead of launching the internal editor"
@@ -1155,11 +1155,11 @@ msgstr ""
 "Si activé, la commande ci-dessous sera utilisée pour modifier le contenu du "
 "fichier, au lieu de lancer l'éditeur interne."
 
-#: e2_command.c:3447
+#: e2_command.c:3339
 msgid "editor command:"
 msgstr "commande de l'éditeur :"
 
-#: e2_command.c:3448
+#: e2_command.c:3340
 msgid ""
 "This is a command to run an external application for editing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1167,11 +1167,11 @@ msgstr ""
 "Commande à lancer pour modifier les fichiers dans un programme externe.\n"
 "Le premier fichier sélectionné sera fourni au programme comme premierargument"
 
-#: e2_command.c:3452
+#: e2_command.c:3344
 msgid "use external encoding converter"
 msgstr "utiliser un convertisseur d'encodage externe"
 
-#: e2_command.c:3453
+#: e2_command.c:3345
 msgid ""
 "If activated, the command entered below will be run, instead of using the "
 "internal conversion functions, to convert file character encoding when needed"
@@ -1179,35 +1179,35 @@ msgstr ""
 "Si activé, la commande ci-dessous, et non les fonctions de conversion "
 "internes, sera utilisée pour convertir l'encodage du fichier si nécessaire."
 
-#: e2_command.c:3456
+#: e2_command.c:3348
 msgid "File encoding:"
 msgstr "Encodage de fichier :"
 
-#: e2_command.c:3457
+#: e2_command.c:3349
 msgid "converter command:"
 msgstr "commande du convertisseur :"
 
-#: e2_command.c:3458
+#: e2_command.c:3350
 msgid ""
 "A command which runs an external application to convert text encoding to "
 "UTF-8"
 msgstr "Commande à lancer pour convertir un encodage de texte en UTF-8"
 
-#: e2_command.c:3462
+#: e2_command.c:3354
 msgid "use aliases"
 msgstr "utiliser des alias"
 
-#: e2_command.c:3463
+#: e2_command.c:3355
 msgid "This is a general switch to turn on/off alias handling for commands"
 msgstr ""
 "Ceci est unterrupteur général pour (dés)activer la prise en compte des alias "
 "dans les commandes"
 
-#: e2_command.c:3466
+#: e2_command.c:3358
 msgid "interpret 'relative' paths"
 msgstr "interpréter les chemins \"relatifs\""
 
-#: e2_command.c:3467
+#: e2_command.c:3359
 msgid ""
 "This enables correct interpretation of paths containing '..' etc. These "
 "might be typed in, or attached to a button, say"
@@ -1215,11 +1215,11 @@ msgstr ""
 "Ceci active l'interprétation correcte des chemins contenant '..' etc. Ils "
 "pourront être saisis ou rattachés à un bouton, par exemple."
 
-#: e2_command.c:3471
+#: e2_command.c:3363
 msgid "watch priority"
 msgstr "surveillance des priorités"
 
-#: e2_command.c:3472
+#: e2_command.c:3364
 msgid ""
 "The watch priority of commands influences how fast program\n"
 "output is read from i/o channels. A too-high priority might\n"
@@ -1235,11 +1235,11 @@ msgstr ""
 "(note: les valeurs négatives représentent les priorités fortes et les "
 "positives les priorités faibles)"
 
-#: e2_command.c:3481
+#: e2_command.c:3373
 msgid "stop after timeout"
 msgstr "arrêter après expiration d'un délai"
 
-#: e2_command.c:3482
+#: e2_command.c:3374
 msgid ""
 "If activated, each file operation will be terminated if not finished within "
 "the time-interval set below"
@@ -1247,21 +1247,21 @@ msgstr ""
 "Si activé, chaque opération sur fichier sera interrompue si elle ne termine "
 "pas dans le temps spécifié ci-dessous"
 
-#: e2_command.c:3485
+#: e2_command.c:3377
 msgid "timeout interval"
 msgstr "délai maximum"
 
-#: e2_command.c:3486
+#: e2_command.c:3378
 msgid "The interval (seconds) allowed to complete any file operation"
 msgstr ""
 "Le nombre de secondes autorisé pour achever n'importe quelle opération sur "
 "des fichiers"
 
-#: e2_command.c:3489
+#: e2_command.c:3381
 msgid "confirm any delete"
 msgstr "confirmer toute suppression"
 
-#: e2_command.c:3490
+#: e2_command.c:3382
 msgid ""
 "If activated, you will be asked for confirmation before actually deleting "
 "anything"
@@ -1269,11 +1269,11 @@ msgstr ""
 "Si activé, une confirmation vous sera demandée avant toute suppression de "
 "fichier ou dossier."
 
-#: e2_command.c:3492
+#: e2_command.c:3384
 msgid "confirm any overwrite"
 msgstr "confirmer tout écrasement"
 
-#: e2_command.c:3493
+#: e2_command.c:3385
 msgid ""
 "If activated, you will be asked for confirmation before actually overwriting "
 "anything"
@@ -1281,11 +1281,11 @@ msgstr ""
 "Si activé, une confirmation vous sera demandée avant tout écrasement de "
 "fichier ou dossier."
 
-#: e2_command.c:3495
+#: e2_command.c:3387
 msgid "relative symlinks"
 msgstr "liens symboliques relatifs"
 
-#: e2_command.c:3496
+#: e2_command.c:3388
 msgid ""
 "This gives each created symlink a relative path to its source, like '../../"
 "<otherbranch>/<file>', instead of a full path referenced to /"
@@ -1595,7 +1595,7 @@ msgstr "_Actions"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
-#: e2_option_tree_context_menu.c:287 e2_output.c:1737 e2_toolbar.c:3419
+#: e2_option_tree_context_menu.c:287 e2_output.c:1738 e2_toolbar.c:3419
 #: e2_tree_dialog.c:1200 e2_view_dialog.c:1034 e2p_copy.c:757
 msgid "_Copy"
 msgstr "_Copier"
@@ -1745,13 +1745,13 @@ msgstr "Shift"
 msgid "Ctrl"
 msgstr "Ctrl"
 
-#: e2_context_menu.c:493 e2_keybinding.c:1640 e2_mousebinding.c:1846
+#: e2_context_menu.c:493 e2_keybinding.c:1644 e2_mousebinding.c:1846
 #: e2_mousegesture.c:1327 e2_permissions_dialog.c:454 e2_toolbar.c:3460
 #: e2_toolbar.c:3532 e2_toolbar.c:3698
 msgid "Action"
 msgstr "Action"
 
-#: e2_context_menu.c:496 e2_keybinding.c:1644 e2_mousebinding.c:1849
+#: e2_context_menu.c:496 e2_keybinding.c:1648 e2_mousebinding.c:1849
 #: e2_mousegesture.c:1330 e2_toolbar.c:3463 e2_toolbar.c:3535 e2_toolbar.c:3701
 msgid "Argument"
 msgstr "Argument"
@@ -1929,7 +1929,7 @@ msgstr "centrer"
 msgid "mouse"
 msgstr "souris"
 
-#: e2_dialog.c:1821 e2_output.c:4207 e2_toolbar.c:3341
+#: e2_dialog.c:1821 e2_output.c:4214 e2_toolbar.c:3341
 msgid "none"
 msgstr "aucun"
 
@@ -2066,7 +2066,7 @@ msgstr "_Remplacer..."
 msgid "Find and replace matching text"
 msgstr "Cherche et remplace le texte correspondant"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1697
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1698
 #: e2_view_dialog.c:1798
 msgid "_Hide"
 msgstr "Cac_her"
@@ -2137,7 +2137,7 @@ msgid "Save modified file ?"
 msgstr "Sauvegarde le fichier modifié ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1745
+#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1746
 msgid "_Edit"
 msgstr "_Modifier"
 
@@ -2376,12 +2376,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Impossible d'accéder au dossier %s, ouverture par défaut de %s "
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
-#: e2_output.c:1419 e2_task.c:4256 e2_task_backend.c:1869
+#: e2_output.c:1420 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<dossier>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1744
-#: e2_output.c:1467 e2_task.c:4262
+#: e2_output.c:1468 e2_task.c:4256
 msgid "<executable>"
 msgstr "<exécutable>"
 
@@ -2396,7 +2396,7 @@ msgstr "dossiers"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1748 e2_view_dialog.c:715
+#: e2_output.c:1749 e2_view_dialog.c:715
 msgid "_Open"
 msgstr "_Ouvrir"
 
@@ -2574,7 +2574,7 @@ msgstr "fichiers objet"
 msgid "_View symbols"
 msgstr "_Voir les symboles"
 
-#: e2_filetype.c:783 e2_keybinding.c:1634 e2_mousebinding.c:1834
+#: e2_filetype.c:783 e2_keybinding.c:1638 e2_mousebinding.c:1834
 #: e2_mousegesture.c:1319
 msgid "Category"
 msgstr "Catégorie"
@@ -2816,7 +2816,7 @@ msgid "Error reading file %s"
 msgstr "Erreur à la lecture du fichier %s"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1522 e2_task_backend.c:1196
+#: e2_output.c:1523 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Impossible d'obtenir d'information à propos de %s"
@@ -3094,7 +3094,7 @@ msgstr "_Rapporter"
 msgid "_Properties"
 msgstr "_Propriétés"
 
-#: e2_icons.c:966 e2_icons.c:1219 e2_main.c:980 e2_toolbar.c:3509 e2_tray.c:372
+#: e2_icons.c:966 e2_icons.c:1219 e2_main.c:982 e2_toolbar.c:3509 e2_tray.c:372
 msgid "_Quit"
 msgstr "_Quitter"
 
@@ -3166,32 +3166,32 @@ msgstr "Zoom _avant"
 msgid "Zoom_out"
 msgstr "Zoom a_rrière"
 
-#: e2_keybinding.c:1278
+#: e2_keybinding.c:1282
 #, c-format
 msgid "Cannot find a key binding named %s"
 msgstr "Impossible de trouver le raccourci clavier %s"
 
-#: e2_keybinding.c:1290 e2_option.c:1314
+#: e2_keybinding.c:1294 e2_option.c:1314
 msgid "key bindings"
 msgstr "raccourcis clavier"
 
-#: e2_keybinding.c:1542
+#: e2_keybinding.c:1546
 msgid "Now press one of h,m,d\\n"
 msgstr "Appuyer maintenant sur l'une des touches h,m,d\\n"
 
-#: e2_keybinding.c:1636
+#: e2_keybinding.c:1640
 msgid "Key"
 msgstr "Touche"
 
-#: e2_keybinding.c:1638
+#: e2_keybinding.c:1642
 msgid "Continue"
 msgstr "Poursuivre"
 
-#: e2_keybinding.c:1653
+#: e2_keybinding.c:1657
 msgid "chained keybindings timeout (ms)"
 msgstr "expiration du délai pour les raccourcis chaînés (ms)"
 
-#: e2_keybinding.c:1654
+#: e2_keybinding.c:1658
 msgid ""
 "This sets the time limit (in milliseconds) for accepting 'chained' "
 "keybindings"
@@ -3199,12 +3199,12 @@ msgstr ""
 "Ceci fixe le délai limite (en millisecondes) pour accepter les raccourcis "
 "claviers enchaînés."
 
-#: e2_main.c:341
+#: e2_main.c:343
 #, c-format
 msgid "Your current locale is '%s'.\n"
 msgstr "Votre localisation courante est '%s'.\n"
 
-#: e2_main.c:343
+#: e2_main.c:345
 #, c-format
 msgid ""
 "You have set the environment variable G_BROKEN_FILENAMES, which\n"
@@ -3220,7 +3220,7 @@ msgstr ""
 "remédier en affectant une valeur aux variables d'environnement LANG ou "
 "LC_CTYPE !\n"
 
-#: e2_main.c:351
+#: e2_main.c:353
 #, c-format
 msgid ""
 "(Note: There is a command line option -i/--ignore-problems, but use it\n"
@@ -3230,7 +3230,7 @@ msgstr ""
 "mais si vous l'utilisez, c'est\n"
 "à vos risques et périls !)\n"
 
-#: e2_main.c:356
+#: e2_main.c:358
 #, c-format
 msgid ""
 "%s will ignore locale problems when reading filenames because\n"
@@ -3246,20 +3246,20 @@ msgstr ""
 "valeur aux variables d'environnement\n"
 "LANG ou LC_CTYPE.\n"
 
-#: e2_main.c:730
+#: e2_main.c:732
 msgid "emelFM2"
 msgstr "emelFM2"
 
-#: e2_main.c:975
+#: e2_main.c:977
 #, c-format
 msgid "%u process(es) are running"
 msgstr "Le ou les processus %u sont en cours"
 
-#: e2_main.c:977
+#: e2_main.c:979
 msgid "_Continue"
 msgstr "_Continuer"
 
-#: e2_main.c:978
+#: e2_main.c:980
 msgid "Continue working"
 msgstr "Continuer à travailler"
 
@@ -4013,11 +4013,11 @@ msgstr ""
 "Si activé, la couleur de fond des lignes des listes de fichiers sera "
 "alternée."
 
-#: e2_option__default.c:285 e2_output.c:4222 e2_view_dialog.c:2180
+#: e2_option__default.c:285 e2_output.c:4229 e2_view_dialog.c:2180
 msgid "use custom font"
 msgstr "utiliser une police personnalisée"
 
-#: e2_option__default.c:286 e2_output.c:4223 e2_view_dialog.c:2181
+#: e2_option__default.c:286 e2_output.c:4230 e2_view_dialog.c:2181
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4431,117 +4431,117 @@ msgstr "Menu _aucun"
 msgid "Hide all listed plugins from menu"
 msgstr "Cacher tous les greffons listés du menu"
 
-#: e2_output.c:1231
+#: e2_output.c:1232
 #, c-format
 msgid "Cannot find any output from process %s"
 msgstr "Aucune sortie en provenance du processus %s"
 
-#: e2_output.c:1698
+#: e2_output.c:1699
 msgid "Do not show the output pane"
 msgstr "Ne pas afficher le panneau de sortie"
 
-#: e2_output.c:1701
+#: e2_output.c:1702
 msgid "_Toggle full"
 msgstr "(Dé)_maximiser"
 
-#: e2_output.c:1704
+#: e2_output.c:1705
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Basculer la taille du panneau de sortie de \"normale\" à \"maximale\""
 
-#: e2_output.c:1708
+#: e2_output.c:1709
 msgid "_New tab"
 msgstr "_Nouvel onglet"
 
-#: e2_output.c:1709
+#: e2_output.c:1710
 msgid "Add another tab for the output pane"
 msgstr "Ajouter un nouvel onglet pour le panneau de sortie"
 
-#: e2_output.c:1712
+#: e2_output.c:1713
 msgid "_Remove tab"
 msgstr "_Supprimer l'onglet"
 
-#: e2_output.c:1713
+#: e2_output.c:1714
 msgid "Close this this tab"
 msgstr "Fermer l'onglet courant"
 
-#: e2_output.c:1721
+#: e2_output.c:1722
 msgid "_Attach"
 msgstr "_Attacher"
 
-#: e2_output.c:1722
+#: e2_output.c:1723
 msgid "Move this tab back to output pane"
 msgstr "Replacer cet onglet sur le panneau de sortie"
 
-#: e2_output.c:1729 e2_output.c:1733
+#: e2_output.c:1730 e2_output.c:1734
 msgid "C_lear"
 msgstr "_Nettoyer"
 
-#: e2_output.c:1730 e2_output.c:1734
+#: e2_output.c:1731 e2_output.c:1735
 msgid "Clear this tab"
 msgstr "Effacer le contenu de cet onglet"
 
-#: e2_output.c:1738 e2_view_dialog.c:1035
+#: e2_output.c:1739 e2_view_dialog.c:1035
 msgid "Copy selected text"
 msgstr "Copier les lignes sélectionnées"
 
-#: e2_output.c:1746
+#: e2_output.c:1747
 msgid "Edit the tab contents"
 msgstr "Modifier le contenu de l'onglet"
 
-#: e2_output.c:1788
+#: e2_output.c:1789
 msgid "Co_mmand output"
 msgstr "Sortie de commande"
 
-#: e2_output.c:1789
+#: e2_output.c:1790
 msgid "Show output from a completed command"
 msgstr "Afficher la sortie d'une commande terminée"
 
-#: e2_output.c:1802 e2_view_dialog.c:1046
+#: e2_output.c:1803 e2_view_dialog.c:1046
 msgid "_Settings"
 msgstr "_Configuration"
 
-#: e2_output.c:1813
+#: e2_output.c:1814
 msgid "_Other"
 msgstr "_Autres"
 
-#: e2_output.c:1814
+#: e2_output.c:1815
 msgid "Open the configuration dialog at the output options page"
 msgstr "Ouvrir le dialogue de configuration à la page des options de sortie"
 
-#: e2_output.c:2751
+#: e2_output.c:2752
 msgid "output tabs"
 msgstr "onglets de sortie"
 
-#: e2_output.c:3385
+#: e2_output.c:3386
 msgid "-- end-of-output --"
 msgstr "-- fin-des-messages --"
 
-#: e2_output.c:4177
+#: e2_output.c:4184
 msgid "show output pane when a new message appears"
 msgstr "afficher le panneau de sortie quand un nouveau message survient"
 
-#: e2_output.c:4178
+#: e2_output.c:4185
 msgid "This will ensure you don't miss any messages"
 msgstr "Ceci vous assure de ne rater aucun message."
 
-#: e2_output.c:4181
+#: e2_output.c:4188
 msgid "show output pane if the command line is focused"
 msgstr ""
 "afficher le panneau de sortie quand le focus est sur la ligne de commande"
 
-#: e2_output.c:4182
+#: e2_output.c:4189
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 "Ceci entraîne l'ouverture du panneau de sortie quand vous êtes sur le point "
 "de taper une commande."
 
-#: e2_output.c:4186
+#: e2_output.c:4193
 msgid "hide output pane if the command line is unfocused"
 msgstr ""
 "cacher le panneau de sortie quand le focus n'est pas sur la ligne de commande"
 
-#: e2_output.c:4187
+#: e2_output.c:4194
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4549,19 +4549,19 @@ msgstr ""
 "Le panneau de sortie sera automatiquement fermé dès que le focus n'est plus "
 "sur la ligne de commande."
 
-#: e2_output.c:4190
+#: e2_output.c:4197
 msgid "show commands"
 msgstr "montrer les commandes"
 
-#: e2_output.c:4191
+#: e2_output.c:4198
 msgid "This echoes the commands that are run and their exit value"
 msgstr "Ceci affiche les commandes lancées et leur valeur de retour."
 
-#: e2_output.c:4193
+#: e2_output.c:4200
 msgid "scroll to new output"
 msgstr "défiler vers les nouveaux messages"
 
-#: e2_output.c:4194
+#: e2_output.c:4201
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
@@ -4569,11 +4569,11 @@ msgstr ""
 "Ceci fait défiler automatiquement le contenu du panneau de sortie pour "
 "rendre visible les nouveaux messages."
 
-#: e2_output.c:4196
+#: e2_output.c:4203
 msgid "only scroll when really following"
 msgstr "respecter le positionnement manuel"
 
-#: e2_output.c:4197
+#: e2_output.c:4204
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4582,11 +4582,11 @@ msgstr ""
 "visible les nouveaux messages, quand vous l'avez manuellement fait défiler "
 "vers une autre zone."
 
-#: e2_output.c:4200
+#: e2_output.c:4207
 msgid "only scroll when new output is at the end"
 msgstr "ne défiler que lorsque les nouveaux messages sont à la fin"
 
-#: e2_output.c:4201
+#: e2_output.c:4208
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4594,30 +4594,30 @@ msgstr ""
 "Suspend le défilement du panneau si un autre processus a affiché du texte "
 "après le point d'insertion courant."
 
-#: e2_output.c:4204
+#: e2_output.c:4211
 msgid "auto-selection boundary characters"
 msgstr "caractères limites de sélection automatique"
 
-#: e2_output.c:4205
+#: e2_output.c:4212
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr ""
 "Caractère(s) pour marquer les limites de sélection automatique de texte"
 
-#: e2_output.c:4207
+#: e2_output.c:4214
 msgid "everywhere"
 msgstr "partout"
 
-#: e2_output.c:4207
+#: e2_output.c:4214
 msgid "words"
 msgstr "mots"
 
-#: e2_output.c:4209
+#: e2_output.c:4216
 msgid "line wrap mode"
 msgstr "mode retour à la ligne automatique"
 
-#: e2_output.c:4210
+#: e2_output.c:4217
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "will only break the line between words"
@@ -4626,40 +4626,40 @@ msgstr ""
 "Si c'est 'mots', le retour à la ligne automatique ne se fera qu'entre les "
 "mots"
 
-#: e2_output.c:4213
+#: e2_output.c:4220
 msgid "left margin (pixels)"
 msgstr "marge gauche (en pixels)"
 
-#: e2_output.c:4214
+#: e2_output.c:4221
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr ""
 "Il s'agit de la marge gauche entre le bord du panneau de sortie et le texte "
 "qu'il contient."
 
-#: e2_output.c:4217
+#: e2_output.c:4224
 msgid "right margin (pixels)"
 msgstr "marge droite (en pixels)"
 
-#: e2_output.c:4218
+#: e2_output.c:4225
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr ""
 "Il s'agit de la marge droite entre le bord du panneau de sortie et le texte "
 "qu'il contient."
 
-#: e2_output.c:4226
+#: e2_output.c:4233
 msgid "custom output font"
 msgstr "personnaliser la police de sortie"
 
-#: e2_output.c:4227
+#: e2_output.c:4234
 msgid "This is the font used for text in the output pane"
 msgstr "Police utilisée pour le texte du panneau de sortie"
 
-#: e2_output.c:4232
+#: e2_output.c:4239
 msgid "positive color"
 msgstr "couleur des événements positifs"
 
-#: e2_output.c:4233
+#: e2_output.c:4240
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4667,11 +4667,11 @@ msgstr ""
 "Couleur utilisée pour les messages rendant compte d'opérations qui se sont "
 "terminées avec succès ou d'autres événements positifs."
 
-#: e2_output.c:4236
+#: e2_output.c:4243
 msgid "negative color"
 msgstr "couleur des événements négatifs"
 
-#: e2_output.c:4237
+#: e2_output.c:4244
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -4679,19 +4679,19 @@ msgstr ""
 "Cette couleur est utilisée pour les erreurs, avertissements et autres\n"
 "messages devant attirer l'attention."
 
-#: e2_output.c:4240
+#: e2_output.c:4247
 msgid "commands color"
 msgstr "couleur des commandes"
 
-#: e2_output.c:4241
+#: e2_output.c:4248
 msgid "This color is used for echoing issued commands"
 msgstr "Cette couleur sera utilisée pour l'affichage des commandes."
 
-#: e2_output.c:4244
+#: e2_output.c:4251
 msgid "unimportant color"
 msgstr "couleur ordinaire"
 
-#: e2_output.c:4245
+#: e2_output.c:4252
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -4716,7 +4716,7 @@ msgstr "Utilisateur"
 msgid "_Recurse"
 msgstr "Traiter _récursivement"
 
-#: e2_pane.c:1722 e2_task.c:2162 e2_task.c:2354 e2_task.c:3194
+#: e2_pane.c:1722 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
 msgid "No trash directory is available"
 msgstr "Aucun dossier corbeille n'est disponible"
 
@@ -4949,78 +4949,78 @@ msgstr "par_défaut"
 msgid "%s added to tasks queue"
 msgstr "%s ajouté à la liste des tâches"
 
-#: e2_task.c:1411
+#: e2_task.c:1405
 #, c-format
 msgid "The current operation (%s)"
 msgstr "La tâche courante (%s)"
 
-#: e2_task.c:1414
+#: e2_task.c:1408
 msgid "operation"
 msgstr "tâche"
 
-#: e2_task.c:1613
+#: e2_task.c:1607
 msgid "Busy"
 msgstr "En cours"
 
-#: e2_task.c:1615
+#: e2_task.c:1609
 msgid "File operation in progress"
 msgstr "Opération sur fichier en cours"
 
-#: e2_task.c:1767
+#: e2_task.c:1761
 msgid "Operation not permitted - Circular directories"
 msgstr "Opération non permise - dossiers circulaires"
 
-#: e2_task.c:2068 e2_task.c:2611 e2_task.c:2867 e2_task.c:3256 e2p_clone.c:82
+#: e2_task.c:2062 e2_task.c:2605 e2_task.c:2861 e2_task.c:3250 e2p_clone.c:82
 msgid "Enter new name for"
 msgstr "Saisir le nouveau nom de"
 
-#: e2_task.c:2300
+#: e2_task.c:2294
 #, c-format
 msgid "Trashed item %s reinstated to %s"
 msgstr "Restauration vers %s de l'objet dans la corbeille %s"
 
-#: e2_task.c:2314
+#: e2_task.c:2308
 #, c-format
 msgid "Cannot reinstate %s"
 msgstr "Impossible de restaurer %s"
 
-#: e2_task.c:2871
+#: e2_task.c:2865
 msgid "link"
 msgstr "lien symbolique"
 
-#: e2_task.c:3186
+#: e2_task.c:3180
 #, c-format
 msgid "Removed all trash items from '%s'"
 msgstr "Suppression de tous les objets jetés dans '%s'"
 
-#: e2_task.c:3367
+#: e2_task.c:3361
 #, c-format
 msgid "Cannot rename %s"
 msgstr "Impossible de renommer %s"
 
-#: e2_task.c:3542
+#: e2_task.c:3536
 #, c-format
 msgid "You do not have authority to change permission(s) of %s"
 msgstr "Vous n'êtes pas autorisé à changer les permissions de %s"
 
-#: e2_task.c:3683
+#: e2_task.c:3677
 #, c-format
 msgid "You do not have authority to change owner(s) of %s"
 msgstr "Vous n'êtes pas autorisé à changer le propriétaire de %s"
 
-#: e2_task.c:4312
+#: e2_task.c:4306
 msgid "open with"
 msgstr "ouvrir avec"
 
-#: e2_task.c:4313 e2_toolbar.c:3496 e2_toolbar.c:3500 e2p_upgrade.c:172
+#: e2_task.c:4307 e2_toolbar.c:3496 e2_toolbar.c:3500 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "Entrez une commande :"
 
-#: e2_task.c:4423
+#: e2_task.c:4417
 msgid "Enter a name or partial name to find:"
 msgstr "Entrez un nom de fichier ou un nom partiel de fichier à rechercher :"
 
-#: e2_task.c:4529
+#: e2_task.c:4523
 msgid "abort"
 msgstr "faire avorter"
 
@@ -5104,6 +5104,170 @@ msgstr "Impossible d'obtenir les permissions courantes de %s"
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Impossible de changer le propriétaire de l'ensemble de %s"
+
+#: e2_terminal.c:44
+#, c-format
+msgid "Terminal %u  %s"
+msgstr ""
+
+#: e2_terminal.c:54
+msgid "exited"
+msgstr ""
+
+#: e2_terminal.c:57
+#, c-format
+msgid "Shell exited with status %d. Use Restart to start another shell."
+msgstr ""
+
+#: e2_terminal.c:59
+#, c-format
+msgid "Shell terminated by signal %d."
+msgstr ""
+
+#: e2_terminal.c:61
+msgid ""
+"Shell exited (exit status unavailable). Use Restart to start another shell."
+msgstr ""
+
+#: e2_terminal.c:73
+msgid "failed"
+msgstr ""
+
+#: e2_terminal.c:79
+msgid "running"
+msgstr ""
+
+#: e2_terminal.c:157
+#, fuzzy
+msgid "Cancel"
+msgstr "_Annuler"
+
+#: e2_terminal.c:158
+msgid "Close terminals"
+msgstr ""
+
+#: e2_terminal.c:167
+msgid ""
+"This terminal has a running or starting shell. Closing it hangs up the shell "
+"and its terminal jobs. Close it?"
+msgstr ""
+
+#: e2_terminal.c:215
+#, fuzzy
+msgid "Starting shell"
+msgstr "C_onfiguration"
+
+#: e2_terminal.c:231
+#, fuzzy
+msgid "starting"
+msgstr "démarrage"
+
+#: e2_terminal.c:252
+msgid ""
+"A terminal requires an existing local directory. Select a mounted local pane "
+"first."
+msgstr ""
+
+#: e2_terminal.c:364
+msgid ""
+"Path insertion supports sh, bash, dash, zsh, ksh, mksh and fish. Select one "
+"in terminal preferences."
+msgstr ""
+
+#: e2_terminal.c:393
+msgid "Focus terminal"
+msgstr ""
+
+#: e2_terminal.c:393
+#, fuzzy
+msgid "Open terminal here"
+msgstr "O_uvrir dans l'autre panneau"
+
+#: e2_terminal.c:394
+#, fuzzy
+msgid "Close"
+msgstr "_Fermer"
+
+#: e2_terminal.c:394
+#, fuzzy
+msgid "Copy"
+msgstr "_Copier"
+
+#: e2_terminal.c:394
+#, fuzzy
+msgid "Insert selected paths"
+msgstr "Copier le chemin sélectionné"
+
+#: e2_terminal.c:394
+#, fuzzy
+msgid "Paste"
+msgstr "_Coller"
+
+#: e2_terminal.c:394
+#, fuzzy
+msgid "Restart"
+msgstr "démarrage"
+
+#: e2_terminal.c:400
+msgid ""
+"Start an interactive shell. Run programs such as htop in its terminal tab; "
+"the command entry still uses Application output."
+msgstr ""
+
+#: e2_terminal.c:407
+#, fuzzy
+msgid "Application output"
+msgstr "application"
+
+#: e2_terminal.c:408
+msgid ""
+"Command and file-operation log. For interactive programs, use Open terminal "
+"here and type at the shell prompt."
+msgstr ""
+
+#: e2_terminal.c:421
+msgid ""
+"Terminal shells are still running. Quitting hangs up their shells and "
+"terminal jobs. Quit?"
+msgstr ""
+
+#: e2_terminal.c:444
+msgid "terminal"
+msgstr ""
+
+#: e2_terminal.c:445
+#, fuzzy
+msgid "shell executable"
+msgstr "exécutable"
+
+#: e2_terminal.c:446
+msgid ""
+"Executable path only; empty uses SHELL or /bin/sh. New sessions start in the "
+"active local pane."
+msgstr ""
+
+#: e2_terminal.c:448
+#, fuzzy
+msgid "scrollback lines"
+msgstr "_barres de défilement"
+
+#: e2_terminal.c:450
+#, fuzzy
+msgid "terminal font"
+msgstr "émulateur de terminal X :"
+
+#: e2_terminal.c:451
+msgid "Terminal preferences apply to new or restarted sessions"
+msgstr ""
+
+#: e2_terminal.c:452
+msgid "terminal foreground"
+msgstr ""
+
+#: e2_terminal.c:454
+#, fuzzy
+msgid "terminal background"
+msgstr "couleur de fond alternée"
 
 #: e2_toolbar.c:399
 msgid "Show _bar"
@@ -5628,7 +5792,7 @@ msgstr ""
 msgid "_Show/hide window"
 msgstr "_fenêtre principale"
 
-#: e2_tray.c:472 e2_tray_notify.c:91
+#: e2_tray.c:472 e2_tray_notify.c:93
 #, c-format
 msgid "%s: needs attention (%u)"
 msgstr ""
@@ -5638,12 +5802,12 @@ msgid "Could not connect the tray icon to the desktop session bus."
 msgstr ""
 
 # To be examined later
-#: e2_tray_notify.c:90
+#: e2_tray_notify.c:92
 #, fuzzy
 msgid "Review"
 msgstr "voir"
 
-#: e2_tray_notify.c:96
+#: e2_tray_notify.c:98
 msgid ""
 "An operation is waiting for your answer. Review it from the tray menu or the "
 "main window."
@@ -5901,21 +6065,21 @@ msgstr ""
 "Ceci entraîne la mémorisation du texte recherché d'une session d'emelfm2 à "
 "l'autre."
 
-#: e2_window.c:139
+#: e2_window.c:140
 msgid "Equal panel sizes (1:1)"
 msgstr ""
 
-#: e2_window.c:1248
+#: e2_window.c:1249
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "affichés et %d cachés"
 
-#: e2_window.c:1251
+#: e2_window.c:1252
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d élément(s) sélectionné(s) sur %d %s de %s"
 
-#: e2_window.c:1820
+#: e2_window.c:1828
 msgid "WhoAmI"
 msgstr "WhoAmI"
 
