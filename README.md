@@ -1,3 +1,7 @@
+> [!NOTE]
+> **AI assistance**
+> Code changes were developed with assistance from OpenAI Codex using the **GPT-6 Astra** model.
+
 emelFM2 is a file manager that implements the popular two-pane design. It features a simple Gtk interface, a flexible filetyping scheme, and capacity for executing commands without opening a terminal-emulator application. It's designed to be small, and as fast as possible. For users so inclined, it's extensively customizable.
 
 emelFM2 works on Gtk from 2.6 to 3.22. Some aspects of the design of Gtk3 and/or Gtk3 themes are 'unfriendly' (not only to emelFM2).
@@ -23,3 +27,15 @@ See the [INSTALL](./docs/INSTALL) file.
 Optional embedded terminals for GTK 2 and GTK 3 are available with explicit
 `WITH_VTE=1`. The existing command panel remains the default. See
 [terminal build, usage and validation instructions](docs/TERMINAL).
+
+#### Changes in this fork
+- Crash prevention and memory hardening in file lists, dialogs, and filesystem operations.
+- Safer background directory reads, refresh handling, and child-process cleanup.
+- More robust file I/O, atomic saves, and error handling for deletion and encryption.
+- Configurable tray icons with desktop indicators, deferred questions, and optional notifications.
+- Optional embedded VTE terminals for GTK 2 and GTK 3, supporting interactive tools such as `htop`.
+- Dynamic file-pane column sizing, column header menus, and an equal panel sizes option.
+- Custom icons, configurable regular-file colors, and extended command-output colors.
+- Date-variable expansion when opening bookmarks.
+- Updated compiler compatibility, Debian packaging, and automated DEB/AppImage releases.
+- Regression tests for command parsing, wildcard expansion, tray behavior, and terminals.
