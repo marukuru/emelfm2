@@ -554,6 +554,7 @@ static void _e2_command_line_destroy_cb (
 //	_e2_command_line_destroy (rt);
 	line_names = g_list_remove (line_names, rt->name); //each name is unique
 	e2_cache_unregister (rt->name);	//also zaps rt->history
+	g_object_unref (rt->model);
 	g_free (rt->name);
 	app.command_lines = g_list_remove (app.command_lines, rt);
 	DEALLOCATE (E2_CommandLineRuntime, rt);
@@ -1355,6 +1356,9 @@ E2_CommandLineRuntime *e2_command_line_create (gboolean commands,
 #endif
 	);
 	rt->model = gtk_combo_box_get_model (GTK_COMBO_BOX (rt->combo));	//model is for a liststore
+	/* GtkComboBox can release its model before emitting destroy. Keep it
+	 * alive until the destroy callback has saved the navigation history. */
+	g_object_ref (rt->model);
 
 	if (commands)
 	{
@@ -1460,6 +1464,7 @@ void e2_command_line_clean_all (void)
 	{
 		E2_CommandLineRuntime *rt = (E2_CommandLineRuntime *)member->data;
 		g_free (rt->name);
+		g_object_unref (rt->model);
 		e2_list_free_with_data (&rt->history); //CHECKME
 		DEALLOCATE (E2_CommandLineRuntime, rt);
 	}

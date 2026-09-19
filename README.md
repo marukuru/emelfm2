@@ -43,3 +43,14 @@ Optional embedded terminals for GTK 2 and GTK 3 are available with explicit
 Enable **general → miscellaneous → allow only one instance** to reuse the running
 window for the same configuration directory. Further launches quietly restore and
 focus it, including when it is hidden in the tray. This works without a session bus.
+
+Enable **interface → miscellaneous → enable tabs** to group a pair of panes and
+their navigation bars in each tab. **Ctrl+N** opens a tab with the current folders;
+click a tab to switch or its **×** button to close it. Titles show both folder
+names. Tabs retain navigation history, selection, filters, sorting and pane sizes
+during the session. The command bar and terminal remain shared. Disabling tabs
+keeps the current folder pair; only the current pair is restored on next startup.
+
+GUI regression checks: `tests/run-single-instance.sh` and
+`tests/run-pane-tabs.sh` (set `GTK_PACKAGE=gtk+-2.0` for GTK 2; set
+`E2_TABS_VTE=1` when testing a build with embedded terminals).

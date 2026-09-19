@@ -34,6 +34,7 @@ typedef struct _E2_WindowRuntime
 	gdouble output_paned_ratio;
 	gdouble output_paned_ratio_last;
 	gboolean panes_horizontal;
+	gboolean rebuilding; //defer directory dispatch while pane widgets are replaced
 } E2_WindowRuntime;
 
 #ifdef E2_COMPOSIT

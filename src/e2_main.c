@@ -112,6 +112,7 @@ The following items are covered:
 #include "e2_terminal.h"
 #include "e2_tray.h"
 #include "e2_single_instance.h"
+#include "e2_tabs.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
 #endif
@@ -1007,6 +1008,7 @@ gboolean e2_main_closedown (gboolean compulsory, gboolean saveconfig, gboolean d
 	if (!compulsory && !e2_terminal_confirm_shutdown ()) return FALSE;
 	e2_terminal_shutdown ();
 #endif
+	e2_tabs_cleanup ();
 	e2_single_instance_cleanup ();
 	e2_tray_windows_cleanup ();
 	e2_tray_cleanup ();

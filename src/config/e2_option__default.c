@@ -146,6 +146,10 @@ void e2_option_default_register (void)
 	/*********************/
 
 	group_name = g_strconcat(_C(20) ,":",_C(26),NULL);  //_("interface:miscellaneous"
+	e2_option_bool_register ("pane-tabs", group_name,
+		_("enable tabs"),
+		_("Each tab contains two file panes and their navigation bars. Ctrl+N opens a new tab with the current folders."),
+		NULL, FALSE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_BUILDPANES);
 #ifdef E2_COMPOSIT
 	e2_option_int_register ("window-opacity", group_name, _("opacity"),
 		_("Window translucence, 30 (faint) to 100 (opaque)"),

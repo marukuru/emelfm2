@@ -695,6 +695,23 @@ void e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath)
 {
 	_e2_pane_change_dir (rt, newpath, TRUE, TRUE);
 }
+
+/* Restore a tab without adding an entry to its back/forward history. */
+void e2_pane_restore_dir (E2_PaneRuntime *rt, const gchar *path)
+{
+	/* The stored absolute path is literal: do not expand $, ~ or macros. */
+	E2_Listman *data = &rt->view.listcontrols;
+	LISTS_LOCK
+	data->view = &rt->view;
+	data->history = FALSE;
+	data->hook = TRUE;
+	g_free (data->newpath);
+	data->newpath = g_strdup (path);
+	LISTS_UNLOCK
+	g_timeout_add_full (G_PRIORITY_HIGH, 4,
+		(GSourceFunc) e2_fileview_cd_manage, data, NULL);
+}
+
 /**
 @brief change directory displayed in a specified pane
 Makes no assumption about whether BGL is active, but uses timer to force-open

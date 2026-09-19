@@ -32,6 +32,7 @@ ToDo - description of how this works
 
 #include "emelfm2.h"
 #include "e2_terminal.h"
+#include "e2_tabs.h"
 #include <string.h>
 #include <unistd.h>
 #include <pwd.h>
@@ -1131,6 +1132,7 @@ This probably needs BGL to be closed upon arrival.
 */
 void e2_window_set_title_path (GtkWidget *wid, ViewInfo *view)
 {
+	e2_tabs_update_title ();
 	gint choice = e2_option_sel_get ("title-type");
 	if ((choice == 1 && view == &app.pane1.view)
 	 || (choice == 2 && view == &app.pane2.view)
@@ -1492,6 +1494,8 @@ void e2_window_create (E2_WindowRuntime *rt)
 		app.main_window->allocation.width, app.main_window->allocation.height);
 #endif
 	gtk_window_set_resizable (GTK_WINDOW (app.main_window), TRUE);
+	g_signal_connect (app.main_window, "key-press-event",
+		G_CALLBACK (e2_tabs_key), GUINT_TO_POINTER (1));
 #ifdef E2_VTE
 	g_signal_connect (app.main_window, "key-press-event",
 		G_CALLBACK (e2_terminal_window_key), GUINT_TO_POINTER (1));
@@ -1582,7 +1586,7 @@ void e2_window_create (E2_WindowRuntime *rt)
 	GTK_WIDGET_UNSET_FLAGS (rt->output_paned, GTK_CAN_FOCUS);
 #endif
 */
-	gtk_paned_pack1 (GTK_PANED (rt->output_paned), rt->panes_outer_box, TRUE, TRUE);
+	e2_tabs_pack (rt->panes_outer_box);
 	gtk_paned_pack2 (GTK_PANED (rt->output_paned), wid, TRUE, TRUE);
 	gtk_box_pack_start (GTK_BOX (app.vbox_main), rt->output_paned, TRUE, TRUE, 0);
 
@@ -1913,6 +1917,8 @@ This is used after config dialog, or detection of a config file that is updated
 void e2_window_recreate (E2_WindowRuntime *rt)
 {
 	printd (DEBUG, "recreate main window");
+	rt->rebuilding = TRUE;
+	e2_tabs_rebuild_begin ();
 
 	//prevent any new refresh from starting during this rebuild
 	e2_filestore_disable_refresh ();
@@ -1928,7 +1934,12 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 			|| g_atomic_int_get (&other_view->listcontrols.refresh_working);
 //		LISTS_UNLOCK
 		if (busy)
+		{
+			/* Directory workers need the UI lock to finish their current read. */
+			OPENBGL
 			usleep (50000);
+			CLOSEBGL
+		}
 		else
 			break;
 	}
@@ -2028,7 +2039,7 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 
 	gtk_paned_pack1 (GTK_PANED (rt->panes_paned), app.pane1.outer_box, TRUE, TRUE);
 	gtk_paned_pack2 (GTK_PANED (rt->panes_paned), app.pane2.outer_box, TRUE, TRUE);
-	gtk_paned_pack1(GTK_PANED (rt->output_paned), rt->panes_outer_box, TRUE, TRUE);
+	e2_tabs_pack (rt->panes_outer_box);
 
 	//update window title if wanted
 	if (e2_option_sel_get ("title-type") == 0)
@@ -2136,6 +2147,8 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 #endif
 	e2_output_update_style ();
 	e2_filestore_enable_refresh ();
+	rt->rebuilding = FALSE;
+	e2_tabs_rebuild_end ();
 	gtk_widget_grab_focus (curr_view->treeview);
 }
 /**

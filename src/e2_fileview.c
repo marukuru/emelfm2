@@ -3655,6 +3655,10 @@ completion in this callback: GTK must regain control while a pane is busy.
 */
 gboolean e2_fileview_cd_manage (E2_Listman *data)
 {
+	/* Rebuilds dispatch GTK events while replacing the lists and toolbars.
+	 * Keep queued paths pending until the new widgets and models are ready. */
+	if (app.window.rebuilding)
+		return TRUE;
 	//Coalesce request timers for both panes, including the current source.
 	while (g_source_remove_by_user_data (&app.pane1.view.listcontrols)) {}
 	while (g_source_remove_by_user_data (&app.pane2.view.listcontrols)) {}

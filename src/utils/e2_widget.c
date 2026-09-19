@@ -76,6 +76,14 @@ static gboolean _e2_widget_show_tip_cb (GtkWidget  *widget,
 	}
 	return FALSE;
 }
+/* Cancel pending tooltip setup when its widget is destroyed. */
+static void _e2_widget_cancel_tip (GtkWidget *widget, gpointer data)
+{
+	guint source = GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (widget), "_e2-tip-source"));
+	g_object_set_data (G_OBJECT (widget), "_e2-tip-source", NULL);
+	if (source != 0) g_source_remove (source);
+}
+
 /**
 @brief idle-callback to add or remove a tip with BGL safely closed
 @param widget the widget whose tip is to be altered
@@ -83,16 +91,16 @@ static gboolean _e2_widget_show_tip_cb (GtkWidget  *widget,
 */
 static gboolean _e2_widget_defer_tip (GtkWidget *widget)
 {
-	gpointer tip = g_object_get_data (G_OBJECT (widget), "_e2-tiptext");
 	CLOSEBGL
+	g_object_set_data (G_OBJECT (widget), "_e2-tip-source", NULL);
+	g_signal_handlers_disconnect_by_func (widget, _e2_widget_cancel_tip, NULL);
+	gpointer tip = g_object_get_data (G_OBJECT (widget), "_e2-tiptext");
 	gtk_widget_set_has_tooltip (widget, (tip != NULL));
-	OPENBGL
+	g_signal_handlers_disconnect_by_func (widget, _e2_widget_show_tip_cb, NULL);
 	if (tip != NULL)
 		g_signal_connect (G_OBJECT (widget), "query-tooltip",
 			G_CALLBACK(_e2_widget_show_tip_cb), NULL);
-	else
-		g_signal_handlers_disconnect_by_func ((gpointer)widget,
-			_e2_widget_show_tip_cb, NULL);
+	OPENBGL
 	return FALSE;
 }
 /**
@@ -107,7 +115,16 @@ void e2_widget_set_safetip (GtkWidget *widget, const gchar *tiptext)
 		g_object_set_data_full (G_OBJECT (widget), "_e2-tiptext", g_strdup(tiptext), g_free);
 	else
 		g_object_set_data (G_OBJECT (widget), "_e2-tiptext", NULL);
-	g_idle_add ((GSourceFunc) _e2_widget_defer_tip, widget);
+	/* Coalesce updates and cancel the idle when a toolbar is rebuilt before
+	 * GTK has had time to install its tooltip. Keep the object alive until
+	 * the source or the destroy callback has released it. */
+	if (g_object_get_data (G_OBJECT (widget), "_e2-tip-source") == NULL)
+	{
+		g_signal_connect (widget, "destroy", G_CALLBACK (_e2_widget_cancel_tip), NULL);
+		guint source = g_idle_add_full (G_PRIORITY_DEFAULT_IDLE,
+			(GSourceFunc) _e2_widget_defer_tip, g_object_ref (widget), g_object_unref);
+		g_object_set_data (G_OBJECT (widget), "_e2-tip-source", GUINT_TO_POINTER (source));
+	}
 }
 /**
 @brief setup for a button to have 2 alternate tooltips

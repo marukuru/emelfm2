@@ -3081,7 +3081,14 @@ FIXME make box right-justified, box-pack-end no works !
 	//put toolbar into its parent
 	GtkWidget *box;
 	gboolean hor_now =  e2_option_bool_get_direct (rt->hori);
-	switch (e2_option_int_get_direct (rt->type))
+	gint placement = e2_option_int_get_direct (rt->type);
+	if (e2_option_bool_get ("pane-tabs"))
+	{
+		if (rt == &app.pane1.toolbar) placement = 2;
+		else if (rt == &app.pane2.toolbar) placement = 3;
+		else if (rt == &app.commandbar) placement = 0;
+	}
+	switch (placement)
 	{
 		default:	//main window
 			box = (hor_now) ? app.vbox_main : app.hbox_main;

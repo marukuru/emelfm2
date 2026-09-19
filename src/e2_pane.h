@@ -63,6 +63,7 @@ E2_PaneRuntime *e2_pane_get_runtime (gpointer from, gpointer actiondata,
 	const gchar **multidata);
 void e2_pane_activate_other (void);
 void e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *path);
+void e2_pane_restore_dir (E2_PaneRuntime *rt, const gchar *path);
 gboolean e2_pane_goto_accessible_path (E2_PaneRuntime *rt);
 //void e2_pane_change_dir_sync (E2_PaneRuntime *rt, gchar *path, E2_CDType *completed_flag);
 void e2_pane_create (E2_PaneRuntime *rt);
