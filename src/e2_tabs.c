@@ -9,6 +9,7 @@
 #include "e2_pane.h"
 #include "e2_filestore.h"
 #include "e2_toolbar.h"
+#include "e2_icons.h"
 #include <gdk/gdkkeysyms.h>
 
 typedef struct
@@ -379,6 +380,16 @@ static void _e2_tabs_schedule (void)
 		switch_source = g_timeout_add (30, _e2_tabs_process, NULL);
 }
 
+#if GTK_CHECK_VERSION(2,20,0)
+static void _e2_tabs_new_clicked (GtkButton *button, gpointer data)
+{
+	NEEDCLOSEBGL
+	new_requests++;
+	_e2_tabs_schedule ();
+	NEEDOPENBGL
+}
+#endif
+
 static void _e2_tabs_switch (GtkNotebook *book, gpointer page, guint number, gpointer data)
 {
 	if (selecting || current == NULL) return;
@@ -408,6 +419,14 @@ void e2_tabs_pack (GtkWidget *panes)
 		gtk_widget_set_name (notebook, "file-pane-tabs");
 		gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
 		gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
+#if GTK_CHECK_VERSION(2,20,0)
+		GtkWidget *add = e2_button_get_full (NULL, STOCK_NAME_ADD, GTK_ICON_SIZE_MENU,
+			_("New tab (Ctrl+N)"), _e2_tabs_new_clicked, NULL, E2_BUTTON_SHOW_MISSING_ICON);
+		gtk_button_set_relief (GTK_BUTTON (add), GTK_RELIEF_NONE);
+		atk_object_set_name (gtk_widget_get_accessible (add), _("New tab"));
+		gtk_notebook_set_action_widget (GTK_NOTEBOOK (notebook), add, GTK_PACK_END);
+		gtk_widget_show_all (add);
+#endif
 		g_signal_connect (notebook, "switch-page", G_CALLBACK (_e2_tabs_switch), NULL);
 		current = _e2_tabs_add (FALSE);
 		gtk_paned_pack1 (GTK_PANED (app.window.output_paned), notebook, TRUE, TRUE);

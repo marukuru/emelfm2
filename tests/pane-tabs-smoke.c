@@ -49,6 +49,17 @@ static void new_tab (void)
 {
 	control_key (GDK_n);
 }
+static void new_tab_button (void)
+{
+#if GTK_CHECK_VERSION(2,20,0)
+	GtkWidget *button = gtk_notebook_get_action_widget (GTK_NOTEBOOK (book), GTK_PACK_END);
+	g_assert_true (GTK_IS_BUTTON (button));
+	g_assert_true (gtk_widget_get_mapped (button));
+	gtk_button_clicked (GTK_BUTTON (button));
+#else
+	new_tab ();
+#endif
+}
 static void next_tab (void)
 {
 	control_key (GDK_Tab);
@@ -226,7 +237,7 @@ static gboolean tick (gpointer data)
 			book = gtk_paned_get_child1 (GTK_PANED (app.window.output_paned));
 			g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 1);
 			structure ();
-			new_tab ();
+			new_tab_button ();
 			break;
 		case 8:
 			if (!page_is (1, 2)) goto wait;
@@ -265,7 +276,7 @@ static gboolean tick (gpointer data)
 			cursor_is (&app.pane2.view, "two");
 			g_assert_true (curr_pane == &app.pane2);
 			g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == app.pane2.view.treeview);
-			new_tab ();
+			new_tab_button ();
 			break;
 		case 13:
 			if (!page_is (2, 3)) goto wait;
