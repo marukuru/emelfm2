@@ -17,6 +17,7 @@ typedef struct
 	GList *history;
 	guint history_position;
 	GHashTable *selection;
+	gchar *cursor;
 	gdouble xscroll, yscroll;
 	/* Only the filter/sort fields are used; no widgets or workers are saved. */
 	ViewInfo settings;
@@ -44,6 +45,7 @@ static void _e2_tabs_clear_pane (E2_TabPane *pane)
 	g_free (pane->path);
 	g_list_free (pane->history); /* Entries belong to app.dir_history. */
 	if (pane->selection != NULL) g_hash_table_destroy (pane->selection);
+	g_free (pane->cursor);
 	g_free (pane->settings.name_filter.patternptr);
 	memset (pane, 0, sizeof (*pane));
 }
@@ -58,6 +60,13 @@ static void _e2_tabs_save_pane (E2_TabPane *saved, E2_PaneRuntime *pane)
 	saved->history_position = pane->opendir_cur;
 	HISTORY_UNLOCK
 	saved->selection = e2_fileview_log_selected_names (view);
+	GtkTreePath *cursor;
+	gtk_tree_view_get_cursor (GTK_TREE_VIEW (view->treeview), &cursor, NULL);
+	if (cursor != NULL)
+	{
+		saved->cursor = e2_fileview_get_row_name (view, *gtk_tree_path_get_indices (cursor));
+		gtk_tree_path_free (cursor);
+	}
 	saved->xscroll = gtk_adjustment_get_value (gtk_scrolled_window_get_hadjustment
 		(GTK_SCROLLED_WINDOW (pane->pane_sw)));
 	saved->yscroll = gtk_adjustment_get_value (gtk_scrolled_window_get_vadjustment
@@ -180,6 +189,17 @@ static void _e2_tabs_finish_pane (E2_TabPane *saved, E2_PaneRuntime *pane)
 	 * to the fallback directory; save the actual location on next departure. */
 	if (strcmp (view->dir, saved->path) == 0)
 	{
+		GtkTreeIter iter;
+		if (saved->cursor != NULL && e2_tree_find_iter_from_str
+			(view->model, FILENAME, saved->cursor, &iter, FALSE))
+		{
+			GtkTreePath *cursor = gtk_tree_model_get_path (view->model, &iter);
+			gtk_tree_view_set_cursor (GTK_TREE_VIEW (view->treeview), cursor, NULL, FALSE);
+			gtk_tree_path_free (cursor);
+			/* Setting the cursor selects its row. Restore the exact selection,
+			 * including an empty selection or an unselected cursor row. */
+			gtk_tree_selection_unselect_all (view->selection);
+		}
 		e2_fileview_reselect_names (view, saved->selection, FALSE);
 		gtk_adjustment_set_value (gtk_scrolled_window_get_hadjustment
 			(GTK_SCROLLED_WINDOW (pane->pane_sw)), saved->xscroll);
@@ -443,11 +463,21 @@ void e2_tabs_cleanup (void)
 
 gboolean e2_tabs_key (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
-	if (notebook == NULL || gdk_keyval_to_lower (event->keyval) != GDK_n
+	if (notebook == NULL
 		|| (event->state & gtk_accelerator_get_default_mod_mask ()) != GDK_CONTROL_MASK)
 		return FALSE;
+	guint key = gdk_keyval_to_lower (event->keyval);
+	if (key != GDK_n && key != GDK_Tab) return FALSE;
 	NEEDCLOSEBGL
-	new_requests++;
+	if (key == GDK_n)
+		new_requests++;
+	else
+	{
+		/* Repeated presses advance from a pending destination while directory
+		 * workers finish the previous switch. Wrap after the last tab. */
+		GList *link = g_list_find (tabs, requested != NULL ? requested : current);
+		requested = (link->next != NULL) ? link->next->data : tabs->data;
+	}
 	_e2_tabs_schedule ();
 	NEEDOPENBGL
 	return TRUE;

@@ -38,7 +38,7 @@ with open(root/'log', 'w') as output:
         assert result == 0, str(result)+"\n"+(root/'log').read_text()
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('pane-tabs: Ctrl+N, independent folders/state, queued navigation, layout, rebuild, close and option toggling passed')
+        print('pane-tabs: initial visibility, Ctrl+N, Ctrl+Tab wrapping, cursor/selection, independent folders/state, queued navigation, layout, rebuild, close and option toggling passed')
     finally:
         if p.poll() is None:
             p.kill()
