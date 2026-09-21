@@ -86,6 +86,7 @@ typedef enum
 	E2_OPTION_FLAG_BUILDKEYS = 1 << 18, //dirty keybindings tree-option
 	E2_OPTION_FLAG_BUILDBUTTONS = 1 << 19, //dirty button-bindings tree option
 	E2_OPTION_FLAG_BUILDALIAS = 1 << 20, //dirty aliases tree-option
+	E2_OPTION_FLAG_COMPACT = 1 << 21, //pack option group at its natural height
 } E2_OptionFlags;
 
 typedef struct _E2_OptionTypeExtraColor

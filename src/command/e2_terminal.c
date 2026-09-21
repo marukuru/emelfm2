@@ -660,16 +660,17 @@ void e2_terminal_options_register (void)
         _("Give each file-pane tab its own application output and terminals. Disabling this combines existing outputs and terminals."),
         "pane-tabs", FALSE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_BUILDPANES | E2_OPTION_FLAG_FREEGROUP);
     gchar *group = g_strconcat (_C(6), ".", _("terminal"), NULL);
+    E2_OptionFlags flags = E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT;
     e2_option_str_register ("terminal-shell", group, _("shell executable"),
         _("Executable path only; empty uses SHELL or /bin/sh. New sessions start in the active local pane."),
-        NULL, "", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_FREEGROUP);
+        NULL, "", flags | E2_OPTION_FLAG_FREEGROUP);
     e2_option_int_register ("terminal-scrollback", group, _("scrollback lines"),
-        NULL, NULL, 10000, 0, 1000000, E2_OPTION_FLAG_BASIC);
+        NULL, NULL, 10000, 0, 1000000, flags);
     e2_option_font_register ("terminal-font", group, _("terminal font"),
-        _("Terminal preferences apply to new or restarted sessions"), NULL, "Monospace 10", E2_OPTION_FLAG_BASIC);
+        _("Terminal preferences apply to new or restarted sessions"), NULL, "Monospace 10", flags);
     e2_option_color_register ("terminal-foreground", group, _("terminal foreground"),
-        NULL, NULL, "#dddddd", E2_OPTION_FLAG_BASIC);
+        NULL, NULL, "#dddddd", flags);
     e2_option_color_register ("terminal-background", group, _("terminal background"),
-        NULL, NULL, "#202020", E2_OPTION_FLAG_BASIC);
+        NULL, NULL, "#202020", flags);
 }
 #endif

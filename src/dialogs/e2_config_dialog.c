@@ -2097,6 +2097,21 @@ void e2_config_dialog_create (gchar *page)
 		//and if necessary, create categories view item(s) and
 		//notebook page(s) for parent group and any child(ren)
 		GtkWidget *box = _e2_confdlg_get_page (set, rt);
+		if (set->flags & E2_OPTION_FLAG_COMPACT)
+		{
+			GtkWidget *content = g_object_get_data (G_OBJECT (box), "compact-options");
+			if (content == NULL)
+			{
+#ifdef USE_GTK3_0
+				content = gtk_box_new (GTK_ORIENTATION_VERTICAL, E2_PADDING);
+#else
+				content = gtk_vbox_new (FALSE, E2_PADDING);
+#endif
+				gtk_box_pack_start (GTK_BOX (box), content, FALSE, FALSE, 0);
+				g_object_set_data (G_OBJECT (box), "compact-options", content);
+			}
+			box = content;
+		}
 		//FIXME create only the the startup page now, rest after display
 		GtkWidget *hbox, *label;	//, *button;
 		gchar *label_text;
