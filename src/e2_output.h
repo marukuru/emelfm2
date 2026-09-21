@@ -121,6 +121,8 @@ void e2_output_update_style (void);
 GtkWidget *e2_output_initialise (void) G_GNUC_MALLOC;
 GtkWidget *e2_output_create_notebook (gint count);
 void e2_output_select_notebook (GtkWidget *book);
+void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination);
+void e2_output_destroy_notebook (GtkWidget *book, GtkWidget *replacement);
 #ifndef USE_GTK3_22
 void e2_output_set_menu_position (GtkWidget *menu, gint *x, gint *y,
 	gboolean *push_in, GtkWidget *textview);

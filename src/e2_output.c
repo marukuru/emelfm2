@@ -2191,6 +2191,89 @@ void e2_output_select_notebook (GtkWidget *book)
 	if (page < 0) page = 0;
 	_e2_output_tabchange_cb (GTK_NOTEBOOK (book), NULL, page, NULL);
 }
+void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
+{
+	if (source == destination) return;
+	*curr_tab = app.tab;
+	g_signal_handlers_block_by_func (source, _e2_output_tabchange_cb, NULL);
+	g_signal_handlers_block_by_func (destination, _e2_output_tabchange_cb, NULL);
+	guint number = 0;
+	GList *link;
+	for (link = app.tabslist; link != NULL; link = link->next)
+	{
+		E2_OutputTabRuntime *tab = link->data;
+#ifdef USE_GTK2_10
+		if (tab->book == destination) number = MAX (number, tab->labelnum);
+#endif
+	}
+	for (link = app.tabslist; link != NULL; link = link->next)
+	{
+		E2_OutputTabRuntime *tab = link->data;
+		if (tab->book != source) continue;
+		tab->book = destination;
+		number++;
+#ifdef USE_GTK2_10
+		tab->labelnum = number;
+#endif
+		GtkWidget *parent = gtk_widget_get_parent (tab->scroll);
+		GtkWidget *label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (parent), tab->scroll);
+		gchar *text = g_strdup_printf ("%u", number);
+		gtk_label_set_text (GTK_LABEL (label), text);
+		g_free (text);
+#ifdef E2_TABS_DETACH
+		if (tab->detached) continue; //its attach action now returns to destination
+#endif
+		g_object_ref (tab->scroll);
+		g_object_ref (label);
+		gtk_container_remove (GTK_CONTAINER (source), tab->scroll);
+		gtk_notebook_append_page (GTK_NOTEBOOK (destination), tab->scroll, label);
+#ifdef USE_GTK2_10
+		gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (destination), tab->scroll, TRUE);
+#ifdef E2_TABS_DETACH
+		gtk_notebook_set_tab_detachable (GTK_NOTEBOOK (destination), tab->scroll, TRUE);
+#endif
+#endif
+		g_object_unref (label);
+		g_object_unref (tab->scroll);
+	}
+	gtk_notebook_set_show_tabs (GTK_NOTEBOOK (destination), TRUE);
+	g_signal_handlers_unblock_by_func (source, _e2_output_tabchange_cb, NULL);
+	g_signal_handlers_unblock_by_func (destination, _e2_output_tabchange_cb, NULL);
+	app.tab = *curr_tab;
+}
+void e2_output_destroy_notebook (GtkWidget *book, GtkWidget *replacement)
+{
+	/* Running commands keep a valid destination when their main tab closes. */
+	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (replacement), 0);
+	E2_OutputTabRuntime *target = g_object_get_data (G_OBJECT (page), "e2-output-tab");
+	g_signal_handlers_block_by_func (book, _e2_output_tabchange_cb, NULL);
+	GList *link = app.tabslist;
+	while (link != NULL)
+	{
+		GList *next = link->next;
+		E2_OutputTabRuntime *tab = link->data;
+		if (tab->book == book)
+		{
+			e2_command_retab2_children (tab, target);
+			app.tabslist = g_list_delete_link (app.tabslist, link);
+			app.tabcount--;
+#ifdef E2_TABS_DETACH
+			GtkWidget *parent = gtk_widget_get_parent (tab->scroll);
+			if (tab->detached && parent != NULL)
+				g_signal_handlers_block_by_func (parent, _e2_output_tabchange_cb, NULL);
+#endif
+			gtk_widget_destroy (tab->scroll);
+			g_free (tab->origin_lastime);
+#ifdef E2_OUTPUTSTYLES
+			if (tab->style_tags != NULL) g_hash_table_destroy (tab->style_tags);
+			if (tab->style_trios != NULL) g_hash_table_destroy (tab->style_trios);
+#endif
+			DEALLOCATE (E2_OutputTabRuntime, tab);
+		}
+		link = next;
+	}
+	gtk_widget_destroy (book);
+}
 /* *
 @brief process an 'intercepted' double-click on the output pane
 This handles 'activated' text in the output pane.

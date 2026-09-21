@@ -10,6 +10,7 @@
 #include "e2_filestore.h"
 #include "e2_toolbar.h"
 #include "e2_icons.h"
+#include "e2_terminal.h"
 #include <gdk/gdkkeysyms.h>
 
 typedef struct
@@ -31,6 +32,9 @@ typedef struct
 	gboolean second_active;
 	gdouble ratio;
 	gboolean equal;
+#ifdef E2_VTE
+	E2_TerminalWorkspace *output;
+#endif
 } E2_PaneTab;
 
 static GtkWidget *notebook;
@@ -40,6 +44,24 @@ static guint switch_source, new_requests;
 static gboolean selecting, loading, rebuilding, refresh_blocked;
 
 static void _e2_tabs_schedule (void);
+
+#ifdef E2_VTE
+static void _e2_tabs_sync_outputs (gboolean separate)
+{
+	if (separate)
+	{
+		if (current != NULL && current->output == NULL)
+			current->output = e2_terminal_workspace_current ();
+		return;
+	}
+	for (GList *link = tabs; link != NULL; link = link->next)
+	{
+		E2_PaneTab *tab = link->data;
+		e2_terminal_workspace_merge (tab->output);
+		tab->output = NULL;
+	}
+}
+#endif
 
 static void _e2_tabs_clear_pane (E2_TabPane *pane)
 {
@@ -217,6 +239,9 @@ static void _e2_tabs_finish_pane (E2_TabPane *saved, E2_PaneRuntime *pane)
 
 static void _e2_tabs_remove (E2_PaneTab *tab)
 {
+#ifdef E2_VTE
+	e2_terminal_workspace_close (tab->output);
+#endif
 	tabs = g_list_remove (tabs, tab);
 	selecting = TRUE;
 	gtk_widget_destroy (tab->page);
@@ -231,6 +256,14 @@ static void _e2_tabs_close (GtkWidget *button, E2_PaneTab *tab)
 	NEEDCLOSEBGL
 	if (tabs->next != NULL)
 	{
+#ifdef E2_VTE
+		if (tab->output != NULL && (!e2_terminal_workspace_can_close (tab->output)
+			|| g_list_find (tabs, tab) == NULL))
+		{
+			NEEDOPENBGL
+			return;
+		}
+#endif
 		if (tab != current)
 		{
 			if (requested == tab) requested = NULL;
@@ -251,6 +284,10 @@ static void _e2_tabs_close (GtkWidget *button, E2_PaneTab *tab)
 static E2_PaneTab *_e2_tabs_add (gboolean capture)
 {
 	E2_PaneTab *tab = g_new0 (E2_PaneTab, 1);
+#ifdef E2_VTE
+	if (e2_option_bool_get ("terminal-per-tab"))
+		tab->output = capture ? e2_terminal_workspace_new () : e2_terminal_workspace_current ();
+#endif
 #ifdef USE_GTK3_0
 	tab->page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *labelbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
@@ -335,6 +372,13 @@ static gboolean _e2_tabs_process (gpointer data)
 		gtk_container_remove (GTK_CONTAINER (current->page), panes);
 		current = requested;
 		requested = NULL;
+#ifdef E2_VTE
+		if (e2_option_bool_get ("terminal-per-tab"))
+		{
+			if (current->output == NULL) current->output = e2_terminal_workspace_new ();
+			e2_terminal_workspace_select (current->output);
+		}
+#endif
 		gtk_box_pack_start (GTK_BOX (current->page), panes, TRUE, TRUE, 0);
 		g_object_unref (panes);
 		selecting = TRUE;
@@ -431,6 +475,9 @@ void e2_tabs_pack (GtkWidget *panes)
 		current = _e2_tabs_add (FALSE);
 		gtk_paned_pack1 (GTK_PANED (app.window.output_paned), notebook, TRUE, TRUE);
 	}
+#ifdef E2_VTE
+	_e2_tabs_sync_outputs (e2_option_bool_get ("terminal-per-tab"));
+#endif
 	gtk_box_pack_start (GTK_BOX (current->page), panes, TRUE, TRUE, 0);
 	gtk_widget_set_sensitive (panes, !loading);
 	gtk_widget_show (notebook);
@@ -453,6 +500,9 @@ void e2_tabs_rebuild_end (void)
 
 void e2_tabs_cleanup (void)
 {
+#ifdef E2_VTE
+	_e2_tabs_sync_outputs (FALSE);
+#endif
 	if (switch_source != 0) g_source_remove (switch_source);
 	switch_source = 0;
 	/* Shutdown still needs the live panes for cache/plugin cleanup. Disabling

@@ -1560,6 +1560,12 @@ void e2_window_create (E2_WindowRuntime *rt)
 	e2_option_color_filetypes_sync ();
 #endif
 
+	//Output controls and file-pane tabs also need stock icons during creation.
+	e2_icons_register_stocks ();
+#ifdef E2_ADD_STOCKS
+	e2_icons_cache_stocks ();
+#endif
+
 	//file panes infrastructure
 	e2_cache_double_register ("file-pane-ratio-last", &rt->panes_paned_ratio_last, 0.55);
 	e2_cache_double_register ("file-pane-ratio", &rt->panes_paned_ratio, 0.55);
@@ -1745,12 +1751,6 @@ void e2_window_create (E2_WindowRuntime *rt)
 		sizeof (app.pane2.view.name_filter.pattern)); */
 
 	g_hook_list_init (&app.hook_pane_focus_changed, sizeof (GHook));
-
-	e2_icons_register_stocks (); //register with gtk any installed icons
-#ifdef E2_ADD_STOCKS
-	//after mainwindow created & before any icons needed, setup cached-icons data
-	e2_icons_cache_stocks ();
-#endif //def E2_ADD_STOCKS
 
 	e2_pane_create (&app.pane1);
 	e2_pane_create (&app.pane2);

@@ -3806,7 +3806,7 @@ gboolean e2_utils_get_pointer_position (GtkWidget *widget, gint *x, gint *y)
 {
 	GdkDevice *device;
 	GdkEvent *event = gtk_get_current_event ();
-	if (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE)
+	if (event != NULL && (event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE))
 		device = gdk_event_get_device (event);
 	else
 	{
@@ -3819,6 +3819,7 @@ gboolean e2_utils_get_pointer_position (GtkWidget *widget, gint *x, gint *y)
 		else
 			device = NULL;
 	}
+	if (event != NULL) gdk_event_free (event);
 
 	if (device != NULL)
 	{

@@ -20,11 +20,11 @@ typedef struct
     GtkWidget *book, *output;
     guint pane;
 } TerminalPane;
-typedef struct
+struct _E2_TerminalWorkspace
 {
     GtkWidget *widget;
     TerminalPane panes[2];
-} TerminalWorkspace;
+};
 
 /* VTE sessions stay separate from the text-only application output runtimes. */
 typedef struct
@@ -38,7 +38,7 @@ typedef struct
     guint number;
     TerminalPane *owner;
 } TerminalSession;
-static TerminalWorkspace *workspace;
+static E2_TerminalWorkspace *workspace;
 static GList *sessions;
 static gboolean dispatch_action (gpointer data);
 static guint next_number;
@@ -67,9 +67,9 @@ void e2_terminal_select_output (GtkWidget *output)
     TerminalPane *pane = g_object_get_data (G_OBJECT (output), "terminal-pane");
     if (pane != NULL && pane != active_pane ()) activate_pane (pane);
 }
-static gboolean terminal_focused (GtkWidget *widget, GdkEventFocus *event, TerminalPane *pane)
+static gboolean terminal_focused (GtkWidget *widget, GdkEventFocus *event, TerminalSession *session)
 {
-    activate_pane (pane);
+    activate_pane (session->owner);
     return FALSE;
 }
 static void output_focused (GtkWindow *window, GtkWidget *focus, gpointer data)
@@ -328,7 +328,7 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     g_signal_connect (session->terminal, "key-press-event", G_CALLBACK (terminal_key), session);
     g_signal_connect (session->terminal, "button-press-event", G_CALLBACK (terminal_button), session);
     g_signal_connect (session->terminal, "popup-menu", G_CALLBACK (terminal_popup_menu), session);
-    g_signal_connect (session->terminal, "focus-in-event", G_CALLBACK (terminal_focused), pane);
+    g_signal_connect (session->terminal, "focus-in-event", G_CALLBACK (terminal_focused), session);
     sessions = g_list_append (sessions, session);
     session_label (session, _("starting"));
     GtkWidget *title = gtk_hbox_new (FALSE, 4);
@@ -538,19 +538,91 @@ static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint numb
     gtk_box_pack_start (GTK_BOX (box), pane->book, TRUE, TRUE, 0);
     return box;
 }
+static E2_TerminalWorkspace *workspace_create (GtkWidget *output)
+{
+    E2_TerminalWorkspace *space = g_new0 (E2_TerminalWorkspace, 1);
+    space->widget = gtk_hpaned_new ();
+    g_object_ref_sink (space->widget); //survive removal from the main output area
+    gtk_widget_set_name (space->widget, "terminal-split");
+    GtkWidget *left = pane_create (&space->panes[0], output, 0);
+    GtkWidget *right = pane_create (&space->panes[1], e2_output_create_notebook (1), 1);
+    gtk_paned_pack1 (GTK_PANED (space->widget), left, TRUE, FALSE);
+    gtk_paned_pack2 (GTK_PANED (space->widget), right, TRUE, FALSE);
+    return space;
+}
 GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
 {
     ui_thread = pthread_self ();
-    workspace = g_new0 (TerminalWorkspace, 1);
-    workspace->widget = gtk_hpaned_new ();
-    gtk_widget_set_name (workspace->widget, "terminal-split");
-    GtkWidget *left = pane_create (&workspace->panes[0], output, 0);
-    GtkWidget *right = pane_create (&workspace->panes[1], e2_output_create_notebook (1), 1);
-    gtk_paned_pack1 (GTK_PANED (workspace->widget), left, TRUE, FALSE);
-    gtk_paned_pack2 (GTK_PANED (workspace->widget), right, TRUE, FALSE);
+    workspace = workspace_create (output);
     e2_terminal_select_pane ();
     g_signal_connect (app.main_window, "set-focus", G_CALLBACK (output_focused), NULL);
     return workspace->widget;
+}
+E2_TerminalWorkspace *e2_terminal_workspace_current (void)
+{
+    return workspace;
+}
+E2_TerminalWorkspace *e2_terminal_workspace_new (void)
+{
+    return workspace_create (e2_output_create_notebook (1));
+}
+void e2_terminal_workspace_select (E2_TerminalWorkspace *space)
+{
+    if (space == NULL || space == workspace) return;
+    GtkWidget *parent = gtk_widget_get_parent (workspace->widget);
+    if (parent != NULL) gtk_container_remove (GTK_CONTAINER (parent), workspace->widget);
+    workspace = space;
+    gtk_paned_pack2 (GTK_PANED (app.window.output_paned), space->widget, TRUE, TRUE);
+    gtk_widget_show_all (space->widget);
+    e2_terminal_select_pane ();
+}
+gboolean e2_terminal_workspace_can_close (E2_TerminalWorkspace *space)
+{
+    GList *link;
+    for (link = sessions; link != NULL; link = link->next)
+    {
+        TerminalSession *session = link->data;
+        if ((session->owner == &space->panes[0] || session->owner == &space->panes[1])
+            && (session->pending || session->pid > 0))
+            return confirm_close (_("This tab has running terminals. Closing it hangs up their shells and terminal jobs. Close it?"));
+    }
+    return TRUE;
+}
+void e2_terminal_workspace_close (E2_TerminalWorkspace *space)
+{
+    if (space == NULL || space == workspace) return;
+    for (guint i = 0; i < 2; i++)
+        e2_output_destroy_notebook (space->panes[i].output, workspace->panes[i].output);
+    gtk_widget_destroy (space->widget);
+    g_object_unref (space->widget);
+    g_free (space);
+}
+void e2_terminal_workspace_merge (E2_TerminalWorkspace *space)
+{
+    if (space == NULL || space == workspace) return;
+    for (guint i = 0; i < 2; i++)
+    {
+        TerminalPane *source = &space->panes[i], *destination = &workspace->panes[i];
+        e2_output_merge_notebooks (source->output, destination->output);
+        GList *link;
+        for (link = sessions; link != NULL; link = link->next)
+        {
+            TerminalSession *session = link->data;
+            if (session->owner != source) continue;
+            GtkWidget *label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (source->book), session->page);
+            g_object_ref (label);
+            g_object_ref (session->page);
+            gtk_container_remove (GTK_CONTAINER (source->book), session->page);
+            session->owner = destination;
+            gtk_notebook_append_page (GTK_NOTEBOOK (destination->book), session->page, label);
+            g_object_unref (session->page);
+            g_object_unref (label);
+        }
+    }
+    gtk_widget_destroy (space->widget);
+    g_object_unref (space->widget);
+    g_free (space);
+    e2_terminal_select_pane ();
 }
 gboolean e2_terminal_confirm_shutdown (void)
 {
@@ -582,6 +654,11 @@ void e2_terminal_actions_register (void)
 }
 void e2_terminal_options_register (void)
 {
+    gchar *commands = g_strconcat (_C(6), ":", _C(26), NULL);
+    e2_option_bool_register ("terminal-per-tab", commands,
+        _("keep output and terminals with file-pane tabs"),
+        _("Give each file-pane tab its own application output and terminals. Disabling this combines existing outputs and terminals."),
+        "pane-tabs", FALSE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_BUILDPANES | E2_OPTION_FLAG_FREEGROUP);
     gchar *group = g_strconcat (_C(6), ".", _("terminal"), NULL);
     e2_option_str_register ("terminal-shell", group, _("shell executable"),
         _("Executable path only; empty uses SHELL or /bin/sh. New sessions start in the active local pane."),

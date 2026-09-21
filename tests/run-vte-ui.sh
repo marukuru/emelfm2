@@ -17,6 +17,8 @@ for name in ('left', 'right'):
     (root/name).mkdir()
 (root/'shell').write_text('#!/bin/sh\npwd > terminal-started\nprintf "Terminal UI test\\n"\nexit 7\n')
 (root/'shell').chmod(0o755)
+(root/'live-shell').write_text('#!/bin/sh\necho $$ > terminal-running\ntrap "exit 0" HUP TERM\nwhile :; do sleep 1; done\n')
+(root/'live-shell').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'left'), '-2', str(root/'right'),
         '-s', 'session-end-warning=false', '-s', 'pane-tabs=true']
 with open(root/'log', 'w') as output:

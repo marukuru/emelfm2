@@ -29,20 +29,31 @@ linked libraries. NEW_COMMAND=0 and NEW_COMMAND=1 are both supported.
 Using terminals
 ---------------
 
-The lower pane still starts on Application output. Use Open terminal here to
-start a new session in the active pane's directory. There is no automatic startup
+The lower area has two side-by-side outputs, one for each directory pane. Each
+starts on Application output. Use Open terminal here to start a new session in
+that pane's directory. There is no automatic startup
 session and no automatic directory synchronization. Remote/unmounted locations
 cannot be used; select an existing local directory first. Each terminal keeps its
 own startup directory, scrollback and shell history. Navigating the file panes
 never writes a cd command into a terminal.
 
-The lower toolbar offers Open terminal here, Focus terminal, Close, Restart,
-Insert selected paths, Copy and Paste. Tabs show starting, running, failed or
+Each output toolbar offers icons with tooltips for Open terminal here, Focus
+terminal, Restart, Insert selected paths, Copy and Paste. Each terminal tab has
+its own close button. Tabs show starting, running, failed or
 exited state. Failed/exited tabs stay available for inspection; Restart creates a
 new shell in that tab's original startup directory with current preferences.
-Application logs always go to the existing output views, including while a
-terminal has focus. Output tab detach/reattach continues to apply only to log
+Application logs go to the initiating pane's output view, including while a
+terminal has focus. The Edit action is available only for application logs;
+terminal context menus provide Copy and Paste. Output tab detach/reattach applies only to log
 views; terminal tabs cannot be detached.
+
+In Configuration / commands, enable "keep output and terminals with file-pane
+tabs" (terminal-per-tab) to give each main tab its own pair of outputs and
+terminals. This requires file-pane tabs and defaults to off. Switching tabs keeps
+shells and background output running. Closing a main tab asks before hanging up
+its live terminals; native command output continues in the remaining tab.
+Disabling this option or file-pane tabs combines the existing outputs and
+terminals into the shared area, preserving their contents and running sessions.
 
 Configurable actions (usable in keybindings, toolbars and menus):
   terminal.open_here
@@ -117,6 +128,8 @@ legacy VTE 0.28.2 and modern VTE. Dependency installation failures fail the job.
 Local tests after building the chosen configuration:
   GTK_PACKAGE=gtk+-2.0 tests/run-terminal.sh
   GTK_PACKAGE=gtk+-3.0 tests/run-terminal.sh
+  GTK_PACKAGE=gtk+-2.0 tests/run-vte-ui.sh
+  GTK_PACKAGE=gtk+-3.0 tests/run-vte-ui.sh
   GTK_PACKAGE=gtk+-3.0 sh tests/run-command-wildcards.sh
 
 Terminal tests require Xvfb, xauth, dbus-run-session and a font. They exercise
@@ -124,6 +137,8 @@ real PTYs, concurrent native/terminal exits, foreign-child ownership,
 stop/continue, spawn failure/cancellation, session close/restart, startup cwd,
 interactive insertion, Unicode, special-character quoting, top/htop and resize. Available sh,
 bash, dash, zsh and fish executables are tested separately.
+The VTE UI test checks toolbar icons/tooltips, tab close buttons, context menus,
+per-pane output routing, per-main-tab sessions, option toggling and close prompts.
 
 Manual acceptance checklist for both backends:
 - Run less/vim, resize, Ctrl+C, Ctrl+Z and fg; check job control and key routing.
