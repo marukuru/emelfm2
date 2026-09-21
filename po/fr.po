@@ -74,7 +74,7 @@ msgstr ""
 msgid "usage"
 msgstr "utilisation"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3072
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3083
 msgid "commands"
 msgstr "commandes"
 
@@ -618,11 +618,11 @@ msgstr "Terminé. Appuyez sur Entrée"
 msgid "xx"
 msgstr "xx"
 
-#: e2_alias.c:330 e2_output.c:3077
+#: e2_alias.c:330 e2_output.c:3088
 msgid "keys"
 msgstr "raccourcis clavier"
 
-#: e2_alias.c:332 e2_output.c:3083
+#: e2_alias.c:332 e2_output.c:3094
 msgid "buttons"
 msgstr "boutons"
 
@@ -1595,7 +1595,7 @@ msgstr "_Actions"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
-#: e2_option_tree_context_menu.c:287 e2_output.c:1754 e2_terminal.c:462
+#: e2_option_tree_context_menu.c:287 e2_output.c:1765 e2_terminal.c:462
 #: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1048 e2p_copy.c:757
 msgid "_Copy"
 msgstr "_Copier"
@@ -1929,7 +1929,7 @@ msgstr "centrer"
 msgid "mouse"
 msgstr "souris"
 
-#: e2_dialog.c:1821 e2_output.c:4351 e2_toolbar.c:3384
+#: e2_dialog.c:1821 e2_output.c:4363 e2_toolbar.c:3384
 msgid "none"
 msgstr "aucun"
 
@@ -2066,7 +2066,7 @@ msgstr "_Remplacer..."
 msgid "Find and replace matching text"
 msgstr "Cherche et remplace le texte correspondant"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1709
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
 #: e2_view_dialog.c:1822
 msgid "_Hide"
 msgstr "Cac_her"
@@ -2137,7 +2137,7 @@ msgid "Save modified file ?"
 msgstr "Sauvegarde le fichier modifié ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1762
+#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1773
 msgid "_Edit"
 msgstr "_Modifier"
 
@@ -2184,7 +2184,7 @@ msgstr "co_nfirmer"
 msgid "Replace this match"
 msgstr "Remplacer celui-ci"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1701
+#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1712
 #: e2_terminal.c:467 e2_view_dialog.c:1838 e2p_find.c:4241
 msgid "_Find"
 msgstr "_Chercher"
@@ -2376,12 +2376,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Impossible d'accéder au dossier %s, ouverture par défaut de %s "
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1705
-#: e2_output.c:1420 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_output.c:1431 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<dossier>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1786
-#: e2_output.c:1468 e2_task.c:4256
+#: e2_output.c:1479 e2_task.c:4256
 msgid "<executable>"
 msgstr "<exécutable>"
 
@@ -2396,7 +2396,7 @@ msgstr "dossiers"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1765 e2_view_dialog.c:723
+#: e2_output.c:1776 e2_view_dialog.c:723
 msgid "_Open"
 msgstr "_Ouvrir"
 
@@ -2816,7 +2816,7 @@ msgid "Error reading file %s"
 msgstr "Erreur à la lecture du fichier %s"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1523 e2_task_backend.c:1196
+#: e2_output.c:1534 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Impossible d'obtenir d'information à propos de %s"
@@ -4033,11 +4033,11 @@ msgstr ""
 "Si activé, la couleur de fond des lignes des listes de fichiers sera "
 "alternée."
 
-#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2209
+#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2209
 msgid "use custom font"
 msgstr "utiliser une police personnalisée"
 
-#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2210
+#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2210
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4456,140 +4456,140 @@ msgstr "Cacher tous les greffons listés du menu"
 msgid "Cannot find any output from process %s"
 msgstr "Aucune sortie en provenance du processus %s"
 
-#: e2_output.c:1702
+#: e2_output.c:1713
 msgid "Find text in the command log"
 msgstr ""
 
-#: e2_output.c:1703 e2_terminal.c:484
+#: e2_output.c:1714 e2_terminal.c:484
 #, fuzzy
 msgid "_Hide tools"
 msgstr "Cac_her"
 
-#: e2_output.c:1704 e2_terminal.c:485
+#: e2_output.c:1715 e2_terminal.c:485
 #, fuzzy
 msgid "Return to the file list"
 msgstr "Revenir au système de fichiers natif"
 
-#: e2_output.c:1705
+#: e2_output.c:1716
 msgid "_Expand / restore view"
 msgstr ""
 
-#: e2_output.c:1706 e2_terminal.c:487
+#: e2_output.c:1717 e2_terminal.c:487
 msgid "Expand this view, or restore the file lists and both tools areas"
 msgstr ""
 
-#: e2_output.c:1710
+#: e2_output.c:1721
 msgid "Do not show the output pane"
 msgstr "Ne pas afficher le panneau de sortie"
 
-#: e2_output.c:1713
+#: e2_output.c:1724
 msgid "_Toggle full"
 msgstr "(Dé)_maximiser"
 
-#: e2_output.c:1716
+#: e2_output.c:1727
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Basculer la taille du panneau de sortie de \"normale\" à \"maximale\""
 
-#: e2_output.c:1724
+#: e2_output.c:1735
 msgid "_New tab"
 msgstr "_Nouvel onglet"
 
-#: e2_output.c:1725
+#: e2_output.c:1736
 msgid "Add another tab for the output pane"
 msgstr "Ajouter un nouvel onglet pour le panneau de sortie"
 
-#: e2_output.c:1728
+#: e2_output.c:1739
 msgid "_Remove tab"
 msgstr "_Supprimer l'onglet"
 
-#: e2_output.c:1729
+#: e2_output.c:1740
 msgid "Close this this tab"
 msgstr "Fermer l'onglet courant"
 
-#: e2_output.c:1738
+#: e2_output.c:1749
 msgid "_Attach"
 msgstr "_Attacher"
 
-#: e2_output.c:1739
+#: e2_output.c:1750
 msgid "Move this tab back to output pane"
 msgstr "Replacer cet onglet sur le panneau de sortie"
 
-#: e2_output.c:1746 e2_output.c:1750
+#: e2_output.c:1757 e2_output.c:1761
 msgid "C_lear"
 msgstr "_Nettoyer"
 
-#: e2_output.c:1747 e2_output.c:1751
+#: e2_output.c:1758 e2_output.c:1762
 msgid "Clear this tab"
 msgstr "Effacer le contenu de cet onglet"
 
-#: e2_output.c:1755 e2_view_dialog.c:1049
+#: e2_output.c:1766 e2_view_dialog.c:1049
 msgid "Copy selected text"
 msgstr "Copier les lignes sélectionnées"
 
-#: e2_output.c:1763
+#: e2_output.c:1774
 msgid "Edit the tab contents"
 msgstr "Modifier le contenu de l'onglet"
 
-#: e2_output.c:1805
+#: e2_output.c:1816
 msgid "Co_mmand output"
 msgstr "Sortie de commande"
 
-#: e2_output.c:1806
+#: e2_output.c:1817
 msgid "Show output from a completed command"
 msgstr "Afficher la sortie d'une commande terminée"
 
-#: e2_output.c:1819 e2_view_dialog.c:1060
+#: e2_output.c:1830 e2_view_dialog.c:1060
 msgid "_Settings"
 msgstr "_Configuration"
 
-#: e2_output.c:1832
+#: e2_output.c:1843
 msgid "_Other"
 msgstr "_Autres"
 
-#: e2_output.c:1833
+#: e2_output.c:1844
 msgid "Open the configuration dialog at the output options page"
 msgstr "Ouvrir le dialogue de configuration à la page des options de sortie"
 
-#: e2_output.c:2242
+#: e2_output.c:2253
 msgid ""
 "\n"
 "--- Merged command log ---\n"
 msgstr ""
 
-#: e2_output.c:2923
+#: e2_output.c:2934
 msgid "output tabs"
 msgstr "onglets de sortie"
 
-#: e2_output.c:3498
+#: e2_output.c:3509
 msgid "-- end-of-output --"
 msgstr "-- fin-des-messages --"
 
-#: e2_output.c:4317
+#: e2_output.c:4329
 msgid "show output pane when a new message appears"
 msgstr "afficher le panneau de sortie quand un nouveau message survient"
 
-#: e2_output.c:4318
+#: e2_output.c:4330
 msgid "This will ensure you don't miss any messages"
 msgstr "Ceci vous assure de ne rater aucun message."
 
-#: e2_output.c:4325
+#: e2_output.c:4337
 msgid "show output pane if the command line is focused"
 msgstr ""
 "afficher le panneau de sortie quand le focus est sur la ligne de commande"
 
-#: e2_output.c:4326
+#: e2_output.c:4338
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 "Ceci entraîne l'ouverture du panneau de sortie quand vous êtes sur le point "
 "de taper une commande."
 
-#: e2_output.c:4330
+#: e2_output.c:4342
 msgid "hide output pane if the command line is unfocused"
 msgstr ""
 "cacher le panneau de sortie quand le focus n'est pas sur la ligne de commande"
 
-#: e2_output.c:4331
+#: e2_output.c:4343
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4597,19 +4597,19 @@ msgstr ""
 "Le panneau de sortie sera automatiquement fermé dès que le focus n'est plus "
 "sur la ligne de commande."
 
-#: e2_output.c:4334
+#: e2_output.c:4346
 msgid "show commands"
 msgstr "montrer les commandes"
 
-#: e2_output.c:4335
+#: e2_output.c:4347
 msgid "This echoes the commands that are run and their exit value"
 msgstr "Ceci affiche les commandes lancées et leur valeur de retour."
 
-#: e2_output.c:4337
+#: e2_output.c:4349
 msgid "scroll to new output"
 msgstr "défiler vers les nouveaux messages"
 
-#: e2_output.c:4338
+#: e2_output.c:4350
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
@@ -4617,11 +4617,11 @@ msgstr ""
 "Ceci fait défiler automatiquement le contenu du panneau de sortie pour "
 "rendre visible les nouveaux messages."
 
-#: e2_output.c:4340
+#: e2_output.c:4352
 msgid "only scroll when really following"
 msgstr "respecter le positionnement manuel"
 
-#: e2_output.c:4341
+#: e2_output.c:4353
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4630,11 +4630,11 @@ msgstr ""
 "visible les nouveaux messages, quand vous l'avez manuellement fait défiler "
 "vers une autre zone."
 
-#: e2_output.c:4344
+#: e2_output.c:4356
 msgid "only scroll when new output is at the end"
 msgstr "ne défiler que lorsque les nouveaux messages sont à la fin"
 
-#: e2_output.c:4345
+#: e2_output.c:4357
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4642,72 +4642,73 @@ msgstr ""
 "Suspend le défilement du panneau si un autre processus a affiché du texte "
 "après le point d'insertion courant."
 
-#: e2_output.c:4348
+#: e2_output.c:4360
 msgid "auto-selection boundary characters"
 msgstr "caractères limites de sélection automatique"
 
-#: e2_output.c:4349
+#: e2_output.c:4361
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr ""
 "Caractère(s) pour marquer les limites de sélection automatique de texte"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "everywhere"
 msgstr "partout"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "words"
 msgstr "mots"
 
-#: e2_output.c:4353
+#: e2_output.c:4365
 msgid "line wrap mode"
 msgstr "mode retour à la ligne automatique"
 
-#: e2_output.c:4354
+#: e2_output.c:4366
+#, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
-"will only break the line between words"
+"wraps between words, splitting words only when they are wider than the pane"
 msgstr ""
 "Si le mode est 'aucun', une barre de défilement horizontale sera affichée. "
 "Si c'est 'mots', le retour à la ligne automatique ne se fera qu'entre les "
 "mots"
 
-#: e2_output.c:4357
+#: e2_output.c:4369
 msgid "left margin (pixels)"
 msgstr "marge gauche (en pixels)"
 
-#: e2_output.c:4358
+#: e2_output.c:4370
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr ""
 "Il s'agit de la marge gauche entre le bord du panneau de sortie et le texte "
 "qu'il contient."
 
-#: e2_output.c:4361
+#: e2_output.c:4373
 msgid "right margin (pixels)"
 msgstr "marge droite (en pixels)"
 
-#: e2_output.c:4362
+#: e2_output.c:4374
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr ""
 "Il s'agit de la marge droite entre le bord du panneau de sortie et le texte "
 "qu'il contient."
 
-#: e2_output.c:4370
+#: e2_output.c:4382
 msgid "custom output font"
 msgstr "personnaliser la police de sortie"
 
-#: e2_output.c:4371
+#: e2_output.c:4383
 msgid "This is the font used for text in the output pane"
 msgstr "Police utilisée pour le texte du panneau de sortie"
 
-#: e2_output.c:4376
+#: e2_output.c:4388
 msgid "positive color"
 msgstr "couleur des événements positifs"
 
-#: e2_output.c:4377
+#: e2_output.c:4389
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4715,11 +4716,11 @@ msgstr ""
 "Couleur utilisée pour les messages rendant compte d'opérations qui se sont "
 "terminées avec succès ou d'autres événements positifs."
 
-#: e2_output.c:4380
+#: e2_output.c:4392
 msgid "negative color"
 msgstr "couleur des événements négatifs"
 
-#: e2_output.c:4381
+#: e2_output.c:4393
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -4727,19 +4728,19 @@ msgstr ""
 "Cette couleur est utilisée pour les erreurs, avertissements et autres\n"
 "messages devant attirer l'attention."
 
-#: e2_output.c:4384
+#: e2_output.c:4396
 msgid "commands color"
 msgstr "couleur des commandes"
 
-#: e2_output.c:4385
+#: e2_output.c:4397
 msgid "This color is used for echoing issued commands"
 msgstr "Cette couleur sera utilisée pour l'affichage des commandes."
 
-#: e2_output.c:4388
+#: e2_output.c:4400
 msgid "unimportant color"
 msgstr "couleur ordinaire"
 
-#: e2_output.c:4389
+#: e2_output.c:4401
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"

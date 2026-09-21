@@ -66,7 +66,7 @@ msgstr ""
 msgid "usage"
 msgstr "使いかた"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3072
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3083
 msgid "commands"
 msgstr "コマンド"
 
@@ -608,11 +608,11 @@ msgstr "完了。Enterを押してください"
 msgid "xx"
 msgstr "xx"
 
-#: e2_alias.c:330 e2_output.c:3077
+#: e2_alias.c:330 e2_output.c:3088
 msgid "keys"
 msgstr "キー"
 
-#: e2_alias.c:332 e2_output.c:3083
+#: e2_alias.c:332 e2_output.c:3094
 msgid "buttons"
 msgstr "ボタン"
 
@@ -1529,7 +1529,7 @@ msgstr "アクション(_A)"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
-#: e2_option_tree_context_menu.c:287 e2_output.c:1754 e2_terminal.c:462
+#: e2_option_tree_context_menu.c:287 e2_output.c:1765 e2_terminal.c:462
 #: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1048 e2p_copy.c:757
 msgid "_Copy"
 msgstr "コピー(_C)"
@@ -1862,7 +1862,7 @@ msgstr "中央"
 msgid "mouse"
 msgstr "マウス"
 
-#: e2_dialog.c:1821 e2_output.c:4351 e2_toolbar.c:3384
+#: e2_dialog.c:1821 e2_output.c:4363 e2_toolbar.c:3384
 msgid "none"
 msgstr "なし"
 
@@ -1996,7 +1996,7 @@ msgstr "置換(_R)"
 msgid "Find and replace matching text"
 msgstr "合致するテキストを検索して置換"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1709
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
 #: e2_view_dialog.c:1822
 msgid "_Hide"
 msgstr "隠す(_H)"
@@ -2066,7 +2066,7 @@ msgid "Save modified file ?"
 msgstr "変更したファイルを保存しますか？"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1762
+#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1773
 msgid "_Edit"
 msgstr "編集(_E)"
 
@@ -2110,7 +2110,7 @@ msgstr "確認(_n)"
 msgid "Replace this match"
 msgstr "これを置き換える"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1701
+#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1712
 #: e2_terminal.c:467 e2_view_dialog.c:1838 e2p_find.c:4241
 msgid "_Find"
 msgstr "検索(_F)"
@@ -2298,12 +2298,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "%s にアクセスできません。代わりに·%s·に行きます"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1705
-#: e2_output.c:1420 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_output.c:1431 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<ディレクトリ>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1786
-#: e2_output.c:1468 e2_task.c:4256
+#: e2_output.c:1479 e2_task.c:4256
 msgid "<executable>"
 msgstr "<実行ファイル>"
 
@@ -2318,7 +2318,7 @@ msgstr "ディレクトリ"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1765 e2_view_dialog.c:723
+#: e2_output.c:1776 e2_view_dialog.c:723
 msgid "_Open"
 msgstr "開く(_O)"
 
@@ -2737,7 +2737,7 @@ msgid "Error reading file %s"
 msgstr "ファイル %s の読み込みエラー"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1523 e2_task_backend.c:1196
+#: e2_output.c:1534 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "%s の情報を得られません"
@@ -3883,11 +3883,11 @@ msgstr "背景を縞状に"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr ""
 
-#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2209
+#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2209
 msgid "use custom font"
 msgstr "カスタムフォントを使う"
 
-#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2210
+#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2210
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4277,267 +4277,268 @@ msgstr "リストのプラグインを全てメニューから隠す"
 msgid "Cannot find any output from process %s"
 msgstr "プロセス %s からの出力はありません"
 
-#: e2_output.c:1702
+#: e2_output.c:1713
 msgid "Find text in the command log"
 msgstr ""
 
-#: e2_output.c:1703 e2_terminal.c:484
+#: e2_output.c:1714 e2_terminal.c:484
 #, fuzzy
 msgid "_Hide tools"
 msgstr "隠す(_H)"
 
-#: e2_output.c:1704 e2_terminal.c:485
+#: e2_output.c:1715 e2_terminal.c:485
 #, fuzzy
 msgid "Return to the file list"
 msgstr "ネイティブファイルシステムに戻す"
 
-#: e2_output.c:1705
+#: e2_output.c:1716
 msgid "_Expand / restore view"
 msgstr ""
 
-#: e2_output.c:1706 e2_terminal.c:487
+#: e2_output.c:1717 e2_terminal.c:487
 msgid "Expand this view, or restore the file lists and both tools areas"
 msgstr ""
 
-#: e2_output.c:1710
+#: e2_output.c:1721
 msgid "Do not show the output pane"
 msgstr "出力ペインを表示しない"
 
-#: e2_output.c:1713
+#: e2_output.c:1724
 msgid "_Toggle full"
 msgstr "最大化のトグル(_T)"
 
-#: e2_output.c:1716
+#: e2_output.c:1727
 msgid "Toggle output pane size to/from the full window size"
 msgstr "出力ペインのサイズを全画面にするかどうかの切替"
 
-#: e2_output.c:1724
+#: e2_output.c:1735
 msgid "_New tab"
 msgstr "新規タブ(_N)"
 
-#: e2_output.c:1725
+#: e2_output.c:1736
 msgid "Add another tab for the output pane"
 msgstr "出力ペイン用に別のタブを追加"
 
-#: e2_output.c:1728
+#: e2_output.c:1739
 msgid "_Remove tab"
 msgstr "タブを削除(_R)"
 
-#: e2_output.c:1729
+#: e2_output.c:1740
 msgid "Close this this tab"
 msgstr "このタブを閉じる"
 
-#: e2_output.c:1738
+#: e2_output.c:1749
 msgid "_Attach"
 msgstr "添付(_A)"
 
-#: e2_output.c:1739
+#: e2_output.c:1750
 msgid "Move this tab back to output pane"
 msgstr "このタブを出力ペインに移動"
 
-#: e2_output.c:1746 e2_output.c:1750
+#: e2_output.c:1757 e2_output.c:1761
 msgid "C_lear"
 msgstr "クリア(_L)"
 
-#: e2_output.c:1747 e2_output.c:1751
+#: e2_output.c:1758 e2_output.c:1762
 msgid "Clear this tab"
 msgstr "このタブをクリア"
 
-#: e2_output.c:1755 e2_view_dialog.c:1049
+#: e2_output.c:1766 e2_view_dialog.c:1049
 msgid "Copy selected text"
 msgstr "選んだテキストをコピー"
 
-#: e2_output.c:1763
+#: e2_output.c:1774
 msgid "Edit the tab contents"
 msgstr "タブの内容を編集"
 
-#: e2_output.c:1805
+#: e2_output.c:1816
 msgid "Co_mmand output"
 msgstr "コマンドの出力(_m)"
 
-#: e2_output.c:1806
+#: e2_output.c:1817
 msgid "Show output from a completed command"
 msgstr "完了したコマンドからの出力を表示"
 
-#: e2_output.c:1819 e2_view_dialog.c:1060
+#: e2_output.c:1830 e2_view_dialog.c:1060
 msgid "_Settings"
 msgstr "設定(_S)"
 
-#: e2_output.c:1832
+#: e2_output.c:1843
 msgid "_Other"
 msgstr "その他(_O)"
 
-#: e2_output.c:1833
+#: e2_output.c:1844
 msgid "Open the configuration dialog at the output options page"
 msgstr "出力オプションページに設定ダイアログを開く"
 
-#: e2_output.c:2242
+#: e2_output.c:2253
 msgid ""
 "\n"
 "--- Merged command log ---\n"
 msgstr ""
 
-#: e2_output.c:2923
+#: e2_output.c:2934
 msgid "output tabs"
 msgstr "出力タブ"
 
-#: e2_output.c:3498
+#: e2_output.c:3509
 msgid "-- end-of-output --"
 msgstr "-- 出力完了 --"
 
-#: e2_output.c:4317
+#: e2_output.c:4329
 msgid "show output pane when a new message appears"
 msgstr "新しいメッセージが出たら出力ペインを表示"
 
-#: e2_output.c:4318
+#: e2_output.c:4330
 msgid "This will ensure you don't miss any messages"
 msgstr "どんなメッセージも見逃さないようにする"
 
-#: e2_output.c:4325
+#: e2_output.c:4337
 msgid "show output pane if the command line is focused"
 msgstr "コマンドラインがフォーカスされると出力ペインを表示"
 
-#: e2_output.c:4326
+#: e2_output.c:4338
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 
-#: e2_output.c:4330
+#: e2_output.c:4342
 msgid "hide output pane if the command line is unfocused"
 msgstr "コマンドラインのフォーカスが外れると出力ペインを隠す"
 
-#: e2_output.c:4331
+#: e2_output.c:4343
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
 msgstr ""
 
-#: e2_output.c:4334
+#: e2_output.c:4346
 msgid "show commands"
 msgstr "コマンドを表示"
 
-#: e2_output.c:4335
+#: e2_output.c:4347
 msgid "This echoes the commands that are run and their exit value"
 msgstr ""
 
-#: e2_output.c:4337
+#: e2_output.c:4349
 msgid "scroll to new output"
 msgstr "新しい出力へスクロール"
 
-#: e2_output.c:4338
+#: e2_output.c:4350
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr "新しいメッセージを表示するために出力ペインの内容を自動的にスクロール"
 
-#: e2_output.c:4340
+#: e2_output.c:4352
 msgid "only scroll when really following"
 msgstr "表示を続けているときだけスクロール"
 
-#: e2_output.c:4341
+#: e2_output.c:4353
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr "手動でスクロールすると自動スクロールを止める"
 
-#: e2_output.c:4344
+#: e2_output.c:4356
 msgid "only scroll when new output is at the end"
 msgstr "出力が終わったときだけスクロール"
 
-#: e2_output.c:4345
+#: e2_output.c:4357
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
 msgstr ""
 
-#: e2_output.c:4348
+#: e2_output.c:4360
 msgid "auto-selection boundary characters"
 msgstr "区切りとして使う文字"
 
-#: e2_output.c:4349
+#: e2_output.c:4361
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr "ここで指定した文字を区切りとして使うことができる。たいていは句読点"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "everywhere"
 msgstr "全て"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "words"
 msgstr "単語"
 
-#: e2_output.c:4353
+#: e2_output.c:4365
 msgid "line wrap mode"
 msgstr "行の折り返しモード"
 
-#: e2_output.c:4354
+#: e2_output.c:4366
+#, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
-"will only break the line between words"
+"wraps between words, splitting words only when they are wider than the pane"
 msgstr ""
 "モードが 'なし' だとスクロールバーを表示する。モードが '単語' だと単語間の行"
 "を分割するだけ"
 
-#: e2_output.c:4357
+#: e2_output.c:4369
 msgid "left margin (pixels)"
 msgstr "左マージン (ピクセル)"
 
-#: e2_output.c:4358
+#: e2_output.c:4370
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr ""
 
-#: e2_output.c:4361
+#: e2_output.c:4373
 msgid "right margin (pixels)"
 msgstr "右マージン (ピクセル)"
 
-#: e2_output.c:4362
+#: e2_output.c:4374
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr ""
 
-#: e2_output.c:4370
+#: e2_output.c:4382
 msgid "custom output font"
 msgstr "出力用フォント"
 
-#: e2_output.c:4371
+#: e2_output.c:4383
 msgid "This is the font used for text in the output pane"
 msgstr "出力ペインの文字のフォント"
 
-#: e2_output.c:4376
+#: e2_output.c:4388
 msgid "positive color"
 msgstr "成功したときの色"
 
-#: e2_output.c:4377
+#: e2_output.c:4389
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
 msgstr ""
 
-#: e2_output.c:4380
+#: e2_output.c:4392
 msgid "negative color"
 msgstr "失敗したときの色"
 
-#: e2_output.c:4381
+#: e2_output.c:4393
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr ""
 
-#: e2_output.c:4384
+#: e2_output.c:4396
 msgid "commands color"
 msgstr "コマンドカラー"
 
-#: e2_output.c:4385
+#: e2_output.c:4397
 msgid "This color is used for echoing issued commands"
 msgstr ""
 
-#: e2_output.c:4388
+#: e2_output.c:4400
 msgid "unimportant color"
 msgstr "重要度低"
 
-#: e2_output.c:4389
+#: e2_output.c:4401
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"

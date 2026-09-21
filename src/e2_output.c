@@ -1284,22 +1284,33 @@ void e2_output_set_menu_position (GtkWidget *menu, gint *x, gint *y,
 }
 #endif //ndef USE_GTK3_22
 /**
-@brief update gtk's flag which sets output pane text wrapping
+@brief update output pane text wrapping and horizontal scrolling
 
 This is a hook fn
 
-@param pvalue pointerised form of the GtkWrapMode-enum value to be set
+@param pvalue pointerised configured mode (none, everywhere, or words)
 @param rt pointer to data struct for an output pane tab
 
 @return TRUE always, so func is not delisted after run
 */
 static gboolean _e2_output_set_op_wrap_hook (gpointer pvalue, E2_OutputTabRuntime *rt)
 {
-//	printd (DEBUG, "_e2_output_set_op_wrap (pvalue:_,rt:_)");
 	gint value = GPOINTER_TO_INT (pvalue);
-	gint cur = gtk_text_view_get_wrap_mode (rt->text);
-	if (cur != value)
-		gtk_text_view_set_wrap_mode (rt->text, value);
+	//Keep saved option values; words wider than the pane must wrap too.
+	GtkWrapMode mode = (value == GTK_WRAP_WORD) ? GTK_WRAP_WORD_CHAR : value;
+	gtk_text_view_set_wrap_mode (rt->text, mode);
+#ifdef USE_GTK3_16
+	//Do not let GTK3 size the pane from the previous unwrapped layout.
+	GtkPolicyType wrapped_policy = GTK_POLICY_EXTERNAL;
+#else
+	GtkPolicyType wrapped_policy = GTK_POLICY_NEVER;
+#endif
+	gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (rt->scroll),
+		(mode == GTK_WRAP_NONE) ? GTK_POLICY_AUTOMATIC : wrapped_policy,
+		GTK_POLICY_AUTOMATIC);
+	if (mode != GTK_WRAP_NONE)
+		gtk_adjustment_set_value (gtk_scrolled_window_get_hadjustment
+			(GTK_SCROLLED_WINDOW (rt->scroll)), 0);
 	return TRUE;
 }
 /**
@@ -1887,8 +1898,8 @@ static GtkWidget *_e2_output_create_view (E2_OutputTabRuntime *rt)
 //	allow focus so popup menu signal can happen, & can select text in the pane
 //	GTK_WIDGET_UNSET_FLAGS (rt->text, GTK_CAN_FOCUS);
 
-	gtk_text_view_set_wrap_mode (rt->text,
-		e2_option_int_get ("output-wrap-mode"));
+	_e2_output_set_op_wrap_hook
+		(GINT_TO_POINTER (e2_option_int_get ("output-wrap-mode")), rt);
 	gtk_text_view_set_left_margin (rt->text,
 		e2_option_int_get ("output-left-margin"));
 	gtk_text_view_set_right_margin (rt->text,
@@ -4087,9 +4098,10 @@ void e2_output_update_style (void)
 	GList *member;
 	for (member = app.tabslist; member != NULL; member = member->next)
 	{
-		GtkTextView *tvw = ((E2_OutputTabRuntime *)member->data)->text;
-		gtk_text_view_set_wrap_mode (tvw,
-			e2_option_int_get ("output-wrap-mode"));
+		E2_OutputTabRuntime *tab = member->data;
+		GtkTextView *tvw = tab->text;
+		_e2_output_set_op_wrap_hook
+			(GINT_TO_POINTER (e2_option_int_get ("output-wrap-mode")), tab);
 		gtk_text_view_set_left_margin (tvw,
 			e2_option_int_get ("output-left-margin"));
 		gtk_text_view_set_right_margin (tvw,
@@ -4351,7 +4363,7 @@ void e2_output_options_register (void)
 	const gchar *opt_wrap_mode[] = {_("none"), _("everywhere"), _("words"), NULL};
 	group_name = g_strconcat(_C(6),".",_C(28),":",_C(39),NULL);	//_("commands.output:style"
 	e2_option_sel_register ("output-wrap-mode", group_name, _("line wrap mode"),
-		_("If mode is 'none', a horizontal scrollbar will be available. Mode 'words' will only break the line between words"),
+		_("If mode is 'none', a horizontal scrollbar will be available. Mode 'words' wraps between words, splitting words only when they are wider than the pane"),
 		NULL, 2, opt_wrap_mode,
 		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_FREEGROUP | E2_OPTION_FLAG_BUILDALL);
 	e2_option_int_register ("output-left-margin", group_name, _("left margin (pixels)"),

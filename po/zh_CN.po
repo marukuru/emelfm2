@@ -90,7 +90,7 @@ msgstr ""
 msgid "usage"
 msgstr "参数"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3072
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3083
 msgid "commands"
 msgstr "命令"
 
@@ -632,11 +632,11 @@ msgstr "完成. 按 enter "
 msgid "xx"
 msgstr ""
 
-#: e2_alias.c:330 e2_output.c:3077
+#: e2_alias.c:330 e2_output.c:3088
 msgid "keys"
 msgstr ""
 
-#: e2_alias.c:332 e2_output.c:3083
+#: e2_alias.c:332 e2_output.c:3094
 msgid "buttons"
 msgstr "按钮"
 
@@ -1543,7 +1543,7 @@ msgstr "动作(_A)"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
-#: e2_option_tree_context_menu.c:287 e2_output.c:1754 e2_terminal.c:462
+#: e2_option_tree_context_menu.c:287 e2_output.c:1765 e2_terminal.c:462
 #: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1048 e2p_copy.c:757
 msgid "_Copy"
 msgstr "复制(_C)"
@@ -1876,7 +1876,7 @@ msgstr "中间"
 msgid "mouse"
 msgstr "鼠标"
 
-#: e2_dialog.c:1821 e2_output.c:4351 e2_toolbar.c:3384
+#: e2_dialog.c:1821 e2_output.c:4363 e2_toolbar.c:3384
 msgid "none"
 msgstr "无"
 
@@ -2010,7 +2010,7 @@ msgstr "替换(_R).."
 msgid "Find and replace matching text"
 msgstr "查找并替换"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1709
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
 #: e2_view_dialog.c:1822
 msgid "_Hide"
 msgstr "隐藏(_H)"
@@ -2080,7 +2080,7 @@ msgid "Save modified file ?"
 msgstr "保存编辑过的文件 ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1762
+#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1773
 msgid "_Edit"
 msgstr "编辑(_E)"
 
@@ -2124,7 +2124,7 @@ msgstr "确认(_N)"
 msgid "Replace this match"
 msgstr "替换找到的"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1701
+#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1712
 #: e2_terminal.c:467 e2_view_dialog.c:1838 e2p_find.c:4241
 msgid "_Find"
 msgstr "查找(_F)"
@@ -2312,12 +2312,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "无法访问 %s, 用 %s 代替"
 
 #: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1705
-#: e2_output.c:1420 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_output.c:1431 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<文件夹>"
 
 #: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1786
-#: e2_output.c:1468 e2_task.c:4256
+#: e2_output.c:1479 e2_task.c:4256
 msgid "<executable>"
 msgstr "<可执行文件>"
 
@@ -2332,7 +2332,7 @@ msgstr "文件夹"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1765 e2_view_dialog.c:723
+#: e2_output.c:1776 e2_view_dialog.c:723
 msgid "_Open"
 msgstr "打开(_O)"
 
@@ -2748,7 +2748,7 @@ msgid "Error reading file %s"
 msgstr "读取文件 %s 时, 发生错误"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1523 e2_task_backend.c:1196
+#: e2_output.c:1534 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "无法获取 %s 的信息"
@@ -3903,11 +3903,11 @@ msgstr "当前行使用背景色"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "文件列表中的当前行将使用不同的背景色"
 
-#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2209
+#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2209
 msgid "use custom font"
 msgstr "使用自定义字体"
 
-#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2210
+#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2210
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4297,265 +4297,266 @@ msgstr "在菜单中隐藏所有的插件"
 msgid "Cannot find any output from process %s"
 msgstr "进程 %s 无输出信息"
 
-#: e2_output.c:1702
+#: e2_output.c:1713
 msgid "Find text in the command log"
 msgstr ""
 
-#: e2_output.c:1703 e2_terminal.c:484
+#: e2_output.c:1714 e2_terminal.c:484
 #, fuzzy
 msgid "_Hide tools"
 msgstr "隐藏(_H)"
 
-#: e2_output.c:1704 e2_terminal.c:485
+#: e2_output.c:1715 e2_terminal.c:485
 #, fuzzy
 msgid "Return to the file list"
 msgstr "读取文件"
 
-#: e2_output.c:1705
+#: e2_output.c:1716
 msgid "_Expand / restore view"
 msgstr ""
 
-#: e2_output.c:1706 e2_terminal.c:487
+#: e2_output.c:1717 e2_terminal.c:487
 msgid "Expand this view, or restore the file lists and both tools areas"
 msgstr ""
 
-#: e2_output.c:1710
+#: e2_output.c:1721
 msgid "Do not show the output pane"
 msgstr "不显示到输出面板"
 
-#: e2_output.c:1713
+#: e2_output.c:1724
 msgid "_Toggle full"
 msgstr "全窗口(_T)"
 
-#: e2_output.c:1716
+#: e2_output.c:1727
 msgid "Toggle output pane size to/from the full window size"
 msgstr "切换输出面板的大小到全窗口"
 
-#: e2_output.c:1724
+#: e2_output.c:1735
 msgid "_New tab"
 msgstr "新 TAB(_N)"
 
-#: e2_output.c:1725
+#: e2_output.c:1736
 msgid "Add another tab for the output pane"
 msgstr "在输出面板上增加一个新的 TAB"
 
-#: e2_output.c:1728
+#: e2_output.c:1739
 msgid "_Remove tab"
 msgstr "移除 TAB(_R)"
 
-#: e2_output.c:1729
+#: e2_output.c:1740
 msgid "Close this this tab"
 msgstr "关闭这个 TAB"
 
-#: e2_output.c:1738
+#: e2_output.c:1749
 msgid "_Attach"
 msgstr "附着(_A)"
 
-#: e2_output.c:1739
+#: e2_output.c:1750
 msgid "Move this tab back to output pane"
 msgstr "将这个 TAB 移动到输出面板后面"
 
-#: e2_output.c:1746 e2_output.c:1750
+#: e2_output.c:1757 e2_output.c:1761
 msgid "C_lear"
 msgstr "清空(_L)"
 
-#: e2_output.c:1747 e2_output.c:1751
+#: e2_output.c:1758 e2_output.c:1762
 msgid "Clear this tab"
 msgstr "清空这个 TAB 的内容"
 
-#: e2_output.c:1755 e2_view_dialog.c:1049
+#: e2_output.c:1766 e2_view_dialog.c:1049
 msgid "Copy selected text"
 msgstr "复制所选的文字"
 
-#: e2_output.c:1763
+#: e2_output.c:1774
 msgid "Edit the tab contents"
 msgstr "修改 TAB 里的内同"
 
-#: e2_output.c:1805
+#: e2_output.c:1816
 msgid "Co_mmand output"
 msgstr "命令输出(_M)"
 
-#: e2_output.c:1806
+#: e2_output.c:1817
 msgid "Show output from a completed command"
 msgstr "显示已完成的命令的输出"
 
-#: e2_output.c:1819 e2_view_dialog.c:1060
+#: e2_output.c:1830 e2_view_dialog.c:1060
 msgid "_Settings"
 msgstr "设置(_S)"
 
-#: e2_output.c:1832
+#: e2_output.c:1843
 msgid "_Other"
 msgstr "其它(_O)"
 
-#: e2_output.c:1833
+#: e2_output.c:1844
 msgid "Open the configuration dialog at the output options page"
 msgstr "打开输出选项的配置对话框"
 
-#: e2_output.c:2242
+#: e2_output.c:2253
 msgid ""
 "\n"
 "--- Merged command log ---\n"
 msgstr ""
 
-#: e2_output.c:2923
+#: e2_output.c:2934
 msgid "output tabs"
 msgstr "输出 TAB"
 
-#: e2_output.c:3498
+#: e2_output.c:3509
 msgid "-- end-of-output --"
 msgstr "-- 输出完 --"
 
-#: e2_output.c:4317
+#: e2_output.c:4329
 msgid "show output pane when a new message appears"
 msgstr "有新的信息时, 显示输出面板"
 
-#: e2_output.c:4318
+#: e2_output.c:4330
 msgid "This will ensure you don't miss any messages"
 msgstr "这将避免遗漏任何信息"
 
-#: e2_output.c:4325
+#: e2_output.c:4337
 msgid "show output pane if the command line is focused"
 msgstr "当命令行获取焦点时, 显示输出信息"
 
-#: e2_output.c:4326
+#: e2_output.c:4338
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "当你输入命令时, 输出面板将被打开"
 
-#: e2_output.c:4330
+#: e2_output.c:4342
 msgid "hide output pane if the command line is unfocused"
 msgstr "当命令行失去焦点时, 隐藏输出面板"
 
-#: e2_output.c:4331
+#: e2_output.c:4343
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
 msgstr "当焦点移出命令行时, 输出面板将被自动关闭"
 
-#: e2_output.c:4334
+#: e2_output.c:4346
 msgid "show commands"
 msgstr "显示命令"
 
-#: e2_output.c:4335
+#: e2_output.c:4347
 msgid "This echoes the commands that are run and their exit value"
 msgstr "显示命令的运行和返回值"
 
-#: e2_output.c:4337
+#: e2_output.c:4349
 msgid "scroll to new output"
 msgstr "自动滚动"
 
-#: e2_output.c:4338
+#: e2_output.c:4350
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr "自动滚动输出面板的内容, 显示新信息"
 
-#: e2_output.c:4340
+#: e2_output.c:4352
 msgid "only scroll when really following"
 msgstr "跟随时滚动"
 
-#: e2_output.c:4341
+#: e2_output.c:4353
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr "手工滚动后, 将停止自动滚动"
 
-#: e2_output.c:4344
+#: e2_output.c:4356
 msgid "only scroll when new output is at the end"
 msgstr "新的输出完成后, 再滚动"
 
-#: e2_output.c:4345
+#: e2_output.c:4357
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
 msgstr "停止面板滚动, 如果在当前插入位置, 有另一个不同的进程显示字符"
 
-#: e2_output.c:4348
+#: e2_output.c:4360
 msgid "auto-selection boundary characters"
 msgstr "自动选择边界字符"
 
-#: e2_output.c:4349
+#: e2_output.c:4361
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr "字符, 通常是标点符号, 其中的任何一个都被设置成自动选择文字时的边界"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "everywhere"
 msgstr "任何地方"
 
-#: e2_output.c:4351
+#: e2_output.c:4363
 msgid "words"
 msgstr "断词"
 
-#: e2_output.c:4353
+#: e2_output.c:4365
 msgid "line wrap mode"
 msgstr "折行"
 
-#: e2_output.c:4354
+#: e2_output.c:4366
+#, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
-"will only break the line between words"
+"wraps between words, splitting words only when they are wider than the pane"
 msgstr "如果模式为'无', 将使用水平滚动条. 模式'断词'时, 折行仅用于两个单词之间"
 
-#: e2_output.c:4357
+#: e2_output.c:4369
 msgid "left margin (pixels)"
 msgstr "左边距(像素)"
 
-#: e2_output.c:4358
+#: e2_output.c:4370
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的左边距"
 
-#: e2_output.c:4361
+#: e2_output.c:4373
 msgid "right margin (pixels)"
 msgstr "右边距(像素)"
 
-#: e2_output.c:4362
+#: e2_output.c:4374
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的右边距"
 
-#: e2_output.c:4370
+#: e2_output.c:4382
 msgid "custom output font"
 msgstr "自定义输出字体"
 
-#: e2_output.c:4371
+#: e2_output.c:4383
 msgid "This is the font used for text in the output pane"
 msgstr "定义输出面板中文字的字体"
 
-#: e2_output.c:4376
+#: e2_output.c:4388
 msgid "positive color"
 msgstr "颜色(正)"
 
-#: e2_output.c:4377
+#: e2_output.c:4389
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
 msgstr "用于成功的操作或者其它正面事件的信息的颜色"
 
-#: e2_output.c:4380
+#: e2_output.c:4392
 msgid "negative color"
 msgstr "颜色(反)"
 
-#: e2_output.c:4381
+#: e2_output.c:4393
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr "这个颜色用于错误, 警告和其它需要引起注意的信息"
 
-#: e2_output.c:4384
+#: e2_output.c:4396
 msgid "commands color"
 msgstr "命令文本颜色"
 
-#: e2_output.c:4385
+#: e2_output.c:4397
 msgid "This color is used for echoing issued commands"
 msgstr "这个颜色用于命令返回信息"
 
-#: e2_output.c:4388
+#: e2_output.c:4400
 msgid "unimportant color"
 msgstr "颜色(不重要)"
 
-#: e2_output.c:4389
+#: e2_output.c:4401
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
