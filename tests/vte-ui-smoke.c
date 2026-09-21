@@ -20,6 +20,15 @@ static GtkWidget *find_widget (GtkWidget *widget, const gchar *name, GType type)
 {
     if ((name != NULL && !strcmp (gtk_widget_get_name (widget), name))
         || (type != 0 && G_TYPE_CHECK_INSTANCE_TYPE (widget, type))) return widget;
+    if (GTK_IS_NOTEBOOK (widget))
+    {
+        GtkWidget *actions = gtk_notebook_get_action_widget (GTK_NOTEBOOK (widget), GTK_PACK_END);
+        if (actions != NULL)
+        {
+            GtkWidget *found = find_widget (actions, name, type);
+            if (found != NULL) return found;
+        }
+    }
     if (!GTK_IS_CONTAINER (widget)) return NULL;
     GList *children = gtk_container_get_children (GTK_CONTAINER (widget)), *link;
     GtkWidget *found = NULL;
@@ -76,7 +85,7 @@ static void check_output_menu (gboolean terminal)
         if (label != NULL && !strcmp (gtk_label_get_text (GTK_LABEL (label)), "Edit")) edit = TRUE;
     }
     g_assert_cmpint (edit, ==, !terminal);
-    if (terminal) g_assert_cmpuint (g_list_length (items), ==, 2);
+    if (terminal) g_assert_cmpuint (g_list_length (items), >=, 7);
     g_list_free (items);
     gtk_menu_popdown (GTK_MENU (menu));
     gtk_widget_destroy (menu);
@@ -135,6 +144,32 @@ static gboolean tick (gpointer data)
     {
         case 0:
         {
+            /* A legacy profile can contain several log pages. Consolidation
+             * must preserve all text, including styled text, before removal. */
+            GtkWidget *legacy = e2_output_create_notebook (3);
+            g_object_ref_sink (legacy);
+            for (gint i = 0; i < 3; i++)
+            {
+                GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (legacy), i);
+                E2_OutputTabRuntime *rt = g_object_get_data (G_OBJECT (page), "e2-output-tab");
+                gchar *text = g_strdup_printf ("LEGACY-%d", i);
+                gtk_text_buffer_set_text (rt->buffer, text, -1);
+                GtkTextIter start, end;
+                gtk_text_buffer_get_bounds (rt->buffer, &start, &end);
+                gtk_text_buffer_apply_tag_by_name (rt->buffer, "bold", &start, &end);
+                g_free (text);
+            }
+            e2_output_merge_notebooks (legacy, legacy);
+            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (legacy)), ==, 1);
+            GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (legacy), 0);
+            E2_OutputTabRuntime *rt = g_object_get_data (G_OBJECT (page), "e2-output-tab");
+            gchar *merged = buffer_text (rt->buffer);
+            g_assert_nonnull (strstr (merged, "LEGACY-0"));
+            g_assert_nonnull (strstr (merged, "LEGACY-1"));
+            g_assert_nonnull (strstr (merged, "LEGACY-2"));
+            g_free (merged);
+            e2_output_destroy_notebook (legacy, app.outbook);
+            g_object_unref (legacy);
             const gchar *root = g_getenv ("E2_VTE_UI_TEST");
             gchar *shell = g_build_filename (root, "shell", NULL);
             e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
@@ -143,7 +178,7 @@ static gboolean tick (gpointer data)
             g_assert_nonnull (book);
             GtkWidget *bar = find_widget (app.main_window, "terminal-actions", 0);
             GList *buttons = gtk_container_get_children (GTK_CONTAINER (bar)), *link;
-            g_assert_cmpuint (g_list_length (buttons), ==, 6);
+            g_assert_cmpuint (g_list_length (buttons), ==, 2);
             for (link = buttons; link != NULL; link = link->next)
             {
                 g_assert_true (gtk_widget_get_has_tooltip (link->data));
@@ -219,7 +254,7 @@ static gboolean tick (gpointer data)
                 CLOSEBGL
                 g_free (action);
                 g_assert_true (app.outbook == output_book);
-                g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (output_book)), ==, i ? 1 : 2);
+                g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (output_book)), ==, 2);
             }
             g_assert_true (app.tab.buffer == right_buffer);
             for (guint i = 0; i < 2; i++)
@@ -257,6 +292,8 @@ static gboolean tick (gpointer data)
             g_assert_cmpstr (text, ==, "");
             g_free (text);
             e2_output_print (&app.tab, "TAB-TWO", NULL, TRUE, NULL);
+            gchar command[] = "sh -c 'sleep 1; printf %s%s MERGED- LATE'";
+            e2_command_run_at (command, curr_view->dir, E2_COMMAND_RANGE_DEFAULT, app.main_window);
             gchar *shell = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "shell", NULL);
             e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
             g_free (shell);
@@ -291,11 +328,20 @@ static gboolean tick (gpointer data)
             e2_window_recreate (&app.window);
             book = find_widget (gtk_paned_get_child2 (GTK_PANED (original_output)), "terminal-notebook", 0);
             g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 4);
-            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (app.outbook)), ==, 2);
+            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (app.outbook)), ==, 4);
+            gchar *merged = buffer_text (right_buffer);
+            g_assert_nonnull (strstr (merged, "TAB-TWO"));
+            g_assert_nonnull (strstr (merged, "TAB-ONE-ASYNC"));
+            g_free (merged);
             key (GDK_Tab);
             break;
         case 7:
+        {
             if (!main_page (1, 2)) goto wait;
+            gchar *text = buffer_text (right_buffer);
+            gboolean complete = strstr (text, "MERGED-LATE") != NULL;
+            g_free (text);
+            if (!complete) goto wait;
             g_assert_true (gtk_paned_get_child2 (GTK_PANED (app.window.output_paned)) == original_output);
             g_assert_cmpint (kill (live_pid, 0), ==, 0);
             e2_option_bool_set ("terminal-per-tab", TRUE);
@@ -307,6 +353,7 @@ static gboolean tick (gpointer data)
             g_timeout_add (50, answer_dialog, GINT_TO_POINTER (GTK_RESPONSE_ACCEPT));
             close_main (1);
             break;
+        }
         case 8:
         {
             if (!main_page (0, 1)) goto wait;

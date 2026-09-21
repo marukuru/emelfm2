@@ -37,8 +37,10 @@ cannot be used; select an existing local directory first. Each terminal keeps it
 own startup directory, scrollback and shell history. Navigating the file panes
 never writes a cd command into a terminal.
 
-Each output toolbar offers icons with tooltips for Open terminal here, Focus
-terminal, Restart, Insert selected paths, Copy and Paste. Each terminal tab has
+Each pane has one flat tab strip containing Command log, its terminals, a New
+terminal icon and a View actions menu. Copy, Paste, Insert selected paths and
+Restart are available in the terminal menu; exited sessions also have inline
+Restart and Close controls. Each terminal tab has
 its own close button. Tab titles show user@folder, with the current folder's
 basename. Starting, running, failed and exited states appear in the title's
 tooltip; startup errors and exit messages appear below the terminal. Running
@@ -47,8 +49,11 @@ inspection; Restart creates a new shell in that tab's original startup directory
 with current preferences.
 Application logs go to the initiating pane's output view, including while a
 terminal has focus. The Edit action is available only for application logs;
-terminal context menus provide Copy and Paste. Output tab detach/reattach applies only to log
-views; terminal tabs cannot be detached.
+terminal context menus offer terminal-specific actions. VTE builds have one
+permanent Command log per pane and do not create or detach additional log tabs.
+When older multi-log layouts or per-main-tab outputs are combined, their text
+and formatting are merged into the retained log with separators; running
+commands continue there. Builds without VTE keep the native output-tab controls.
 
 In Configuration / commands, enable "keep output and terminals with file-pane
 tabs" (terminal-per-tab) to give each main tab its own pair of outputs and

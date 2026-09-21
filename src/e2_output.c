@@ -71,7 +71,7 @@ ToDo
 
 static void _e2_output_copy_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt);
 static void _e2_output_edit_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt);
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 static void _e2_output_tabattach_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt);
 static void _e2_output_clear_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt);
 #endif
@@ -88,7 +88,7 @@ static GStaticRecMutex print_mutex;
 #endif
 extern pthread_mutex_t task_mutex;
 
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 #define TARGET_NOTEBOOK_TAB 3
 static GtkTargetEntry target_table2[] =
 {
@@ -1692,7 +1692,7 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 	gchar *item_name;
 	GtkWidget *item;
 	GtkWidget *menu = e2_menu_get ();
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	if (!rt->detached)
 	{
 #endif
@@ -1707,6 +1707,8 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 			_("Toggle output pane size to/from the full window size"),
 			item_name, "0,*");  //no string translation
 		g_free (item_name);
+
+#ifndef E2_VTE
 		item_name = g_strconcat (_A(10),".",_A(31),NULL);
 		e2_menu_add_action (menu, _("_New tab"), STOCK_NAME_ADD,
 			_("Add another tab for the output pane"), item_name, NULL);
@@ -1717,7 +1719,8 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 		g_free (item_name);
 		if (item != NULL && gtk_notebook_get_n_pages (GTK_NOTEBOOK (rt->book)) == 1)
 			gtk_widget_set_sensitive (item, FALSE);
-#ifdef E2_TABS_DETACH
+#endif
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	}
 	else //rt->detached
 	{
@@ -1728,7 +1731,7 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 
 	e2_menu_add_separator (menu);
 
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	e2_menu_add (menu, _("C_lear"), STOCK_NAME_CLEAR,
 		_("Clear this tab"), _e2_output_clear_cb, rt);
 #else
@@ -1797,7 +1800,7 @@ OR
 	else
 		gtk_menu_item_set_submenu (GTK_MENU_ITEM (item), submenu);
 
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	if (!rt->detached)
 	{
 #endif
@@ -1817,7 +1820,7 @@ OR
 			_("Open the configuration dialog at the output options page"),
 			item_name, _C(28)); //_("output")
 		g_free (item_name);
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	}
 #endif
 	g_signal_connect (G_OBJECT (menu), "selection-done",
@@ -1959,7 +1962,7 @@ static GtkWidget *_e2_output_create_view (E2_OutputTabRuntime *rt)
 	gtk_widget_show (rt->scroll);
 	return rt->scroll;
 }
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 /**
 @brief clear text buffer of notebook tab associated with @a rt
 This assumes BGL is closed
@@ -2189,10 +2192,64 @@ void e2_output_select_notebook (GtkWidget *book)
 	app.outbook = book;
 	gint page = gtk_notebook_get_current_page (GTK_NOTEBOOK (book));
 	if (page < 0) page = 0;
+#ifdef E2_VTE
+	page = 0; //native commands always target the log, even with a terminal selected
+#endif
 	_e2_output_tabchange_cb (GTK_NOTEBOOK (book), NULL, page, NULL);
 }
 void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
 {
+#ifdef E2_VTE
+	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (destination), 0);
+	E2_OutputTabRuntime *target = g_object_get_data (G_OBJECT (page), "e2-output-tab");
+	if (target == NULL) return;
+	/* Consolidate before removing any old pages. Commands retain a live output
+	 * destination, and GTK's rich-text transfer preserves existing log styles. */
+	if (curr_tab != NULL) *curr_tab = app.tab;
+	if (curr_tab != target && curr_tab != NULL && curr_tab->book == source)
+		e2_output_select_notebook (destination);
+	g_signal_handlers_block_by_func (source, _e2_output_tabchange_cb, NULL);
+	GList *link = app.tabslist;
+	while (link != NULL)
+	{
+		GList *next = link->next;
+		E2_OutputTabRuntime *tab = link->data;
+		if (tab != target && tab->book == source)
+		{
+			GtkTextIter start, end, insert;
+			gtk_text_buffer_get_bounds (tab->buffer, &start, &end);
+			if (!gtk_text_iter_equal (&start, &end))
+			{
+				gtk_text_buffer_get_end_iter (target->buffer, &insert);
+				gtk_text_buffer_insert (target->buffer, &insert, _("\n--- Merged command log ---\n"), -1);
+				GdkAtom format = gtk_text_buffer_register_serialize_tagset (tab->buffer, NULL);
+				gtk_text_buffer_register_deserialize_tagset (target->buffer, NULL);
+				gtk_text_buffer_deserialize_set_can_create_tags (target->buffer, format, TRUE);
+				gsize length;
+				guint8 *bytes = gtk_text_buffer_serialize (tab->buffer, tab->buffer, format, &start, &end, &length);
+				if (!gtk_text_buffer_deserialize (target->buffer, target->buffer, format, &insert, bytes, length, NULL))
+				{
+					gchar *text = gtk_text_buffer_get_text (tab->buffer, &start, &end, FALSE);
+					gtk_text_buffer_insert (target->buffer, &insert, text, -1);
+					g_free (text);
+				}
+				g_free (bytes);
+			}
+			e2_command_retab2_children (tab, target);
+			app.tabslist = g_list_delete_link (app.tabslist, link);
+			app.tabcount--;
+			gtk_widget_destroy (tab->scroll);
+			g_free (tab->origin_lastime);
+#ifdef E2_OUTPUTSTYLES
+			if (tab->style_tags != NULL) g_hash_table_destroy (tab->style_tags);
+			if (tab->style_trios != NULL) g_hash_table_destroy (tab->style_trios);
+#endif
+			DEALLOCATE (E2_OutputTabRuntime, tab);
+		}
+		link = next;
+	}
+	g_signal_handlers_unblock_by_func (source, _e2_output_tabchange_cb, NULL);
+#else
 	if (source == destination) return;
 	*curr_tab = app.tab;
 	g_signal_handlers_block_by_func (source, _e2_output_tabchange_cb, NULL);
@@ -2220,7 +2277,7 @@ void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
 		gchar *text = g_strdup_printf ("%u", number);
 		gtk_label_set_text (GTK_LABEL (label), text);
 		g_free (text);
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 		if (tab->detached) continue; //its attach action now returns to destination
 #endif
 		g_object_ref (tab->scroll);
@@ -2229,7 +2286,7 @@ void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
 		gtk_notebook_append_page (GTK_NOTEBOOK (destination), tab->scroll, label);
 #ifdef USE_GTK2_10
 		gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (destination), tab->scroll, TRUE);
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 		gtk_notebook_set_tab_detachable (GTK_NOTEBOOK (destination), tab->scroll, TRUE);
 #endif
 #endif
@@ -2240,6 +2297,13 @@ void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
 	g_signal_handlers_unblock_by_func (source, _e2_output_tabchange_cb, NULL);
 	g_signal_handlers_unblock_by_func (destination, _e2_output_tabchange_cb, NULL);
 	app.tab = *curr_tab;
+#endif
+}
+void e2_output_show_log_menu (GtkWidget *book)
+{
+	e2_output_select_notebook (book);
+	_e2_output_show_context_menu (GTK_WIDGET (app.tab.text), 0,
+		gtk_get_current_event_time (), &app.tab);
 }
 void e2_output_destroy_notebook (GtkWidget *book, GtkWidget *replacement)
 {
@@ -2257,7 +2321,7 @@ void e2_output_destroy_notebook (GtkWidget *book, GtkWidget *replacement)
 			e2_command_retab2_children (tab, target);
 			app.tabslist = g_list_delete_link (app.tabslist, link);
 			app.tabcount--;
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 			GtkWidget *parent = gtk_widget_get_parent (tab->scroll);
 			if (tab->detached && parent != NULL)
 				g_signal_handlers_block_by_func (parent, _e2_output_tabchange_cb, NULL);
@@ -2348,7 +2412,7 @@ static gboolean _e2_output_button_press_cb (GtkWidget *textview,
 	printd (DEBUG, "output button press cb");
 	gboolean retval = FALSE;
 	NEEDCLOSEBGL
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	//just changing notebook page is not sufficient to set current tab when
 	//there's > 1 notebook
 	if (event->type == GDK_BUTTON_PRESS)
@@ -2420,7 +2484,7 @@ static gboolean _e2_output_button_press_cb (GtkWidget *textview,
 */
 			//focus the output tab if it's not going to be hidden
 			if (!e2_option_bool_get_direct (app.output.opt_hide_on_focus_out)
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 				|| rrt->detached
 #endif
 				)
@@ -2455,7 +2519,7 @@ static gboolean _e2_output_button_press_cb (GtkWidget *textview,
 		//button-release callback - but we can't just block that !!
 	}
 	else if (event->button == 2
-# ifdef E2_TABS_DETACH
+# if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 		&& !rrt->detached
 # endif
 		&& event->state & GDK_CONTROL_MASK )	//differentiate from default gtk btn2 behaviour
@@ -2598,7 +2662,7 @@ static void _e2_output_copy_cb (GtkMenuItem *menuitem,
 	NEEDOPENBGL
 }
 
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 static void _e2_output_tabattach_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt)
 {
 	GtkNotebook *newbook = GTK_NOTEBOOK (gtk_bin_get_child (GTK_BIN (rt->dropwindow)));
@@ -3074,7 +3138,7 @@ static gboolean _e2_output_scroll_all (gpointer from, E2_ActionRuntime *art)
 */
 static gboolean _e2_output_clear_action (gpointer from, E2_ActionRuntime *art)
 {
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	_e2_output_clear_buffer (&app.tab);
 #else
 	//order of things here is to handle clearing when the text buffer is being added to
@@ -3104,6 +3168,9 @@ static gboolean _e2_output_clear_action (gpointer from, E2_ActionRuntime *art)
 */
 static gboolean _e2_output_tab_add (gpointer from, E2_ActionRuntime *art)
 {
+#ifdef E2_VTE
+	return FALSE; //the tools notebook has one permanent command log
+#else
 	E2_OutputTabRuntime *tab = ALLOCATE0 (E2_OutputTabRuntime);
 	CHECKALLOCATEDWARN (tab, return FALSE;)
 	tab->book = app.outbook;
@@ -3134,7 +3201,7 @@ static gboolean _e2_output_tab_add (gpointer from, E2_ActionRuntime *art)
 	gtk_notebook_append_page (GTK_NOTEBOOK (app.outbook), sw, wid);
 #ifdef USE_GTK2_10
 	gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (app.outbook), sw, TRUE);
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	gtk_notebook_set_tab_detachable (GTK_NOTEBOOK (app.outbook), sw, TRUE);
 #endif
 #endif
@@ -3143,13 +3210,14 @@ static gboolean _e2_output_tab_add (gpointer from, E2_ActionRuntime *art)
 	if (gtk_notebook_get_n_pages (GTK_NOTEBOOK (app.outbook)) == 2)	//doesn't matter where the tabs are
 		gtk_notebook_set_show_tabs (GTK_NOTEBOOK (app.outbook), TRUE);
 	//focus the new tab
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	new = gtk_notebook_get_n_pages (GTK_NOTEBOOK (app.outbook));
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (app.outbook), new-1);
 #else
 	gtk_notebook_set_current_page (GTK_NOTEBOOK (app.outbook), -1);
 #endif
 	return TRUE;
+#endif
 }
 /**
 @brief remove currently focused output pane tab
@@ -3163,6 +3231,9 @@ and pointers for affected running commands are adjusted accordingly
 */
 static gboolean _e2_output_tab_remove (gpointer from, E2_ActionRuntime *art)
 {
+#ifdef E2_VTE
+	return FALSE;
+#else
 	GtkNotebook *book = GTK_NOTEBOOK (app.outbook);
 	gint count = gtk_notebook_get_n_pages (book);
 	if (count <= 1) return FALSE;
@@ -3184,6 +3255,7 @@ static gboolean _e2_output_tab_remove (gpointer from, E2_ActionRuntime *art)
 	DEALLOCATE (E2_OutputTabRuntime, tab);
 	gtk_notebook_set_show_tabs (book, count > 2);
 	return TRUE;
+#endif
 }
 /**
 @brief focus output pane
@@ -3217,7 +3289,7 @@ static gboolean _e2_output_focus_action (gpointer from, E2_ActionRuntime *art)
 			if (tab->book == app.outbook && tab->labelnum == num)
 			{
 				GtkWidget *book;
-# ifdef E2_TABS_DETACH
+# if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 				if (tab->detached)	//tab has been dropped to a separate window
 				{
 					book = gtk_widget_get_ancestor (tab->scroll, GTK_TYPE_NOTEBOOK);
@@ -4097,7 +4169,7 @@ GtkWidget *e2_output_create_notebook (gint count)
 #ifdef USE_GTK2_10
 		tab->labelnum = i;	//labels are local to this pane's notebook
 		gtk_notebook_set_tab_reorderable (book, sw, TRUE);
-# ifdef E2_TABS_DETACH
+# if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 		gtk_notebook_set_tab_detachable (book, sw, TRUE);
 # endif
 #endif
@@ -4112,7 +4184,7 @@ GtkWidget *e2_output_create_notebook (gint count)
 		app.outbook = outputbook;
 	}
 
-#ifdef E2_TABS_DETACH
+#if defined(E2_TABS_DETACH) && !defined(E2_VTE)
 	//enable tab dragging to new windows
 # ifdef USE_GTK2_12DND
 #  ifdef USE_GTK3_0

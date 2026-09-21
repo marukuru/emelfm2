@@ -2137,6 +2137,7 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 	for (member = app.tabslist; member != NULL; member = member->next)
 		gtk_scrolled_window_set_placement (
 		GTK_SCROLLED_WINDOW (((E2_OutputTabRuntime *)member->data)->scroll), where);
+#ifndef E2_VTE
 #ifdef ADJACENT_TABS
 	if (where == GTK_CORNER_TOP_LEFT || where == GTK_CORNER_BOTTOM_LEFT)
 		gtk_notebook_set_tab_pos (GTK_NOTEBOOK (app.outbook), GTK_POS_RIGHT);
@@ -2147,6 +2148,7 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 		gtk_notebook_set_tab_pos (GTK_NOTEBOOK (app.outbook), GTK_POS_LEFT);
 	else
 		gtk_notebook_set_tab_pos (GTK_NOTEBOOK (app.outbook), GTK_POS_RIGHT);
+#endif
 #endif
 	e2_output_update_style ();
 	e2_filestore_enable_refresh ();

@@ -31,7 +31,7 @@ struct _E2_TerminalWorkspace
 typedef struct
 {
     gint refs;
-    GtkWidget *page, *terminal, *label, *status;
+    GtkWidget *page, *terminal, *label, *status, *statusbar;
     gchar *directory, *shell;
     GCancellable *cancel;
     GPid pid;
@@ -42,6 +42,8 @@ typedef struct
 static E2_TerminalWorkspace *workspace;
 static GList *sessions;
 static gboolean dispatch_action (gpointer data);
+static void button_action (GtkWidget *button, gpointer data);
+static gboolean restart_terminal (gpointer from, E2_ActionRuntime *art);
 static guint title_source;
 static pthread_t ui_thread;
 static TerminalPane *active_pane (void)
@@ -138,7 +140,7 @@ static void session_exited (gint status, gboolean known, gpointer data)
     else
         text = g_strdup (_("Shell exited (exit status unavailable). Use Restart to start another shell."));
     gtk_label_set_text (GTK_LABEL (session->status), text);
-    gtk_widget_show (session->status);
+    gtk_widget_show (session->statusbar);
     g_free (text);
 }
 static void session_spawned (GPid pid, const GError *error, gpointer data)
@@ -151,14 +153,14 @@ static void session_spawned (GPid pid, const GError *error, gpointer data)
         {
             session_label (session, _("failed"));
             gtk_label_set_text (GTK_LABEL (session->status), error->message);
-            gtk_widget_show (session->status);
+            gtk_widget_show (session->statusbar);
         }
         else if (!session->exited)
         {
             session->pid = pid;
             session_label (session, _("running"));
             gtk_label_set_text (GTK_LABEL (session->status), "");
-            gtk_widget_hide (session->status);
+            gtk_widget_hide (session->statusbar);
         }
     }
     /* On destruction VTE owns cancellation, hangup and child reaping. A PID
@@ -237,6 +239,7 @@ static void terminal_paste (GtkMenuItem *item, GtkWidget *terminal)
 }
 static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
 {
+    if (data != NULL) activate_pane (((TerminalSession *)data)->owner);
     GtkWidget *menu = e2_menu_get ();
     g_object_set_data_full (G_OBJECT (menu), "terminal", g_object_ref (terminal), g_object_unref);
     GtkWidget *copy = e2_menu_add (menu, _("_Copy"), STOCK_NAME_COPY,
@@ -244,6 +247,20 @@ static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
     gtk_widget_set_sensitive (copy, e2_terminal_backend_has_selection (terminal));
     e2_menu_add (menu, _("_Paste"), STOCK_NAME_PASTE,
         _("Paste clipboard text into the terminal"), terminal_paste, terminal);
+    e2_menu_add_separator (menu);
+    e2_menu_add_action (menu, _("Insert selected paths"), STOCK_NAME_ADD,
+        _("Insert quoted file paths without executing them"), "terminal.insert_paths", NULL);
+    e2_menu_add_action (menu, _("_Restart"), STOCK_NAME_REFRESH,
+        _("Restart this terminal"), "terminal.restart", NULL);
+    e2_menu_add_action (menu, _("_Close terminal"), STOCK_NAME_CLOSE,
+        _("Close this terminal"), "terminal.close", NULL);
+    e2_menu_add_separator (menu);
+    gchar *action = g_strconcat (_A(10), ".", _A(33), NULL);
+    e2_menu_add_action (menu, _("_Hide tools"), "output_hide"E2ICONTB,
+        _("Return to the file list"), action, "1");
+    e2_menu_add_action (menu, _("_Expand / restore tools"), STOCK_NAME_ZOOM_FIT,
+        _("Toggle the tools area size"), action, "0,*");
+    g_free (action);
     g_signal_connect (menu, "selection-done", G_CALLBACK (e2_menu_selection_done_cb), NULL);
     gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
     return TRUE;
@@ -256,7 +273,7 @@ static gboolean terminal_button (GtkWidget *terminal, GdkEventButton *event, gpo
 gboolean e2_terminal_show_menu (void)
 {
     TerminalSession *session = current_session ();
-    return session != NULL && terminal_popup_menu (session->terminal, NULL);
+    return session != NULL && terminal_popup_menu (session->terminal, session);
 }
 static gint run_dialog (GtkWidget *dialog)
 {
@@ -295,6 +312,13 @@ static gboolean close_session (TerminalSession *session)
 static void close_session_clicked (GtkButton *button, TerminalSession *session)
 {
     close_session (session);
+}
+static void restart_session_clicked (GtkButton *button, TerminalSession *session)
+{
+    activate_pane (session->owner);
+    gtk_notebook_set_current_page (GTK_NOTEBOOK (session->owner->book),
+        gtk_notebook_page_num (GTK_NOTEBOOK (session->owner->book), session->page));
+    restart_terminal (NULL, NULL);
 }
 static gboolean local_directory (void)
 {
@@ -346,8 +370,14 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     gtk_label_set_ellipsize (GTK_LABEL (session->label), PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_max_width_chars (GTK_LABEL (session->label), 32);
     session->status = gtk_label_new (_("Starting shell…"));
-    gtk_widget_set_no_show_all (session->status, TRUE);
-    gtk_widget_show (session->status);
+    session->statusbar = gtk_hbox_new (FALSE, 4);
+    gtk_widget_set_no_show_all (session->statusbar, TRUE);
+    gtk_box_pack_start (GTK_BOX (session->statusbar), session->status, TRUE, TRUE, 0);
+    e2_button_add (session->statusbar, FALSE, 0, _("Restart"), STOCK_NAME_REFRESH,
+        _("Restart this terminal"), restart_session_clicked, session);
+    e2_button_add (session->statusbar, FALSE, 0, _("Close"), STOCK_NAME_CLOSE,
+        _("Close this terminal"), close_session_clicked, session);
+    gtk_widget_show_all (session->statusbar);
     gtk_label_set_ellipsize (GTK_LABEL (session->status), PANGO_ELLIPSIZE_MIDDLE);
     GtkWidget *row = gtk_hbox_new (FALSE, 0);
     session->terminal = e2_terminal_backend_new (session_exited, session);
@@ -358,7 +388,7 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     GtkWidget *scrollbar = gtk_vscrollbar_new (e2_terminal_backend_adjustment (session->terminal));
     gtk_box_pack_start (GTK_BOX (row), scrollbar, FALSE, FALSE, 0);
     gtk_box_pack_start (GTK_BOX (session->page), row, TRUE, TRUE, 0);
-    gtk_box_pack_start (GTK_BOX (session->page), session->status, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (session->page), session->statusbar, FALSE, FALSE, 0);
     g_object_set_data (G_OBJECT (session->page), "e2-terminal-session", session);
     g_signal_connect (session->page, "destroy", G_CALLBACK (session_destroyed), session);
     g_signal_connect (session->terminal, "key-press-event", G_CALLBACK (terminal_key), session);
@@ -535,6 +565,28 @@ static gboolean dispatch_action (gpointer data)
     if (workspace != NULL) button_action (NULL, data);
     return FALSE;
 }
+static void tools_menu (GtkWidget *button, TerminalPane *pane)
+{
+    activate_pane (pane);
+    CLOSEBGL_IF_OPEN
+    if (!e2_terminal_show_menu ()) e2_output_show_log_menu (pane->book);
+    OPENBGL_IF_CLOSED
+}
+static void tools_switched (GtkNotebook *book,
+#ifdef USE_GTK3_0
+    GtkWidget *page,
+#else
+    GtkNotebookPage *page,
+#endif
+    guint number, TerminalPane *pane)
+{
+    if (!gtk_widget_get_mapped (GTK_WIDGET (book))) return;
+    activate_pane (pane);
+    GtkWidget *child = gtk_notebook_get_nth_page (book, number);
+    TerminalSession *session = child == NULL ? NULL : g_object_get_data (G_OBJECT (child), "e2-terminal-session");
+    if (session != NULL) gtk_widget_grab_focus (session->terminal);
+    else if (child != NULL) gtk_widget_grab_focus (GTK_WIDGET (app.tab.text));
+}
 static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint number)
 {
     pane->pane = number;
@@ -542,37 +594,36 @@ static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint numb
     g_object_set_data (G_OBJECT (output), "terminal-pane", pane);
     GtkWidget *box = gtk_vbox_new (FALSE, 0);
     g_object_set_data (G_OBJECT (box), "terminal-pane", pane);
-    GtkWidget *buttons = gtk_hbox_new (FALSE, 2);
+    /* The existing log notebook becomes the tools notebook: no nested tabs. */
+    e2_output_merge_notebooks (output, output);
+    pane->book = output;
+    gtk_widget_set_name (output, "terminal-notebook");
+    gtk_notebook_set_tab_pos (GTK_NOTEBOOK (output), GTK_POS_TOP);
+    gtk_notebook_set_show_tabs (GTK_NOTEBOOK (output), TRUE);
+    gtk_notebook_set_show_border (GTK_NOTEBOOK (output), TRUE);
+    gtk_notebook_popup_disable (GTK_NOTEBOOK (output));
+    GtkWidget *log = gtk_notebook_get_nth_page (GTK_NOTEBOOK (output), 0);
+    GtkWidget *log_label = gtk_label_new (_("Command log"));
+    gtk_notebook_set_tab_label (GTK_NOTEBOOK (output), log, log_label);
+    gtk_notebook_set_tab_reorderable (GTK_NOTEBOOK (output), log, FALSE);
+    gtk_widget_set_tooltip_text (log_label, _("Command and file-operation output. Type interactive commands directly in a terminal."));
+    GtkWidget *buttons = gtk_hbox_new (FALSE, 0);
     gtk_widget_set_name (buttons, "terminal-actions");
-    const struct { guint action; const gchar *label, *icon, *tip; } actions[] = {
-        { 0, N_("Open terminal here"), STOCK_NAME_EXECUTE,
-            N_("Open an interactive terminal in this pane's current directory") },
-        { 1, N_("Focus terminal"), STOCK_NAME_JUMP_TO,
-            N_("Focus the terminal; Ctrl+Shift+F6 returns to the file list") },
-        { 3, N_("Restart"), STOCK_NAME_REFRESH,
-            N_("Restart the selected terminal in its original directory") },
-        { 4, N_("Insert selected paths"), STOCK_NAME_ADD,
-            N_("Insert the selected files' quoted paths into the terminal") },
-        { 5, N_("Copy"), STOCK_NAME_COPY, N_("Copy selected terminal text (Ctrl+Shift+C)") },
-        { 6, N_("Paste"), STOCK_NAME_PASTE, N_("Paste clipboard text into the terminal (Ctrl+Shift+V)") }
-    };
-    guint i;
-    for (i = 0; i < G_N_ELEMENTS (actions); i++)
-    {
-        GtkWidget *button = e2_button_get_full (NULL, actions[i].icon, GTK_ICON_SIZE_MENU,
-            _(actions[i].tip), button_action, GUINT_TO_POINTER (actions[i].action), E2_BUTTON_SHOW_MISSING_ICON);
-        atk_object_set_name (gtk_widget_get_accessible (button), _(actions[i].label));
-        g_object_set_data (G_OBJECT (button), "terminal-pane", pane);
-        gtk_box_pack_start (GTK_BOX (buttons), button, FALSE, FALSE, 0);
-    }
-    pane->book = gtk_notebook_new ();
-    gtk_widget_set_name (pane->book, "terminal-notebook");
-    gtk_notebook_set_scrollable (GTK_NOTEBOOK (pane->book), TRUE);
-    GtkWidget *log_label = gtk_label_new (_("Application output"));
-    gtk_widget_set_tooltip_text (log_label, _("Command and file-operation log. For interactive programs, use Open terminal here and type at the shell prompt."));
-    gtk_notebook_append_page (GTK_NOTEBOOK (pane->book), output, log_label);
-    gtk_box_pack_start (GTK_BOX (box), buttons, FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (box), pane->book, TRUE, TRUE, 0);
+    GtkWidget *add = e2_button_get_full (NULL, STOCK_NAME_ADD, GTK_ICON_SIZE_MENU,
+        _("New terminal in this pane's folder"), button_action, GUINT_TO_POINTER (0), E2_BUTTON_SHOW_MISSING_ICON);
+    gtk_widget_set_name (add, "terminal-new");
+    atk_object_set_name (gtk_widget_get_accessible (add), _("New terminal"));
+    g_object_set_data (G_OBJECT (add), "terminal-pane", pane);
+    gtk_box_pack_start (GTK_BOX (buttons), add, FALSE, FALSE, 0);
+    GtkWidget *menu = e2_button_get_full (NULL, STOCK_NAME_PROPERTIES, GTK_ICON_SIZE_MENU,
+        _("Actions for the selected log or terminal"), tools_menu, pane, E2_BUTTON_SHOW_MISSING_ICON);
+    gtk_widget_set_name (menu, "terminal-menu");
+    atk_object_set_name (gtk_widget_get_accessible (menu), _("View actions"));
+    gtk_box_pack_start (GTK_BOX (buttons), menu, FALSE, FALSE, 0);
+    gtk_widget_show_all (buttons);
+    gtk_notebook_set_action_widget (GTK_NOTEBOOK (output), buttons, GTK_PACK_END);
+    g_signal_connect_after (output, "switch-page", G_CALLBACK (tools_switched), pane);
+    gtk_box_pack_start (GTK_BOX (box), output, TRUE, TRUE, 0);
     return box;
 }
 static E2_TerminalWorkspace *workspace_create (GtkWidget *output)

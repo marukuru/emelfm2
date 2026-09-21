@@ -1852,7 +1852,7 @@ void e2_command_retab2_children (E2_OutputTabRuntime *currenttab,
 			&& rt->background_tab == currenttab)
 		{
 			rt->background_tab = replacetab;
-			rt->current_tab = replacetab;
+			rt->current_tab = (replacetab == curr_tab) ? &app.tab : replacetab;
 		}
 		pthread_mutex_lock (&task_mutex);
 		member = member->next;
