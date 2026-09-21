@@ -7,6 +7,7 @@
 #include <glib/gstdio.h>
 #include <unistd.h>
 #include <signal.h>
+#include <vte/vte.h>
 
 static GPid shell_pid;
 static gboolean shell_exited;
@@ -58,6 +59,11 @@ static void wait_text (GtkWidget *terminal, const gchar *needle)
         found = text != NULL && strstr (text, needle) != NULL;
         g_free (text);
     } while (!found && g_get_monotonic_time () < deadline);
+    if (!found)
+    {
+        gchar *text = e2_terminal_backend_text (terminal);
+        g_error ("Missing terminal text %s in: %s", needle, text == NULL ? "(empty)" : text);
+    }
     g_assert_true (found);
 }
 static void wait_jobs (GtkWidget *terminal, gboolean expected)
@@ -111,6 +117,48 @@ static void test_jobs (const gchar *root)
     g_assert_false (e2_terminal_context_has_jobs (shell_pid, -1, "/bin/bash"));
     gtk_widget_destroy (window);
     g_object_unref (cancel);
+}
+static void test_colors (const gchar *root)
+{
+    gchar *rc = g_build_filename (root, "color rc", NULL);
+    g_assert_true (g_file_set_contents (rc,
+        "unset HISTFILE\ncase $TERM in *-256color) PS1='\\[\\e[32m\\]COLORED-PROMPT> \\[\\e[0m\\]' ;;\n"
+        "*) PS1='PLAIN-PROMPT> ' ;; esac\nprintf 'CAPS:%s:%s\\n' \"$TERM\" \"$(tput colors)\"\n", -1, NULL));
+    gchar *old_term = g_strdup (g_getenv ("TERM"));
+    g_setenv ("TERM", "dumb", TRUE);
+    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    GtkWidget *terminal = e2_terminal_backend_new (exited, NULL);
+    e2_terminal_backend_configure (terminal, 1000, "Monospace 10", "#dddddd", "#202020");
+    gtk_container_add (GTK_CONTAINER (window), terminal);
+    gtk_widget_show_all (window);
+    GCancellable *cancel = g_cancellable_new ();
+    gchar *args[] = { "/bin/bash", "--noprofile", "--rcfile", rc, "-i", NULL };
+    shell_exited = FALSE;
+    e2_terminal_backend_spawn (terminal, root, args, cancel, spawned, NULL);
+    wait_text (terminal, "CAPS:xterm-256color:256");
+    wait_text (terminal, "COLORED-PROMPT> ");
+#ifdef E2_VTE2
+    GArray *attributes = g_array_new (FALSE, FALSE, sizeof (VteCharAttributes));
+    gchar *text = vte_terminal_get_text (VTE_TERMINAL (terminal), NULL, NULL, attributes);
+    gchar *prompt = strstr (text, "COLORED-PROMPT> ");
+    g_assert_nonnull (prompt);
+    VteCharAttributes color = g_array_index (attributes, VteCharAttributes, prompt - text);
+    g_assert_cmpuint (color.fore.green, >, color.fore.red);
+    g_assert_cmpuint (color.fore.green, >, color.fore.blue);
+    g_array_free (attributes, TRUE);
+    g_free (text);
+#endif
+    g_assert_cmpstr (g_getenv ("TERM"), ==, "dumb");
+    if (old_term == NULL) g_unsetenv ("TERM");
+    else g_setenv ("TERM", old_term, TRUE);
+    g_free (old_term);
+    e2_terminal_backend_send (terminal, "exit\n");
+    gint64 deadline = g_get_monotonic_time () + 5000000;
+    while (!shell_exited && g_get_monotonic_time () < deadline) pump ();
+    g_assert_true (shell_exited);
+    gtk_widget_destroy (window);
+    g_object_unref (cancel);
+    g_unlink (rc); g_free (rc);
 }
 static void test_metadata (const gchar *root, const gchar *folder, gboolean array)
 {
@@ -269,6 +317,7 @@ int main (int argc, char **argv)
     test_metadata (root, folder, TRUE);
     test_metadata (root, folder, FALSE);
     test_jobs (root);
+    test_colors (root);
     g_rmdir (folder);
     g_rmdir (controls); g_rmdir (renamed); g_rmdir (root);
     g_free (root_label); g_free (initial); g_free (user);

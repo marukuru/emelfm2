@@ -120,6 +120,11 @@ Preferences under commands/terminal apply to new and restarted sessions:
   terminal-foreground  default #dddddd
   terminal-background  default #202020
 
+Terminals start with TERM=xterm-256color so shell startup files can enable color
+prompts and aliases. COLORTERM is truecolor on GTK 3 and vte on legacy GTK 2.
+These settings apply only to terminal children, including restarted sessions;
+they do not change emelFM2's environment or override a user's custom prompt.
+
 The optional Bash helper uses a private mode-0600 temporary rc file which first
 sources the user's usual ~/.bashrc. It appends a location-report function to
 PROMPT_COMMAND, preserving scalar and array hooks and leaving PS1, traps, history

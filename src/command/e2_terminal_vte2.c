@@ -36,9 +36,29 @@ void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
 {
     GError *error = NULL;
     GPid pid = -1;
+    gchar **environment = g_get_environ ();
+    environment = g_environ_setenv (environment, "TERM", "xterm-256color", TRUE);
+    environment = g_environ_setenv (environment, "COLORTERM", "vte", TRUE);
     if (!g_cancellable_set_error_if_cancelled (cancel, &error))
-        vte_terminal_fork_command_full (VTE_TERMINAL (terminal), VTE_PTY_DEFAULT,
-            directory, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, &pid, &error);
+    {
+        /* fork_command_full overwrites TERM with the legacy PTY default.
+         * Configure the PTY explicitly; keep VTE's xterm escape parser and
+         * hand child monitoring back to VTE, just as that convenience API does. */
+        VtePty *pty = vte_pty_new (VTE_PTY_DEFAULT, &error);
+        if (pty != NULL)
+        {
+            vte_pty_set_term (pty, "xterm-256color");
+            if (g_spawn_async (directory, argv, environment,
+                G_SPAWN_SEARCH_PATH | G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_CHILD_INHERITS_STDIN,
+                (GSpawnChildSetupFunc) vte_pty_child_setup, pty, &pid, &error))
+            {
+                vte_terminal_set_pty_object (VTE_TERMINAL (terminal), pty);
+                vte_terminal_watch_child (VTE_TERMINAL (terminal), pid);
+            }
+            g_object_unref (pty);
+        }
+    }
+    g_strfreev (environment);
     callback (pid, error, data);
     if (error != NULL) g_error_free (error);
 }

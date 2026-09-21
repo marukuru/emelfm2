@@ -43,9 +43,13 @@ void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
 {
     SpawnData *spawn = g_new (SpawnData, 1);
     spawn->callback = callback; spawn->data = data;
+    gchar **environment = g_get_environ ();
+    environment = g_environ_setenv (environment, "TERM", "xterm-256color", TRUE);
+    environment = g_environ_setenv (environment, "COLORTERM", "truecolor", TRUE);
     vte_terminal_spawn_async (VTE_TERMINAL (terminal), VTE_PTY_DEFAULT,
-        directory, argv, NULL, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL,
+        directory, argv, environment, G_SPAWN_SEARCH_PATH, NULL, NULL, NULL,
         -1, cancel, spawned_cb, spawn);
+    g_strfreev (environment);
 }
 GtkAdjustment *e2_terminal_backend_adjustment (GtkWidget *terminal)
 { return gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (terminal)); }
