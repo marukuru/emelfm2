@@ -39,9 +39,12 @@ never writes a cd command into a terminal.
 
 Each output toolbar offers icons with tooltips for Open terminal here, Focus
 terminal, Restart, Insert selected paths, Copy and Paste. Each terminal tab has
-its own close button. Tabs show starting, running, failed or
-exited state. Failed/exited tabs stay available for inspection; Restart creates a
-new shell in that tab's original startup directory with current preferences.
+its own close button. Tab titles show user@folder, with the current folder's
+basename. Starting, running, failed and exited states appear in the title's
+tooltip; startup errors and exit messages appear below the terminal. Running
+terminals have no startup-path bar. Failed/exited tabs stay available for
+inspection; Restart creates a new shell in that tab's original startup directory
+with current preferences.
 Application logs go to the initiating pane's output view, including while a
 terminal has focus. The Edit action is available only for application logs;
 terminal context menus provide Copy and Paste. Output tab detach/reattach applies only to log
@@ -85,7 +88,20 @@ retains the backend's normal terminal paste behavior. The legacy backend and
 VTE versions before 0.68 lack the paste_text API; generated paths use direct
 PTY input.
 Legacy VTE reports that a shell exited but cannot supply its exit status.
-OSC 7 directory tracking and hyperlink actions are not implemented.
+Titles refresh twice a second, including in hidden main tabs. On Linux, the
+foreground process's effective UID and /proc cwd track local user/directory
+changes, nested shells and directory renames. PTY wrappers such as sudo are
+followed to their inner foreground process where accessible. Recognized user@host:/path (or
+:~/path) shell titles also provide user/location information; GTK 3 additionally
+reads OSC 7 directory URIs. No shell startup files or prompt commands are changed.
+Reports from the previous foreground process are discarded when context changes.
+If another user's cwd cannot be read, its shell must report the path; otherwise
+the folder is shown as ? rather than the previous user's directory. Remote
+sessions and systems without /proc need shell reports for live information.
+A remote title reporting only ~ identifies home, not its actual directory name;
+an absolute shell title or OSC 7 URI supplies the folder name. Arbitrary application
+titles are ignored, and reported metadata is display-only, not proof of identity.
+Hyperlink actions are not implemented.
 
 Closing a running/starting terminal or quitting with live sessions asks before
 hanging up the shell and closing its PTY. A forced application shutdown closes
@@ -130,6 +146,8 @@ Local tests after building the chosen configuration:
   GTK_PACKAGE=gtk+-3.0 tests/run-terminal.sh
   GTK_PACKAGE=gtk+-2.0 tests/run-vte-ui.sh
   GTK_PACKAGE=gtk+-3.0 tests/run-vte-ui.sh
+  GTK_PACKAGE=gtk+-2.0 tests/run-terminal-title.sh
+  GTK_PACKAGE=gtk+-3.0 tests/run-terminal-title.sh
   GTK_PACKAGE=gtk+-3.0 sh tests/run-command-wildcards.sh
 
 Terminal tests require Xvfb, xauth, dbus-run-session and a font. They exercise
@@ -139,6 +157,9 @@ interactive insertion, Unicode, special-character quoting, top/htop and resize. 
 bash, dash, zsh and fish executables are tested separately.
 The VTE UI test checks toolbar icons/tooltips, tab close buttons, context menus,
 per-pane output routing, per-main-tab sessions, option toggling and close prompts.
+Title tests require Linux /proc, bash and util-linux script. They cover directory
+changes/renames, nested shells and PTYs, reported usernames, OSC 7 on GTK 3,
+Unicode and control characters, and stale metadata when returning to a shell.
 
 Manual acceptance checklist for both backends:
 - Run less/vim, resize, Ctrl+C, Ctrl+Z and fg; check job control and key routing.

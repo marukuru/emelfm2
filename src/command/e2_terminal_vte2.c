@@ -3,6 +3,7 @@
 #ifdef E2_VTE2
 #include "e2_terminal_backend.h"
 #include <vte/vte.h>
+#include <unistd.h>
 
 typedef struct { E2_TerminalExited callback; gpointer data; } ExitData;
 static void exited_cb (VteTerminal *terminal, ExitData *exit)
@@ -33,6 +34,15 @@ void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
 }
 GtkAdjustment *e2_terminal_backend_adjustment (GtkWidget *terminal)
 { return vte_terminal_get_adjustment (VTE_TERMINAL (terminal)); }
+GPid e2_terminal_backend_foreground_pid (GtkWidget *terminal)
+{
+    VtePty *pty = vte_terminal_get_pty_object (VTE_TERMINAL (terminal));
+    return pty == NULL ? -1 : tcgetpgrp (vte_pty_get_fd (pty));
+}
+const gchar *e2_terminal_backend_title (GtkWidget *terminal)
+{ return vte_terminal_get_window_title (VTE_TERMINAL (terminal)); }
+const gchar *e2_terminal_backend_directory_uri (GtkWidget *terminal)
+{ return NULL; } /* OSC 7 metadata is unavailable in VTE 0.28. */
 void e2_terminal_backend_configure (GtkWidget *terminal, gint scrollback,
     const gchar *font, const gchar *foreground, const gchar *background)
 {

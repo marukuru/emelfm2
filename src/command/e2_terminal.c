@@ -2,6 +2,7 @@
 #include "e2_terminal.h"
 #ifdef E2_VTE
 #include "e2_terminal_backend.h"
+#include "e2_terminal_context.h"
 #include "e2_action.h"
 #include "e2_option.h"
 #include "e2_fileview.h"
@@ -35,13 +36,13 @@ typedef struct
     GCancellable *cancel;
     GPid pid;
     gboolean pending, disposed, exited;
-    guint number;
+    E2_TerminalContext *context;
     TerminalPane *owner;
 } TerminalSession;
 static E2_TerminalWorkspace *workspace;
 static GList *sessions;
 static gboolean dispatch_action (gpointer data);
-static guint next_number;
+static guint title_source;
 static pthread_t ui_thread;
 static TerminalPane *active_pane (void)
 {
@@ -91,18 +92,41 @@ static void session_unref (TerminalSession *session)
     g_object_unref (session->cancel);
     g_free (session->directory);
     g_free (session->shell);
+    e2_terminal_context_free (session->context);
     g_free (session);
+}
+static void session_refresh_title (TerminalSession *session)
+{
+    if (session->pid > 0)
+    {
+        GPid pid = e2_terminal_backend_foreground_pid (session->terminal);
+        e2_terminal_context_update (session->context, pid > 0 ? pid : session->pid,
+            e2_terminal_backend_title (session->terminal),
+            e2_terminal_backend_directory_uri (session->terminal));
+    }
+    gchar *text = e2_terminal_context_label (session->context);
+    if (strcmp (text, gtk_label_get_text (GTK_LABEL (session->label))))
+        gtk_label_set_text (GTK_LABEL (session->label), text);
+    g_free (text);
+}
+static gboolean refresh_titles (gpointer data)
+{
+    CLOSEBGL_IF_OPEN
+    for (GList *link = sessions; link != NULL; link = link->next)
+        session_refresh_title (link->data);
+    OPENBGL_IF_CLOSED
+    return TRUE;
 }
 static void session_label (TerminalSession *session, const gchar *state)
 {
-    gchar *text = g_strdup_printf (_("Terminal %u — %s"), session->number, state);
-    gtk_label_set_text (GTK_LABEL (session->label), text);
-    g_free (text);
+    gtk_widget_set_tooltip_text (session->label, state);
+    session_refresh_title (session);
 }
 static void session_exited (gint status, gboolean known, gpointer data)
 {
     TerminalSession *session = data;
     if (session->disposed) return;
+    session_refresh_title (session);
     session->pid = 0;
     session->exited = TRUE;
     session_label (session, _("exited"));
@@ -147,6 +171,11 @@ static void session_destroyed (GtkWidget *widget, gpointer data)
     session->disposed = TRUE;
     g_cancellable_cancel (session->cancel);
     sessions = g_list_remove (sessions, session);
+    if (sessions == NULL && title_source != 0)
+    {
+        g_source_remove (title_source);
+        title_source = 0;
+    }
     /* Destroying the PTY sends a hangup to its foreground process group.
      * VTE retains the child watch; we never waitpid() a terminal child. */
     if (session->pid > 0) kill (session->pid, SIGHUP);
@@ -304,9 +333,9 @@ static void open_session (TerminalPane *pane, const gchar *directory)
 {
     TerminalSession *session = g_new0 (TerminalSession, 1);
     session->refs = 1;
-    session->number = ++next_number;
     session->owner = pane;
     session->directory = g_strdup (directory);
+    session->context = e2_terminal_context_new (directory);
     const gchar *shell = e2_option_str_get ("terminal-shell");
     if (shell == NULL || *shell == '\0') shell = g_getenv ("SHELL");
     if (shell == NULL || *shell == '\0') shell = "/bin/sh";
@@ -314,6 +343,8 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     session->cancel = g_cancellable_new ();
     session->page = gtk_vbox_new (FALSE, 0);
     session->label = gtk_label_new ("");
+    gtk_label_set_ellipsize (GTK_LABEL (session->label), PANGO_ELLIPSIZE_MIDDLE);
+    gtk_label_set_max_width_chars (GTK_LABEL (session->label), 32);
     session->status = gtk_label_new (_("Starting shell…"));
     gtk_widget_set_no_show_all (session->status, TRUE);
     gtk_widget_show (session->status);
@@ -335,6 +366,7 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     g_signal_connect (session->terminal, "popup-menu", G_CALLBACK (terminal_popup_menu), session);
     g_signal_connect (session->terminal, "focus-in-event", G_CALLBACK (terminal_focused), session);
     sessions = g_list_append (sessions, session);
+    if (title_source == 0) title_source = g_timeout_add (500, refresh_titles, NULL);
     session_label (session, _("starting"));
     GtkWidget *title = gtk_hbox_new (FALSE, 4);
     GtkWidget *close = e2_button_get_full (NULL, STOCK_NAME_CLOSE, GTK_ICON_SIZE_MENU,

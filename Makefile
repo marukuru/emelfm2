@@ -262,7 +262,7 @@ $(error WITH_VTE=1 requires $(VTE_PACKAGE) >= $(VTE_MINIMUM) for GTK $(VTE_BACKE
 endif
 lCFLAGS += $(shell $(PKG_CONFIG) --cflags $(VTE_PACKAGE))
 VTE_LIBS = $(shell $(PKG_CONFIG) --libs $(VTE_PACKAGE))
-SOURCES += src/command/e2_terminal.c src/command/e2_terminal_vte$(VTE_BACKEND).c
+SOURCES += src/command/e2_terminal.c src/command/e2_terminal_context.c src/command/e2_terminal_vte$(VTE_BACKEND).c
 endif
 
 ifneq ($(USE_WAYLAND),0)

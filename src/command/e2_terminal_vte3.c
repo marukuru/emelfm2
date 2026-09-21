@@ -3,6 +3,7 @@
 #ifdef E2_VTE3
 #include "e2_terminal_backend.h"
 #include <vte/vte.h>
+#include <unistd.h>
 
 typedef struct { E2_TerminalExited callback; gpointer data; } ExitData;
 typedef struct { E2_TerminalSpawned callback; gpointer data; } SpawnData;
@@ -36,6 +37,15 @@ void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
 }
 GtkAdjustment *e2_terminal_backend_adjustment (GtkWidget *terminal)
 { return gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (terminal)); }
+GPid e2_terminal_backend_foreground_pid (GtkWidget *terminal)
+{
+    VtePty *pty = vte_terminal_get_pty (VTE_TERMINAL (terminal));
+    return pty == NULL ? -1 : tcgetpgrp (vte_pty_get_fd (pty));
+}
+const gchar *e2_terminal_backend_title (GtkWidget *terminal)
+{ return vte_terminal_get_window_title (VTE_TERMINAL (terminal)); }
+const gchar *e2_terminal_backend_directory_uri (GtkWidget *terminal)
+{ return vte_terminal_get_current_directory_uri (VTE_TERMINAL (terminal)); }
 void e2_terminal_backend_configure (GtkWidget *terminal, gint scrollback,
     const gchar *font, const gchar *foreground, const gchar *background)
 {

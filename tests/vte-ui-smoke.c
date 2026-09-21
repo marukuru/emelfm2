@@ -36,7 +36,10 @@ static GtkWidget *tab_title (gint index)
 static gboolean exited (gint index)
 {
     GtkWidget *label = find_widget (tab_title (index), NULL, GTK_TYPE_LABEL);
-    return strstr (gtk_label_get_text (GTK_LABEL (label)), "exited") != NULL;
+    gchar *state = gtk_widget_get_tooltip_text (label);
+    gboolean result = state != NULL && !strcmp (state, "exited");
+    g_free (state);
+    return result;
 }
 static gboolean open_output_menu (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
@@ -152,9 +155,15 @@ static gboolean tick (gpointer data)
             break;
         }
         case 1:
+        {
             if (!exited (1)) goto wait;
+            GtkWidget *label = find_widget (tab_title (1), NULL, GTK_TYPE_LABEL);
+            gchar *expected = g_strconcat (g_get_user_name (), "@left", NULL);
+            g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (label)), ==, expected);
+            g_free (expected);
             gtk_button_clicked (GTK_BUTTON (open_button));
             break;
+        }
         case 2:
         {
             if (!exited (2)) goto wait;

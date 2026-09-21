@@ -13,6 +13,9 @@ void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
 void e2_terminal_backend_configure (GtkWidget *terminal, gint scrollback,
     const gchar *font, const gchar *foreground, const gchar *background);
 GtkAdjustment *e2_terminal_backend_adjustment (GtkWidget *terminal);
+GPid e2_terminal_backend_foreground_pid (GtkWidget *terminal);
+const gchar *e2_terminal_backend_title (GtkWidget *terminal);
+const gchar *e2_terminal_backend_directory_uri (GtkWidget *terminal);
 void e2_terminal_backend_send (GtkWidget *terminal, const gchar *text);
 gchar *e2_terminal_backend_text (GtkWidget *terminal);
 void e2_terminal_backend_insert (GtkWidget *terminal, const gchar *text);
