@@ -1687,6 +1687,8 @@ nextchar:
 static void _e2_output_show_context_menu (GtkWidget *textview,
 	guint event_button, gint event_time, E2_OutputTabRuntime *rt)
 {
+	if (!GTK_IS_TEXT_VIEW (textview) || rt == NULL || !GTK_IS_TEXT_BUFFER (rt->buffer))
+		return;
 	gchar *item_name;
 	GtkWidget *item;
 	GtkWidget *menu = e2_menu_get ();
@@ -2125,6 +2127,8 @@ static void _e2_output_tab_move (GtkWidget *child,
 */
 static void _e2_output_edit_cb (GtkMenuItem *menuitem, E2_OutputTabRuntime *rt)
 {
+	if (rt == NULL || !GTK_IS_TEXT_VIEW (rt->text) || !GTK_IS_TEXT_BUFFER (rt->buffer))
+		return;
 	//editing an empty buffer will cause a freeze, so we fake some content...
 	GtkTextIter start, end;
 	NEEDCLOSEBGL
@@ -3253,7 +3257,12 @@ static gboolean _e2_output_focus_action (gpointer from, E2_ActionRuntime *art)
 */
 static gboolean _e2_output_menu_action (gpointer from, E2_ActionRuntime *art)
 {
-	_e2_output_popup_menu_cb ((GtkWidget *)from, &app.tab);
+	/* Toolbar/menu actions need not originate from a textview. In particular,
+	 * never use a VTE widget with the text-buffer editor or menu positioning. */
+#ifdef E2_VTE
+	if (!GTK_IS_TEXT_VIEW (from) && e2_terminal_show_menu ()) return TRUE;
+#endif
+	_e2_output_popup_menu_cb (GTK_WIDGET (app.tab.text), &app.tab);
 	return TRUE;
 }
 /**

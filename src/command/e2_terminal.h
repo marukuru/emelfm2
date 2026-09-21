@@ -7,6 +7,7 @@ GtkWidget *e2_terminal_wrap_output (GtkWidget *output);
 void e2_terminal_actions_register (void);
 void e2_terminal_options_register (void);
 gboolean e2_terminal_has_focus (void);
+gboolean e2_terminal_show_menu (void);
 gboolean e2_terminal_window_key (GtkWidget *window, GdkEventKey *event, gpointer data);
 gboolean e2_terminal_confirm_shutdown (void);
 void e2_terminal_shutdown (void);

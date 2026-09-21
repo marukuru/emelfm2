@@ -2,6 +2,7 @@
 #include "emelfm2.h"
 #include "e2_option.h"
 #include "e2_terminal.h"
+#include "e2_action.h"
 #include <glib/gstdio.h>
 
 static guint step;
@@ -27,6 +28,28 @@ static gboolean exited (gint index)
 {
     GtkWidget *label = find_widget (tab_title (index), NULL, GTK_TYPE_LABEL);
     return strstr (gtk_label_get_text (GTK_LABEL (label)), "exited") != NULL;
+}
+static void check_output_menu (gboolean terminal)
+{
+    gchar *action = g_strconcat (_A(10), ".", _A(88), NULL);
+    OPENBGL
+    e2_action_run_simple_from (action, NULL, app.main_window);
+    CLOSEBGL
+    g_free (action);
+    GtkWidget *menu = gtk_grab_get_current ();
+    g_assert_true (GTK_IS_MENU (menu));
+    GList *items = gtk_container_get_children (GTK_CONTAINER (menu)), *link;
+    gboolean edit = FALSE;
+    for (link = items; link != NULL; link = link->next)
+    {
+        GtkWidget *label = find_widget (link->data, NULL, GTK_TYPE_LABEL);
+        if (label != NULL && !strcmp (gtk_label_get_text (GTK_LABEL (label)), "Edit")) edit = TRUE;
+    }
+    g_assert_cmpint (edit, ==, !terminal);
+    if (terminal) g_assert_cmpuint (g_list_length (items), ==, 2);
+    g_list_free (items);
+    gtk_menu_popdown (GTK_MENU (menu));
+    gtk_widget_destroy (menu);
 }
 static gboolean tick (gpointer data)
 {
@@ -70,6 +93,9 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 2);
             g_assert_true (gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), 1) == second);
             g_assert_cmpint (gtk_notebook_get_current_page (GTK_NOTEBOOK (book)), ==, 1);
+            check_output_menu (TRUE);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
+            check_output_menu (FALSE);
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);

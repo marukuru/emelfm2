@@ -141,6 +141,37 @@ static gboolean terminal_key (GtkWidget *widget, GdkEventKey *event, gpointer da
     }
     return FALSE; /* VTE gets Ctrl+C, Ctrl+Z, Tab, function keys, etc. */
 }
+static void terminal_copy (GtkMenuItem *item, GtkWidget *terminal)
+{
+    e2_terminal_backend_copy (terminal);
+}
+static void terminal_paste (GtkMenuItem *item, GtkWidget *terminal)
+{
+    e2_terminal_backend_paste (terminal);
+}
+static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
+{
+    GtkWidget *menu = e2_menu_get ();
+    g_object_set_data_full (G_OBJECT (menu), "terminal", g_object_ref (terminal), g_object_unref);
+    GtkWidget *copy = e2_menu_add (menu, _("_Copy"), STOCK_NAME_COPY,
+        _("Copy selected terminal text"), terminal_copy, terminal);
+    gtk_widget_set_sensitive (copy, e2_terminal_backend_has_selection (terminal));
+    e2_menu_add (menu, _("_Paste"), STOCK_NAME_PASTE,
+        _("Paste clipboard text into the terminal"), terminal_paste, terminal);
+    g_signal_connect (menu, "selection-done", G_CALLBACK (e2_menu_selection_done_cb), NULL);
+    gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+    return TRUE;
+}
+static gboolean terminal_button (GtkWidget *terminal, GdkEventButton *event, gpointer data)
+{
+    if (event->type != GDK_BUTTON_PRESS || event->button != 3) return FALSE;
+    return terminal_popup_menu (terminal, data);
+}
+gboolean e2_terminal_show_menu (void)
+{
+    TerminalSession *session = current_session ();
+    return session != NULL && terminal_popup_menu (session->terminal, NULL);
+}
 static gint run_dialog (GtkWidget *dialog)
 {
     /* Actions enter with the UI lock held; toolbar callbacks may not. The
@@ -240,6 +271,8 @@ static void open_session (const gchar *directory)
     g_object_set_data (G_OBJECT (session->page), "e2-terminal-session", session);
     g_signal_connect (session->page, "destroy", G_CALLBACK (session_destroyed), session);
     g_signal_connect (session->terminal, "key-press-event", G_CALLBACK (terminal_key), session);
+    g_signal_connect (session->terminal, "button-press-event", G_CALLBACK (terminal_button), session);
+    g_signal_connect (session->terminal, "popup-menu", G_CALLBACK (terminal_popup_menu), session);
     sessions = g_list_append (sessions, session);
     session_label (session, _("starting"));
     GtkWidget *title = gtk_hbox_new (FALSE, 4);
