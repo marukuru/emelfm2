@@ -61,7 +61,7 @@ In Configuration / commands, enable "keep output and terminals with file-pane
 tabs" (terminal-per-tab) to give each main tab its own pair of outputs and
 terminals. This requires file-pane tabs and defaults to off. Switching tabs keeps
 shells and background output running. Closing a main tab asks before hanging up
-its live terminals; native command output continues in the remaining tab.
+terminals with active jobs; native command output continues in the remaining tab.
 Disabling this option or file-pane tabs combines the existing outputs and
 terminals into the shared area, preserving their contents and running sessions.
 
@@ -153,8 +153,11 @@ an absolute shell title or OSC 7 URI supplies the folder name. Arbitrary applica
 titles are ignored, and reported metadata is display-only, not proof of identity.
 Hyperlink actions are not implemented.
 
-Closing a running/starting terminal or quitting with live sessions asks before
-hanging up the shell and closing its PTY. A forced application shutdown closes
+Closing or restarting a terminal, closing its main tab, or quitting asks before
+hanging up a terminal with a running program. Idle shells close without a warning.
+Foreground jobs are detected through the PTY; on Linux, background/stopped jobs
+and programs that replace the shell with exec are also detected through /proc.
+A forced application shutdown closes
 terminals without a dialog. VTE owns terminal-child reaping even if a tab is
 closed during asynchronous startup. Jobs that deliberately detach from their
 terminal can survive a hangup; this is not a process-tree kill operation.
@@ -223,7 +226,7 @@ Manual acceptance checklist for both backends:
 - Run file operations and background commands while a terminal application runs.
 - Verify native log creation/detach controls are absent in VTE builds.
 - Change preferences and pane layout; confirm live sessions remain usable.
-- Cancel and accept close/quit with active jobs and during startup.
+- Cancel and accept close/quit with active jobs; idle shells should close directly.
 - Test X11 for both GTK generations, and GTK 3 Wayland where supported by emelFM2.
 - Smoke-test installed Debian and AppImage artifacts; inspect linked libraries
   for both the binary and bundled plugins, including a no-VTE dependency image.

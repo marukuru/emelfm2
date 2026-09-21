@@ -657,6 +657,28 @@ static gboolean tick (gpointer data)
             gtk_button_clicked (GTK_BUTTON (close));
             g_assert_false (g_file_test (rc, G_FILE_TEST_EXISTS));
             g_free (rc); g_free (file);
+            e2_option_str_set_direct (e2_option_get ("terminal-shell"), "/bin/sh");
+            OPENBGL
+            e2_action_run_simple_from ("terminal.open_here", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 27:
+            activity_terminal = find_widget (gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), 1), NULL,
+                g_type_from_name ("VteTerminal"));
+            if (e2_terminal_backend_foreground_pid (activity_terminal) <= 0) goto wait;
+            e2_terminal_backend_send (activity_terminal, "printf 'IDLE-%s\\n' READY\n");
+            break;
+        case 28:
+        {
+            gchar *text = e2_terminal_backend_text (activity_terminal);
+            gboolean ready = text != NULL && strstr (text, "IDLE-READY") != NULL;
+            g_free (text);
+            if (!ready) goto wait;
+            /* Neither quitting nor closing an idle shell should open a dialog. */
+            g_assert_true (e2_terminal_confirm_shutdown ());
+            gtk_button_clicked (GTK_BUTTON (find_widget (tab_title (1), "terminal-close", 0)));
+            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 1);
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);

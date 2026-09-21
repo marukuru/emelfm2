@@ -6,6 +6,7 @@
 #include <sys/stat.h>
 #include <glib/gstdio.h>
 #include <unistd.h>
+#include <signal.h>
 
 static GPid shell_pid;
 static gboolean shell_exited;
@@ -58,6 +59,58 @@ static void wait_text (GtkWidget *terminal, const gchar *needle)
         g_free (text);
     } while (!found && g_get_monotonic_time () < deadline);
     g_assert_true (found);
+}
+static void wait_jobs (GtkWidget *terminal, gboolean expected)
+{
+    gint64 deadline = g_get_monotonic_time () + 5000000;
+    gboolean busy;
+    do
+    {
+        pump ();
+        busy = e2_terminal_context_has_jobs (shell_pid,
+            e2_terminal_backend_foreground_pid (terminal), "/bin/bash");
+    } while (busy != expected && g_get_monotonic_time () < deadline);
+    g_assert_cmpint (busy, ==, expected);
+}
+static void test_jobs (const gchar *root)
+{
+    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    GtkWidget *terminal = e2_terminal_backend_new (exited, NULL);
+    gtk_container_add (GTK_CONTAINER (window), terminal);
+    gtk_widget_show_all (window);
+    GCancellable *cancel = g_cancellable_new ();
+    gchar *args[] = { "/bin/bash", "--noprofile", "--norc", "-i", NULL };
+    shell_exited = FALSE;
+    shell_pid = 0;
+    e2_terminal_backend_spawn (terminal, root, args, cancel, spawned, NULL);
+    gint64 deadline = g_get_monotonic_time () + 5000000;
+    while (shell_pid <= 0 && g_get_monotonic_time () < deadline) pump ();
+    g_assert_cmpint (shell_pid, >, 0);
+    e2_terminal_backend_send (terminal, "unset HISTFILE; stty -echo; PS1='IDLE-PROMPT> '\n");
+    wait_text (terminal, "IDLE-PROMPT> ");
+    wait_jobs (terminal, FALSE);
+    e2_terminal_backend_send (terminal, "sleep 60\n");
+    wait_jobs (terminal, TRUE);
+    e2_terminal_backend_send (terminal, "\032");
+    wait_text (terminal, "Stopped");
+    wait_jobs (terminal, TRUE);
+    e2_terminal_backend_send (terminal, "bg; printf 'BACKGROUND-READY\\n'\n");
+    wait_text (terminal, "BACKGROUND-READY");
+    g_assert_cmpint (e2_terminal_backend_foreground_pid (terminal), ==, shell_pid);
+    wait_jobs (terminal, TRUE);
+    e2_terminal_backend_send (terminal, "kill %1; wait; printf 'JOBS-FINISHED\\n'\n");
+    wait_text (terminal, "JOBS-FINISHED");
+    wait_jobs (terminal, FALSE);
+    e2_terminal_backend_send (terminal, "exec sleep 60\n");
+    wait_jobs (terminal, TRUE);
+    g_assert_cmpint (e2_terminal_backend_foreground_pid (terminal), ==, shell_pid);
+    kill (shell_pid, SIGTERM);
+    deadline = g_get_monotonic_time () + 5000000;
+    while (!shell_exited && g_get_monotonic_time () < deadline) pump ();
+    g_assert_true (shell_exited);
+    g_assert_false (e2_terminal_context_has_jobs (shell_pid, -1, "/bin/bash"));
+    gtk_widget_destroy (window);
+    g_object_unref (cancel);
 }
 static void test_metadata (const gchar *root, const gchar *folder, gboolean array)
 {
@@ -215,6 +268,7 @@ int main (int argc, char **argv)
     g_assert_cmpint (g_mkdir (folder, 0700), ==, 0);
     test_metadata (root, folder, TRUE);
     test_metadata (root, folder, FALSE);
+    test_jobs (root);
     g_rmdir (folder);
     g_rmdir (controls); g_rmdir (renamed); g_rmdir (root);
     g_free (root_label); g_free (initial); g_free (user);

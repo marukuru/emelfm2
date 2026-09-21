@@ -484,10 +484,15 @@ static gboolean confirm_close (const gchar *message)
     gtk_widget_destroy (dialog);
     return response == GTK_RESPONSE_ACCEPT;
 }
+static gboolean session_has_jobs (TerminalSession *session)
+{
+    return !session->disposed && e2_terminal_context_has_jobs (session->pid,
+        e2_terminal_backend_foreground_pid (session->terminal), session->shell);
+}
 static gboolean session_can_close (TerminalSession *session)
 {
-    return (!session->pending && session->pid <= 0) || confirm_close (
-        _("This terminal has a running or starting shell. Closing it hangs up the shell and its terminal jobs. Close it?"));
+    return !session_has_jobs (session) || confirm_close (
+        _("A program is still running in this terminal. Closing it hangs up its shell and terminal jobs. Close it?"));
 }
 static gboolean close_session (TerminalSession *session)
 {
@@ -1060,8 +1065,8 @@ gboolean e2_terminal_workspace_can_close (E2_TerminalWorkspace *space)
     {
         TerminalSession *session = link->data;
         if ((session->owner == &space->panes[0] || session->owner == &space->panes[1])
-            && (session->pending || session->pid > 0))
-            return confirm_close (_("This tab has running terminals. Closing it hangs up their shells and terminal jobs. Close it?"));
+            && session_has_jobs (session))
+            return confirm_close (_("Programs are still running in this tab's terminals. Closing it hangs up their shells and terminal jobs. Close it?"));
     }
     return TRUE;
 }
@@ -1114,8 +1119,8 @@ gboolean e2_terminal_confirm_shutdown (void)
     for (member = sessions; member != NULL; member = member->next)
     {
         TerminalSession *session = member->data;
-        if (session->pending || session->pid > 0)
-            return confirm_close (_("Terminal shells are still running. Quitting hangs up their shells and terminal jobs. Quit?"));
+        if (session_has_jobs (session))
+            return confirm_close (_("Programs are still running in terminals. Quitting hangs up their shells and terminal jobs. Quit?"));
     }
     return TRUE;
 }

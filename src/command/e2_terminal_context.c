@@ -6,6 +6,53 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <errno.h>
+#include <sys/stat.h>
+
+gboolean e2_terminal_context_has_jobs (GPid shell, GPid foreground, const gchar *executable)
+{
+    if (shell <= 0) return FALSE;
+    if (foreground > 0 && foreground != shell) return TRUE;
+#ifdef __linux__
+    /* A foreground check alone misses background and stopped shell jobs. */
+    gchar *path = g_strdup_printf ("/proc/%ld/task/%ld/children", (long) shell, (long) shell);
+    gchar *children = NULL;
+    g_file_get_contents (path, &children, NULL, NULL);
+    g_free (path);
+    gboolean busy = FALSE;
+    for (gchar *p = children; p != NULL && *p != '\0' && !busy; )
+    {
+        gchar *end;
+        long child = strtol (p, &end, 10);
+        if (p == end || child <= 0) break;
+        p = end;
+        path = g_strdup_printf ("/proc/%ld/stat", child);
+        gchar *record = NULL;
+        if (g_file_get_contents (path, &record, NULL, NULL))
+        {
+            gchar *fields = strrchr (record, ')');
+            gchar state;
+            busy = fields != NULL && sscanf (fields + 1, " %c", &state) == 1
+                && state != 'Z' && state != 'X';
+            g_free (record);
+        }
+        g_free (path);
+    }
+    g_free (children);
+    if (busy) return TRUE;
+
+    /* `exec program` replaces the shell without changing its PID or group. */
+    gchar *command = executable == NULL ? NULL : g_find_program_in_path (executable);
+    path = g_strdup_printf ("/proc/%ld/exe", (long) shell);
+    struct stat running, original;
+    busy = command != NULL && stat (path, &running) == 0 && stat (command, &original) == 0
+        && (running.st_dev != original.st_dev || running.st_ino != original.st_ino);
+    g_free (command);
+    g_free (path);
+    return busy;
+#else
+    return FALSE;
+#endif
+}
 
 struct _E2_TerminalContext
 {
