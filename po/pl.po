@@ -73,7 +73,7 @@ msgstr ""
 msgid "usage"
 msgstr "używanie"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:2901
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3072
 msgid "commands"
 msgstr "komendy"
 
@@ -106,7 +106,7 @@ msgstr "dzieci"
 msgid "configure"
 msgstr "konfiguruj"
 
-#: e2_action.c:1156 e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_action.c:1156 e2_option__default.c:410 e2_toolbar.c:3420
 msgid "dialog"
 msgstr ""
 
@@ -227,7 +227,7 @@ msgstr ""
 msgid "application"
 msgstr ""
 
-#: e2_action.c:1188 e2_config_dialog.c:2154 e2_config_dialog.c:2191
+#: e2_action.c:1188 e2_config_dialog.c:2169 e2_config_dialog.c:2206
 msgid "change"
 msgstr "zmiana"
 
@@ -535,7 +535,7 @@ msgstr ""
 msgid "child"
 msgstr ""
 
-#: e2_action.c:1271 e2_pane.c:1306 e2_pane.c:1458 e2_pane.c:1854 e2_task.c:2178
+#: e2_action.c:1271 e2_pane.c:1310 e2_pane.c:1462 e2_pane.c:1858 e2_task.c:2178
 #: e2p_clipnames.c:52
 msgid "ctrl"
 msgstr ""
@@ -600,7 +600,7 @@ msgstr ""
 msgid "fake"
 msgstr ""
 
-#: e2_action.c:1296 e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_action.c:1296 e2_option__default.c:410 e2_toolbar.c:3420
 msgid "button"
 msgstr ""
 
@@ -608,7 +608,7 @@ msgstr ""
 msgid "x"
 msgstr ""
 
-#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3507 e2p_upgrade.c:173
+#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3543 e2p_upgrade.c:173
 msgid "Done. Press enter "
 msgstr "Zrobione. Wciśnij enter "
 
@@ -616,11 +616,11 @@ msgstr "Zrobione. Wciśnij enter "
 msgid "xx"
 msgstr ""
 
-#: e2_alias.c:330 e2_output.c:2906
+#: e2_alias.c:330 e2_output.c:3077
 msgid "keys"
 msgstr "przyciski"
 
-#: e2_alias.c:332 e2_output.c:2912
+#: e2_alias.c:332 e2_output.c:3083
 msgid "buttons"
 msgstr "przyciski"
 
@@ -727,18 +727,18 @@ msgstr ""
 msgid "default trash directory"
 msgstr "domyślny kosz"
 
-#: e2_bookmark.c:794 e2_context_menu.c:484 e2_menu.c:1813 e2_plugins.c:1717
-#: e2_toolbar.c:3461 e2_toolbar.c:3533 e2_toolbar.c:3699
+#: e2_bookmark.c:794 e2_context_menu.c:484 e2_menu.c:1855 e2_plugins.c:1717
+#: e2_toolbar.c:3497 e2_toolbar.c:3569 e2_toolbar.c:3735
 msgid "Label"
 msgstr "Etykieta"
 
-#: e2_bookmark.c:796 e2_context_menu.c:486 e2_menu.c:1811 e2_plugins.c:1719
-#: e2_toolbar.c:3463 e2_toolbar.c:3535 e2_toolbar.c:3701
+#: e2_bookmark.c:796 e2_context_menu.c:486 e2_menu.c:1853 e2_plugins.c:1719
+#: e2_toolbar.c:3499 e2_toolbar.c:3571 e2_toolbar.c:3737
 msgid "Icon"
 msgstr "Ikona"
 
-#: e2_bookmark.c:798 e2_menu.c:1815 e2_plugins.c:1721 e2_toolbar.c:3465
-#: e2_toolbar.c:3537 e2_toolbar.c:3703
+#: e2_bookmark.c:798 e2_menu.c:1857 e2_plugins.c:1721 e2_toolbar.c:3501
+#: e2_toolbar.c:3573 e2_toolbar.c:3739
 msgid "Tooltip"
 msgstr "Podpowiedź"
 
@@ -1055,7 +1055,7 @@ msgstr "nic nie oczekuje"
 msgid "task"
 msgstr "zadanie"
 
-#: e2_command.c:1994 e2_command.c:2099 e2_command.c:2167 e2_menu.c:943
+#: e2_command.c:1994 e2_command.c:2099 e2_command.c:2167 e2_menu.c:985
 msgid "<selected items>"
 msgstr "<zaznaczone elementy>"
 
@@ -1536,35 +1536,35 @@ msgstr "aktualnie:"
 msgid "Categories"
 msgstr "Kategorie"
 
-#: e2_config_dialog.c:2155
+#: e2_config_dialog.c:2170
 msgid "Click to open a font select dialog"
 msgstr "Kliknij aby otworzyć okienko zmiany czcionki"
 
-#: e2_config_dialog.c:2192
+#: e2_config_dialog.c:2207
 msgid "Click to open a color selection dialog"
 msgstr "Kliknij aby otworzyć okienko zmiany koloru"
 
-#: e2_config_dialog.c:2315
+#: e2_config_dialog.c:2330
 msgid "De_fault"
 msgstr "Do_myślne"
 
-#: e2_config_dialog.c:2316
+#: e2_config_dialog.c:2331
 msgid "Revert all options to their default settings"
 msgstr "Przywróć wszystkie ustawienia do ich wartości domyslnych"
 
-#: e2_config_dialog.c:2321
+#: e2_config_dialog.c:2336
 msgid "_Basic"
 msgstr "_Podstawowe"
 
-#: e2_config_dialog.c:2322
+#: e2_config_dialog.c:2337
 msgid "Display only the basic configuration options"
 msgstr "Wyświetlaj tylko podstawowe opcje konfiguracji"
 
-#: e2_config_dialog.c:2328
+#: e2_config_dialog.c:2343
 msgid "Ad_vanced"
 msgstr "Za_awansowane"
 
-#: e2_config_dialog.c:2329
+#: e2_config_dialog.c:2344
 msgid "Display all configuration options"
 msgstr "Wyświetlaj wszystkie opcje konfiguracji"
 
@@ -1582,20 +1582,20 @@ msgstr "_Akcje"
 
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
-#: e2_option_tree_context_menu.c:287 e2_output.c:1738 e2_toolbar.c:3426
-#: e2_tree_dialog.c:1200 e2_view_dialog.c:1034 e2p_copy.c:757
+#: e2_option_tree_context_menu.c:287 e2_output.c:1754 e2_terminal.c:462
+#: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1034 e2p_copy.c:757
 msgid "_Copy"
 msgstr "_Kopiuj"
 
-#: e2_context_menu.c:429 e2_dnd.c:833 e2_toolbar.c:3428 e2p_move.c:809
+#: e2_context_menu.c:429 e2_dnd.c:833 e2_toolbar.c:3464 e2p_move.c:809
 msgid "_Move"
 msgstr "_Przenieś"
 
-#: e2_context_menu.c:430 e2_dnd.c:839 e2_toolbar.c:3430
+#: e2_context_menu.c:430 e2_dnd.c:839 e2_toolbar.c:3466
 msgid "_Link"
 msgstr "_Linkuj"
 
-#: e2_context_menu.c:431 e2_toolbar.c:3434
+#: e2_context_menu.c:431 e2_toolbar.c:3470
 msgid "_Trash"
 msgstr "_Do kosza"
 
@@ -1695,7 +1695,7 @@ msgstr "procent wolnych"
 msgid "_Edit user commands.."
 msgstr "_Edytuj komendy użytkownika"
 
-#: e2_context_menu.c:458 e2_toolbar.c:3436
+#: e2_context_menu.c:458 e2_toolbar.c:3472
 msgid "Ma_ke dir.."
 msgstr "Utwórz k_atalog.."
 
@@ -1703,11 +1703,11 @@ msgstr "Utwórz k_atalog.."
 msgid "_Bookmarks"
 msgstr "_Zakładki"
 
-#: e2_context_menu.c:461 e2_toolbar.c:3593 e2_toolbar.c:3658
+#: e2_context_menu.c:461 e2_toolbar.c:3629 e2_toolbar.c:3694
 msgid "Add _top"
 msgstr "Dodaj z góry"
 
-#: e2_context_menu.c:463 e2_toolbar.c:3597 e2_toolbar.c:3662
+#: e2_context_menu.c:463 e2_toolbar.c:3633 e2_toolbar.c:3698
 msgid "Add _bottom"
 msgstr "Dodaj z dołu"
 
@@ -1732,13 +1732,13 @@ msgid "Ctrl"
 msgstr ""
 
 #: e2_context_menu.c:493 e2_keybinding.c:1644 e2_mousebinding.c:1846
-#: e2_mousegesture.c:1327 e2_permissions_dialog.c:454 e2_toolbar.c:3467
-#: e2_toolbar.c:3539 e2_toolbar.c:3705
+#: e2_mousegesture.c:1327 e2_permissions_dialog.c:454 e2_toolbar.c:3503
+#: e2_toolbar.c:3575 e2_toolbar.c:3741
 msgid "Action"
 msgstr "Akcja"
 
 #: e2_context_menu.c:496 e2_keybinding.c:1648 e2_mousebinding.c:1849
-#: e2_mousegesture.c:1330 e2_toolbar.c:3470 e2_toolbar.c:3542 e2_toolbar.c:3708
+#: e2_mousegesture.c:1330 e2_toolbar.c:3506 e2_toolbar.c:3578 e2_toolbar.c:3744
 msgid "Argument"
 msgstr ""
 
@@ -1919,7 +1919,7 @@ msgstr "centruj"
 msgid "mouse"
 msgstr "mysz"
 
-#: e2_dialog.c:1821 e2_output.c:4214 e2_toolbar.c:3348
+#: e2_dialog.c:1821 e2_output.c:4351 e2_toolbar.c:3384
 msgid "none"
 msgstr "brak"
 
@@ -2038,7 +2038,7 @@ msgstr "Drukuj.."
 msgid "Reload the file being edited"
 msgstr "Ponownie załaduj edytowany plik"
 
-#: e2_edit_dialog.c:937 e2_toolbar.c:3499 e2p_find.c:4277
+#: e2_edit_dialog.c:937 e2_toolbar.c:3535 e2p_find.c:4277
 msgid "_Find.."
 msgstr "Znajdź"
 
@@ -2054,7 +2054,7 @@ msgstr "Zastąp"
 msgid "Find and replace matching text"
 msgstr "Znajdź i zastąp pasujący tekst"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1698
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1709
 #: e2_view_dialog.c:1798
 msgid "_Hide"
 msgstr "Ukryj"
@@ -2124,7 +2124,7 @@ msgid "Save modified file ?"
 msgstr "Zapisać zmodyfikowany plik ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1746
+#: e2_filetype_dialog.c:1197 e2_icons.c:910 e2_icons.c:1163 e2_output.c:1762
 msgid "_Edit"
 msgstr "_Edytuj"
 
@@ -2168,8 +2168,8 @@ msgstr "po_twierdź"
 msgid "Replace this match"
 msgstr "Zastap to dopasowanie"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_view_dialog.c:1813
-#: e2p_find.c:4241
+#: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1701
+#: e2_terminal.c:467 e2_view_dialog.c:1813 e2p_find.c:4241
 msgid "_Find"
 msgstr "_Znajdź"
 
@@ -2348,25 +2348,25 @@ msgid ""
 "Pattern provided to strftime() to format date/time strings in the dialog"
 msgstr ""
 
-#: e2_filestore.c:1219 e2_toolbar.c:2064
+#: e2_filestore.c:1219 e2_toolbar.c:2100
 msgid "k"
 msgstr "k"
 
-#: e2_filestore.c:1224 e2_toolbar.c:2069
+#: e2_filestore.c:1224 e2_toolbar.c:2105
 msgid "M"
 msgstr "M"
 
-#: e2_filestore.c:1627 e2_pane.c:617
+#: e2_filestore.c:1627 e2_pane.c:621
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "Brak dostępu do %s, przechodzę do %s"
 
-#: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1663
+#: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1705
 #: e2_output.c:1420 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<katalog>"
 
-#: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1744
+#: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1786
 #: e2_output.c:1468 e2_task.c:4256
 msgid "<executable>"
 msgstr "<uruchamialny>"
@@ -2382,7 +2382,7 @@ msgstr "katalogi"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1749 e2_view_dialog.c:715
+#: e2_output.c:1765 e2_view_dialog.c:715
 msgid "_Open"
 msgstr "_Otwórz"
 
@@ -2566,7 +2566,7 @@ msgstr "Podgląd symboli"
 msgid "Category"
 msgstr "Kategoria"
 
-#: e2_filetype.c:788 e2_menu.c:1817
+#: e2_filetype.c:788 e2_menu.c:1859
 msgid "Command"
 msgstr "Komenda"
 
@@ -2598,7 +2598,7 @@ msgid "Copy selected row(s)"
 msgstr "Kopiuj zaznaczone wiersze"
 
 #: e2_filetype_dialog.c:731 e2_icons.c:957 e2_icons.c:1210
-#: e2_option_tree_context_menu.c:291
+#: e2_option_tree_context_menu.c:291 e2_terminal.c:465
 msgid "_Paste"
 msgstr "_Wklej"
 
@@ -2618,7 +2618,7 @@ msgstr "Dodaj wiersz po zaznaczonym"
 
 #: e2_filetype_dialog.c:739 e2_filetype_dialog.c:1076 e2_icons.c:924
 #: e2_icons.c:1177 e2_option_tree.c:1933 e2_option_tree_context_menu.c:343
-#: e2_toolbar.c:428 e2_toolbar.c:3612 e2_toolbar.c:3673 e2_toolbar.c:3679
+#: e2_toolbar.c:428 e2_toolbar.c:3648 e2_toolbar.c:3709 e2_toolbar.c:3715
 msgid "_Up"
 msgstr "W górę"
 
@@ -2948,13 +2948,13 @@ msgstr "Nazwa pliku"
 msgid "_Fullscreen"
 msgstr ""
 
-#: e2_icons.c:917 e2_icons.c:1170 e2_toolbar.c:3611 e2_toolbar.c:3672
-#: e2_toolbar.c:3680
+#: e2_icons.c:917 e2_icons.c:1170 e2_toolbar.c:3647 e2_toolbar.c:3708
+#: e2_toolbar.c:3716
 msgid "_Back"
 msgstr "_Wstecz"
 
 #: e2_icons.c:919 e2_icons.c:938 e2_icons.c:1172 e2_icons.c:1191
-#: e2_toolbar.c:3613 e2_toolbar.c:3674 e2_toolbar.c:3678
+#: e2_toolbar.c:3649 e2_toolbar.c:3710 e2_toolbar.c:3714
 msgid "_Forward"
 msgstr "_Do przodu"
 
@@ -2975,7 +2975,7 @@ msgstr ""
 msgid "_Top"
 msgstr ""
 
-#: e2_icons.c:926 e2_icons.c:1179 e2_option_tree.c:1952 e2_toolbar.c:3514
+#: e2_icons.c:926 e2_icons.c:1179 e2_option_tree.c:1952 e2_toolbar.c:3550
 #: e2p_find.c:4223 e2p_rename.c:1925
 msgid "_Help"
 msgstr "_Pomoc"
@@ -3097,7 +3097,7 @@ msgstr "eksportuj"
 msgid "_Properties"
 msgstr "zachowaj _właściwości"
 
-#: e2_icons.c:966 e2_icons.c:1219 e2_main.c:988 e2_toolbar.c:3516 e2_tray.c:372
+#: e2_icons.c:966 e2_icons.c:1219 e2_main.c:988 e2_toolbar.c:3552 e2_tray.c:372
 msgid "_Quit"
 msgstr "Wyjście"
 
@@ -3271,35 +3271,35 @@ msgstr "_Kontynuuj"
 msgid "Continue working"
 msgstr "Kontynuuj pracę"
 
-#: e2_menu.c:326
+#: e2_menu.c:327
 msgid "Missing _image"
 msgstr "Brakujący obraz"
 
-#: e2_menu.c:997
+#: e2_menu.c:1039
 msgid "no children"
 msgstr "brak potomków"
 
-#: e2_menu.c:1020
+#: e2_menu.c:1062
 msgid "_Name filter"
 msgstr "Filtr _nazwy"
 
-#: e2_menu.c:1022
+#: e2_menu.c:1064
 msgid "_Size filter"
 msgstr "Filtr _rozmiaru"
 
-#: e2_menu.c:1024
+#: e2_menu.c:1066
 msgid "_Date filter"
 msgstr "Filtr _daty"
 
-#: e2_menu.c:1027
+#: e2_menu.c:1069
 msgid "_Directories too"
 msgstr "Także _katalogi"
 
-#: e2_menu.c:1034
+#: e2_menu.c:1076
 msgid "_Remove all filters"
 msgstr "_Usuń wszystkie filtry"
 
-#: e2_menu.c:1808 e2_plugins.c:1715
+#: e2_menu.c:1850 e2_plugins.c:1715
 msgid "Menu"
 msgstr ""
 
@@ -3925,7 +3925,7 @@ msgid "The directory from which icon files will be retrieved"
 msgstr "Katalog w którym program szuka odpowiednich ikonek"
 
 #: e2_option__default.c:211 e2_option__default.c:401 e2_option__default.c:410
-#: e2_toolbar.c:3374 e2_toolbar.c:3384
+#: e2_toolbar.c:3410 e2_toolbar.c:3420
 msgid "theme"
 msgstr "temat"
 
@@ -4031,11 +4031,11 @@ msgstr "dwukolorowe tło"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "Linie w listach plików będą miały naprzemienne kolory tła"
 
-#: e2_option__default.c:293 e2_output.c:4229 e2_view_dialog.c:2180
+#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2180
 msgid "use custom font"
 msgstr "używaj własnej czcionki"
 
-#: e2_option__default.c:294 e2_output.c:4230 e2_view_dialog.c:2181
+#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2181
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4226,23 +4226,23 @@ msgid ""
 "This color is used for the background of highlighed item-names and other text"
 msgstr "Kolor zostanie użyty jako tło podświetlonych nazw i innych elementów"
 
-#: e2_option__default.c:401 e2_toolbar.c:3374
+#: e2_option__default.c:401 e2_toolbar.c:3410
 msgid "icon above label"
 msgstr "ikona nad nazwą"
 
-#: e2_option__default.c:401 e2_toolbar.c:3374
+#: e2_option__default.c:401 e2_toolbar.c:3410
 msgid "icon beside label"
 msgstr "ikona obok nazwy"
 
-#: e2_option__default.c:401 e2_toolbar.c:3374
+#: e2_option__default.c:401 e2_toolbar.c:3410
 msgid "icon only"
 msgstr "tylko ikona"
 
-#: e2_option__default.c:401 e2_toolbar.c:3374
+#: e2_option__default.c:401 e2_toolbar.c:3410
 msgid "label only"
 msgstr "tylko nazwa"
 
-#: e2_option__default.c:402 e2_toolbar.c:3375
+#: e2_option__default.c:402 e2_toolbar.c:3411
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' leaves most space for other things"
 msgstr ""
@@ -4253,23 +4253,23 @@ msgstr ""
 msgid "toolbars button style"
 msgstr "przyciski w stylu pasków narzędziowych"
 
-#: e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_option__default.c:410 e2_toolbar.c:3420
 msgid "dnd"
 msgstr "dnd"
 
-#: e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_option__default.c:410 e2_toolbar.c:3420
 msgid "menu"
 msgstr "menu"
 
-#: e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_option__default.c:410 e2_toolbar.c:3420
 msgid "toolbar large"
 msgstr "pasek narzędziowy duży"
 
-#: e2_option__default.c:410 e2_toolbar.c:3384
+#: e2_option__default.c:410 e2_toolbar.c:3420
 msgid "toolbar small"
 msgstr "pasek narzędziowy mały"
 
-#: e2_option__default.c:411 e2_toolbar.c:3385
+#: e2_option__default.c:411 e2_toolbar.c:3421
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' is smallest, '%s' is largest"
 msgstr ""
@@ -4444,110 +4444,138 @@ msgstr ""
 msgid "Cannot find any output from process %s"
 msgstr "Nie mogę znaleźć danych wyjściowych pochodzących od procesu %s"
 
-#: e2_output.c:1699
+#: e2_output.c:1702
+msgid "Find text in the command log"
+msgstr ""
+
+#: e2_output.c:1703 e2_terminal.c:484
+#, fuzzy
+msgid "_Hide tools"
+msgstr "Ukryj"
+
+#: e2_output.c:1704 e2_terminal.c:485
+#, fuzzy
+msgid "Return to the file list"
+msgstr "Przywróć do lokalnego systemu plików"
+
+#: e2_output.c:1705
+msgid "_Expand / restore view"
+msgstr ""
+
+#: e2_output.c:1706 e2_terminal.c:487
+msgid "Expand this view, or restore the file lists and both tools areas"
+msgstr ""
+
+#: e2_output.c:1710
 msgid "Do not show the output pane"
 msgstr "Nie pokazuj okna wyjścia"
 
-#: e2_output.c:1702
+#: e2_output.c:1713
 msgid "_Toggle full"
 msgstr "_Przypisz pełny"
 
-#: e2_output.c:1705
+#: e2_output.c:1716
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Przypisz rozmiar okna danych wyjściowych do/z pełnego rozmiaru okna"
 
-#: e2_output.c:1709
+#: e2_output.c:1724
 msgid "_New tab"
 msgstr "_Nowa zakładka"
 
-#: e2_output.c:1710
+#: e2_output.c:1725
 msgid "Add another tab for the output pane"
 msgstr "Dodaj zakładkę do okna danych wyjściowych"
 
-#: e2_output.c:1713
+#: e2_output.c:1728
 msgid "_Remove tab"
 msgstr "_Usuń zakładkę"
 
-#: e2_output.c:1714
+#: e2_output.c:1729
 msgid "Close this this tab"
 msgstr "Zamknij zakładkę"
 
-#: e2_output.c:1722
+#: e2_output.c:1738
 msgid "_Attach"
 msgstr "_Przypisz"
 
-#: e2_output.c:1723
+#: e2_output.c:1739
 msgid "Move this tab back to output pane"
 msgstr "Przesuń zakładkę na początek"
 
-#: e2_output.c:1730 e2_output.c:1734
+#: e2_output.c:1746 e2_output.c:1750
 #, fuzzy
 msgid "C_lear"
 msgstr "Wyczyść"
 
-#: e2_output.c:1731 e2_output.c:1735
+#: e2_output.c:1747 e2_output.c:1751
 msgid "Clear this tab"
 msgstr "Wyczyść tą zakładkę"
 
-#: e2_output.c:1739 e2_view_dialog.c:1035
+#: e2_output.c:1755 e2_view_dialog.c:1035
 msgid "Copy selected text"
 msgstr "Kopiuj zaznaczony tekst"
 
-#: e2_output.c:1747
+#: e2_output.c:1763
 msgid "Edit the tab contents"
 msgstr "Edytuj zawartość zakładki"
 
-#: e2_output.c:1789
+#: e2_output.c:1805
 msgid "Co_mmand output"
 msgstr "Wyjście komend"
 
-#: e2_output.c:1790
+#: e2_output.c:1806
 msgid "Show output from a completed command"
 msgstr "Pokazuj dane wyjściowe po zakończeniu komend"
 
-#: e2_output.c:1803 e2_view_dialog.c:1046
+#: e2_output.c:1819 e2_view_dialog.c:1046
 msgid "_Settings"
 msgstr "_Ustawienia"
 
-#: e2_output.c:1814
+#: e2_output.c:1832
 msgid "_Other"
 msgstr "_Inne"
 
-#: e2_output.c:1815
+#: e2_output.c:1833
 msgid "Open the configuration dialog at the output options page"
 msgstr "Otwiera dialog konfiguracyjny przy stronie opcji wyjścia"
 
-#: e2_output.c:2752
+#: e2_output.c:2242
+msgid ""
+"\n"
+"--- Merged command log ---\n"
+msgstr ""
+
+#: e2_output.c:2923
 msgid "output tabs"
 msgstr "karty danych wyjściowych"
 
-#: e2_output.c:3386
+#: e2_output.c:3498
 msgid "-- end-of-output --"
 msgstr "-- koniec-danych --"
 
-#: e2_output.c:4184
+#: e2_output.c:4317
 msgid "show output pane when a new message appears"
 msgstr "pokazuj okno danych wyjściowych gdy pojawi się nowa wiadomość"
 
-#: e2_output.c:4185
+#: e2_output.c:4318
 msgid "This will ensure you don't miss any messages"
 msgstr "Będziesz mieć pewność, że nie przeoczysz żadnej wiadomości"
 
-#: e2_output.c:4188
+#: e2_output.c:4325
 msgid "show output pane if the command line is focused"
 msgstr "pokazuj okno danych wyjściowych gdy aktywna jest linia poleceń"
 
-#: e2_output.c:4189
+#: e2_output.c:4326
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 "Okno danych wyjściowych będzie otwierane gdy masz zamiar wprowadzić komendę"
 
-#: e2_output.c:4193
+#: e2_output.c:4330
 msgid "hide output pane if the command line is unfocused"
 msgstr "ukryj okno danych wyjściowych gdy linia poleceń przestaje być aktywna"
 
-#: e2_output.c:4194
+#: e2_output.c:4331
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4555,20 +4583,20 @@ msgstr ""
 "Okno danych wyjściowych będzie zamykane gdy wiersz poleceń przestanie być "
 "aktywny"
 
-#: e2_output.c:4197
+#: e2_output.c:4334
 msgid "show commands"
 msgstr "pokazuj komendy"
 
-#: e2_output.c:4198
+#: e2_output.c:4335
 msgid "This echoes the commands that are run and their exit value"
 msgstr ""
 "Powtarza uruchamiane komenty oraz podaje wartość jaką zwróciły po zakończeniu"
 
-#: e2_output.c:4200
+#: e2_output.c:4337
 msgid "scroll to new output"
 msgstr "ustaw widok na nową wiadomość"
 
-#: e2_output.c:4201
+#: e2_output.c:4338
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
@@ -4576,22 +4604,22 @@ msgstr ""
 "Automatycznie przesuwa zawartość okienka danych wyjściowych tak, aby pokazać "
 "nowe wiadomości"
 
-#: e2_output.c:4203
+#: e2_output.c:4340
 msgid "only scroll when really following"
 msgstr "ustawiaj widok na nową wiadomość tylko gdy potrzeba"
 
-#: e2_output.c:4204
+#: e2_output.c:4341
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr ""
 "Przestaje automatycznie przesuwać widok gdy użytkownik ustawi widok ręcznie"
 
-#: e2_output.c:4207
+#: e2_output.c:4344
 msgid "only scroll when new output is at the end"
 msgstr "przesuwaj tylko gdy na końcu pojawią się nowe dane"
 
-#: e2_output.c:4208
+#: e2_output.c:4345
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4599,11 +4627,11 @@ msgstr ""
 "Wyłącza automatyczne przesuwanie widoku jeśli inny proces wyświetlił tekst "
 "poniżej aktualnie widocznej pozycji"
 
-#: e2_output.c:4211
+#: e2_output.c:4348
 msgid "auto-selection boundary characters"
 msgstr "znaki ograniczające automatyczne zaznaczanie"
 
-#: e2_output.c:4212
+#: e2_output.c:4349
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
@@ -4611,19 +4639,19 @@ msgstr ""
 "Znak(i), zazwyczaj interpunkcyjne, stanowiące ograniczenie dla "
 "automatycznego zaznaczania tekstu"
 
-#: e2_output.c:4214
+#: e2_output.c:4351
 msgid "everywhere"
 msgstr "gdziekolwiek"
 
-#: e2_output.c:4214
+#: e2_output.c:4351
 msgid "words"
 msgstr "słowa"
 
-#: e2_output.c:4216
+#: e2_output.c:4353
 msgid "line wrap mode"
 msgstr "sposób zawijania linii"
 
-#: e2_output.c:4217
+#: e2_output.c:4354
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "will only break the line between words"
@@ -4631,36 +4659,36 @@ msgstr ""
 "Gdy wybrana jest opcja 'brak', widoczny będzie poziomy pasek przewijania. "
 "Opcja 'słowa' sprawia, że tekst łamany jest między słowami."
 
-#: e2_output.c:4220
+#: e2_output.c:4357
 msgid "left margin (pixels)"
 msgstr "lewy margines (piksele)"
 
-#: e2_output.c:4221
+#: e2_output.c:4358
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "Lewy margines pomiędzy krawędzią okienka a tekstem w nim zawartym"
 
-#: e2_output.c:4224
+#: e2_output.c:4361
 msgid "right margin (pixels)"
 msgstr "prawy margines (piksele)"
 
-#: e2_output.c:4225
+#: e2_output.c:4362
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "Prawy margines pomiędzy krawędzią okienka a tekstem w nim zawartym"
 
-#: e2_output.c:4233
+#: e2_output.c:4370
 msgid "custom output font"
 msgstr "własna czcionka danych wyjściowych"
 
-#: e2_output.c:4234
+#: e2_output.c:4371
 msgid "This is the font used for text in the output pane"
 msgstr "Ta czcionka będzie użyta w okienku danych wyjściowych"
 
-#: e2_output.c:4239
+#: e2_output.c:4376
 msgid "positive color"
 msgstr "pozytywny kolor"
 
-#: e2_output.c:4240
+#: e2_output.c:4377
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4668,31 +4696,31 @@ msgstr ""
 "Kolor będzie używany do wyświetlania pozytywnych wiadomości, operacji "
 "zakończonych sukcesem"
 
-#: e2_output.c:4243
+#: e2_output.c:4380
 msgid "negative color"
 msgstr "negatywny kolor"
 
-#: e2_output.c:4244
+#: e2_output.c:4381
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr ""
 
-#: e2_output.c:4247
+#: e2_output.c:4384
 #, fuzzy
 msgid "commands color"
 msgstr "pasek poleceń"
 
-#: e2_output.c:4248
+#: e2_output.c:4385
 #, fuzzy
 msgid "This color is used for echoing issued commands"
 msgstr "Kolor zostanie użyty jako tło podświetlonych nazw i innych elementów"
 
-#: e2_output.c:4251
+#: e2_output.c:4388
 msgid "unimportant color"
 msgstr "kolor bez znaczenia"
 
-#: e2_output.c:4252
+#: e2_output.c:4389
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -4717,23 +4745,23 @@ msgstr "Użytkownik"
 msgid "_Recurse"
 msgstr "_Rekursywnie"
 
-#: e2_pane.c:1739 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
+#: e2_pane.c:1743 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
 msgid "No trash directory is available"
 msgstr "'Kosz' nie jest dostępny"
 
-#: e2_pane.c:1865
+#: e2_pane.c:1869
 msgid "_Edit places"
 msgstr "_Edytuj miejsca"
 
-#: e2_pane.c:2244
+#: e2_pane.c:2248
 msgid "both"
 msgstr "oba"
 
-#: e2_pane.c:2645
+#: e2_pane.c:2649
 msgid "At startup, show a specific directory in this pane"
 msgstr "Po starcie, pokazuj określony katalog w tym oknie"
 
-#: e2_pane.c:2646
+#: e2_pane.c:2650
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
@@ -4741,37 +4769,37 @@ msgstr ""
 "Zawartość katalogu podanego poniżej, będzie ukazana po starcie programu, "
 "zamiast katalogu otworzonego ostatnio"
 
-#: e2_pane.c:2651
+#: e2_pane.c:2655
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "Katalog startowy okna %d:"
 
-#: e2_pane.c:2653
+#: e2_pane.c:2657
 msgid "This is the directory to show in this pane, at session start"
 msgstr "Katalog do pokazania w tym knie po starcie programu"
 
-#: e2_pane.c:2661
+#: e2_pane.c:2665
 #, fuzzy
 msgid "this pane is like pane 2"
 msgstr "oba okna są takie jak okno 2"
 
-#: e2_pane.c:2663 e2_pane.c:2673
+#: e2_pane.c:2667 e2_pane.c:2677
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
 "to pane %d"
 msgstr "Opcje okna %d (inne niż pasek narzędziowy) bedą dotyczyły też okna %d"
 
-#: e2_pane.c:2671
+#: e2_pane.c:2675
 msgid "this pane is like pane 1"
 msgstr "oba okna są jak okno pierwsze"
 
-#: e2_pane.c:2684
+#: e2_pane.c:2688
 #, c-format
 msgid "show %s column"
 msgstr "pokaż %s kolumnę"
 
-#: e2_pane.c:2685
+#: e2_pane.c:2689
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "Sprawia, że nazwana kolumna będzie wyświetlana w oknie %d"
@@ -4939,16 +4967,25 @@ msgstr "bajty"
 msgid "kbytes"
 msgstr "kbajty"
 
-#: e2_tabs.c:272
+#: e2_tabs.c:320
 #, fuzzy
 msgid "Close tab"
 msgstr "_Zamknij"
 
-#: e2_tabs.c:424
+#: e2_tabs.c:327
+msgid "Unread output in this tab"
+msgstr ""
+
+#: e2_tabs.c:328 e2_terminal.c:327 e2_terminal.c:328
+#, fuzzy
+msgid "Unread output"
+msgstr "Wyjście komend"
+
+#: e2_tabs.c:486
 msgid "New tab (Ctrl+N)"
 msgstr ""
 
-#: e2_tabs.c:426
+#: e2_tabs.c:488
 #, fuzzy
 msgid "New tab"
 msgstr "_Nowa zakładka"
@@ -5025,7 +5062,7 @@ msgstr "Nie masz dostępu aby zmieniać właściciela %s"
 msgid "open with"
 msgstr "otwórz z"
 
-#: e2_task.c:4307 e2_toolbar.c:3503 e2_toolbar.c:3507 e2p_upgrade.c:172
+#: e2_task.c:4307 e2_toolbar.c:3539 e2_toolbar.c:3543 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "Podaj komendę:"
 
@@ -5117,169 +5154,295 @@ msgstr "Nie mogę pozyskać informacji o prawach dostępu do %s"
 msgid "Cannot change ownership of all of %s"
 msgstr "Nie mogę zmienić właściciela dla wszystkich elementów z %s"
 
-#: e2_terminal.c:44
-#, c-format
-msgid "Terminal %u  %s"
+#: e2_terminal.c:134 e2_window.c:141
+msgid "Equal panel sizes (1:1)"
 msgstr ""
 
-#: e2_terminal.c:54
+#: e2_terminal.c:135
+msgid "Divide the tools area into two equal widths"
+msgstr ""
+
+#: e2_terminal.c:239
+#, fuzzy, c-format
+msgid "Restart in %s"
+msgstr "Odpoczynek"
+
+#: e2_terminal.c:240
+#, c-format
+msgid "Current local folder unavailable. Restart in startup folder: %s"
+msgstr ""
+
+#: e2_terminal.c:352
 msgid "exited"
 msgstr ""
 
-#: e2_terminal.c:57
+#: e2_terminal.c:355
 #, c-format
 msgid "Shell exited with status %d. Use Restart to start another shell."
 msgstr ""
 
-#: e2_terminal.c:59
+#: e2_terminal.c:357
 #, c-format
 msgid "Shell terminated by signal %d."
 msgstr ""
 
-#: e2_terminal.c:61
+#: e2_terminal.c:359
 msgid ""
 "Shell exited (exit status unavailable). Use Restart to start another shell."
 msgstr ""
 
-#: e2_terminal.c:73
+#: e2_terminal.c:372
 msgid "failed"
 msgstr ""
 
-#: e2_terminal.c:79
+#: e2_terminal.c:379
 msgid "running"
 msgstr ""
 
-#: e2_terminal.c:157
+#: e2_terminal.c:463
+#, fuzzy
+msgid "Copy selected terminal text"
+msgstr "Kopiuj zaznaczony tekst"
+
+#: e2_terminal.c:466
+msgid "Paste clipboard text into the terminal"
+msgstr ""
+
+#: e2_terminal.c:468
+#, fuzzy
+msgid "Find text in this terminal (Ctrl+Shift+F)"
+msgstr "Kopiuj zaznaczony tekst"
+
+#: e2_terminal.c:470
+#, fuzzy
+msgid "Insert selected paths"
+msgstr "Kopiuj zaznaczoną ścieżkę"
+
+#: e2_terminal.c:471
+msgid "Insert quoted file paths without executing them"
+msgstr ""
+
+#: e2_terminal.c:474
+#, fuzzy
+msgid "Show terminal folder in pane"
+msgstr "Pokazuj wirtualny katalog w bieżącym oknie"
+
+#: e2_terminal.c:475
+msgid "Navigate this file pane to the terminal's current local folder"
+msgstr ""
+
+#: e2_terminal.c:479
+#, fuzzy
+msgid "_Restart"
+msgstr "Odpoczynek"
+
+#: e2_terminal.c:481
+#, fuzzy
+msgid "_Close terminal"
+msgstr "_Zamknij"
+
+#: e2_terminal.c:482 e2_terminal.c:616 e2_terminal.c:642
+#, fuzzy
+msgid "Close this terminal"
+msgstr "Zamknij zakładkę"
+
+#: e2_terminal.c:486
+#, fuzzy
+msgid "_Expand view"
+msgstr "_Rozwiń"
+
+#: e2_terminal.c:486
+#, fuzzy
+msgid "_Restore tools"
+msgstr "Także _katalogi"
+
+#: e2_terminal.c:521
 #, fuzzy
 msgid "Cancel"
 msgstr "_Anuluj"
 
-#: e2_terminal.c:158
+#: e2_terminal.c:522
 msgid "Close terminals"
 msgstr ""
 
-#: e2_terminal.c:167
+#: e2_terminal.c:536
 msgid ""
-"This terminal has a running or starting shell. Closing it hangs up the shell "
-"and its terminal jobs. Close it?"
+"A program is still running in this terminal. Closing it hangs up its shell "
+"and terminal jobs. Close it?"
 msgstr ""
 
-#: e2_terminal.c:215
+#: e2_terminal.c:610
 #, fuzzy
 msgid "Starting shell"
 msgstr "Ustawienia"
 
-#: e2_terminal.c:231
+#: e2_terminal.c:613
+#, fuzzy
+msgid "Restart"
+msgstr "Odpoczynek"
+
+#: e2_terminal.c:614
+#, fuzzy
+msgid "Restart this terminal"
+msgstr "Zamknij zakładkę"
+
+#: e2_terminal.c:615
+#, fuzzy
+msgid "Close"
+msgstr "_Zamknij"
+
+#: e2_terminal.c:639
 #, fuzzy
 msgid "starting"
 msgstr "obecny"
 
-#: e2_terminal.c:252
+#: e2_terminal.c:644
+#, fuzzy
+msgid "Close terminal"
+msgstr "_Zamknij"
+
+#: e2_terminal.c:690
 msgid ""
 "A terminal requires an existing local directory. Select a mounted local pane "
 "first."
 msgstr ""
 
-#: e2_terminal.c:364
+#: e2_terminal.c:803
 msgid ""
 "Path insertion supports sh, bash, dash, zsh, ksh, mksh and fish. Select one "
 "in terminal preferences."
 msgstr ""
 
-#: e2_terminal.c:393
-msgid "Focus terminal"
+#: e2_terminal.c:1005
+#, fuzzy
+msgid "Command log"
+msgstr "Komenda"
+
+#: e2_terminal.c:1019
+msgid ""
+"Command and file-operation output. Type interactive commands directly in a "
+"terminal."
 msgstr ""
 
-#: e2_terminal.c:393
+#: e2_terminal.c:1025
 #, fuzzy
-msgid "Open terminal here"
-msgstr "O_twórz obok"
+msgid "New terminal in this pane's folder"
+msgstr "Otwórz terminal w zaznaczonym katalogu"
 
-#: e2_terminal.c:394
+#: e2_terminal.c:1026
 #, fuzzy
-msgid "Close"
+msgid "New terminal"
 msgstr "_Zamknij"
 
-#: e2_terminal.c:394
+#: e2_terminal.c:1032
 #, fuzzy
-msgid "Copy"
-msgstr "_Kopiuj"
+msgid "Actions for the selected log or terminal"
+msgstr "Akcja do zrealizowania dla każdego zaznaczonego elementu:"
 
-#: e2_terminal.c:394
+#: e2_terminal.c:1033
 #, fuzzy
-msgid "Insert selected paths"
-msgstr "Kopiuj zaznaczoną ścieżkę"
+msgid "View actions"
+msgstr "akcje plików"
 
-#: e2_terminal.c:394
-#, fuzzy
-msgid "Paste"
-msgstr "_Wklej"
-
-#: e2_terminal.c:394
-#, fuzzy
-msgid "Restart"
-msgstr "Odpoczynek"
-
-#: e2_terminal.c:400
+#: e2_terminal.c:1114
 msgid ""
-"Start an interactive shell. Run programs such as htop in its terminal tab; "
-"the command entry still uses Application output."
+"Programs are still running in this tab's terminals. Closing it hangs up "
+"their shells and terminal jobs. Close it?"
 msgstr ""
 
-#: e2_terminal.c:407
-#, fuzzy
-msgid "Application output"
-msgstr "programy"
-
-#: e2_terminal.c:408
+#: e2_terminal.c:1168
 msgid ""
-"Command and file-operation log. For interactive programs, use Open terminal "
-"here and type at the shell prompt."
-msgstr ""
-
-#: e2_terminal.c:421
-msgid ""
-"Terminal shells are still running. Quitting hangs up their shells and "
+"Programs are still running in terminals. Quitting hangs up their shells and "
 "terminal jobs. Quit?"
 msgstr ""
 
-#: e2_terminal.c:444
+#: e2_terminal.c:1200
+msgid "keep output and terminals with file-pane tabs"
+msgstr ""
+
+#: e2_terminal.c:1201
+msgid ""
+"Give each file-pane tab its own application output and terminals. Disabling "
+"this combines existing outputs and terminals."
+msgstr ""
+
+#: e2_terminal.c:1203
 msgid "terminal"
 msgstr ""
 
-#: e2_terminal.c:445
+#: e2_terminal.c:1205
 #, fuzzy
 msgid "shell executable"
 msgstr "uruchamialne"
 
-#: e2_terminal.c:446
+#: e2_terminal.c:1206
 msgid ""
 "Executable path only; empty uses SHELL or /bin/sh. New sessions start in the "
 "active local pane."
 msgstr ""
 
-#: e2_terminal.c:448
+#: e2_terminal.c:1208
+#, fuzzy
+msgid "report Bash prompt locations"
+msgstr "autouzupełnianie ścieżki"
+
+#: e2_terminal.c:1209
+msgid ""
+"Opt in to current user and folder reports from Bash. Preserves your prompt "
+"and startup files; applies to new sessions."
+msgstr ""
+
+#: e2_terminal.c:1211
 #, fuzzy
 msgid "scrollback lines"
 msgstr "paski przewijania"
 
-#: e2_terminal.c:450
+#: e2_terminal.c:1213
 #, fuzzy
 msgid "terminal font"
 msgstr "emulator terminala x"
 
-#: e2_terminal.c:451
+#: e2_terminal.c:1214
 msgid "Terminal preferences apply to new or restarted sessions"
 msgstr ""
 
-#: e2_terminal.c:452
+#: e2_terminal.c:1215
 msgid "terminal foreground"
 msgstr ""
 
-#: e2_terminal.c:454
+#: e2_terminal.c:1217
 #, fuzzy
 msgid "terminal background"
 msgstr "dwukolorowe tło"
+
+#: e2_terminal_search.c:70
+msgid "No matches"
+msgstr ""
+
+#: e2_terminal_search.c:104
+msgid ""
+"Find text, ignoring case. Enter: next; Shift+Enter: previous; Escape: close."
+msgstr ""
+
+#: e2_terminal_search.c:105
+#, fuzzy
+msgid "Find in selected view"
+msgstr "Drukuj zaznaczony tekst"
+
+#: e2_terminal_search.c:113 e2_terminal_search.c:114
+#, fuzzy
+msgid "Previous match"
+msgstr "_Poprzednie"
+
+#: e2_terminal_search.c:116 e2_terminal_search.c:117
+#, fuzzy
+msgid "Next match"
+msgstr "Znajdź następne dopasowanie"
+
+#: e2_terminal_search.c:119 e2_terminal_search.c:120
+#, fuzzy
+msgid "Close search"
+msgstr "_Zamknij"
 
 #: e2_toolbar.c:399
 msgid "Show _bar"
@@ -5409,51 +5572,51 @@ msgstr "Odpoczynek"
 msgid "Show a menu of hidden items"
 msgstr "Pokaż menu ukrytych elementów"
 
-#: e2_toolbar.c:2046
+#: e2_toolbar.c:2082
 msgid "not"
 msgstr "nie"
 
-#: e2_toolbar.c:2077
+#: e2_toolbar.c:2113
 msgid "accessed"
 msgstr "dostępne"
 
-#: e2_toolbar.c:2077
+#: e2_toolbar.c:2113
 msgid "changed"
 msgstr "zmienione"
 
-#: e2_toolbar.c:2077
+#: e2_toolbar.c:2113
 msgid "modified"
 msgstr "zmodyfikowane"
 
-#: e2_toolbar.c:3322
+#: e2_toolbar.c:3358
 msgid "show the "
 msgstr "pokaż "
 
-#: e2_toolbar.c:3323
+#: e2_toolbar.c:3359
 #, c-format
 msgid "This determines whether the %s is displayed or hidden"
 msgstr "Określa czy %s jest elementem widocznym czy ukrytym"
 
-#: e2_toolbar.c:3330
+#: e2_toolbar.c:3366
 msgid " horizontal"
 msgstr " horyzontalnie"
 
-#: e2_toolbar.c:3331
+#: e2_toolbar.c:3367
 #, c-format
 msgid "This determines whether the %s is displayed horizontally or vertically"
 msgstr "Określa czy element %s, jest wyświetlany horyzontalnie czy wertykalnie"
 
-#: e2_toolbar.c:3338
+#: e2_toolbar.c:3374
 #, c-format
 msgid "show tooltips for %s buttons"
 msgstr "pokazuj podpowiedzi dla %s przycisków"
 
-#: e2_toolbar.c:3339
+#: e2_toolbar.c:3375
 #, c-format
 msgid "If deactivated, tooltips will not be displayed for %s buttons"
 msgstr "Jeśli nie aktywne, podpowiedzi nie będą wyświetlane dla %s przycisków"
 
-#: e2_toolbar.c:3346
+#: e2_toolbar.c:3382
 #, c-format
 msgid ""
 "This determines the method for accessing %s elements that are hidden due to "
@@ -5462,335 +5625,335 @@ msgstr ""
 "Określa metodę dostępu do %s elementów które są ukryte ze względu na brak "
 "miejsca na ekranie"
 
-#: e2_toolbar.c:3348
+#: e2_toolbar.c:3384
 msgid "use rest button"
 msgstr "używaj 'rest button'"
 
-#: e2_toolbar.c:3348
+#: e2_toolbar.c:3384
 msgid "use scrollbars"
 msgstr "używaj pasków przewijania"
 
-#: e2_toolbar.c:3349
+#: e2_toolbar.c:3385
 msgid "space handling"
 msgstr "zarządzanie przestrzenią"
 
-#: e2_toolbar.c:3356
+#: e2_toolbar.c:3392
 msgid " buttons have relief"
 msgstr " przyciski mają obrys"
 
-#: e2_toolbar.c:3358
+#: e2_toolbar.c:3394
 msgid ""
 "Buttons with relief show their outline continually, not just when 'moused'"
 msgstr ""
 "Kształt przycisków widoczny jest cały czas, nie tylko gdy nad przycisk "
 "najedzie myszka"
 
-#: e2_toolbar.c:3365
+#: e2_toolbar.c:3401
 msgid " buttons are the same size"
 msgstr " przyciski są tego samego rozmiaru"
 
-#: e2_toolbar.c:3367
+#: e2_toolbar.c:3403
 msgid ""
 "Equal-width buttons look good on a vertical bar, bad on a horizontal bar"
 msgstr ""
 "Przyciski o stałej szerokości wyglądają dobrze na pionowym pasku, źle na "
 "poziomym"
 
-#: e2_toolbar.c:3377
+#: e2_toolbar.c:3413
 msgid "button style"
 msgstr "styl przycisków"
 
-#: e2_toolbar.c:3387
+#: e2_toolbar.c:3423
 msgid "icon size"
 msgstr "rozmiar ikon"
 
-#: e2_toolbar.c:3394
+#: e2_toolbar.c:3430
 msgid " container"
 msgstr " kontener"
 
-#: e2_toolbar.c:3395
+#: e2_toolbar.c:3431
 #, c-format
 msgid "This determines the 'box' into which the %s is placed"
 msgstr "Określa 'pudełko' w którym umieszczony jest element %s"
 
-#: e2_toolbar.c:3397
+#: e2_toolbar.c:3433
 msgid "both panes"
 msgstr "oba okna"
 
-#: e2_toolbar.c:3397
+#: e2_toolbar.c:3433
 msgid "file-pane 1"
 msgstr "okno plików 1"
 
-#: e2_toolbar.c:3397
+#: e2_toolbar.c:3433
 msgid "file-pane 2"
 msgstr "okno plików 2"
 
-#: e2_toolbar.c:3397
+#: e2_toolbar.c:3433
 msgid "main window"
 msgstr "główne okno"
 
-#: e2_toolbar.c:3405
+#: e2_toolbar.c:3441
 msgid " priority"
 msgstr " priorytet"
 
-#: e2_toolbar.c:3406
+#: e2_toolbar.c:3442
 msgid "This determines the order of toolbars (0 = left or top)"
 msgstr "Określa kierunek pasków narzędziowych (0 = lewo lub góra)"
 
-#: e2_toolbar.c:3427
+#: e2_toolbar.c:3463
 #, fuzzy
 msgid "Copy items selected in the active pane to the other one"
 msgstr "Kopiuj elementy zaznaczone w aktywnym oknie do drugiego okna"
 
-#: e2_toolbar.c:3429
+#: e2_toolbar.c:3465
 #, fuzzy
 msgid "Move items selected in the active pane to the other one"
 msgstr "Przesuń elementy zaznaczone w aktywnym oknie do drugiego okna"
 
-#: e2_toolbar.c:3431
+#: e2_toolbar.c:3467
 #, fuzzy
 msgid "Symlink items selected in the active pane to the other one"
 msgstr ""
 "Utwórz linki elementów zaznaczonych w aktywnym oknie i zapisz je w drugim"
 
-#: e2_toolbar.c:3432
+#: e2_toolbar.c:3468
 msgid "Re_name.."
 msgstr "Zmień nazwę.."
 
-#: e2_toolbar.c:3433
+#: e2_toolbar.c:3469
 #, fuzzy
 msgid "Rename items selected in the active pane"
 msgstr "Zmień nazwę elementów zaznaczonych w aktywnym oknie"
 
-#: e2_toolbar.c:3435
+#: e2_toolbar.c:3471
 #, fuzzy
 msgid "Move items selected in the active pane to a trashbin"
 msgstr "Przenieś elementy zaznaczone w aktywnym oknie do śmietnika"
 
-#: e2_toolbar.c:3436
+#: e2_toolbar.c:3472
 msgid "Create new directory(ies)"
 msgstr "Utwórz nowy katalog"
 
-#: e2_toolbar.c:3442
+#: e2_toolbar.c:3478
 msgid "Re_fresh"
 msgstr "Odświerz"
 
-#: e2_toolbar.c:3442
+#: e2_toolbar.c:3478
 msgid "Update pane contents"
 msgstr "Odśzierza zawartość okna"
 
-#: e2_toolbar.c:3443
+#: e2_toolbar.c:3479
 msgid "_Switch"
 msgstr "Przełącz"
 
-#: e2_toolbar.c:3444
+#: e2_toolbar.c:3480
 msgid "Toggle the active pane"
 msgstr "Przełącz aktywne okno"
 
-#: e2_toolbar.c:3490
+#: e2_toolbar.c:3526
 msgid "Full"
 msgstr "Powiększ"
 
-#: e2_toolbar.c:3490
+#: e2_toolbar.c:3526
 msgid "Maximize output pane"
 msgstr "Maksymalizuj okno danych wyjściowych"
 
-#: e2_toolbar.c:3491
+#: e2_toolbar.c:3527
 msgid "Shrink"
 msgstr "Pomniejsz"
 
-#: e2_toolbar.c:3491
+#: e2_toolbar.c:3527
 msgid "Un-maximize output pane"
 msgstr "Minimalizuj okno danych wyjściowych"
 
-#: e2_toolbar.c:3492
+#: e2_toolbar.c:3528
 msgid "Hide"
 msgstr "Ukryj"
 
-#: e2_toolbar.c:3492
+#: e2_toolbar.c:3528
 msgid "Hide output pane"
 msgstr "Ukryj okno danych wyjściowych"
 
-#: e2_toolbar.c:3493
+#: e2_toolbar.c:3529
 msgid "Show"
 msgstr "Pokaż"
 
-#: e2_toolbar.c:3493
+#: e2_toolbar.c:3529
 msgid "Show output pane"
 msgstr "Pokaż okno danych wyjściowych"
 
-#: e2_toolbar.c:3494
+#: e2_toolbar.c:3530
 msgid "Clear"
 msgstr "Wyczyść"
 
-#: e2_toolbar.c:3494
+#: e2_toolbar.c:3530
 msgid "Clear output pane"
 msgstr "Wyczyść okno danych wyjściowych"
 
-#: e2_toolbar.c:3496
+#: e2_toolbar.c:3532
 msgid "Clear command line"
 msgstr "Wyczyść linię poleceń"
 
-#: e2_toolbar.c:3496
+#: e2_toolbar.c:3532
 msgid "cl"
 msgstr "cl"
 
-#: e2_toolbar.c:3497
+#: e2_toolbar.c:3533
 msgid "Child processes"
 msgstr "Procesy potomne"
 
-#: e2_toolbar.c:3497
+#: e2_toolbar.c:3533
 msgid "ps"
 msgstr ""
 
-#: e2_toolbar.c:3498
+#: e2_toolbar.c:3534
 #, fuzzy
 msgid "Calculate disk usage of selected items"
 msgstr "Oblicz przestrzeń zajmowaną przez zaznaczone elementy"
 
-#: e2_toolbar.c:3498 e2p_du.c:375
+#: e2_toolbar.c:3534 e2p_du.c:375
 msgid "du"
 msgstr ""
 
-#: e2_toolbar.c:3499
+#: e2_toolbar.c:3535
 msgid "Find item in active pane, by name"
 msgstr "Znajdź po nazwie element w aktywnym oknie"
 
-#: e2_toolbar.c:3500
+#: e2_toolbar.c:3536
 msgid "Open terminal at the active directory"
 msgstr "Otwórz terminal w zaznaczonym katalogu"
 
-#: e2_toolbar.c:3500
+#: e2_toolbar.c:3536
 msgid "_X"
 msgstr ""
 
-#: e2_toolbar.c:3503 e2_toolbar.c:3507
+#: e2_toolbar.c:3539 e2_toolbar.c:3543
 #, fuzzy
 msgid "Run command as root"
 msgstr "Uruchom coś jako root"
 
-#: e2_toolbar.c:3503 e2_toolbar.c:3507
+#: e2_toolbar.c:3539 e2_toolbar.c:3543
 msgid "su.."
 msgstr ""
 
-#: e2_toolbar.c:3510
+#: e2_toolbar.c:3546
 msgid "Mount or unmount a device"
 msgstr "Zamontuj lub odmontuj urządzenie"
 
-#: e2_toolbar.c:3510
+#: e2_toolbar.c:3546
 msgid "mts.."
 msgstr ""
 
-#: e2_toolbar.c:3513
+#: e2_toolbar.c:3549
 msgid "View/change configuration settings for this program"
 msgstr "Podglądnij/zmień konfigurację tego programu"
 
-#: e2_toolbar.c:3513
+#: e2_toolbar.c:3549
 msgid "_Settings.."
 msgstr "_Ustawienia.."
 
-#: e2_toolbar.c:3514
+#: e2_toolbar.c:3550
 msgid "Get information about this program"
 msgstr "Pokaż informacje na temat tego programu"
 
-#: e2_toolbar.c:3516
+#: e2_toolbar.c:3552
 msgid "Close this program"
 msgstr "Zamknij program"
 
-#: e2_toolbar.c:3564 e2_toolbar.c:3629
+#: e2_toolbar.c:3600 e2_toolbar.c:3665
 msgid "Hide other pane"
 msgstr "Ukryj sąsiednie okno"
 
-#: e2_toolbar.c:3564 e2_toolbar.c:3566 e2_toolbar.c:3569 e2_toolbar.c:3629
-#: e2_toolbar.c:3631 e2_toolbar.c:3634
+#: e2_toolbar.c:3600 e2_toolbar.c:3602 e2_toolbar.c:3605 e2_toolbar.c:3665
+#: e2_toolbar.c:3667 e2_toolbar.c:3670
 msgid "_Panes"
 msgstr "_Okna"
 
-#: e2_toolbar.c:3567 e2_toolbar.c:3570 e2_toolbar.c:3632 e2_toolbar.c:3635
+#: e2_toolbar.c:3603 e2_toolbar.c:3606 e2_toolbar.c:3668 e2_toolbar.c:3671
 msgid "Show other pane"
 msgstr "Pokaż sąsiednie okno"
 
-#: e2_toolbar.c:3572 e2_toolbar.c:3637
+#: e2_toolbar.c:3608 e2_toolbar.c:3673
 msgid "Show _hidden"
 msgstr "Pokaż ukryte"
 
-#: e2_toolbar.c:3573 e2_toolbar.c:3638
+#: e2_toolbar.c:3609 e2_toolbar.c:3674
 msgid "Display hidden items in this directory"
 msgstr "Pokaż ukryte elementy w bieżącym katalogu"
 
-#: e2_toolbar.c:3574 e2_toolbar.c:3639
+#: e2_toolbar.c:3610 e2_toolbar.c:3675
 msgid "Hide _hidden"
 msgstr "Pokaż ukryte"
 
-#: e2_toolbar.c:3575 e2_toolbar.c:3640
+#: e2_toolbar.c:3611 e2_toolbar.c:3676
 msgid "Do not display hidden items in this directory"
 msgstr "Nie wyświetlaj ukrytych elementów w bieżącym katalogu"
 
-#: e2_toolbar.c:3576 e2_toolbar.c:3578 e2_toolbar.c:3641 e2_toolbar.c:3643
+#: e2_toolbar.c:3612 e2_toolbar.c:3614 e2_toolbar.c:3677 e2_toolbar.c:3679
 msgid "Fil_ters"
 msgstr "Fil_try"
 
-#: e2_toolbar.c:3577 e2_toolbar.c:3642
+#: e2_toolbar.c:3613 e2_toolbar.c:3678
 msgid "Set rules for the items to be displayed"
 msgstr "Określ zasady wyświetlania elementów"
 
-#: e2_toolbar.c:3579 e2_toolbar.c:3644
+#: e2_toolbar.c:3615 e2_toolbar.c:3680
 msgid "Set/remove rules for the items to be displayed"
 msgstr "Ustaw/usuń zasady wyświetlania elementów"
 
-#: e2_toolbar.c:3581 e2_toolbar.c:3646
+#: e2_toolbar.c:3617 e2_toolbar.c:3682
 msgid "_VFS"
 msgstr "_VFS"
 
-#: e2_toolbar.c:3582 e2_toolbar.c:3647
+#: e2_toolbar.c:3618 e2_toolbar.c:3683
 msgid "Show a virtual directory in this pane"
 msgstr "Pokazuj wirtualny katalog w bieżącym oknie"
 
-#: e2_toolbar.c:3583 e2_toolbar.c:3648
+#: e2_toolbar.c:3619 e2_toolbar.c:3684
 msgid "_LocalFS"
 msgstr "_LocalFS"
 
-#: e2_toolbar.c:3591 e2_toolbar.c:3656
+#: e2_toolbar.c:3627 e2_toolbar.c:3692
 msgid "_Marks"
 msgstr "Znaki"
 
-#: e2_toolbar.c:3592 e2_toolbar.c:3657
+#: e2_toolbar.c:3628 e2_toolbar.c:3693
 msgid "Bookmarks"
 msgstr "Zakładki"
 
-#: e2_toolbar.c:3594 e2_toolbar.c:3659
+#: e2_toolbar.c:3630 e2_toolbar.c:3695
 msgid "Add the current directory to the top of the bookmarks list"
 msgstr "Dodaj bieżący katalog na początek listy zakładek"
 
-#: e2_toolbar.c:3598 e2_toolbar.c:3663
+#: e2_toolbar.c:3634 e2_toolbar.c:3699
 msgid "Add the current directory to the bottom of the bookmarks list"
 msgstr "Dodaj bieżący katalog na koniec listy zakładek"
 
-#: e2_toolbar.c:3601 e2_toolbar.c:3666
+#: e2_toolbar.c:3637 e2_toolbar.c:3702
 msgid "_Edit bookmarks"
 msgstr "_Edytuj zakładki"
 
-#: e2_toolbar.c:3602 e2_toolbar.c:3667
+#: e2_toolbar.c:3638 e2_toolbar.c:3703
 msgid "Open the bookmarks configuration dialog"
 msgstr "Otwórz okno konfiguracji zakładek"
 
-#: e2_toolbar.c:3605 e2_toolbar.c:3608 e2_toolbar.c:3670 e2_toolbar.c:3676
+#: e2_toolbar.c:3641 e2_toolbar.c:3644 e2_toolbar.c:3706 e2_toolbar.c:3712
 msgid "M_irror"
 msgstr "Lustro"
 
-#: e2_toolbar.c:3606 e2_toolbar.c:3609 e2_toolbar.c:3671 e2_toolbar.c:3677
+#: e2_toolbar.c:3642 e2_toolbar.c:3645 e2_toolbar.c:3707 e2_toolbar.c:3713
 msgid "Go to directory shown in other pane"
 msgstr "Idź do katalogu pokazanego w sąsiednim oknie"
 
-#: e2_toolbar.c:3611 e2_toolbar.c:3672 e2_toolbar.c:3680
+#: e2_toolbar.c:3647 e2_toolbar.c:3708 e2_toolbar.c:3716
 msgid "Go to previous directory in history"
 msgstr "Idź do poprzedniego katalogu w historii"
 
-#: e2_toolbar.c:3612 e2_toolbar.c:3673 e2_toolbar.c:3679
+#: e2_toolbar.c:3648 e2_toolbar.c:3709 e2_toolbar.c:3715
 msgid "Go up to parent directory"
 msgstr "Idź w górę, do katalogu nadrzędnego"
 
-#: e2_toolbar.c:3613 e2_toolbar.c:3674 e2_toolbar.c:3678
+#: e2_toolbar.c:3649 e2_toolbar.c:3710 e2_toolbar.c:3714
 msgid "Go to next directory in history"
 msgstr "Idź do kolejnego katalogu w historii"
 
@@ -5897,7 +6060,7 @@ msgstr "Brakuje znaku '}' w formule akcji"
 msgid "No matching '$' found in action text"
 msgstr "Brakuje znaku '$' w formule akcji"
 
-#: e2_utils.c:4026
+#: e2_utils.c:4027
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr ""
 
@@ -6064,21 +6227,17 @@ msgid "This causes search strings to be remembered between sessions"
 msgstr ""
 "Sprawia, że wyszukiwane zwroty będą pamiętane pomiędzy sesjami programu"
 
-#: e2_window.c:141
-msgid "Equal panel sizes (1:1)"
-msgstr ""
-
-#: e2_window.c:1251
+#: e2_window.c:1280
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "wyświetlonych i %d ukrytych"
 
-#: e2_window.c:1254
+#: e2_window.c:1283
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d zaznaczonych elementów z %d %s w '%s'"
 
-#: e2_window.c:1832
+#: e2_window.c:1864
 msgid "WhoAmI"
 msgstr ""
 
@@ -7530,6 +7689,26 @@ msgstr "Otwórz pierwszy zaznaczony plik przy pomocy programu %s"
 msgid "view_with_plugin"
 msgstr "view_with_plugin"
 
+#, fuzzy
+#~ msgid "Open terminal here"
+#~ msgstr "O_twórz obok"
+
+#, fuzzy
+#~ msgid "Insert the selected files' quoted paths into the terminal"
+#~ msgstr "Przesuń elementy zaznaczone w aktywnym oknie do drugiego okna"
+
+#, fuzzy
+#~ msgid "Copy"
+#~ msgstr "_Kopiuj"
+
+#, fuzzy
+#~ msgid "Paste"
+#~ msgstr "_Wklej"
+
+#, fuzzy
+#~ msgid "Application output"
+#~ msgstr "programy"
+
 #~ msgid "You must specify the site to open"
 #~ msgstr "Musisz wybrać stronę do otwarcia"
 
@@ -7623,9 +7802,6 @@ msgstr "view_with_plugin"
 
 #~ msgid "_Local"
 #~ msgstr "_Lokalne"
-
-#~ msgid "Revert to native filesystem"
-#~ msgstr "Przywróć do lokalnego systemu plików"
 
 #~ msgid "Store this data but do not open the place"
 #~ msgstr "Zachowaj dane ale nie otwieraj tego miejsca"
