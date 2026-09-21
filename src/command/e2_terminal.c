@@ -7,6 +7,7 @@
 #include "e2_fileview.h"
 #include "e2_window.h"
 #include "e2_dialog.h"
+#include "e2_icons.h"
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
@@ -166,6 +167,18 @@ static gboolean session_can_close (TerminalSession *session)
     return (!session->pending && session->pid <= 0) || confirm_close (
         _("This terminal has a running or starting shell. Closing it hangs up the shell and its terminal jobs. Close it?"));
 }
+static gboolean close_session (TerminalSession *session)
+{
+    session->refs++; /* The confirmation dialog can dispatch other actions. */
+    gboolean close = session_can_close (session) && !session->disposed;
+    if (close) gtk_widget_destroy (session->page);
+    session_unref (session);
+    return close;
+}
+static void close_session_clicked (GtkButton *button, TerminalSession *session)
+{
+    close_session (session);
+}
 static gboolean local_directory (void)
 {
 #ifdef E2_VFS
@@ -229,7 +242,16 @@ static void open_session (const gchar *directory)
     g_signal_connect (session->terminal, "key-press-event", G_CALLBACK (terminal_key), session);
     sessions = g_list_append (sessions, session);
     session_label (session, _("starting"));
-    gint page = gtk_notebook_append_page (GTK_NOTEBOOK (terminal_book), session->page, session->label);
+    GtkWidget *title = gtk_hbox_new (FALSE, 4);
+    GtkWidget *close = e2_button_get_full (NULL, STOCK_NAME_CLOSE, GTK_ICON_SIZE_MENU,
+        _("Close this terminal"), close_session_clicked, session, E2_BUTTON_SHOW_MISSING_ICON);
+    gtk_widget_set_name (close, "terminal-close");
+    atk_object_set_name (gtk_widget_get_accessible (close), _("Close terminal"));
+    gtk_button_set_relief (GTK_BUTTON (close), GTK_RELIEF_NONE);
+    gtk_box_pack_start (GTK_BOX (title), session->label, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (title), close, FALSE, FALSE, 0);
+    gtk_widget_show_all (title);
+    gint page = gtk_notebook_append_page (GTK_NOTEBOOK (terminal_book), session->page, title);
     gtk_widget_show_all (session->page);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (terminal_book), page);
     reveal_terminal ();
@@ -282,11 +304,7 @@ static gboolean close_terminal (gpointer from, E2_ActionRuntime *art)
     }
     TerminalSession *session = current_session ();
     if (session == NULL) return FALSE;
-    session->refs++; /* A modal close decision can dispatch other actions. */
-    gboolean close = session_can_close (session) && !session->disposed;
-    if (close) gtk_widget_destroy (session->page);
-    session_unref (session);
-    return close;
+    return close_session (session);
 }
 static gboolean restart_terminal (gpointer from, E2_ActionRuntime *art)
 {
@@ -390,18 +408,29 @@ GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
     ui_thread = pthread_self ();
     GtkWidget *box = gtk_vbox_new (FALSE, 0);
     GtkWidget *buttons = gtk_hbox_new (FALSE, 2);
-    const gchar *labels[] = { N_("Open terminal here"), N_("Focus terminal"),
-        N_("Close"), N_("Restart"), N_("Insert selected paths"), N_("Copy"), N_("Paste") };
+    gtk_widget_set_name (buttons, "terminal-actions");
+    const struct { guint action; const gchar *label, *icon, *tip; } actions[] = {
+        { 0, N_("Open terminal here"), STOCK_NAME_EXECUTE,
+            N_("Open an interactive terminal in this pane's current directory") },
+        { 1, N_("Focus terminal"), STOCK_NAME_JUMP_TO,
+            N_("Focus the terminal; Ctrl+Shift+F6 returns to the file list") },
+        { 3, N_("Restart"), STOCK_NAME_REFRESH,
+            N_("Restart the selected terminal in its original directory") },
+        { 4, N_("Insert selected paths"), STOCK_NAME_ADD,
+            N_("Insert the selected files' quoted paths into the terminal") },
+        { 5, N_("Copy"), STOCK_NAME_COPY, N_("Copy selected terminal text (Ctrl+Shift+C)") },
+        { 6, N_("Paste"), STOCK_NAME_PASTE, N_("Paste clipboard text into the terminal (Ctrl+Shift+V)") }
+    };
     guint i;
-    for (i = 0; i < G_N_ELEMENTS (labels); i++)
+    for (i = 0; i < G_N_ELEMENTS (actions); i++)
     {
-        GtkWidget *button = gtk_button_new_with_label (_(labels[i]));
-        if (i == 0)
-            gtk_widget_set_tooltip_text (button, _("Start an interactive shell. Run programs such as htop in its terminal tab; the command entry still uses Application output."));
-        g_signal_connect (button, "clicked", G_CALLBACK (button_action), GUINT_TO_POINTER (i));
+        GtkWidget *button = e2_button_get_full (NULL, actions[i].icon, GTK_ICON_SIZE_MENU,
+            _(actions[i].tip), button_action, GUINT_TO_POINTER (actions[i].action), E2_BUTTON_SHOW_MISSING_ICON);
+        atk_object_set_name (gtk_widget_get_accessible (button), _(actions[i].label));
         gtk_box_pack_start (GTK_BOX (buttons), button, FALSE, FALSE, 0);
     }
     terminal_book = gtk_notebook_new ();
+    gtk_widget_set_name (terminal_book, "terminal-notebook");
     g_object_add_weak_pointer (G_OBJECT (terminal_book), (gpointer *)&terminal_book);
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (terminal_book), TRUE);
     GtkWidget *log_label = gtk_label_new (_("Application output"));
