@@ -4,6 +4,8 @@
 #include "emelfm2.h"
 #ifdef E2_VTE
 GtkWidget *e2_terminal_wrap_output (GtkWidget *output);
+void e2_terminal_select_pane (void);
+void e2_terminal_select_output (GtkWidget *output);
 void e2_terminal_actions_register (void);
 void e2_terminal_options_register (void);
 gboolean e2_terminal_has_focus (void);

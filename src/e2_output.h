@@ -37,6 +37,7 @@ typedef enum
 //these things are tab-specific, swapped in and out
 typedef struct _E2_OutputTabRuntime
 {
+	GtkWidget *book;      //owning output notebook, including while detached
 	GtkWidget *scroll;	//scrolled window containing the textview
 	GtkTextView *text;
 	GtkTextBuffer *buffer;
@@ -118,6 +119,8 @@ void e2_output_clear_styles (E2_OutputTabRuntime *rt, const gchar *origin);
 #endif
 void e2_output_update_style (void);
 GtkWidget *e2_output_initialise (void) G_GNUC_MALLOC;
+GtkWidget *e2_output_create_notebook (gint count);
+void e2_output_select_notebook (GtkWidget *book);
 #ifndef USE_GTK3_22
 void e2_output_set_menu_position (GtkWidget *menu, gint *x, gint *y,
 	gboolean *push_in, GtkWidget *textview);

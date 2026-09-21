@@ -8,14 +8,25 @@
 #include "e2_window.h"
 #include "e2_dialog.h"
 #include "e2_icons.h"
+#include "e2_pane.h"
 #include <signal.h>
 #include <sys/wait.h>
 #include <unistd.h>
 #include <string.h>
 #include <pthread.h>
 
-/* This notebook is deliberately separate from app.outbook and app.tabslist.
- * Application output, task retabbing and detached log views remain text-only. */
+typedef struct
+{
+    GtkWidget *book, *output;
+    guint pane;
+} TerminalPane;
+typedef struct
+{
+    GtkWidget *widget;
+    TerminalPane panes[2];
+} TerminalWorkspace;
+
+/* VTE sessions stay separate from the text-only application output runtimes. */
 typedef struct
 {
     gint refs;
@@ -25,12 +36,54 @@ typedef struct
     GPid pid;
     gboolean pending, disposed, exited;
     guint number;
+    TerminalPane *owner;
 } TerminalSession;
-static GtkWidget *terminal_book;
+static TerminalWorkspace *workspace;
 static GList *sessions;
 static gboolean dispatch_action (gpointer data);
 static guint next_number;
 static pthread_t ui_thread;
+static TerminalPane *active_pane (void)
+{
+    return workspace == NULL ? NULL : &workspace->panes[curr_pane == &app.pane2];
+}
+void e2_terminal_select_pane (void)
+{
+    TerminalPane *pane = active_pane ();
+    if (pane != NULL) e2_output_select_notebook (pane->output);
+}
+static void activate_pane (TerminalPane *pane)
+{
+    if ((curr_pane == &app.pane2) != (pane->pane == 1))
+    {
+        CLOSEBGL_IF_OPEN
+        e2_pane_activate_other ();
+        OPENBGL_IF_CLOSED
+    }
+    e2_output_select_notebook (pane->output);
+}
+void e2_terminal_select_output (GtkWidget *output)
+{
+    TerminalPane *pane = g_object_get_data (G_OBJECT (output), "terminal-pane");
+    if (pane != NULL && pane != active_pane ()) activate_pane (pane);
+}
+static gboolean terminal_focused (GtkWidget *widget, GdkEventFocus *event, TerminalPane *pane)
+{
+    activate_pane (pane);
+    return FALSE;
+}
+static void output_focused (GtkWindow *window, GtkWidget *focus, gpointer data)
+{
+    for (GtkWidget *widget = focus; widget != NULL; widget = gtk_widget_get_parent (widget))
+    {
+        TerminalPane *pane = g_object_get_data (G_OBJECT (widget), "terminal-pane");
+        if (pane != NULL)
+        {
+            activate_pane (pane);
+            return;
+        }
+    }
+}
 
 static void session_unref (TerminalSession *session)
 {
@@ -104,9 +157,10 @@ static void session_destroyed (GtkWidget *widget, gpointer data)
 }
 static TerminalSession *current_session (void)
 {
-    if (terminal_book == NULL) return NULL;
-    GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (terminal_book),
-        gtk_notebook_get_current_page (GTK_NOTEBOOK (terminal_book)));
+    TerminalPane *pane = active_pane ();
+    if (pane == NULL) return NULL;
+    GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (pane->book),
+        gtk_notebook_get_current_page (GTK_NOTEBOOK (pane->book)));
     return page == NULL ? NULL : g_object_get_data (G_OBJECT (page), "e2-terminal-session");
 }
 gboolean e2_terminal_has_focus (void)
@@ -243,11 +297,12 @@ static void reveal_terminal (void)
             gtk_paned_set_position (paned, allocation.height - wanted);
     }
 }
-static void open_session (const gchar *directory)
+static void open_session (TerminalPane *pane, const gchar *directory)
 {
     TerminalSession *session = g_new0 (TerminalSession, 1);
     session->refs = 1;
     session->number = ++next_number;
+    session->owner = pane;
     session->directory = g_strdup (directory);
     const gchar *shell = e2_option_str_get ("terminal-shell");
     if (shell == NULL || *shell == '\0') shell = g_getenv ("SHELL");
@@ -273,6 +328,7 @@ static void open_session (const gchar *directory)
     g_signal_connect (session->terminal, "key-press-event", G_CALLBACK (terminal_key), session);
     g_signal_connect (session->terminal, "button-press-event", G_CALLBACK (terminal_button), session);
     g_signal_connect (session->terminal, "popup-menu", G_CALLBACK (terminal_popup_menu), session);
+    g_signal_connect (session->terminal, "focus-in-event", G_CALLBACK (terminal_focused), pane);
     sessions = g_list_append (sessions, session);
     session_label (session, _("starting"));
     GtkWidget *title = gtk_hbox_new (FALSE, 4);
@@ -284,9 +340,9 @@ static void open_session (const gchar *directory)
     gtk_box_pack_start (GTK_BOX (title), session->label, TRUE, TRUE, 0);
     gtk_box_pack_start (GTK_BOX (title), close, FALSE, FALSE, 0);
     gtk_widget_show_all (title);
-    gint page = gtk_notebook_append_page (GTK_NOTEBOOK (terminal_book), session->page, title);
+    gint page = gtk_notebook_append_page (GTK_NOTEBOOK (pane->book), session->page, title);
     gtk_widget_show_all (session->page);
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (terminal_book), page);
+    gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->book), page);
     reveal_terminal ();
     gtk_widget_grab_focus (session->terminal);
     gchar *argv[] = { session->shell, "-i", NULL };
@@ -308,7 +364,7 @@ static gboolean open_here (gpointer from, E2_ActionRuntime *art)
         return FALSE;
     }
     gchar *local = F_FILENAME_TO_LOCALE (curr_view->dir);
-    open_session (local);
+    open_session (active_pane (), local);
     F_FREE (local, curr_view->dir);
     return TRUE;
 }
@@ -320,10 +376,13 @@ static gboolean focus_terminal (gpointer from, E2_ActionRuntime *art)
         return TRUE;
     }
     TerminalSession *session = current_session ();
-    if (session == NULL && sessions != NULL) session = g_list_last (sessions)->data;
+    TerminalPane *pane = active_pane ();
+    GList *link;
+    for (link = g_list_last (sessions); session == NULL && link != NULL; link = link->prev)
+        if (((TerminalSession *)link->data)->owner == pane) session = link->data;
     if (session == NULL) return open_here (from, art);
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (terminal_book),
-        gtk_notebook_page_num (GTK_NOTEBOOK (terminal_book), session->page));
+    gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->book),
+        gtk_notebook_page_num (GTK_NOTEBOOK (pane->book), session->page));
     reveal_terminal ();
     gtk_widget_grab_focus (session->terminal);
     return TRUE;
@@ -354,7 +413,8 @@ static gboolean restart_terminal (gpointer from, E2_ActionRuntime *art)
     {
         gchar *directory = g_strdup (session->directory);
         gtk_widget_destroy (session->page);
-        open_session (directory);
+        activate_pane (session->owner);
+        open_session (session->owner, directory);
         g_free (directory);
     }
     session_unref (session);
@@ -418,6 +478,8 @@ static gboolean insert_paths (gpointer from, E2_ActionRuntime *art)
 }
 static void button_action (GtkWidget *button, gpointer data)
 {
+    if (button != NULL)
+        activate_pane (g_object_get_data (G_OBJECT (button), "terminal-pane"));
     guint action = GPOINTER_TO_UINT (data);
     TerminalSession *session = current_session ();
     switch (action)
@@ -433,13 +495,16 @@ static void button_action (GtkWidget *button, gpointer data)
 }
 static gboolean dispatch_action (gpointer data)
 {
-    if (terminal_book != NULL) button_action (NULL, data);
+    if (workspace != NULL) button_action (NULL, data);
     return FALSE;
 }
-GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
+static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint number)
 {
-    ui_thread = pthread_self ();
+    pane->pane = number;
+    pane->output = output;
+    g_object_set_data (G_OBJECT (output), "terminal-pane", pane);
     GtkWidget *box = gtk_vbox_new (FALSE, 0);
+    g_object_set_data (G_OBJECT (box), "terminal-pane", pane);
     GtkWidget *buttons = gtk_hbox_new (FALSE, 2);
     gtk_widget_set_name (buttons, "terminal-actions");
     const struct { guint action; const gchar *label, *icon, *tip; } actions[] = {
@@ -460,18 +525,32 @@ GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
         GtkWidget *button = e2_button_get_full (NULL, actions[i].icon, GTK_ICON_SIZE_MENU,
             _(actions[i].tip), button_action, GUINT_TO_POINTER (actions[i].action), E2_BUTTON_SHOW_MISSING_ICON);
         atk_object_set_name (gtk_widget_get_accessible (button), _(actions[i].label));
+        g_object_set_data (G_OBJECT (button), "terminal-pane", pane);
         gtk_box_pack_start (GTK_BOX (buttons), button, FALSE, FALSE, 0);
     }
-    terminal_book = gtk_notebook_new ();
-    gtk_widget_set_name (terminal_book, "terminal-notebook");
-    g_object_add_weak_pointer (G_OBJECT (terminal_book), (gpointer *)&terminal_book);
-    gtk_notebook_set_scrollable (GTK_NOTEBOOK (terminal_book), TRUE);
+    pane->book = gtk_notebook_new ();
+    gtk_widget_set_name (pane->book, "terminal-notebook");
+    gtk_notebook_set_scrollable (GTK_NOTEBOOK (pane->book), TRUE);
     GtkWidget *log_label = gtk_label_new (_("Application output"));
     gtk_widget_set_tooltip_text (log_label, _("Command and file-operation log. For interactive programs, use Open terminal here and type at the shell prompt."));
-    gtk_notebook_append_page (GTK_NOTEBOOK (terminal_book), output, log_label);
+    gtk_notebook_append_page (GTK_NOTEBOOK (pane->book), output, log_label);
     gtk_box_pack_start (GTK_BOX (box), buttons, FALSE, FALSE, 0);
-    gtk_box_pack_start (GTK_BOX (box), terminal_book, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (box), pane->book, TRUE, TRUE, 0);
     return box;
+}
+GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
+{
+    ui_thread = pthread_self ();
+    workspace = g_new0 (TerminalWorkspace, 1);
+    workspace->widget = gtk_hpaned_new ();
+    gtk_widget_set_name (workspace->widget, "terminal-split");
+    GtkWidget *left = pane_create (&workspace->panes[0], output, 0);
+    GtkWidget *right = pane_create (&workspace->panes[1], e2_output_create_notebook (1), 1);
+    gtk_paned_pack1 (GTK_PANED (workspace->widget), left, TRUE, FALSE);
+    gtk_paned_pack2 (GTK_PANED (workspace->widget), right, TRUE, FALSE);
+    e2_terminal_select_pane ();
+    g_signal_connect (app.main_window, "set-focus", G_CALLBACK (output_focused), NULL);
+    return workspace->widget;
 }
 gboolean e2_terminal_confirm_shutdown (void)
 {

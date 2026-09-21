@@ -15,7 +15,7 @@ import os, pathlib, subprocess, time
 root = pathlib.Path(os.environ['E2_VTE_UI_TEST'])
 for name in ('left', 'right'):
     (root/name).mkdir()
-(root/'shell').write_text('#!/bin/sh\nprintf "Terminal UI test\\n"\nexit 7\n')
+(root/'shell').write_text('#!/bin/sh\npwd > terminal-started\nprintf "Terminal UI test\\n"\nexit 7\n')
 (root/'shell').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'left'), '-2', str(root/'right'),
         '-s', 'session-end-warning=false', '-s', 'pane-tabs=true']

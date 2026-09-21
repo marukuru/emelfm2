@@ -105,6 +105,7 @@ Backwards first, these are displayed in reverse order to their list positions.
 */
 
 #include "emelfm2.h"
+#include "e2_terminal.h"
 //#include <unistd.h>
 #include <string.h>
 #include <pthread.h>
@@ -360,6 +361,9 @@ void e2_pane_activate_other (void)
 	CLOSEBGL
 #endif
 	e2_fileview_switch_views ();
+#ifdef E2_VTE
+	e2_terminal_select_pane ();
+#endif
 	e2_window_set_title_path (app.main_window, curr_view); //change window title, if relevant
 	e2_pane_flag_active ();	//change the status-indicator for the panes
 

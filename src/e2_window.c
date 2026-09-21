@@ -1772,6 +1772,9 @@ void e2_window_create (E2_WindowRuntime *rt)
 		curr_view = &app.pane2.view;
 		other_view = &app.pane1.view;
 	}
+#ifdef E2_VTE
+	e2_terminal_select_pane ();
+#endif
 	//show which pane is active
 	e2_pane_flag_active ();
 	//setup correct focus
