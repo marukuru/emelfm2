@@ -96,11 +96,47 @@ static void tools_divider_changed (GObject *object, GParamSpec *property, gpoint
         syncing_layout = FALSE;
     }
 }
+static void tools_equalize (GtkMenuItem *item, GtkWidget *widget)
+{
+    if (workspace == NULL || widget != workspace->widget || workspace->expanded) return;
+    CLOSEBGL_IF_OPEN
+    gint maxpos;
+    g_object_get (widget, "max-position", &maxpos, NULL);
+    if (maxpos > 0)
+    {
+        workspace->moving_divider = TRUE;
+        gtk_paned_set_position (GTK_PANED (widget), maxpos / 2);
+        tools_divider_changed (G_OBJECT (widget), NULL, NULL);
+        workspace->moving_divider = FALSE;
+    }
+    OPENBGL_IF_CLOSED
+}
 static gboolean tools_divider_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {
-    if (workspace != NULL && widget == workspace->widget && event->button == 1)
+#ifdef USE_GTK2_22
+    GdkWindow *handle = gtk_paned_get_handle_window (GTK_PANED (widget));
+#else
+    GdkWindow *handle = GTK_PANED (widget)->handle;
+#endif
+    if (workspace == NULL || widget != workspace->widget || workspace->expanded
+        || event->type != GDK_BUTTON_PRESS
+        || event->window != handle) return FALSE;
+    if (event->button == 1)
+    {
         workspace->moving_divider = TRUE;
-    return FALSE;
+        return FALSE;
+    }
+    if (event->button != 3) return FALSE;
+    CLOSEBGL_IF_OPEN
+    GtkWidget *menu = e2_menu_get ();
+    gtk_menu_attach_to_widget (GTK_MENU (menu), widget, NULL);
+    g_signal_connect_object (widget, "destroy", G_CALLBACK (gtk_widget_destroy), menu, G_CONNECT_SWAPPED);
+    GtkWidget *item = e2_menu_add (menu, _("Equal panel sizes (1:1)"), NULL,
+        _("Divide the tools area into two equal widths"), NULL, NULL);
+    g_signal_connect_object (item, "activate", G_CALLBACK (tools_equalize), widget, 0);
+    e2_menu_popup (menu, event->button, event->time);
+    OPENBGL_IF_CLOSED
+    return TRUE;
 }
 static gboolean tools_divider_release (GtkWidget *widget, GdkEventButton *event, gpointer data)
 {

@@ -17,6 +17,7 @@ static GtkWidget *left_book;
 static GtkTextBuffer *left_buffer, *right_buffer;
 static GtkWidget *main_book, *original_output;
 static gint live_pid, normal_height;
+static gint stacked_files_position;
 static GtkTreePath *saved_cursor;
 static GtkWidget *search_entry, *activity_terminal;
 static gint64 pause_until;
@@ -116,6 +117,37 @@ static void check_output_menu (gboolean terminal, gboolean from_button)
     if (from_button) g_signal_emit_by_name (menu, "selection-done");
     gtk_widget_destroy (menu);
     gtk_widget_destroy (trigger);
+}
+static void equal_tools (GtkWidget *split)
+{
+    GdkEvent *event = gdk_event_new (GDK_BUTTON_PRESS);
+    event->button.window = g_object_ref (gtk_paned_get_handle_window (GTK_PANED (split)));
+    event->button.button = 3;
+    event->button.time = GDK_CURRENT_TIME;
+#ifdef USE_GTK3_0
+    GdkDeviceManager *manager = gdk_display_get_device_manager (gtk_widget_get_display (split));
+    gdk_event_set_device (event, gdk_device_manager_get_client_pointer (manager));
+#endif
+    gtk_main_do_event (event);
+    gdk_event_free (event);
+    GtkWidget *menu = gtk_grab_get_current ();
+    g_assert_true (GTK_IS_MENU (menu));
+    g_assert_true (gtk_menu_get_attach_widget (GTK_MENU (menu)) == split);
+    GList *items = gtk_container_get_children (GTK_CONTAINER (menu));
+    g_assert_cmpuint (g_list_length (items), ==, 1);
+    GtkWidget *label = find_widget (items->data, NULL, GTK_TYPE_LABEL);
+    g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (label)), ==, "Equal panel sizes (1:1)");
+    gtk_menu_item_activate (GTK_MENU_ITEM (items->data));
+    g_list_free (items);
+    gtk_menu_popdown (GTK_MENU (menu));
+    g_signal_emit_by_name (menu, "selection-done");
+}
+static void check_equal_tools (GtkWidget *split)
+{
+    GtkAllocation left, right;
+    gtk_widget_get_allocation (gtk_paned_get_child1 (GTK_PANED (split)), &left);
+    gtk_widget_get_allocation (gtk_paned_get_child2 (GTK_PANED (split)), &right);
+    g_assert_cmpint (ABS (left.width - right.width), <=, 1);
 }
 static gchar *buffer_text (GtkTextBuffer *buffer)
 {
@@ -423,6 +455,8 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (root)) - x), <=, 2);
             /* Simulate a handle drag, not a layout-generated position change. */
             GdkEventButton drag = {0}; drag.button = 1;
+            drag.type = GDK_BUTTON_PRESS;
+            drag.window = gtk_paned_get_handle_window (GTK_PANED (root));
             gboolean handled;
             g_signal_emit_by_name (root, "button-press-event", &drag, &handled);
             gtk_paned_set_position (GTK_PANED (root), 440);
@@ -711,6 +745,45 @@ static gboolean tick (gpointer data)
             g_assert_true (e2_terminal_confirm_shutdown ());
             gtk_button_clicked (GTK_BUTTON (find_widget (tab_title (1), "terminal-close", 0)));
             g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 1);
+            break;
+        }
+        case 29:
+        {
+            GtkWidget *split = find_widget (app.main_window, "terminal-split", 0);
+            /* A bubbled right-click from a child must not open the divider menu. */
+            GdkEventButton child = {0}; child.type = GDK_BUTTON_PRESS; child.button = 3;
+            child.window = gtk_widget_get_window (split);
+            gboolean handled = FALSE;
+            g_signal_emit_by_name (split, "button-press-event", &child, &handled);
+            g_assert_false (handled);
+            equal_tools (split);
+            break;
+        }
+        case 30:
+        {
+            GtkWidget *split = find_widget (app.main_window, "terminal-split", 0);
+            check_equal_tools (split);
+            gint x, y;
+            gtk_widget_translate_coordinates (split, app.window.panes_paned,
+                gtk_paned_get_position (GTK_PANED (split)), 0, &x, &y);
+            g_assert_cmpint (ABS (gtk_paned_get_position (GTK_PANED (app.window.panes_paned)) - x), <=, 1);
+            e2_option_bool_set ("panes-horizontal", TRUE);
+            e2_window_recreate (&app.window);
+            break;
+        }
+        case 31:
+        {
+            g_assert_true (app.window.panes_horizontal);
+            GtkWidget *split = find_widget (app.main_window, "terminal-split", 0);
+            gtk_paned_set_position (GTK_PANED (split), 200);
+            stacked_files_position = gtk_paned_get_position (GTK_PANED (app.window.panes_paned));
+            equal_tools (split);
+            break;
+        }
+        case 32:
+        {
+            check_equal_tools (find_widget (app.main_window, "terminal-split", 0));
+            g_assert_cmpint (gtk_paned_get_position (GTK_PANED (app.window.panes_paned)), ==, stacked_files_position);
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);

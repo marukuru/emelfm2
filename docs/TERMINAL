@@ -81,7 +81,10 @@ Configurable actions (usable in keybindings, toolbars and menus):
 
 For side-by-side file panes, the tools divider follows the file divider; dragging
 it also adjusts the files. Stacked file panes keep a separate side-by-side tools
-split. A themed focus border identifies the tools pane receiving keyboard input.
+split. Right-click the tools divider and choose "Equal panel sizes (1:1)" to reset
+both tools areas to equal widths. This also aligns side-by-side file panes;
+stacked file panes keep their existing heights.
+A themed focus border identifies the tools pane receiving keyboard input.
 Hide returns to the file list without changing its cursor or selection. Show
 restores the selected tabs and height. Expand fills the area with the selected
 view; the same action restores both tools areas and the file lists.
