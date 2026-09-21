@@ -71,6 +71,9 @@ int main (int argc, char **argv)
     gchar *expected = g_strconcat (user, "@日本語 folder", NULL);
     wait_label (terminal, context, expected);
     g_free (expected);
+    gchar *local = e2_terminal_context_local_directory (context);
+    g_assert_cmpstr (local, ==, folder);
+    g_free (local);
     g_assert_cmpint (g_rename (folder, renamed), ==, 0);
     expected = g_strconcat (user, "@renamed", NULL);
     wait_label (terminal, context, expected);
@@ -86,6 +89,14 @@ int main (int argc, char **argv)
     /* Use real terminal escape sequences to simulate a switched/remote user. */
     e2_terminal_backend_send (terminal, "printf '\\033]0;admin@remote:/var/lib/administration\\007'\n");
     wait_label (terminal, context, "admin@administration");
+    g_assert_null (e2_terminal_context_local_directory (context));
+    gchar *description = e2_terminal_context_description (context);
+    g_assert_cmpstr (description, ==, "remote:/var/lib/administration");
+    g_free (description);
+    /* Even an existing local path must not be navigable when reported remote. */
+    e2_terminal_backend_send (terminal, "printf '\\033]0;admin@remote:/tmp\\007'\n");
+    wait_label (terminal, context, "admin@tmp");
+    g_assert_null (e2_terminal_context_local_directory (context));
 #ifdef E2_VTE3
     e2_terminal_backend_send (terminal, "printf '\\033]7;file://remote/var/data/space%%20name\\007'\n");
     wait_label (terminal, context, "admin@space name");

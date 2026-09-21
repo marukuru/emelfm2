@@ -10,4 +10,6 @@ void e2_terminal_context_free (E2_TerminalContext *context);
 void e2_terminal_context_update (E2_TerminalContext *context, GPid foreground,
     const gchar *title, const gchar *uri);
 gchar *e2_terminal_context_label (E2_TerminalContext *context);
+gchar *e2_terminal_context_description (E2_TerminalContext *context);
+gchar *e2_terminal_context_local_directory (E2_TerminalContext *context);
 #endif

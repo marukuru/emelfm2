@@ -1696,6 +1696,12 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 	if (!rt->detached)
 	{
 #endif
+#ifdef E2_VTE
+        e2_menu_add_action (menu, _("_Hide tools"), "output_hide"E2ICONTB,
+            _("Return to the file list"), "terminal.hide_tools", NULL);
+        e2_menu_add_action (menu, _("_Expand / restore view"), STOCK_NAME_ZOOM_FIT,
+            _("Expand this view, or restore the file lists and both tools areas"), "terminal.expand_tools", NULL);
+#else
 		item_name = g_strconcat (_A(10),".",_A(33),NULL);
 		e2_menu_add_action (menu, _("_Hide"), "output_hide"E2ICONTB,
 			_("Do not show the output pane"), item_name, "1");  //no arg-string translation
@@ -1707,6 +1713,8 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 			_("Toggle output pane size to/from the full window size"),
 			item_name, "0,*");  //no string translation
 		g_free (item_name);
+
+#endif
 
 #ifndef E2_VTE
 		item_name = g_strconcat (_A(10),".",_A(31),NULL);

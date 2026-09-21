@@ -472,6 +472,11 @@ static void _e2_window_pane1box_allocated_cb (GtkWidget *widget,
 	GtkAllocation *alloc, E2_WindowRuntime *rt)
 {
 	static gint prev_size = -1;
+#ifdef E2_VTE
+    NEEDCLOSEBGL
+    e2_terminal_sync_layout ();
+    NEEDOPENBGL
+#endif
 	if ((rt->panes_horizontal && alloc->height != prev_size)
 	 || (!rt->panes_horizontal && alloc->width != prev_size))
 	{	//this is not just some gtk housekeeping
@@ -627,6 +632,9 @@ Downstream expects BGL to be on/closed
 gboolean e2_window_output_hide (GtkWidget *widget, GdkEventFocus *event,
 	gpointer user_data)
 {
+#ifdef E2_VTE
+	e2_terminal_restore_tools ();
+#endif
 	if (app.output.visible)
 		_e2_window_adjust_panes_ratio (GTK_PANED (app.window.output_paned),
 			&app.window.output_paned_ratio_last, "0");
@@ -890,6 +898,9 @@ Expects BGL to be on/closed
 */
 static gboolean _e2_window_toggle_full_output (gpointer from, E2_ActionRuntime *art)
 {
+#ifdef E2_VTE
+    return e2_action_run_simple_from ("terminal.expand_tools", NULL, from);
+#else
 	gboolean next_state =
 	!e2_toolbar_button_toggle (toggles_array [E2_TOGGLE_OUTPUTFULL]);
 
@@ -921,6 +932,7 @@ static gboolean _e2_window_toggle_full_output (gpointer from, E2_ActionRuntime *
 				(toggles_array [E2_TOGGLE_OUTPUTSHADE], FALSE);
 	}
 	return retval;
+#endif
 }
 /**
 @brief respond to output pane visible toggle button
@@ -936,6 +948,9 @@ Expects BGL to be on/closed
 */
 static gboolean _e2_window_toggle_visible_output (gpointer from, E2_ActionRuntime *art)
 {
+#ifdef E2_VTE
+	e2_terminal_restore_tools ();
+#endif
 	const gchar *arg =
 	(e2_toolbar_button_toggle (toggles_array [E2_TOGGLE_OUTPUTSHADE])) ?
 		"0" : "*";	//no translation
@@ -958,6 +973,9 @@ Expects BGL to be on/closed
 static gboolean _e2_window_adjust_output_ratio_action
 	(gpointer from, E2_ActionRuntime *art)
 {
+#ifdef E2_VTE
+	e2_terminal_restore_tools ();
+#endif
 	const gchar *s, *t, *arg = (const gchar *) art->data;
 	//'*' in first or only part of arg ...
 	gboolean star = ((s = strchr(arg,'*')) != NULL &&
@@ -2154,6 +2172,9 @@ void e2_window_recreate (E2_WindowRuntime *rt)
 	e2_filestore_enable_refresh ();
 	rt->rebuilding = FALSE;
 	e2_tabs_rebuild_end ();
+#ifdef E2_VTE
+	e2_terminal_sync_layout ();
+#endif
 	gtk_widget_grab_focus (curr_view->treeview);
 }
 /**

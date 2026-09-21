@@ -30,7 +30,7 @@ Using terminals
 ---------------
 
 The lower area has two side-by-side outputs, one for each directory pane. Each
-starts on Application output. Use Open terminal here to start a new session in
+starts on Command log. Use the New terminal icon to start a new session in
 that pane's directory. There is no automatic startup
 session and no automatic directory synchronization. Remote/unmounted locations
 cannot be used; select an existing local directory first. Each terminal keeps its
@@ -45,8 +45,10 @@ its own close button. Tab titles show user@folder, with the current folder's
 basename. Starting, running, failed and exited states appear in the title's
 tooltip; startup errors and exit messages appear below the terminal. Running
 terminals have no startup-path bar. Failed/exited tabs stay available for
-inspection; Restart creates a new shell in that tab's original startup directory
-with current preferences.
+inspection; Restart uses the last verified local directory, or the original
+startup directory when the current location cannot be verified. Its tooltip
+explains the choice. The title tooltip includes the full current path and any
+reported remote host, without a permanent path bar.
 Application logs go to the initiating pane's output view, including while a
 terminal has focus. The Edit action is available only for application logs;
 terminal context menus offer terminal-specific actions. VTE builds have one
@@ -69,10 +71,28 @@ Configurable actions (usable in keybindings, toolbars and menus):
   terminal.close
   terminal.restart
   terminal.insert_paths
+  terminal.show_folder
+  terminal.hide_tools
+  terminal.expand_tools
+  terminal.next_tab
+  terminal.previous_tab
+
+For side-by-side file panes, the tools divider follows the file divider; dragging
+it also adjusts the files. Stacked file panes keep a separate side-by-side tools
+split. A themed focus border identifies the tools pane receiving keyboard input.
+Hide returns to the file list without changing its cursor or selection. Show
+restores the selected tabs and height. Expand fills the area with the selected
+view; the same action restores both tools areas and the file lists.
+
+Show terminal folder in pane navigates only on request and only to an observed,
+existing local working directory. Remote paths never become local navigation
+commands, even if the path exists locally. Cycling actions wrap in both directions
+and may be assigned shortcuts in the file-manager context; they do not reserve
+keys used by terminal programs.
 
 Focused terminals receive Ctrl+C, Ctrl+Z, Tab and function keys directly.
 Ctrl+Shift+C copies, Ctrl+Shift+V pastes, Ctrl+Shift+F6 returns focus to the
-active file pane. Use Focus terminal (or a custom binding for terminal.focus)
+active file pane. Use a custom binding for terminal.focus
 to return. The emelFM2 command entry retains its own completion and history.
 
 Preferences under commands/terminal apply to new and restarted sessions:
@@ -170,7 +190,7 @@ Manual acceptance checklist for both backends:
 - Run less/vim, resize, Ctrl+C, Ctrl+Z and fg; check job control and key routing.
 - Produce long Unicode output; scroll, select, copy and paste; open several tabs.
 - Run file operations and background commands while a terminal application runs.
-- Detach/reattach application-output tabs while terminal tabs remain open.
+- Verify native log creation/detach controls are absent in VTE builds.
 - Change preferences and pane layout; confirm live sessions remain usable.
 - Cancel and accept close/quit with active jobs and during startup.
 - Test X11 for both GTK generations, and GTK 3 Wayland where supported by emelFM2.

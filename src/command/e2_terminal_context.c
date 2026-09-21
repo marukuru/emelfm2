@@ -13,7 +13,8 @@ struct _E2_TerminalContext
     uid_t uid;
     gchar *user, *directory, *process_directory;
     gchar *title, *uri, *reported_user, *reported_directory;
-    gboolean reported_local;
+    gchar *reported_host, *uri_host;
+    gboolean reported_local, remote_process;
 };
 
 static gchar *user_name (uid_t uid)
@@ -52,6 +53,8 @@ void e2_terminal_context_free (E2_TerminalContext *context)
     g_free (context->uri);
     g_free (context->reported_user);
     g_free (context->reported_directory);
+    g_free (context->reported_host);
+    g_free (context->uri_host);
     g_free (context);
 }
 
@@ -60,6 +63,17 @@ static void clear_report (E2_TerminalContext *context)
     g_free (context->reported_user);
     g_free (context->reported_directory);
     context->reported_user = context->reported_directory = NULL;
+    g_free (context->reported_host);
+    g_free (context->uri_host);
+    context->reported_host = context->uri_host = NULL;
+}
+
+static gboolean local_host (const gchar *host)
+{
+    if (host == NULL || *host == '\0' || !strcmp (host, "localhost")) return TRUE;
+    const gchar *local = g_get_host_name (), *dot = strchr (local, '.');
+    return !g_ascii_strcasecmp (host, local) || (dot != NULL
+        && strlen (host) == (gsize)(dot - local) && !g_ascii_strncasecmp (host, local, dot - local));
 }
 
 /* Recognize the conventional shell title user@host:/path (also :~/path).
@@ -76,12 +90,8 @@ static void read_title (E2_TerminalContext *context, const gchar *title)
     clear_report (context);
     context->reported_user = g_strndup (title, at - title);
     context->reported_directory = g_strdup (colon + 1);
-    gchar *host = g_strndup (at + 1, colon - at - 1);
-    const gchar *local = g_get_host_name ();
-    const gchar *dot = strchr (local, '.');
-    context->reported_local = !strcmp (host, local) || (dot != NULL
-        && strlen (host) == (gsize)(dot - local) && !strncmp (host, local, dot - local));
-    g_free (host);
+    context->reported_host = g_strndup (at + 1, colon - at - 1);
+    context->reported_local = local_host (context->reported_host);
 }
 
 #ifdef __linux__
@@ -154,6 +164,15 @@ void e2_terminal_context_update (E2_TerminalContext *context, GPid foreground,
     if (foreground > 0)
     {
         foreground = context_process (foreground);
+        gchar *comm_path = g_strdup_printf ("/proc/%ld/comm", (long) foreground), *name = NULL;
+        context->remote_process = FALSE;
+        if (g_file_get_contents (comm_path, &name, NULL, NULL))
+        {
+            g_strchomp (name);
+            context->remote_process = !strcmp (name, "ssh") || !strcmp (name, "mosh-client") || !strcmp (name, "telnet");
+            g_free (name);
+        }
+        g_free (comm_path);
         gchar *path = g_strdup_printf ("/proc/%ld/status", (long) foreground), *status;
         if (g_file_get_contents (path, &status, NULL, NULL))
         {
@@ -198,8 +217,11 @@ void e2_terminal_context_update (E2_TerminalContext *context, GPid foreground,
         g_free (context->directory);
         context->directory = g_strdup (directory);
     }
-    g_free (context->process_directory);
-    context->process_directory = directory;
+    if (directory != NULL || changed)
+    {
+        g_free (context->process_directory);
+        context->process_directory = directory;
+    }
 
     if (g_strcmp0 (title, context->title) != 0)
     {
@@ -211,7 +233,9 @@ void e2_terminal_context_update (E2_TerminalContext *context, GPid foreground,
     {
         g_free (context->uri);
         context->uri = g_strdup (uri);
-        gchar *reported = uri == NULL ? NULL : g_filename_from_uri (uri, NULL, NULL);
+        g_free (context->uri_host);
+        context->uri_host = NULL;
+        gchar *reported = uri == NULL ? NULL : g_filename_from_uri (uri, &context->uri_host, NULL);
         if (reported != NULL)
         {
             g_free (context->reported_directory);
@@ -245,4 +269,31 @@ gchar *e2_terminal_context_label (E2_TerminalContext *context)
     gchar *label = g_strconcat (name, "@", folder, NULL);
     g_free (base); g_free (folder); g_free (name);
     return label;
+}
+
+gchar *e2_terminal_context_description (E2_TerminalContext *context)
+{
+    const gchar *directory = context->reported_directory != NULL ? context->reported_directory : context->directory;
+    const gchar *host = context->uri_host != NULL ? context->uri_host : context->reported_host;
+    gchar *path = display_text (directory), *description;
+    if (!local_host (host))
+    {
+        gchar *name = display_text (host);
+        description = g_strconcat (name, ":", path, NULL);
+        g_free (name);
+        g_free (path);
+    }
+    else description = path;
+    return description;
+}
+
+gchar *e2_terminal_context_local_directory (E2_TerminalContext *context)
+{
+    /* A remote report must never turn into a local navigation command, even
+     * if a matching path exists on this machine. Use only the observed cwd. */
+    if (context->remote_process || !local_host (context->reported_host)
+        || !local_host (context->uri_host) || context->process_directory == NULL
+        || !g_path_is_absolute (context->process_directory)
+        || !g_file_test (context->process_directory, G_FILE_TEST_IS_DIR)) return NULL;
+    return g_strdup (context->process_directory);
 }

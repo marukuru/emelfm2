@@ -19,6 +19,8 @@ for name in ('left', 'right'):
 (root/'shell').chmod(0o755)
 (root/'live-shell').write_text('#!/bin/sh\necho $$ > terminal-running\ntrap "exit 0" HUP TERM\nwhile :; do sleep 1; done\n')
 (root/'live-shell').chmod(0o755)
+(root/'folder-shell').write_text('#!/bin/sh\ncd ../left\ntrap "exit 0" HUP TERM\nwhile :; do sleep 1; done\n')
+(root/'folder-shell').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'left'), '-2', str(root/'right'),
         '-s', 'session-end-warning=false', '-s', 'pane-tabs=true']
 with open(root/'log', 'w') as output:

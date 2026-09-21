@@ -12,7 +12,11 @@ Implementation status:
   restart/close controls. Extra native log creation and detach are disabled in
   VTE builds. Existing log pages are consolidated with their text and formatting,
   including when per-main-tab outputs are combined. Running commands are retargeted.
-- Stages 2 and 3: pending.
+- Stage 2: implemented. Linked side-by-side dividers, themed focus borders,
+  hide/restore and selected-view expansion, wrapping tools-tab actions, and
+  explicit navigation to verified local terminal folders. Restart prefers the
+  verified working directory and explains its startup-directory fallback.
+- Stage 3: pending.
 
 The main problem is the interaction model: terminals feel like a second
 application embedded below the file manager. Each side has a terminal toolbar,

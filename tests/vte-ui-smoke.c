@@ -15,7 +15,8 @@ static GtkWidget *book, *open_button;
 static GtkWidget *left_book;
 static GtkTextBuffer *left_buffer, *right_buffer;
 static GtkWidget *main_book, *original_output;
-static gint live_pid;
+static gint live_pid, normal_height;
+static GtkTreePath *saved_cursor;
 static GtkWidget *find_widget (GtkWidget *widget, const gchar *name, GType type)
 {
     if ((name != NULL && !strcmp (gtk_widget_get_name (widget), name))
@@ -46,7 +47,7 @@ static gboolean exited (gint index)
 {
     GtkWidget *label = find_widget (tab_title (index), NULL, GTK_TYPE_LABEL);
     gchar *state = gtk_widget_get_tooltip_text (label);
-    gboolean result = state != NULL && !strcmp (state, "exited");
+    gboolean result = state != NULL && g_str_has_prefix (state, "exited\n");
     g_free (state);
     return result;
 }
@@ -361,6 +362,100 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (errno, ==, ESRCH);
             e2_option_bool_set ("pane-tabs", FALSE);
             e2_window_recreate (&app.window);
+            book = app.outbook;
+            e2_window_output_show (NULL, NULL);
+            gtk_paned_set_position (GTK_PANED (app.window.panes_paned), 350);
+            break;
+        }
+        case 9:
+        {
+            GtkWidget *root = gtk_paned_get_child2 (GTK_PANED (app.window.output_paned));
+            gint x, y;
+            gtk_widget_translate_coordinates (app.window.panes_paned, root,
+                gtk_paned_get_position (GTK_PANED (app.window.panes_paned)), 0, &x, &y);
+            g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (root)) - x), <=, 2);
+            /* Simulate a handle drag, not a layout-generated position change. */
+            GdkEventButton drag = {0}; drag.button = 1;
+            gboolean handled;
+            g_signal_emit_by_name (root, "button-press-event", &drag, &handled);
+            gtk_paned_set_position (GTK_PANED (root), 440);
+            g_signal_emit_by_name (root, "button-release-event", &drag, &handled);
+            gchar *shell = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "folder-shell", NULL);
+            e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
+            g_free (shell);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.open_here", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 10:
+        {
+            GtkWidget *label = find_widget (tab_title (1), NULL, GTK_TYPE_LABEL);
+            if (!g_str_has_suffix (gtk_label_get_text (GTK_LABEL (label)), "@left")) goto wait;
+            gchar *tip = gtk_widget_get_tooltip_text (label);
+            g_assert_nonnull (strstr (tip, "/left"));
+            g_free (tip);
+            GtkWidget *root = gtk_paned_get_child2 (GTK_PANED (app.window.output_paned));
+            gint x, y;
+            gtk_widget_translate_coordinates (root, app.window.panes_paned,
+                gtk_paned_get_position (GTK_PANED (root)), 0, &x, &y);
+            g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (app.window.panes_paned)) - x), <=, 2);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.next_tab", NULL, app.main_window);
+            e2_action_run_simple_from ("terminal.previous_tab", NULL, app.main_window);
+            e2_action_run_simple_from ("terminal.show_folder", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 11:
+            if (!g_str_has_suffix (curr_view->dir, "/left/")) goto wait;
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
+            g_assert_cmpint (gtk_notebook_get_current_page (GTK_NOTEBOOK (book)), ==, 1);
+            gtk_tree_view_get_cursor (GTK_TREE_VIEW (curr_view->treeview), &saved_cursor, NULL);
+            normal_height = gtk_paned_get_position (GTK_PANED (app.window.output_paned));
+            OPENBGL
+            e2_action_run_simple_from ("terminal.expand_tools", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        case 12:
+        {
+            GtkWidget *root = gtk_paned_get_child2 (GTK_PANED (app.window.output_paned));
+            g_assert_cmpint (gtk_paned_get_position (GTK_PANED (app.window.output_paned)), ==, 0);
+            g_assert_false (gtk_widget_get_visible (curr_pane == &app.pane2 ?
+                gtk_paned_get_child1 (GTK_PANED (root)) : gtk_paned_get_child2 (GTK_PANED (root))));
+            OPENBGL
+            e2_action_run_simple_from ("terminal.expand_tools", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 13:
+            g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (app.window.output_paned)) - normal_height), <=, 3);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.hide_tools", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        case 14:
+        {
+            g_assert_false (app.output.visible);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
+            GtkTreePath *path;
+            gtk_tree_view_get_cursor (GTK_TREE_VIEW (curr_view->treeview), &path, NULL);
+            if (saved_cursor != NULL)
+            {
+                g_assert_cmpint (gtk_tree_path_compare (saved_cursor, path), ==, 0);
+                gtk_tree_path_free (saved_cursor);
+            }
+            if (path != NULL) gtk_tree_path_free (path);
+            e2_window_output_show (NULL, NULL);
+            g_timeout_add (50, answer_dialog, GINT_TO_POINTER (GTK_RESPONSE_ACCEPT));
+            OPENBGL
+            e2_action_run_simple_from ("terminal.close", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 15:
+        {
+            g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (app.window.output_paned)) - normal_height), <=, 5);
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);

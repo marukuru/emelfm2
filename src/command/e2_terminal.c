@@ -18,25 +18,29 @@
 
 typedef struct
 {
-    GtkWidget *book, *output;
+    GtkWidget *book, *output, *frame;
     guint pane;
 } TerminalPane;
 struct _E2_TerminalWorkspace
 {
     GtkWidget *widget;
     TerminalPane panes[2];
+    gboolean expanded;
+    gdouble normal_ratio;
+    gboolean moving_divider;
 };
 
 /* VTE sessions stay separate from the text-only application output runtimes. */
 typedef struct
 {
     gint refs;
-    GtkWidget *page, *terminal, *label, *status, *statusbar;
+    GtkWidget *page, *terminal, *label, *status, *statusbar, *restart_button;
     gchar *directory, *shell;
     GCancellable *cancel;
     GPid pid;
     gboolean pending, disposed, exited;
     E2_TerminalContext *context;
+    const gchar *state;
     TerminalPane *owner;
 } TerminalSession;
 static E2_TerminalWorkspace *workspace;
@@ -45,7 +49,67 @@ static gboolean dispatch_action (gpointer data);
 static void button_action (GtkWidget *button, gpointer data);
 static gboolean restart_terminal (gpointer from, E2_ActionRuntime *art);
 static guint title_source;
+static gboolean syncing_layout;
 static pthread_t ui_thread;
+
+void e2_terminal_sync_layout (void)
+{
+    if (workspace == NULL || app.window.rebuilding || workspace->expanded || syncing_layout
+        || app.window.panes_horizontal || app.window.panes_paned == NULL
+        || !gtk_widget_get_mapped (app.window.panes_paned)) return;
+    gint x, y;
+    if (gtk_widget_translate_coordinates (app.window.panes_paned, workspace->widget,
+        gtk_paned_get_position (GTK_PANED (app.window.panes_paned)), 0, &x, &y))
+    {
+        syncing_layout = TRUE;
+        gtk_paned_set_position (GTK_PANED (workspace->widget), MAX (0, x));
+        syncing_layout = FALSE;
+    }
+}
+static void tools_allocated (GtkWidget *widget, GtkAllocation *allocation, gpointer data)
+{
+    if (workspace != NULL && widget == workspace->widget) e2_terminal_sync_layout ();
+}
+static void tools_divider_changed (GObject *object, GParamSpec *property, gpointer data)
+{
+    if (workspace == NULL || GTK_WIDGET (object) != workspace->widget || syncing_layout
+        || !workspace->moving_divider || app.window.rebuilding || workspace->expanded || app.window.panes_horizontal || app.window.panes_paned == NULL
+        || !gtk_widget_get_mapped (workspace->widget)) return;
+    gint x, y;
+    if (gtk_widget_translate_coordinates (workspace->widget, app.window.panes_paned,
+        gtk_paned_get_position (GTK_PANED (workspace->widget)), 0, &x, &y))
+    {
+        syncing_layout = TRUE;
+        app.window.panes_equal = FALSE;
+        gtk_paned_set_position (GTK_PANED (app.window.panes_paned), MAX (0, x));
+        syncing_layout = FALSE;
+    }
+}
+static gboolean tools_divider_press (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    if (workspace != NULL && widget == workspace->widget && event->button == 1)
+        workspace->moving_divider = TRUE;
+    return FALSE;
+}
+static gboolean tools_divider_release (GtkWidget *widget, GdkEventButton *event, gpointer data)
+{
+    if (workspace != NULL && widget == workspace->widget)
+    {
+        tools_divider_changed (G_OBJECT (widget), NULL, NULL);
+        workspace->moving_divider = FALSE;
+    }
+    return FALSE;
+}
+static gboolean tools_handle_key (GtkWidget *widget, GtkScrollType scroll, gpointer data)
+{
+    if (workspace != NULL && widget == workspace->widget)
+    {
+        workspace->moving_divider = TRUE;
+        tools_divider_changed (G_OBJECT (widget), NULL, NULL);
+        workspace->moving_divider = FALSE;
+    }
+    return FALSE;
+}
 static TerminalPane *active_pane (void)
 {
     return workspace == NULL ? NULL : &workspace->panes[curr_pane == &app.pane2];
@@ -54,6 +118,9 @@ void e2_terminal_select_pane (void)
 {
     TerminalPane *pane = active_pane ();
     if (pane != NULL) e2_output_select_notebook (pane->output);
+    if (workspace != NULL)
+        for (guint i = 0; i < 2; i++)
+            if (workspace->panes[i].frame != NULL) gtk_widget_queue_draw (workspace->panes[i].frame);
 }
 static void activate_pane (TerminalPane *pane)
 {
@@ -77,6 +144,9 @@ static gboolean terminal_focused (GtkWidget *widget, GdkEventFocus *event, Termi
 }
 static void output_focused (GtkWindow *window, GtkWidget *focus, gpointer data)
 {
+    if (app.window.rebuilding) return;
+    if (workspace != NULL)
+        for (guint i = 0; i < 2; i++) gtk_widget_queue_draw (workspace->panes[i].frame);
     for (GtkWidget *widget = focus; widget != NULL; widget = gtk_widget_get_parent (widget))
     {
         TerminalPane *pane = g_object_get_data (G_OBJECT (widget), "terminal-pane");
@@ -102,14 +172,25 @@ static void session_refresh_title (TerminalSession *session)
     if (session->pid > 0)
     {
         GPid pid = e2_terminal_backend_foreground_pid (session->terminal);
-        e2_terminal_context_update (session->context, pid > 0 ? pid : session->pid,
-            e2_terminal_backend_title (session->terminal),
-            e2_terminal_backend_directory_uri (session->terminal));
+        if (pid > 0)
+            e2_terminal_context_update (session->context, pid,
+                e2_terminal_backend_title (session->terminal),
+                e2_terminal_backend_directory_uri (session->terminal));
     }
     gchar *text = e2_terminal_context_label (session->context);
     if (strcmp (text, gtk_label_get_text (GTK_LABEL (session->label))))
         gtk_label_set_text (GTK_LABEL (session->label), text);
     g_free (text);
+    gchar *description = e2_terminal_context_description (session->context);
+    gchar *tip = g_strconcat (session->state != NULL ? session->state : "", "\n", description, NULL);
+    gtk_widget_set_tooltip_text (session->label, tip);
+    g_free (description); g_free (tip);
+    gchar *directory = e2_terminal_context_local_directory (session->context);
+    gchar *display = g_filename_display_name (directory != NULL ? directory : session->directory);
+    tip = g_strdup_printf (directory != NULL ? _("Restart in %s") :
+        _("Current local folder unavailable. Restart in startup folder: %s"), display);
+    gtk_widget_set_tooltip_text (session->restart_button, tip);
+    g_free (display); g_free (directory); g_free (tip);
 }
 static gboolean refresh_titles (gpointer data)
 {
@@ -121,7 +202,7 @@ static gboolean refresh_titles (gpointer data)
 }
 static void session_label (TerminalSession *session, const gchar *state)
 {
-    gtk_widget_set_tooltip_text (session->label, state);
+    session->state = state;
     session_refresh_title (session);
 }
 static void session_exited (gint status, gboolean known, gpointer data)
@@ -222,7 +303,10 @@ static gboolean terminal_key (GtkWidget *widget, GdkEventKey *event, gpointer da
     {
         switch (gdk_keyval_to_lower (event->keyval))
         {
-            case GDK_F6: gtk_widget_grab_focus (curr_view->treeview); return TRUE;
+            case GDK_F6:
+                e2_terminal_restore_tools ();
+                gtk_widget_grab_focus (curr_view->treeview);
+                return TRUE;
             case GDK_c: e2_terminal_backend_copy (widget); return TRUE;
             case GDK_v: e2_terminal_backend_paste (widget); return TRUE;
         }
@@ -250,17 +334,22 @@ static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
     e2_menu_add_separator (menu);
     e2_menu_add_action (menu, _("Insert selected paths"), STOCK_NAME_ADD,
         _("Insert quoted file paths without executing them"), "terminal.insert_paths", NULL);
-    e2_menu_add_action (menu, _("_Restart"), STOCK_NAME_REFRESH,
-        _("Restart this terminal"), "terminal.restart", NULL);
+    TerminalSession *session = current_session ();
+    gchar *directory = session == NULL ? NULL : e2_terminal_context_local_directory (session->context);
+    GtkWidget *folder = e2_menu_add_action (menu, _("Show terminal folder in pane"), STOCK_NAME_DIRECTORY,
+        _("Navigate this file pane to the terminal's current local folder"), "terminal.show_folder", NULL);
+    gtk_widget_set_sensitive (folder, directory != NULL);
+    g_free (directory);
+    gchar *restart_tip = session == NULL ? NULL : gtk_widget_get_tooltip_text (session->restart_button);
+    e2_menu_add_action (menu, _("_Restart"), STOCK_NAME_REFRESH, restart_tip, "terminal.restart", NULL);
+    g_free (restart_tip);
     e2_menu_add_action (menu, _("_Close terminal"), STOCK_NAME_CLOSE,
         _("Close this terminal"), "terminal.close", NULL);
     e2_menu_add_separator (menu);
-    gchar *action = g_strconcat (_A(10), ".", _A(33), NULL);
     e2_menu_add_action (menu, _("_Hide tools"), "output_hide"E2ICONTB,
-        _("Return to the file list"), action, "1");
-    e2_menu_add_action (menu, _("_Expand / restore tools"), STOCK_NAME_ZOOM_FIT,
-        _("Toggle the tools area size"), action, "0,*");
-    g_free (action);
+        _("Return to the file list"), "terminal.hide_tools", NULL);
+    e2_menu_add_action (menu, workspace->expanded ? _("_Restore tools") : _("_Expand view"), STOCK_NAME_ZOOM_FIT,
+        _("Expand this view, or restore the file lists and both tools areas"), "terminal.expand_tools", NULL);
     g_signal_connect (menu, "selection-done", G_CALLBACK (e2_menu_selection_done_cb), NULL);
     gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
     return TRUE;
@@ -338,12 +427,12 @@ static void terminal_error (const gchar *message)
     run_dialog (dialog);
     gtk_widget_destroy (dialog);
 }
-static void reveal_terminal (void)
+static void reveal_terminal (gboolean new_session)
 {
     e2_window_output_show (NULL, NULL);
     /* The default log pane is very short. Give a newly focused terminal room
      * for interactive programs without changing the default startup layout. */
-    if (app.window.output_paned != NULL)
+    if (new_session && app.window.output_paned != NULL)
     {
         GtkAllocation allocation;
         gtk_widget_get_allocation (app.window.output_paned, &allocation);
@@ -371,13 +460,13 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     gtk_label_set_max_width_chars (GTK_LABEL (session->label), 32);
     session->status = gtk_label_new (_("Starting shell…"));
     session->statusbar = gtk_hbox_new (FALSE, 4);
-    gtk_widget_set_no_show_all (session->statusbar, TRUE);
     gtk_box_pack_start (GTK_BOX (session->statusbar), session->status, TRUE, TRUE, 0);
-    e2_button_add (session->statusbar, FALSE, 0, _("Restart"), STOCK_NAME_REFRESH,
+    session->restart_button = e2_button_add (session->statusbar, FALSE, 0, _("Restart"), STOCK_NAME_REFRESH,
         _("Restart this terminal"), restart_session_clicked, session);
     e2_button_add (session->statusbar, FALSE, 0, _("Close"), STOCK_NAME_CLOSE,
         _("Close this terminal"), close_session_clicked, session);
     gtk_widget_show_all (session->statusbar);
+    gtk_widget_set_no_show_all (session->statusbar, TRUE);
     gtk_label_set_ellipsize (GTK_LABEL (session->status), PANGO_ELLIPSIZE_MIDDLE);
     GtkWidget *row = gtk_hbox_new (FALSE, 0);
     session->terminal = e2_terminal_backend_new (session_exited, session);
@@ -410,7 +499,7 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     gint page = gtk_notebook_append_page (GTK_NOTEBOOK (pane->book), session->page, title);
     gtk_widget_show_all (session->page);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->book), page);
-    reveal_terminal ();
+    reveal_terminal (TRUE);
     gtk_widget_grab_focus (session->terminal);
     gchar *argv[] = { session->shell, "-i", NULL };
     session->pending = TRUE;
@@ -450,7 +539,7 @@ static gboolean focus_terminal (gpointer from, E2_ActionRuntime *art)
     if (session == NULL) return open_here (from, art);
     gtk_notebook_set_current_page (GTK_NOTEBOOK (pane->book),
         gtk_notebook_page_num (GTK_NOTEBOOK (pane->book), session->page));
-    reveal_terminal ();
+    reveal_terminal (FALSE);
     gtk_widget_grab_focus (session->terminal);
     return TRUE;
 }
@@ -478,7 +567,8 @@ static gboolean restart_terminal (gpointer from, E2_ActionRuntime *art)
     gboolean restart = session_can_close (session) && !session->disposed;
     if (restart)
     {
-        gchar *directory = g_strdup (session->directory);
+        gchar *directory = e2_terminal_context_local_directory (session->context);
+        if (directory == NULL) directory = g_strdup (session->directory);
         gtk_widget_destroy (session->page);
         activate_pane (session->owner);
         open_session (session->owner, directory);
@@ -543,6 +633,90 @@ static gboolean insert_paths (gpointer from, E2_ActionRuntime *art)
     g_string_free (text, TRUE);
     return valid;
 }
+static void focus_selected_tool (void)
+{
+    TerminalSession *session = current_session ();
+    gtk_widget_grab_focus (session != NULL ? session->terminal : GTK_WIDGET (app.tab.text));
+}
+void e2_terminal_restore_tools (void)
+{
+    if (workspace == NULL || !workspace->expanded) return;
+    workspace->expanded = FALSE;
+    GtkWidget *files = gtk_paned_get_child1 (GTK_PANED (app.window.output_paned));
+    gtk_widget_set_no_show_all (files, FALSE);
+    gtk_widget_show (files);
+    for (guint i = 0; i < 2; i++)
+    {
+        gtk_widget_set_no_show_all (workspace->panes[i].frame, FALSE);
+        gtk_widget_show (workspace->panes[i].frame);
+    }
+    GtkAllocation allocation;
+    gtk_widget_get_allocation (app.window.output_paned, &allocation);
+    app.window.output_paned_ratio_last = workspace->normal_ratio;
+    gtk_paned_set_position (GTK_PANED (app.window.output_paned), allocation.height * workspace->normal_ratio);
+    e2_terminal_sync_layout ();
+}
+static gboolean show_folder (gpointer from, E2_ActionRuntime *art)
+{
+    if (!pthread_equal (pthread_self (), ui_thread)) { g_idle_add (dispatch_action, GUINT_TO_POINTER (7)); return TRUE; }
+    TerminalSession *session = current_session ();
+    if (session == NULL) return FALSE;
+    session_refresh_title (session);
+    gchar *directory = e2_terminal_context_local_directory (session->context);
+    if (directory == NULL) return FALSE;
+    e2_terminal_restore_tools ();
+    gchar *utf = F_FILENAME_FROM_LOCALE (directory);
+    CLOSEBGL_IF_OPEN
+    e2_pane_change_dir (curr_pane, utf);
+    OPENBGL_IF_CLOSED
+    F_FREE (utf, directory);
+    g_free (directory);
+    gtk_widget_grab_focus (curr_view->treeview);
+    return TRUE;
+}
+static gboolean hide_tools (gpointer from, E2_ActionRuntime *art)
+{
+    if (!pthread_equal (pthread_self (), ui_thread)) { g_idle_add (dispatch_action, GUINT_TO_POINTER (8)); return TRUE; }
+    e2_terminal_restore_tools ();
+    CLOSEBGL_IF_OPEN
+    e2_window_output_hide (NULL, NULL, NULL);
+    OPENBGL_IF_CLOSED
+    return TRUE;
+}
+static gboolean expand_tools (gpointer from, E2_ActionRuntime *art)
+{
+    if (!pthread_equal (pthread_self (), ui_thread)) { g_idle_add (dispatch_action, GUINT_TO_POINTER (9)); return TRUE; }
+    if (workspace->expanded) e2_terminal_restore_tools ();
+    else
+    {
+        GtkAllocation allocation;
+        gtk_widget_get_allocation (app.window.output_paned, &allocation);
+        gdouble ratio = (gdouble) gtk_paned_get_position (GTK_PANED (app.window.output_paned)) / MAX (1, allocation.height);
+        workspace->normal_ratio = (ratio > 0.02 && ratio < 0.98) ? ratio : app.window.output_paned_ratio_last;
+        workspace->expanded = TRUE;
+        GtkWidget *files = gtk_paned_get_child1 (GTK_PANED (app.window.output_paned));
+        gtk_widget_set_no_show_all (files, TRUE);
+        gtk_widget_hide (files);
+        TerminalPane *other = &workspace->panes[curr_pane != &app.pane2];
+        gtk_widget_set_no_show_all (other->frame, TRUE);
+        gtk_widget_hide (other->frame);
+        gtk_paned_set_position (GTK_PANED (app.window.output_paned), 0);
+    }
+    focus_selected_tool ();
+    return TRUE;
+}
+static gboolean cycle_tools (gpointer from, E2_ActionRuntime *art)
+{
+    gint delta = GPOINTER_TO_INT (art->action->data);
+    if (!pthread_equal (pthread_self (), ui_thread))
+    { g_idle_add (dispatch_action, GUINT_TO_POINTER (delta < 0 ? 11 : 10)); return TRUE; }
+    GtkNotebook *book = GTK_NOTEBOOK (active_pane ()->book);
+    gint count = gtk_notebook_get_n_pages (book);
+    gtk_notebook_set_current_page (book, (gtk_notebook_get_current_page (book) + count + delta) % count);
+    reveal_terminal (FALSE);
+    focus_selected_tool ();
+    return TRUE;
+}
 static void button_action (GtkWidget *button, gpointer data)
 {
     if (button != NULL)
@@ -558,6 +732,19 @@ static void button_action (GtkWidget *button, gpointer data)
         case 4: insert_paths (NULL, NULL); break;
         case 5: if (session) e2_terminal_backend_copy (session->terminal); break;
         case 6: if (session) e2_terminal_backend_paste (session->terminal); break;
+        case 7: show_folder (NULL, NULL); break;
+        case 8: hide_tools (NULL, NULL); break;
+        case 9: expand_tools (NULL, NULL); break;
+        case 10:
+        case 11:
+        {
+            GtkNotebook *book = GTK_NOTEBOOK (active_pane ()->book);
+            gint count = gtk_notebook_get_n_pages (book), delta = action == 10 ? 1 : -1;
+            gtk_notebook_set_current_page (book, (gtk_notebook_get_current_page (book) + count + delta) % count);
+            reveal_terminal (FALSE);
+            focus_selected_tool ();
+            break;
+        }
     }
 }
 static gboolean dispatch_action (gpointer data)
@@ -580,12 +767,36 @@ static void tools_switched (GtkNotebook *book,
 #endif
     guint number, TerminalPane *pane)
 {
-    if (!gtk_widget_get_mapped (GTK_WIDGET (book))) return;
+    if (app.window.rebuilding || !gtk_widget_get_mapped (GTK_WIDGET (book))) return;
     activate_pane (pane);
     GtkWidget *child = gtk_notebook_get_nth_page (book, number);
     TerminalSession *session = child == NULL ? NULL : g_object_get_data (G_OBJECT (child), "e2-terminal-session");
     if (session != NULL) gtk_widget_grab_focus (session->terminal);
     else if (child != NULL) gtk_widget_grab_focus (GTK_WIDGET (app.tab.text));
+}
+/* Selection and keyboard focus are deliberately separate. Use the theme's
+ * focus rendering around whichever tools pane contains the keyboard focus. */
+#ifdef USE_GTK3_0
+static gboolean tools_focus_border (GtkWidget *frame, cairo_t *cr, gpointer data)
+#else
+static gboolean tools_focus_border (GtkWidget *frame, GdkEventExpose *event, gpointer data)
+#endif
+{
+    GtkWidget *focus = gtk_window_get_focus (GTK_WINDOW (app.main_window));
+    if (focus != NULL && gtk_widget_is_ancestor (focus, frame))
+    {
+        GtkAllocation allocation;
+        gtk_widget_get_allocation (frame, &allocation);
+#ifdef USE_GTK3_0
+        gtk_render_focus (gtk_widget_get_style_context (frame), cr,
+            1, 1, allocation.width - 2, allocation.height - 2);
+#else
+        gtk_paint_focus (gtk_widget_get_style (frame), gtk_widget_get_window (frame),
+            GTK_STATE_NORMAL, &event->area, frame, "treeview",
+            allocation.x + 1, allocation.y + 1, allocation.width - 2, allocation.height - 2);
+#endif
+    }
+    return FALSE;
 }
 static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint number)
 {
@@ -624,7 +835,15 @@ static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint numb
     gtk_notebook_set_action_widget (GTK_NOTEBOOK (output), buttons, GTK_PACK_END);
     g_signal_connect_after (output, "switch-page", G_CALLBACK (tools_switched), pane);
     gtk_box_pack_start (GTK_BOX (box), output, TRUE, TRUE, 0);
-    return box;
+    pane->frame = gtk_alignment_new (0.0, 0.0, 1.0, 1.0);
+    gtk_alignment_set_padding (GTK_ALIGNMENT (pane->frame), 2, 2, 2, 2);
+    gtk_container_add (GTK_CONTAINER (pane->frame), box);
+#ifdef USE_GTK3_0
+    g_signal_connect_after (pane->frame, "draw", G_CALLBACK (tools_focus_border), NULL);
+#else
+    g_signal_connect_after (pane->frame, "expose-event", G_CALLBACK (tools_focus_border), NULL);
+#endif
+    return pane->frame;
 }
 static E2_TerminalWorkspace *workspace_create (GtkWidget *output)
 {
@@ -634,8 +853,13 @@ static E2_TerminalWorkspace *workspace_create (GtkWidget *output)
     gtk_widget_set_name (space->widget, "terminal-split");
     GtkWidget *left = pane_create (&space->panes[0], output, 0);
     GtkWidget *right = pane_create (&space->panes[1], e2_output_create_notebook (1), 1);
-    gtk_paned_pack1 (GTK_PANED (space->widget), left, TRUE, FALSE);
-    gtk_paned_pack2 (GTK_PANED (space->widget), right, TRUE, FALSE);
+    gtk_paned_pack1 (GTK_PANED (space->widget), left, TRUE, TRUE);
+    gtk_paned_pack2 (GTK_PANED (space->widget), right, TRUE, TRUE);
+    g_signal_connect (space->widget, "size-allocate", G_CALLBACK (tools_allocated), NULL);
+    g_signal_connect (space->widget, "notify::position", G_CALLBACK (tools_divider_changed), NULL);
+    g_signal_connect (space->widget, "button-press-event", G_CALLBACK (tools_divider_press), NULL);
+    g_signal_connect_after (space->widget, "button-release-event", G_CALLBACK (tools_divider_release), NULL);
+    g_signal_connect_after (space->widget, "move-handle", G_CALLBACK (tools_handle_key), NULL);
     return space;
 }
 GtkWidget *e2_terminal_wrap_output (GtkWidget *output)
@@ -657,6 +881,7 @@ E2_TerminalWorkspace *e2_terminal_workspace_new (void)
 void e2_terminal_workspace_select (E2_TerminalWorkspace *space)
 {
     if (space == NULL || space == workspace) return;
+    e2_terminal_restore_tools ();
     GtkWidget *parent = gtk_widget_get_parent (workspace->widget);
     if (parent != NULL) gtk_container_remove (GTK_CONTAINER (parent), workspace->widget);
     workspace = space;
@@ -735,7 +960,12 @@ void e2_terminal_actions_register (void)
         {g_strdup ("terminal.focus"), focus_terminal, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
         {g_strdup ("terminal.close"), close_terminal, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
         {g_strdup ("terminal.restart"), restart_terminal, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
-        {g_strdup ("terminal.insert_paths"), insert_paths, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL}
+        {g_strdup ("terminal.insert_paths"), insert_paths, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
+        {g_strdup ("terminal.show_folder"), show_folder, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
+        {g_strdup ("terminal.hide_tools"), hide_tools, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
+        {g_strdup ("terminal.expand_tools"), expand_tools, FALSE, E2_ACTION_TYPE_ITEM, 0, NULL, NULL},
+        {g_strdup ("terminal.next_tab"), cycle_tools, FALSE, E2_ACTION_TYPE_ITEM, 0, GINT_TO_POINTER (1), NULL},
+        {g_strdup ("terminal.previous_tab"), cycle_tools, FALSE, E2_ACTION_TYPE_ITEM, 0, GINT_TO_POINTER (-1), NULL}
     };
     guint i;
     for (i = 0; i < G_N_ELEMENTS (actions); i++) e2_action_register (&actions[i]);
