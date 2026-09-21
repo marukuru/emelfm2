@@ -1489,6 +1489,34 @@ void e2_window_clear_status_message (void)
 	g_idle_add ((GSourceFunc) _e2_window_unadvise, (gpointer) _e2_window_unadvise);
 }
 /**
+@brief prevent themes from turning main-window content into window drag handles
+The content boxes survive window rebuilds, so new toolbars and tabs inherit
+this rule too. Window-manager decorations and GTK titlebars remain draggable.
+*/
+static void _e2_window_disable_content_dragging (void)
+{
+	gtk_widget_set_name (app.main_window, "emelfm2-main-window");
+	gtk_widget_set_name (app.hbox_main, "emelfm2-main-content");
+#ifdef USE_GTK3_0
+	GtkCssProvider *provider = gtk_css_provider_new ();
+	gtk_css_provider_load_from_data (provider,
+		"#emelfm2-main-window, #emelfm2-main-content, #emelfm2-main-content * {"
+		" -GtkWidget-window-dragging: false; }", -1, NULL);
+	gtk_style_context_add_provider_for_screen (gtk_widget_get_screen (app.main_window),
+		GTK_STYLE_PROVIDER (provider), GTK_STYLE_PROVIDER_PRIORITY_USER + 1);
+	g_object_unref (provider);
+#else
+	gtk_rc_parse_string (
+		"style \"emelfm2-no-content-drag\" {"
+		" GtkWidget::window-dragging = 0"
+		" GtkMenuShell::window-dragging = 0"
+		" GtkToolbar::window-dragging = 0"
+		" GtkMenuBar::window-dragging = 0 }"
+		"widget \"emelfm2-main-window\" style : highest \"emelfm2-no-content-drag\" "
+		"widget \"emelfm2-main-window.*\" style : highest \"emelfm2-no-content-drag\"");
+#endif
+}
+/**
 @brief create and show main window
 This is called only at session-start, from main(), with BGL closed
 
@@ -1582,6 +1610,7 @@ void e2_window_create (E2_WindowRuntime *rt)
 	app.hbox_main = gtk_hbox_new (FALSE, 0);
 	app.vbox_main = gtk_vbox_new (FALSE, 0);
 #endif
+	_e2_window_disable_content_dragging ();
 	gtk_container_add (GTK_CONTAINER (app.main_window), app.hbox_main);
 	gtk_box_pack_start (GTK_BOX (app.hbox_main), app.vbox_main, TRUE, TRUE, 0);
 
