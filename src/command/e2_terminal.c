@@ -418,7 +418,7 @@ static void terminal_paste (GtkMenuItem *item, GtkWidget *terminal)
 {
     e2_terminal_backend_paste (terminal);
 }
-static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
+static gboolean show_terminal_menu (GtkWidget *terminal, gpointer data, GtkWidget *anchor)
 {
     if (data != NULL) activate_pane (((TerminalSession *)data)->owner);
     GtkWidget *menu = e2_menu_get ();
@@ -450,8 +450,13 @@ static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
     e2_menu_add_action (menu, workspace->expanded ? _("_Restore tools") : _("_Expand view"), STOCK_NAME_ZOOM_FIT,
         _("Expand this view, or restore the file lists and both tools areas"), "terminal.expand_tools", NULL);
     g_signal_connect (menu, "selection-done", G_CALLBACK (e2_menu_selection_done_cb), NULL);
-    gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
+    if (anchor != NULL) e2_menu_popup_below (menu, anchor);
+    else gtk_menu_popup (GTK_MENU (menu), NULL, NULL, NULL, NULL, 0, gtk_get_current_event_time ());
     return TRUE;
+}
+static gboolean terminal_popup_menu (GtkWidget *terminal, gpointer data)
+{
+    return show_terminal_menu (terminal, data, NULL);
 }
 static gboolean terminal_button (GtkWidget *terminal, GdkEventButton *event, gpointer data)
 {
@@ -897,7 +902,9 @@ static void tools_menu (GtkWidget *button, TerminalPane *pane)
 {
     activate_pane (pane);
     CLOSEBGL_IF_OPEN
-    if (!e2_terminal_show_menu ()) e2_output_show_log_menu (pane->book);
+    TerminalSession *session = current_session ();
+    if (session != NULL) show_terminal_menu (session->terminal, session, button);
+    else e2_output_show_log_menu (pane->book, button);
     OPENBGL_IF_CLOSED
 }
 static void tools_switched (GtkNotebook *book,

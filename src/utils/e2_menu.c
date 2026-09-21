@@ -149,12 +149,13 @@ void e2_menu_selection_done_cb (GtkWidget *menu, gpointer data)
 //	NEEDCLOSEBGL
 	//don't destroy the menu immediately, gtk upstream and action processor
 	//have not necessarily finished with it
+    //An attached menu can be destroyed with its button before this timer runs.
 #ifdef USE_GLIB2_14
-	g_timeout_add_seconds (10,
+	g_timeout_add_seconds_full (G_PRIORITY_DEFAULT, 10,
 #else
-	g_timeout_add (10000,
+	g_timeout_add_full (G_PRIORITY_DEFAULT, 10000,
 #endif
-		(GSourceFunc)e2_menu_destroy, menu);
+		(GSourceFunc)e2_menu_destroy, g_object_ref (menu), g_object_unref);
 //	NEEDOPENBGL
 }
 /**
@@ -603,6 +604,47 @@ void e2_menu_popup_at_widget (GtkWidget *menu, GtkWidget *widget)
 		GDK_GRAVITY_NORTH_EAST, GDK_GRAVITY_NORTH, NULL);
 }
 #endif
+#ifndef USE_GTK3_22
+static void _e2_menu_below_button (GtkMenu *menu, gint *x, gint *y,
+    gboolean *push_in, GtkWidget *button)
+{
+    GtkWidget *top = gtk_widget_get_toplevel (button);
+    GtkAllocation allocation;
+    GtkRequisition size;
+    gint bx, by;
+    gtk_widget_get_allocation (button, &allocation);
+    gtk_widget_translate_coordinates (button, top, 0, 0, &bx, &by);
+    gdk_window_get_origin (gtk_widget_get_window (top), x, y);
+    bx += *x; by += *y;
+    gtk_widget_size_request (GTK_WIDGET (menu), &size);
+    GdkScreen *screen = gtk_widget_get_screen (button);
+    GdkRectangle monitor;
+    gdk_screen_get_monitor_geometry (screen,
+        gdk_screen_get_monitor_at_point (screen, bx, by), &monitor);
+    *x = bx + (gtk_widget_get_direction (button) == GTK_TEXT_DIR_RTL ? 0 : allocation.width - size.width);
+    *y = by + allocation.height;
+    if (*y + size.height > monitor.y + monitor.height && by - size.height >= monitor.y)
+        *y = by - size.height;
+    *push_in = TRUE;
+}
+#endif
+/* Keep tab-strip menus attached to their originating button, including when
+ * GTK flips the popup above it to fit the monitor. */
+void e2_menu_popup_below (GtkWidget *menu, GtkWidget *button)
+{
+    gtk_menu_attach_to_widget (GTK_MENU (menu), button, NULL);
+    g_signal_connect_object (button, "destroy", G_CALLBACK (gtk_widget_destroy),
+        menu, G_CONNECT_SWAPPED);
+#ifdef USE_GTK3_22
+    gboolean rtl = gtk_widget_get_direction (button) == GTK_TEXT_DIR_RTL;
+    gtk_menu_popup_at_widget (GTK_MENU (menu), button,
+        rtl ? GDK_GRAVITY_SOUTH_WEST : GDK_GRAVITY_SOUTH_EAST,
+        rtl ? GDK_GRAVITY_NORTH_WEST : GDK_GRAVITY_NORTH_EAST, NULL);
+#else
+    gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
+        (GtkMenuPositionFunc) _e2_menu_below_button, button, 0, gtk_get_current_event_time ());
+#endif
+}
 /**
 @brief popup detroyable menu @a menu
 

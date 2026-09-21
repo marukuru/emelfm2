@@ -38,7 +38,8 @@ own startup directory, scrollback and shell history. Navigating the file panes
 never writes a cd command into a terminal.
 
 Each pane has one flat tab strip containing Command log, its terminals, a New
-terminal icon and a View actions menu. Copy, Paste, Insert selected paths and
+terminal icon and a View actions menu attached to its button. Both icon-only
+buttons have explanatory tooltips. Copy, Paste, Insert selected paths and
 Restart are available in the terminal menu; exited sessions also have inline
 Restart and Close controls. Each terminal tab has
 its own close button. Tab titles show user@folder, with the current folder's

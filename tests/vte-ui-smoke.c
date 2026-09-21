@@ -56,6 +56,11 @@ static gboolean exited (gint index)
 }
 static gboolean open_output_menu (GtkWidget *widget, GdkEventKey *event, gpointer data)
 {
+    if (data != NULL)
+    {
+        gtk_button_clicked (GTK_BUTTON (data));
+        return TRUE;
+    }
     gchar *action = g_strconcat (_A(10), ".", _A(88), NULL);
     OPENBGL
     e2_action_run_simple_from (action, NULL, app.main_window);
@@ -63,12 +68,13 @@ static gboolean open_output_menu (GtkWidget *widget, GdkEventKey *event, gpointe
     g_free (action);
     return TRUE;
 }
-static void check_output_menu (gboolean terminal)
+static void check_output_menu (gboolean terminal, gboolean from_button)
 {
     /* Dispatch with a real GTK event context, as keyboard-triggered menus do. */
     GtkWidget *trigger = gtk_invisible_new ();
     gtk_widget_show (trigger);
-    g_signal_connect (trigger, "key-press-event", G_CALLBACK (open_output_menu), NULL);
+    GtkWidget *button = from_button ? find_widget (book, "terminal-menu", 0) : NULL;
+    g_signal_connect (trigger, "key-press-event", G_CALLBACK (open_output_menu), button);
     GdkEvent *event = gdk_event_new (GDK_KEY_PRESS);
     event->key.window = g_object_ref (gtk_widget_get_window (trigger));
     event->key.keyval = GDK_Menu;
@@ -81,6 +87,21 @@ static void check_output_menu (gboolean terminal)
     gdk_event_free (event);
     GtkWidget *menu = gtk_grab_get_current ();
     g_assert_true (GTK_IS_MENU (menu));
+    if (from_button)
+    {
+        g_assert_true (gtk_menu_get_attach_widget (GTK_MENU (menu)) == button);
+        gint bx, by, wx, wy, mx, my;
+        GtkAllocation ba, ma;
+        gtk_widget_get_allocation (button, &ba);
+        gtk_widget_get_allocation (menu, &ma);
+        gtk_widget_translate_coordinates (button, app.main_window, 0, 0, &bx, &by);
+        gdk_window_get_origin (gtk_widget_get_window (app.main_window), &wx, &wy);
+        gdk_window_get_origin (gtk_widget_get_window (menu), &mx, &my);
+        bx += wx; by += wy;
+        g_assert_cmpint (mx, <=, bx + ba.width);
+        g_assert_cmpint (mx + ma.width, >=, bx);
+        g_assert_true (ABS (my - by - ba.height) < 10 || ABS (my + ma.height - by) < 10);
+    }
     GList *items = gtk_container_get_children (GTK_CONTAINER (menu)), *link;
     gboolean edit = FALSE;
     for (link = items; link != NULL; link = link->next)
@@ -92,6 +113,7 @@ static void check_output_menu (gboolean terminal)
     if (terminal) g_assert_cmpuint (g_list_length (items), >=, 7);
     g_list_free (items);
     gtk_menu_popdown (GTK_MENU (menu));
+    if (from_button) g_signal_emit_by_name (menu, "selection-done");
     gtk_widget_destroy (menu);
     gtk_widget_destroy (trigger);
 }
@@ -229,9 +251,11 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 2);
             g_assert_true (gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), 1) == second);
             g_assert_cmpint (gtk_notebook_get_current_page (GTK_NOTEBOOK (book)), ==, 1);
-            check_output_menu (TRUE);
+            check_output_menu (TRUE, FALSE);
+            check_output_menu (TRUE, TRUE);
             gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
-            check_output_menu (FALSE);
+            check_output_menu (FALSE, FALSE);
+            check_output_menu (FALSE, TRUE);
             left_book = book;
             left_buffer = app.tab.buffer;
             e2_output_print (&app.tab, "LEFT-ONLY", NULL, TRUE, NULL);
@@ -255,6 +279,10 @@ static gboolean tick (gpointer data)
         case 3:
         {
             if (!exited (1)) goto wait;
+            check_output_menu (TRUE, TRUE);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
+            check_output_menu (FALSE, TRUE);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 1);
             gchar *left = buffer_text (left_buffer);
             gboolean complete = strstr (left, "LEFT-DELAYED") != NULL;
             g_assert_nonnull (strstr (left, "LEFT-ONLY"));

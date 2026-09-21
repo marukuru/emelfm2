@@ -1681,11 +1681,12 @@ nextchar:
 @param event_button which mouse button was clicked (0 for a menu-key press)
 @param event_time time that the event happened (0 for a menu-key press)
 @param rt runtime struct for the tab being processed
+@param anchor optional tab-strip button to attach the menu to
 
 @return
 */
 static void _e2_output_show_context_menu (GtkWidget *textview,
-	guint event_button, gint event_time, E2_OutputTabRuntime *rt)
+	guint event_button, gint event_time, E2_OutputTabRuntime *rt, GtkWidget *anchor)
 {
 	if (!GTK_IS_TEXT_VIEW (textview) || rt == NULL || !GTK_IS_TEXT_BUFFER (rt->buffer))
 		return;
@@ -1837,6 +1838,11 @@ OR
 #endif
 	g_signal_connect (G_OBJECT (menu), "selection-done",
 		G_CALLBACK (e2_menu_selection_done_cb), NULL);
+    if (anchor != NULL)
+    {
+        e2_menu_popup_below (menu, anchor);
+        return;
+    }
 #ifdef USE_GTK3_22
 	if (event_button == 0)
 	{
@@ -2311,11 +2317,11 @@ void e2_output_merge_notebooks (GtkWidget *source, GtkWidget *destination)
 	app.tab = *curr_tab;
 #endif
 }
-void e2_output_show_log_menu (GtkWidget *book)
+void e2_output_show_log_menu (GtkWidget *book, GtkWidget *anchor)
 {
 	e2_output_select_notebook (book);
 	_e2_output_show_context_menu (GTK_WIDGET (app.tab.text), 0,
-		gtk_get_current_event_time (), &app.tab);
+		gtk_get_current_event_time (), &app.tab, anchor);
 }
 void e2_output_destroy_notebook (GtkWidget *book, GtkWidget *replacement)
 {
@@ -2544,7 +2550,7 @@ static gboolean _e2_output_button_press_cb (GtkWidget *textview,
 	{
 		if ((event->state & E2_MODIFIER_MASK) == 0)
 		{
-			_e2_output_show_context_menu (textview, 3, event->time, rrt);
+			_e2_output_show_context_menu (textview, 3, event->time, rrt, NULL);
 			retval = TRUE;
 		}
 	}
@@ -2587,7 +2593,7 @@ static gboolean _e2_output_popup_menu_cb (GtkWidget *widget, E2_OutputTabRuntime
 	E2_OutputTabRuntime *rrt = (rt == curr_tab) ? &app.tab : rt;
 	guint32 event_time = gtk_get_current_event_time ();
 	NEEDCLOSEBGL
-	_e2_output_show_context_menu (widget, 0, event_time, rrt);
+	_e2_output_show_context_menu (widget, 0, event_time, rrt, NULL);
 	NEEDOPENBGL
 	return TRUE;
 }
