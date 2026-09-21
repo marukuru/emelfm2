@@ -114,6 +114,7 @@ static void session_exited (gint status, gboolean known, gpointer data)
     else
         text = g_strdup (_("Shell exited (exit status unavailable). Use Restart to start another shell."));
     gtk_label_set_text (GTK_LABEL (session->status), text);
+    gtk_widget_show (session->status);
     g_free (text);
 }
 static void session_spawned (GPid pid, const GError *error, gpointer data)
@@ -126,12 +127,14 @@ static void session_spawned (GPid pid, const GError *error, gpointer data)
         {
             session_label (session, _("failed"));
             gtk_label_set_text (GTK_LABEL (session->status), error->message);
+            gtk_widget_show (session->status);
         }
         else if (!session->exited)
         {
             session->pid = pid;
             session_label (session, _("running"));
-            gtk_label_set_text (GTK_LABEL (session->status), session->directory);
+            gtk_label_set_text (GTK_LABEL (session->status), "");
+            gtk_widget_hide (session->status);
         }
     }
     /* On destruction VTE owns cancellation, hangup and child reaping. A PID
@@ -312,6 +315,8 @@ static void open_session (TerminalPane *pane, const gchar *directory)
     session->page = gtk_vbox_new (FALSE, 0);
     session->label = gtk_label_new ("");
     session->status = gtk_label_new (_("Starting shell…"));
+    gtk_widget_set_no_show_all (session->status, TRUE);
+    gtk_widget_show (session->status);
     gtk_label_set_ellipsize (GTK_LABEL (session->status), PANGO_ELLIPSIZE_MIDDLE);
     GtkWidget *row = gtk_hbox_new (FALSE, 0);
     session->terminal = e2_terminal_backend_new (session_exited, session);
