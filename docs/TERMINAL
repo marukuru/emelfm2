@@ -76,6 +76,7 @@ Configurable actions (usable in keybindings, toolbars and menus):
   terminal.expand_tools
   terminal.next_tab
   terminal.previous_tab
+  terminal.find
 
 For side-by-side file panes, the tools divider follows the file divider; dragging
 it also adjusts the files. Stacked file panes keep a separate side-by-side tools
@@ -91,17 +92,41 @@ and may be assigned shortcuts in the file-manager context; they do not reserve
 keys used by terminal programs.
 
 Focused terminals receive Ctrl+C, Ctrl+Z, Tab and function keys directly.
-Ctrl+Shift+C copies, Ctrl+Shift+V pastes, Ctrl+Shift+F6 returns focus to the
+Ctrl+Shift+C copies, Ctrl+Shift+V pastes, Ctrl+Shift+F opens Find, and
+Ctrl+Shift+F6 returns focus to the
 active file pane. Use a custom binding for terminal.focus
 to return. The emelFM2 command entry retains its own completion and history.
+
+Find searches the selected view for literal text, ignoring case, and wraps at
+both ends. The command log and terminals use the same compact search bar: Enter
+finds the next match, Shift+Enter the previous one, and Escape closes it and
+returns focus to the view. Find is also available in each view's actions menu.
+
+An unread dot marks output in an inactive/hidden tools tab. With per-main-tab
+ownership, a dot also marks the owning main tab until its unread views have been
+shown. Background output never changes selection/focus or opens the tools area.
+The native auto-show-on-output preference is hidden and ignored in VTE builds;
+non-VTE builds retain it. Search and these indicators do not classify commands
+as busy or completed.
 
 Preferences under commands/terminal apply to new and restarted sessions:
   terminal-shell       executable path, without arguments; empty uses $SHELL,
                        falling back to /bin/sh. Shells are started with -i.
+  terminal-shell-integration
+                       opt-in Bash user/host/folder reports at each prompt
+                       (default off); other shells keep their existing behavior
   terminal-scrollback  retained lines (default 10000)
   terminal-font        default Monospace 10
   terminal-foreground  default #dddddd
   terminal-background  default #202020
+
+The optional Bash helper uses a private mode-0600 temporary rc file which first
+sources the user's usual ~/.bashrc. It appends a location-report function to
+PROMPT_COMMAND, preserving scalar and array hooks and leaving PS1, traps, history
+settings and startup files alone. It sends a conventional OSC 0 title and an
+encoded OSC 7 directory URI (GTK3); GTK2 uses the title. The file is removed when
+the session is closed. It does not install itself in nested/remote shells or add
+busy/completed badges, and it does not restore sessions at application startup.
 
 Use an executable path to sh, bash, dash, zsh, ksh, mksh or fish for pathname
 insertion. Other interactive executables may be started, but generated path
@@ -180,11 +205,17 @@ real PTYs, concurrent native/terminal exits, foreign-child ownership,
 stop/continue, spawn failure/cancellation, session close/restart, startup cwd,
 interactive insertion, Unicode, special-character quoting, top/htop and resize. Available sh,
 bash, dash, zsh and fish executables are tested separately.
-The VTE UI test checks toolbar icons/tooltips, tab close buttons, context menus,
-per-pane output routing, per-main-tab sessions, option toggling and close prompts.
+The VTE UI test checks tab-strip icons/tooltips, close controls, context menus,
+legacy log migration, per-pane output routing, per-main-tab sessions, option
+toggling and close prompts. It also checks linked dividers, focus/height restore,
+folder navigation, wrapped literal search, unread state without focus changes,
+hidden output, main-tab indicators and a narrow window.
 Title tests require Linux /proc, bash and util-linux script. They cover directory
 changes/renames, nested shells and PTYs, reported usernames, OSC 7 on GTK 3,
 Unicode and control characters, and stale metadata when returning to a shell.
+They also check terminal search on each backend and the opt-in Bash hook with
+scalar/array PROMPT_COMMAND, unchanged rc/PS1, Unicode URI encoding and exit-status
+preservation for existing prompt hooks.
 
 Manual acceptance checklist for both backends:
 - Run less/vim, resize, Ctrl+C, Ctrl+Z and fg; check job control and key routing.

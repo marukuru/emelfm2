@@ -8,6 +8,7 @@
 typedef void (*E2_TerminalSpawned) (GPid pid, const GError *error, gpointer data);
 typedef void (*E2_TerminalExited) (gint status, gboolean known, gpointer data);
 GtkWidget *e2_terminal_backend_new (E2_TerminalExited exited, gpointer data);
+void e2_terminal_backend_disconnect (GtkWidget *terminal);
 void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
     gchar **argv, GCancellable *cancel, E2_TerminalSpawned callback, gpointer data);
 void e2_terminal_backend_configure (GtkWidget *terminal, gint scrollback,
@@ -21,5 +22,6 @@ gchar *e2_terminal_backend_text (GtkWidget *terminal);
 void e2_terminal_backend_insert (GtkWidget *terminal, const gchar *text);
 void e2_terminal_backend_copy (GtkWidget *terminal);
 void e2_terminal_backend_paste (GtkWidget *terminal);
+gboolean e2_terminal_backend_search (GtkWidget *terminal, const gchar *text, gboolean backwards);
 gboolean e2_terminal_backend_has_selection (GtkWidget *terminal);
 #endif

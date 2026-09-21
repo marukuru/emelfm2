@@ -13,6 +13,6 @@ ${CC:-cc} -O2 -Wall -Wno-deprecated-declarations -fcommon -D_FILE_OFFSET_BITS=64
     -Isrc -Isrc/actions -Isrc/build -Isrc/command -Isrc/command/complete \
     -Isrc/config -Isrc/dialogs -Isrc/filesystem -Isrc/utils \
     $(pkg-config --cflags "$gtk_package" "$vte_package") \
-    tests/terminal-title.c src/command/e2_terminal_context.c "src/command/e2_terminal_vte${backend}.c" \
+    tests/terminal-title.c src/command/e2_terminal_context.c src/command/e2_terminal_shell.c "src/command/e2_terminal_vte${backend}.c" \
     $(pkg-config --libs "$gtk_package" "$vte_package") -o "$test_build/title"
 LC_ALL=C.UTF-8 NO_AT_BRIDGE=1 GIO_USE_VFS=local dbus-run-session -- xvfb-run -a "$test_build/title"

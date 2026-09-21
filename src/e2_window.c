@@ -358,8 +358,19 @@ static gboolean _e2_window_adjust_panes_ratio (GtkPaned *paned,
 		}
 	}
 
-	if (ratio_new < -0.0001)
-		ratio_new = *ratio_last;
+    if (ratio_new < -0.0001)
+        ratio_new = *ratio_last;
+#ifdef E2_VTE
+    if (adjust_output)
+    {
+        GtkWidget *tools = gtk_paned_get_child2 (paned);
+        /* Fully hide the child instead of allocating its tab buttons one pixel
+         * of height. GTK3 themes cannot lay out those buttons at that size. */
+        gtk_widget_set_no_show_all (tools, ratio_new >= 0.999);
+        if (ratio_new >= 0.999) gtk_widget_hide (tools);
+        else gtk_widget_show (tools);
+    }
+#endif
 #ifdef USE_GTK3_0
 	gtk_paned_set_position (paned, (gint)(maxpos * ratio_new));
 #else

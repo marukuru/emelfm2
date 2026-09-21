@@ -231,92 +231,64 @@ static void test_fullscreen (void)
         g_object_unref (cancel);
     }
 }
-static void test_sessions (void)
+/* Session ownership/menus are exercised in run-vte-ui.sh. Keep this harness
+ * focused on the real adapters, quoting, PTY job control and child ownership. */
+static void test_interactive (void)
 {
     gchar *directory = g_dir_make_tmp ("emelfm2-terminal-XXXXXX", NULL);
     gchar *resultfile = g_build_filename (directory, "result", NULL);
     gchar *original_cwd = g_get_current_dir ();
-    app.main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
-    GtkWidget *outer = gtk_vbox_new (FALSE, 0);
-    test_view.treeview = gtk_entry_new ();
-    gtk_box_pack_start (GTK_BOX (outer), test_view.treeview, FALSE, FALSE, 0);
-    GtkWidget *output = gtk_label_new ("application log stays separate");
-    gtk_box_pack_start (GTK_BOX (outer), e2_terminal_wrap_output (output), TRUE, TRUE, 0);
-    gtk_container_add (GTK_CONTAINER (app.main_window), outer);
-    gtk_widget_show_all (app.main_window);
-    g_assert_cmpint (gtk_notebook_get_current_page (GTK_NOTEBOOK (terminal_book)), ==, 0);
-    open_session (directory);
-    TerminalSession *session = current_session ();
-    gint64 until = g_get_monotonic_time () + 10000000;
-    while (session->pending && g_get_monotonic_time () < until) pump ();
-    g_assert_cmpint (session->pid, >, 0);
+    Result result = {0};
+    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    GtkWidget *terminal = make_terminal (window, &result);
+    GCancellable *cancel = g_cancellable_new ();
+    gchar *args[] = { "/bin/bash", "--noprofile", "--norc", "-i", NULL };
+    e2_terminal_backend_spawn (terminal, directory, args, cancel, spawned, &result);
+    wait_result (&result, FALSE);
+    g_assert_cmpint (result.pid, >, 0);
+    gint64 until;
     gchar *cwd = g_get_current_dir ();
     g_assert_cmpstr (cwd, ==, original_cwd);
     g_free (cwd); g_free (original_cwd);
-    g_assert_false (session_can_close (session));
-    g_assert_false (e2_terminal_confirm_shutdown ());
     /* Interactive quoting must preserve newlines, and insert must not submit. */
     const gchar *name = "/tmp/space '\" *? [x] 日本語\nend\n";
-    gchar *quoted = quote_path (name, session->shell);
-    e2_terminal_backend_send (session->terminal, "stty -echo; unset HISTFILE; bind 'set enable-bracketed-paste off'\n");
+    gchar *quoted = quote_path (name, "/bin/bash");
+    e2_terminal_backend_send (terminal, "stty -echo; unset HISTFILE; bind 'set enable-bracketed-paste off'\n");
     for (guint i = 0; i < 100; i++) pump ();
-    e2_terminal_backend_send (session->terminal, "printf '%s' ");
-    e2_terminal_backend_insert (session->terminal, quoted);
+    e2_terminal_backend_send (terminal, "printf '%s' ");
+    e2_terminal_backend_insert (terminal, quoted);
     for (guint i = 0; i < 100; i++) pump ();
     g_assert_false (g_file_test (resultfile, G_FILE_TEST_EXISTS));
-    e2_terminal_backend_send (session->terminal, " >result\n");
+    e2_terminal_backend_send (terminal, " >result\n");
     until = g_get_monotonic_time () + 5000000;
     while (!g_file_test (resultfile, G_FILE_TEST_EXISTS) && g_get_monotonic_time () < until) pump ();
     gchar *content = NULL;
     g_assert_true (g_file_get_contents (resultfile, &content, NULL, NULL));
     g_assert_cmpstr (content, ==, name);
     g_free (content); g_free (quoted);
-    /* Terminal-specific return-focus shortcut leaves normal Ctrl+C untouched. */
-    GdkEventKey key = {0};
-    key.state = GDK_CONTROL_MASK | GDK_SHIFT_MASK; key.keyval = GDK_F6;
-    g_assert_true (terminal_key (session->terminal, &key, session));
-    g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == test_view.treeview);
-    key.state = GDK_CONTROL_MASK; key.keyval = GDK_c;
-    g_assert_false (terminal_key (session->terminal, &key, session));
-    /* A second tab can be destroyed immediately, including during async spawn. */
-    open_session (directory);
-    g_assert_cmpint (g_list_length (sessions), ==, 2);
-    destroy_in_dialog = TRUE;
-    dialog_response = GTK_RESPONSE_ACCEPT;
-    g_assert_false (close_terminal (NULL, NULL));
-    destroy_in_dialog = FALSE;
-    dialog_response = GTK_RESPONSE_CANCEL;
-    for (guint i = 0; i < 100; i++) pump ();
-    g_assert_cmpint (g_list_length (sessions), ==, 1);
     /* Real PTY job control: stop a foreground job, resume it, interrupt it. */
-    e2_terminal_backend_send (session->terminal, "sleep 30\n");
+    e2_terminal_backend_send (terminal, "sleep 30\n");
     for (guint i = 0; i < 100; i++) pump ();
-    e2_terminal_backend_send (session->terminal, "\032");
+    e2_terminal_backend_send (terminal, "\032");
     for (guint i = 0; i < 100; i++) pump ();
-    e2_terminal_backend_send (session->terminal, "jobs >jobs; fg\n");
+    e2_terminal_backend_send (terminal, "jobs >jobs; fg\n");
     for (guint i = 0; i < 100; i++) pump ();
-    e2_terminal_backend_send (session->terminal, "\003");
+    e2_terminal_backend_send (terminal, "\003");
     for (guint i = 0; i < 100; i++) pump ();
     gchar *jobs = g_build_filename (directory, "jobs", NULL);
     g_assert_true (g_file_get_contents (jobs, &content, NULL, NULL));
     g_assert_nonnull (strstr (content, "Stopped"));
     g_free (content); g_remove (jobs); g_free (jobs);
-    e2_terminal_backend_send (session->terminal, "exit 11\n");
+    e2_terminal_backend_send (terminal, "exit 11\n");
     until = g_get_monotonic_time () + 5000000;
-    while (!session->exited && g_get_monotonic_time () < until) pump ();
-    g_assert_true (session->exited);
-    g_assert_true (e2_terminal_confirm_shutdown ());
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (terminal_book), 1);
-    g_assert_true (restart_terminal (NULL, NULL));
-    g_assert_cmpint (g_list_length (sessions), ==, 1);
-    e2_terminal_shutdown ();
-    gtk_widget_destroy (app.main_window);
-    app.main_window = NULL;
-    for (guint i = 0; i < 100; i++) pump ();
-    g_assert_null (terminal_book);
+    while (!result.exited && g_get_monotonic_time () < until) pump ();
+    g_assert_true (result.exited);
+    gtk_widget_destroy (window);
+    g_object_unref (cancel);
     g_remove (resultfile); g_rmdir (directory);
     g_free (resultfile); g_free (directory);
 }
+
 int main (int argc, char **argv)
 {
     gtk_init (&argc, &argv);
@@ -324,7 +296,7 @@ int main (int argc, char **argv)
     test_ownership ();
     test_stop_continue ();
     test_failure_disposal ();
-    test_sessions ();
+    test_interactive ();
     test_fullscreen ();
     g_print ("terminal: quoting, child ownership, job control, lifecycle, top/htop and resize passed\n");
     return 0;

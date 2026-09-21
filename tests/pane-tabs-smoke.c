@@ -119,7 +119,11 @@ static void close_tab (gint index)
 	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), index);
 	GtkWidget *box = gtk_notebook_get_tab_label (GTK_NOTEBOOK (book), page);
 	GList *children = gtk_container_get_children (GTK_CONTAINER (box));
-	gtk_button_clicked (GTK_BUTTON (children->next->data));
+    GtkWidget *button = NULL;
+    for (GList *link = children; link != NULL; link = link->next)
+        if (GTK_IS_BUTTON (link->data)) { button = link->data; break; }
+    g_assert_nonnull (button);
+    gtk_button_clicked (GTK_BUTTON (button));
 	g_list_free (children);
 }
 static gboolean tick (gpointer data)

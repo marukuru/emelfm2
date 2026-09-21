@@ -1697,6 +1697,8 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 	{
 #endif
 #ifdef E2_VTE
+        e2_menu_add_action (menu, _("_Find"), STOCK_NAME_FIND,
+            _("Find text in the command log"), "terminal.find", NULL);
         e2_menu_add_action (menu, _("_Hide tools"), "output_hide"E2ICONTB,
             _("Return to the file list"), "terminal.hide_tools", NULL);
         e2_menu_add_action (menu, _("_Expand / restore view"), STOCK_NAME_ZOOM_FIT,
@@ -1816,7 +1818,9 @@ OR
 		submenu = e2_menu_add_submenu (menu, _("_Settings"), STOCK_NAME_PREFERENCES);
 		e2_menu_create_options_menu (GTK_WIDGET (rt->text), submenu,
 			rt->opt_wrap, NULL, NULL,
-			app.output.opt_show_on_new, NULL, NULL,
+#ifndef E2_VTE
+            app.output.opt_show_on_new, NULL, NULL,
+#endif
 			app.output.opt_show_on_focus_in, NULL, NULL,
 			app.output.opt_hide_on_focus_out, NULL, NULL,
 			app.output.opt_jump, NULL, NULL,
@@ -3568,12 +3572,15 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 		msg++;
 	}
 
+	//Background messages use unread markers in the VTE tools layout.
+#ifndef E2_VTE
 	//show the output pane if the user wishes that
 	if (!app.output.visible && e2_option_bool_get_direct (app.output.opt_show_on_new))
 	{
 		e2_window_output_show (NULL, NULL);
 	}
 
+#endif
 	if (g_utf8_validate (msg, -1, NULL))
 		utf = msg;
 	else
@@ -4303,8 +4310,12 @@ void e2_output_options_register (void)
 	e2_option_bool_register ("show-output-window-on-output", group_name,
 		_("show output pane when a new message appears"),
 		_("This will ensure you don't miss any messages"), NULL, FALSE,
-		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_FREEGROUP);
-	e2_option_bool_register ("command-line-show-output-on-focus-in", group_name,
+#ifdef E2_VTE
+        E2_OPTION_FLAG_HIDDEN | E2_OPTION_FLAG_FREEGROUP);
+#else
+        E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_FREEGROUP);
+#endif
+    e2_option_bool_register ("command-line-show-output-on-focus-in", group_name,
 		_("show output pane if the command line is focused"),
 		_("This causes the output pane to be opened when you are about enter a command"),
 		NULL, FALSE,

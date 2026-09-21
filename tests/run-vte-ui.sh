@@ -21,13 +21,18 @@ for name in ('left', 'right'):
 (root/'live-shell').chmod(0o755)
 (root/'folder-shell').write_text('#!/bin/sh\ncd ../left\ntrap "exit 0" HUP TERM\nwhile :; do sleep 1; done\n')
 (root/'folder-shell').chmod(0o755)
+(root/'activity-shell').write_text('#!/bin/sh\nprintf "Ready\\n"\ntrap "exit 0" HUP TERM\nwhile [ ! -e emit-output ]; do sleep .1; done\nprintf "UNREAD-TERMINAL\\n"\nwhile :; do sleep 1; done\n')
+(root/'activity-shell').chmod(0o755)
+# Verify production argv/cleanup without reading the user's real Bash startup file.
+(root/'bash').write_text('#!/bin/sh\nprintf "%s\\n" "$@" >shell-args\nprintf "%s" "$2" >rc-path\nexit 0\n')
+(root/'bash').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'left'), '-2', str(root/'right'),
         '-s', 'session-end-warning=false', '-s', 'pane-tabs=true']
 with open(root/'log', 'w') as output:
     p = subprocess.Popen(args, env=dict(os.environ, LD_PRELOAD=str(root/'smoke.so')),
                          stdout=output, stderr=output)
     try:
-        deadline = time.monotonic() + 25
+        deadline = time.monotonic() + 40
         while not (root/'passed').exists() and p.poll() is None and time.monotonic() < deadline:
             time.sleep(.05)
         assert (root/'passed').exists(), (root/'log').read_text()

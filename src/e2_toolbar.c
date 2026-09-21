@@ -910,6 +910,31 @@ static void _e2_toolbar_add_rest_button (E2_ToolbarRuntime *rt)
 	rt->restbtn_shown = TRUE;
 	printd (DEBUG, "rest button created and added to %s",rt->name);
 }
+#ifdef USE_GTK3_0
+/* GtkToolbar unmaps overflowing items during GtkBox allocation. Showing a new
+ * sibling there changes the visible-child list after GTK has measured it,
+ * leaving the overflow button with an uninitialised/one-pixel allocation.
+ * Recheck overflow at idle, while retaining the originating container. */
+static gboolean _e2_toolbar_rest_idle (gpointer data)
+{
+    GtkWidget *box = data;
+    E2_ToolbarRuntime *rt = g_object_get_data (G_OBJECT (box), "rest-runtime");
+    g_object_set_data (G_OBJECT (box), "rest-pending", NULL);
+    CLOSEBGL
+    if (gtk_widget_get_mapped (box) && rt->toolbar_container_box == box)
+    {
+        for (GList *link = rt->bar_items_list; link != NULL; link = link->next)
+            if (!gtk_widget_get_mapped (GTK_WIDGET (link->data)))
+            {
+                rt->menu_starter = gtk_bin_get_child (GTK_BIN (link->data));
+                _e2_toolbar_add_rest_button (rt);
+                break;
+            }
+    }
+    OPENBGL
+    return FALSE;
+}
+#endif
 /**
 @brief after a toolbar item is mapped, adjust the rest-menu start item or hide the rest button
 
@@ -980,7 +1005,18 @@ static void _e2_toolbar_unmapitem_cb (GtkToolItem *tool, E2_ToolbarRuntime *rt)
 		GTK_BIN (tool)->child;
 #endif
 	NEEDCLOSEBGL
-	_e2_toolbar_add_rest_button (rt);  //create/(re)display rest menu btn
+#ifdef USE_GTK3_0
+    GtkWidget *box = rt->toolbar_container_box;
+    if (g_object_get_data (G_OBJECT (box), "rest-pending") == NULL)
+    {
+        g_object_set_data (G_OBJECT (box), "rest-pending", GINT_TO_POINTER (1));
+        g_object_set_data (G_OBJECT (box), "rest-runtime", rt);
+        g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, _e2_toolbar_rest_idle,
+            g_object_ref (box), g_object_unref);
+    }
+#else
+    _e2_toolbar_add_rest_button (rt);  //create/(re)display rest menu btn
+#endif
 	NEEDOPENBGL
 }
 #ifdef FOLDBARS

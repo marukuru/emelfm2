@@ -3,6 +3,8 @@
 #ifdef E2_VTE3
 #include "e2_terminal_backend.h"
 #include <vte/vte.h>
+#define PCRE2_CODE_UNIT_WIDTH 8
+#include <pcre2.h>
 #include <unistd.h>
 
 typedef struct { E2_TerminalExited callback; gpointer data; } ExitData;
@@ -22,9 +24,19 @@ GtkWidget *e2_terminal_backend_new (E2_TerminalExited callback, gpointer data)
     GtkWidget *terminal = vte_terminal_new ();
     ExitData *exit = g_new (ExitData, 1);
     exit->callback = callback; exit->data = data;
-    g_signal_connect_data (terminal, "child-exited", G_CALLBACK (exited_cb),
+    gulong handler = g_signal_connect_data (terminal, "child-exited", G_CALLBACK (exited_cb),
         exit, free_exit, 0);
+    g_object_set_data (G_OBJECT (terminal), "e2-exit-handler", GSIZE_TO_POINTER (handler));
     return terminal;
+}
+void e2_terminal_backend_disconnect (GtkWidget *terminal)
+{
+    gulong handler = GPOINTER_TO_SIZE (g_object_get_data (G_OBJECT (terminal), "e2-exit-handler"));
+    if (handler != 0)
+    {
+        g_signal_handler_disconnect (terminal, handler);
+        g_object_set_data (G_OBJECT (terminal), "e2-exit-handler", NULL);
+    }
 }
 void e2_terminal_backend_spawn (GtkWidget *terminal, const gchar *directory,
     gchar **argv, GCancellable *cancel, E2_TerminalSpawned callback, gpointer data)
@@ -84,4 +96,20 @@ void e2_terminal_backend_paste (GtkWidget *terminal)
 { vte_terminal_paste_clipboard (VTE_TERMINAL (terminal)); }
 gboolean e2_terminal_backend_has_selection (GtkWidget *terminal)
 { return vte_terminal_get_has_selection (VTE_TERMINAL (terminal)); }
+gboolean e2_terminal_backend_search (GtkWidget *terminal, const gchar *text, gboolean backwards)
+{
+    if (g_strcmp0 (g_object_get_data (G_OBJECT (terminal), "e2-search-text"), text))
+    {
+        gchar *pattern = g_regex_escape_string (text, -1);
+        VteRegex *regex = *text ? vte_regex_new_for_search (pattern, -1,
+            PCRE2_UTF | PCRE2_MULTILINE | PCRE2_CASELESS, NULL) : NULL;
+        vte_terminal_search_set_regex (VTE_TERMINAL (terminal), regex, 0);
+        if (regex != NULL) vte_regex_unref (regex);
+        g_free (pattern);
+        g_object_set_data_full (G_OBJECT (terminal), "e2-search-text", g_strdup (text), g_free);
+        vte_terminal_search_set_wrap_around (VTE_TERMINAL (terminal), TRUE);
+    }
+    return *text && (backwards ? vte_terminal_search_find_previous (VTE_TERMINAL (terminal))
+        : vte_terminal_search_find_next (VTE_TERMINAL (terminal)));
+}
 #endif

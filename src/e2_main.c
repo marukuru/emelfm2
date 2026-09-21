@@ -797,7 +797,7 @@ WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reas
 	/* Command-line overrides also apply to new profiles and factory defaults. */
 	gchar **values = e2_list_to_strv (e2_cl_options.option_overrides);
 	e2_option_read_array (values);
-	g_strfreev (values);
+	g_free (values); //strings remain owned by e2_cl_options.option_overrides
 	if (!e2_single_instance_start ())
 		return EXIT_SUCCESS;
 

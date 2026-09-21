@@ -34,6 +34,7 @@ typedef struct
 	gboolean equal;
 #ifdef E2_VTE
 	E2_TerminalWorkspace *output;
+	GtkWidget *unread;
 #endif
 } E2_PaneTab;
 
@@ -46,6 +47,15 @@ static gboolean selecting, loading, rebuilding, refresh_blocked;
 static void _e2_tabs_schedule (void);
 
 #ifdef E2_VTE
+void e2_tabs_output_activity (gpointer workspace, gboolean unread)
+{
+    for (GList *link = tabs; link != NULL; link = link->next)
+    {
+        E2_PaneTab *tab = link->data;
+        if (tab->output == workspace)
+            gtk_label_set_text (GTK_LABEL (tab->unread), unread ? "●" : "");
+    }
+}
 static void _e2_tabs_sync_outputs (gboolean separate)
 {
 	if (separate)
@@ -59,6 +69,7 @@ static void _e2_tabs_sync_outputs (gboolean separate)
 		E2_PaneTab *tab = link->data;
 		e2_terminal_workspace_merge (tab->output);
 		tab->output = NULL;
+        gtk_label_set_text (GTK_LABEL (tab->unread), "");
 	}
 }
 #endif
@@ -309,7 +320,14 @@ static E2_PaneTab *_e2_tabs_add (gboolean capture)
 	gtk_widget_set_tooltip_text (close, _("Close tab"));
 #endif
 	g_signal_connect (close, "clicked", G_CALLBACK (_e2_tabs_close), tab);
-	gtk_box_pack_start (GTK_BOX (labelbox), tab->label, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (labelbox), tab->label, TRUE, TRUE, 0);
+#ifdef E2_VTE
+    tab->unread = gtk_label_new ("");
+    gtk_widget_set_name (tab->unread, "main-tab-unread");
+    gtk_widget_set_tooltip_text (tab->unread, _("Unread output in this tab"));
+    atk_object_set_name (gtk_widget_get_accessible (tab->unread), _("Unread output"));
+    gtk_box_pack_start (GTK_BOX (labelbox), tab->unread, FALSE, FALSE, 0);
+#endif
 	gtk_box_pack_start (GTK_BOX (labelbox), close, FALSE, FALSE, 0);
 	if (capture) _e2_tabs_save (tab);
 	_e2_tabs_label (tab, tab->panes[0].path, tab->panes[1].path);
@@ -454,7 +472,7 @@ void e2_tabs_pack (GtkWidget *panes)
 	if (!e2_option_bool_get ("pane-tabs"))
 	{
 		e2_tabs_cleanup ();
-		gtk_paned_pack1 (GTK_PANED (app.window.output_paned), panes, TRUE, TRUE);
+        gtk_paned_pack1 (GTK_PANED (app.window.output_paned), panes, TRUE, TRUE);
 		return;
 	}
 	if (notebook == NULL)
@@ -473,7 +491,7 @@ void e2_tabs_pack (GtkWidget *panes)
 #endif
 		g_signal_connect (notebook, "switch-page", G_CALLBACK (_e2_tabs_switch), NULL);
 		current = _e2_tabs_add (FALSE);
-		gtk_paned_pack1 (GTK_PANED (app.window.output_paned), notebook, TRUE, TRUE);
+        gtk_paned_pack1 (GTK_PANED (app.window.output_paned), notebook, TRUE, TRUE);
 	}
 #ifdef E2_VTE
 	_e2_tabs_sync_outputs (e2_option_bool_get ("terminal-per-tab"));
@@ -521,7 +539,7 @@ void e2_tabs_cleanup (void)
 	notebook = NULL;
 	if (preserve)
 	{
-		gtk_paned_pack1 (GTK_PANED (app.window.output_paned), panes, TRUE, TRUE);
+        gtk_paned_pack1 (GTK_PANED (app.window.output_paned), panes, TRUE, TRUE);
 		g_object_unref (panes);
 	}
 	new_requests = 0;

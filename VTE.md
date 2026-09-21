@@ -16,7 +16,40 @@ Implementation status:
   hide/restore and selected-view expansion, wrapping tools-tab actions, and
   explicit navigation to verified local terminal folders. Restart prefers the
   verified working directory and explains its startup-directory fallback.
-- Stage 3: pending.
+- Stage 3: implemented. Wrapped, case-insensitive literal search for the selected
+  log or terminal; unread dots on tools tabs and their owning main tabs; and
+  opt-in Bash prompt metadata using a private temporary rc file. Background
+  messages never reveal the tools area or change focus. Bash startup files,
+  prompts and scalar/array prompt hooks are preserved.
+
+Stage 3 scope decisions:
+
+- Shell integration reports user, host and working directory at prompts. Existing
+  OSC title reports remain available on both backends, and OSC 7 on GTK3. The
+  opt-in helper applies to newly opened Bash sessions, not to remote or nested
+  shells. Other shells continue with their existing reports and local fallback.
+- Busy/completed badges remain deferred: no reliable pre-command hook is
+  installed, and overriding DEBUG traps would interfere with users' shell setup.
+  Unread output is independent of command state.
+- Session-location restoration was considered and remains a later preference.
+  This change preserves live sessions across main tabs but does not start shells
+  on application startup or claim to restore their processes. A restoration
+  design must define missing/remote folders, user identity and saved main-tab
+  ownership before enabling it.
+
+Validation covers GTK2 and GTK3 VTE builds, shared/per-main-tab ownership,
+legacy-log migration, running-command routing, divider and focus restoration,
+search wrapping and Unicode, unread output while hidden, main-tab notifications,
+Bash prompt hooks and temporary-file cleanup, log-buffer replacement, and native
+builds without VTE. The UI regression also exercises
+an 850-pixel window and keyboard search. The PTY suite covers shell job control,
+concurrent native commands, startup failure, cancellation and interactive resize.
+Shutdown validation also fixes late VTE exit callbacks and double freeing of
+command-line option overrides. GTK3 toolbar overflow updates are deferred until
+after layout so rapid tools-area resizes do not allocate the overflow button
+with an invalid size. GTK3 workspace and UI scenarios also pass AddressSanitizer
+with leak detection disabled. Native Wayland remains a manual check; automated
+UI tests use Xvfb.
 
 The main problem is the interaction model: terminals feel like a second
 application embedded below the file manager. Each side has a terminal toolbar,

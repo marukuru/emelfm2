@@ -2,6 +2,7 @@
 #include "emelfm2.h"
 #include "e2_option.h"
 #include "e2_terminal.h"
+#include "e2_terminal_backend.h"
 #include "e2_action.h"
 #include "e2_pane.h"
 #include "e2_command.h"
@@ -17,6 +18,8 @@ static GtkTextBuffer *left_buffer, *right_buffer;
 static GtkWidget *main_book, *original_output;
 static gint live_pid, normal_height;
 static GtkTreePath *saved_cursor;
+static GtkWidget *search_entry, *activity_terminal;
+static gint64 pause_until;
 static GtkWidget *find_widget (GtkWidget *widget, const gchar *name, GType type)
 {
     if ((name != NULL && !strcmp (gtk_widget_get_name (widget), name))
@@ -135,6 +138,18 @@ static gboolean answer_dialog (gpointer response)
         }
     g_list_free (windows);
     return !answered;
+}
+static void search_key (guint keyval, GdkModifierType state)
+{
+    GdkEventKey event = {0}; event.keyval = keyval; event.state = state;
+    gboolean handled = FALSE;
+    g_signal_emit_by_name (search_entry, "key-press-event", &event, &handled);
+    g_assert_true (handled);
+}
+static const gchar *unread (gint page)
+{
+    GtkWidget *badge = find_widget (tab_title (page), "tools-unread", 0);
+    return gtk_label_get_text (GTK_LABEL (badge));
 }
 static gboolean tick (gpointer data)
 {
@@ -456,6 +471,192 @@ static gboolean tick (gpointer data)
         case 15:
         {
             g_assert_cmpint (abs (gtk_paned_get_position (GTK_PANED (app.window.output_paned)) - normal_height), <=, 5);
+            gchar *clear = g_strconcat (_A(10), ".", _A(36), NULL);
+            OPENBGL
+            e2_action_run_simple_from (clear, NULL, app.main_window);
+            CLOSEBGL
+            g_free (clear);
+            gtk_text_buffer_set_text (app.tab.buffer, "One Needle.*日本語\nTwo Needle.*日本語\n", -1);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.find", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 16:
+        {
+            search_entry = find_widget (gtk_widget_get_parent (book), "tools-search-entry", 0);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == search_entry);
+            gtk_entry_set_text (GTK_ENTRY (search_entry), "needle.*日本語");
+            GtkTextIter a, b;
+            g_assert_true (gtk_text_buffer_get_selection_bounds (app.tab.buffer, &a, &b));
+            g_assert_cmpint (gtk_text_iter_get_offset (&a), ==, 4);
+            g_signal_emit_by_name (search_entry, "activate");
+            gtk_text_buffer_get_selection_bounds (app.tab.buffer, &a, &b);
+            g_assert_cmpint (gtk_text_iter_get_offset (&a), >, 4);
+            g_signal_emit_by_name (search_entry, "activate");
+            gtk_text_buffer_get_selection_bounds (app.tab.buffer, &a, &b);
+            g_assert_cmpint (gtk_text_iter_get_offset (&a), ==, 4);
+            search_key (GDK_Return, GDK_SHIFT_MASK);
+            gtk_text_buffer_get_selection_bounds (app.tab.buffer, &a, &b);
+            g_assert_cmpint (gtk_text_iter_get_offset (&a), >, 4);
+            gtk_entry_set_text (GTK_ENTRY (search_entry), "no such literal");
+            GtkWidget *result = find_widget (gtk_widget_get_parent (book), "tools-search-result", 0);
+            g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (result)), ==, "No matches");
+            search_key (GDK_Escape, 0);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == GTK_WIDGET (app.tab.text));
+            gchar *shell = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "activity-shell", NULL);
+            e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
+            g_free (shell);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.open_here", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 17:
+        {
+            activity_terminal = find_widget (gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), 1), NULL, g_type_from_name ("VteTerminal"));
+            gchar *text = e2_terminal_backend_text (activity_terminal);
+            gboolean ready = text != NULL && strstr (text, "Ready") != NULL;
+            g_free (text);
+            if (!ready) goto wait;
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
+            gchar *emit = g_build_filename (curr_view->dir, "emit-output", NULL);
+            g_assert_true (g_file_set_contents (emit, "", 0, NULL));
+            g_free (emit);
+            break;
+        }
+        case 18:
+            if (!*unread (1)) goto wait;
+            gtk_window_resize (GTK_WINDOW (app.main_window), 850, 600);
+            g_assert_cmpint (gtk_notebook_get_current_page (GTK_NOTEBOOK (book)), ==, 0);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == GTK_WIDGET (app.tab.text));
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 1);
+            e2_output_print (&app.tab, "BACKGROUND-LOG", NULL, FALSE, NULL);
+            break;
+        case 19:
+            if (!*unread (0) || *unread (1)) goto wait;
+            g_timeout_add (50, answer_dialog, GINT_TO_POINTER (GTK_RESPONSE_CANCEL));
+            OPENBGL
+            e2_action_run_simple_from ("terminal.close", NULL, app.main_window);
+            CLOSEBGL
+            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 2);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == activity_terminal);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.find", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        case 20:
+            if (g_getenv ("E2_VTE_UI_SCREENSHOT") != NULL)
+            {
+                GtkAllocation a; gtk_widget_get_allocation (app.main_window, &a);
+#ifdef USE_GTK3_0
+                GdkPixbuf *shot = gdk_pixbuf_get_from_window (gtk_widget_get_window (app.main_window), 0, 0, a.width, a.height);
+#else
+                GdkPixbuf *shot = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (app.main_window),
+                    gtk_widget_get_colormap (app.main_window), 0, 0, 0, 0, a.width, a.height);
+#endif
+                g_assert_true (gdk_pixbuf_save (shot, g_getenv ("E2_VTE_UI_SCREENSHOT"), "png", NULL, NULL));
+                g_object_unref (shot);
+            }
+            gtk_entry_set_text (GTK_ENTRY (search_entry), "UNREAD-TERMINAL");
+            g_assert_true (e2_terminal_backend_has_selection (activity_terminal));
+            search_key (GDK_Escape, 0);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == activity_terminal);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.hide_tools", NULL, app.main_window);
+            CLOSEBGL
+            pause_until = g_get_monotonic_time () + 700000;
+            break;
+        case 21:
+            if (g_get_monotonic_time () < pause_until) goto wait;
+            e2_option_bool_set ("show-output-window-on-output", TRUE);
+            e2_output_print (&app.tab, "STAY-HIDDEN", NULL, FALSE, NULL);
+            pause_until = g_get_monotonic_time () + 700000;
+            break;
+        case 22:
+        {
+            if (g_get_monotonic_time () < pause_until) goto wait;
+            g_assert_false (app.output.visible);
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
+            e2_option_bool_set ("pane-tabs", TRUE);
+            e2_option_bool_set ("terminal-per-tab", TRUE);
+            e2_window_recreate (&app.window);
+            main_book = gtk_paned_get_child1 (GTK_PANED (app.window.output_paned));
+            gchar command[] = "sh -c 'sleep .8; printf %s%s MAIN- HIDDEN'";
+            e2_command_run_at (command, curr_view->dir, E2_COMMAND_RANGE_DEFAULT, app.main_window);
+            key (GDK_n);
+            break;
+        }
+        case 23:
+        {
+            if (!main_page (1, 2)) goto wait;
+            GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (main_book), 0);
+            GtkWidget *label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (main_book), page);
+            GtkWidget *badge = find_widget (label, "main-tab-unread", 0);
+            if (!*gtk_label_get_text (GTK_LABEL (badge))) goto wait;
+            g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
+            key (GDK_Tab);
+            break;
+        }
+        case 24:
+            if (!main_page (0, 2)) goto wait;
+            e2_terminal_select_output (book);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 1);
+            g_timeout_add (50, answer_dialog, GINT_TO_POINTER (GTK_RESPONSE_ACCEPT));
+            OPENBGL
+            e2_action_run_simple_from ("terminal.close", NULL, app.main_window);
+            CLOSEBGL
+            e2_window_output_show (NULL, NULL);
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
+            pause_until = g_get_monotonic_time () + 700000;
+            break;
+        case 25:
+        {
+            if (g_get_monotonic_time () < pause_until) goto wait;
+            GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (main_book), 0);
+            GtkWidget *label = gtk_notebook_get_tab_label (GTK_NOTEBOOK (main_book), page);
+            GtkWidget *badge = find_widget (label, "main-tab-unread", 0);
+            g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (badge)), ==, "");
+            book = app.outbook;
+            g_assert_cmpint (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)), ==, 1);
+            gchar *shell = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "bash", NULL);
+            e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
+            e2_option_bool_set ("terminal-shell-integration", TRUE);
+            g_free (shell);
+            OPENBGL
+            e2_action_run_simple_from ("terminal.open_here", NULL, app.main_window);
+            CLOSEBGL
+            break;
+        }
+        case 26:
+        {
+            if (!exited (1))
+            {
+                if (g_get_monotonic_time () > pause_until + 4000000)
+                {
+                    GtkWidget *label = find_widget (tab_title (1), NULL, GTK_TYPE_LABEL);
+                    gchar *tip = gtk_widget_get_tooltip_text (label);
+                    GtkWidget *term = find_widget (gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), 1), NULL, g_type_from_name ("VteTerminal"));
+                    gchar *text = e2_terminal_backend_text (term);
+                    g_error ("integration session failed to exit: %s; %s", tip, text);
+                }
+                goto wait;
+            }
+            gchar *file = g_build_filename (curr_view->dir, "shell-args", NULL), *args;
+            g_assert_true (g_file_get_contents (file, &args, NULL, NULL));
+            gchar *prefix = g_strconcat ("--rcfile\n", g_get_tmp_dir (), "/emelfm2-bash-", NULL);
+            g_assert_true (g_str_has_prefix (args, prefix));
+            g_free (prefix);
+            g_assert_true (g_str_has_suffix (args, "\n-i\n"));
+            g_free (args); g_free (file);
+            file = g_build_filename (curr_view->dir, "rc-path", NULL);
+            gchar *rc;
+            g_assert_true (g_file_get_contents (file, &rc, NULL, NULL));
+            g_assert_true (g_file_test (rc, G_FILE_TEST_IS_REGULAR));
+            GtkWidget *close = find_widget (tab_title (1), "terminal-close", 0);
+            gtk_button_clicked (GTK_BUTTON (close));
+            g_assert_false (g_file_test (rc, G_FILE_TEST_EXISTS));
+            g_free (rc); g_free (file);
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);

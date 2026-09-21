@@ -2,6 +2,8 @@
 #include "emelfm2.h"
 #include "e2_terminal_backend.h"
 #include "e2_terminal_context.h"
+#include "e2_terminal_shell.h"
+#include <sys/stat.h>
 #include <glib/gstdio.h>
 #include <unistd.h>
 
@@ -43,6 +45,82 @@ static void change_directory (GtkWidget *terminal, const gchar *directory)
     gchar *command = g_strconcat ("cd -- ", quoted, "\n", NULL);
     e2_terminal_backend_send (terminal, command);
     g_free (command); g_free (quoted);
+}
+static void wait_text (GtkWidget *terminal, const gchar *needle)
+{
+    gint64 deadline = g_get_monotonic_time () + 5000000;
+    gboolean found = FALSE;
+    do
+    {
+        pump ();
+        gchar *text = e2_terminal_backend_text (terminal);
+        found = text != NULL && strstr (text, needle) != NULL;
+        g_free (text);
+    } while (!found && g_get_monotonic_time () < deadline);
+    g_assert_true (found);
+}
+static void test_metadata (const gchar *root, const gchar *folder, gboolean array)
+{
+    gchar *rc = g_build_filename (root, "user rc", NULL);
+    const gchar *original = array ? "unset HISTFILE\nPS1='UNCHANGED-PROMPT> '\nPROMPT_COMMAND=('printf \"FIRST-HOOK-%s\\n\" \"$?\"' 'printf \"SECOND-HOOK\\n\"')\n" :
+        "unset HISTFILE\nPS1='UNCHANGED-PROMPT> '\nPROMPT_COMMAND='printf \"FIRST-HOOK-%s\\n\" \"$?\"; printf \"SECOND-HOOK\\n\"'\n";
+    g_assert_true (g_file_set_contents (rc, original, -1, NULL));
+    GError *error = NULL;
+    gchar *hook = e2_terminal_shell_rc (rc, &error);
+    g_assert_no_error (error);
+    struct stat st;
+    g_assert_cmpint (g_stat (hook, &st), ==, 0);
+    g_assert_cmpint (st.st_mode & 0777, ==, 0600);
+    GtkWidget *window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    GtkWidget *terminal = e2_terminal_backend_new (exited, NULL);
+    gtk_container_add (GTK_CONTAINER (window), terminal);
+    gtk_widget_show_all (window);
+    GCancellable *cancel = g_cancellable_new ();
+    gchar *args[] = { "/bin/bash", "--noprofile", "--rcfile", hook, "-i", NULL };
+    shell_exited = FALSE;
+    e2_terminal_backend_spawn (terminal, root, args, cancel, spawned, NULL);
+    wait_text (terminal, "UNCHANGED-PROMPT> ");
+    wait_text (terminal, "SECOND-HOOK");
+    E2_TerminalContext *context = e2_terminal_context_new (root);
+    change_directory (terminal, folder);
+    gchar *expected = g_strconcat (g_get_user_name (), "@日本語 folder", NULL);
+    wait_label (terminal, context, expected);
+    /* Require actual shell reports, not just /proc fallback. */
+    gint64 deadline = g_get_monotonic_time () + 5000000;
+    while ((e2_terminal_backend_title (terminal) == NULL
+        || strstr (e2_terminal_backend_title (terminal), "日本語 folder") == NULL)
+        && g_get_monotonic_time () < deadline) pump ();
+    g_assert_nonnull (strstr (e2_terminal_backend_title (terminal), "日本語 folder"));
+#ifdef E2_VTE3
+    const gchar *uri = e2_terminal_backend_directory_uri (terminal);
+    gchar *decoded = g_filename_from_uri (uri, NULL, NULL);
+    g_assert_cmpstr (decoded, ==, folder);
+    g_free (decoded);
+#endif
+    e2_terminal_backend_send (terminal, "stty -echo; false\n");
+    wait_text (terminal, "FIRST-HOOK-1");
+    e2_terminal_backend_send (terminal, "printf 'Needle.*日本語\\nOther line\\nNeedle.*日本語\\n'\n");
+    wait_text (terminal, "Other line");
+    g_assert_true (e2_terminal_backend_search (terminal, "needle.*日本語", FALSE));
+    g_assert_true (e2_terminal_backend_has_selection (terminal));
+    g_assert_true (e2_terminal_backend_search (terminal, "needle.*日本語", FALSE));
+    g_assert_true (e2_terminal_backend_search (terminal, "needle.*日本語", FALSE));
+    g_assert_true (e2_terminal_backend_search (terminal, "needle.*日本語", TRUE));
+    g_assert_false (e2_terminal_backend_search (terminal, "NeedleZZ日本語", FALSE));
+    g_assert_false (e2_terminal_backend_search (terminal, "", FALSE));
+    gchar *unchanged;
+    g_assert_true (g_file_get_contents (rc, &unchanged, NULL, NULL));
+    g_assert_cmpstr (unchanged, ==, original);
+    g_free (unchanged);
+    e2_terminal_backend_send (terminal, "exit\n");
+    deadline = g_get_monotonic_time () + 5000000;
+    while (!shell_exited && g_get_monotonic_time () < deadline) pump ();
+    g_assert_true (shell_exited);
+    gtk_widget_destroy (window);
+    g_object_unref (cancel);
+    e2_terminal_context_free (context);
+    g_unlink (hook); g_unlink (rc);
+    g_free (hook); g_free (rc); g_free (expected);
 }
 int main (int argc, char **argv)
 {
@@ -134,9 +212,13 @@ int main (int argc, char **argv)
     gtk_widget_destroy (window);
     g_object_unref (cancel);
     e2_terminal_context_free (context);
+    g_assert_cmpint (g_mkdir (folder, 0700), ==, 0);
+    test_metadata (root, folder, TRUE);
+    test_metadata (root, folder, FALSE);
+    g_rmdir (folder);
     g_rmdir (controls); g_rmdir (renamed); g_rmdir (root);
     g_free (root_label); g_free (initial); g_free (user);
     g_free (controls); g_free (renamed); g_free (folder); g_free (root);
-    g_print ("terminal titles: cwd, rename, nested shells, reported users, Unicode, root and stale metadata passed\n");
+    g_print ("terminal titles: cwd, rename, nested shells, reported users, Unicode, root, stale metadata, wrapped literal search and opt-in Bash hooks passed\n");
     return 0;
 }
