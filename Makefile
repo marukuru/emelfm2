@@ -218,6 +218,8 @@ LINC = $(foreach dir, $(DIRS), -I$(dir))
 # overflow protection with gcc4
 #lCFLAGS += -D_FORTIFY_SOURCE
 lCFLAGS += -D_FILE_OFFSET_BITS=64 -D_LARGEFILE_SOURCE -D_REENTRANT -I. $(LINC)
+lCFLAGS += $(shell $(PKG_CONFIG) --cflags fontconfig pangofc)
+lCFLAGS += -DE2_VIEWER_FONT_SOURCE_DIR='"$(CURDIR)/resources/fonts"'
 
 ifneq ($(WITH_GTK2),0)
 ifneq ($(WITH_GTK3),0)
@@ -348,6 +350,7 @@ lLIBS += $(shell $(PKG_CONFIG) --libs gio-2.0)
 endif
 
 lLIBS += -lrt -lm -ldl $(VTE_LIBS)
+lLIBS += $(shell $(PKG_CONFIG) --libs fontconfig pangofc)
 ifneq ($(USE_GAMIN),0)
 #gamin code is a superset of FAM code, so gamin needs fam as well
 lLIBS += -lfam
@@ -401,7 +404,7 @@ all: $(OBJECTS_DIR) $(BUILD_FILE) $(TARGET) $(LIBS) $(OPTLIBS) $(DESKTOP_FILE) $
 
 plugins: $(OBJECTS_DIR)/$(LIBS) $(LIBS_OBJECTS) $(LIBS_XOBJECTS)
 
-install: all install_plugins
+install: all install_plugins install_viewer_fonts
 	@echo "installing $(TARGET) to prefix '$(PREFIX)'"
 	@install -d -m 755 $(BIN_DIR)
 	@install -m 755 $(TARGET) $(BIN_DIR)
@@ -424,6 +427,11 @@ install: all install_plugins
 
 # no i18n install unless specific target used
 
+.PHONY: install_viewer_fonts
+install_viewer_fonts:
+	@install -d -m 755 $(PREFIX)/share/$(TARGET)/fonts
+	@install -m 644 resources/fonts/* $(PREFIX)/share/$(TARGET)/fonts/
+
 install_plugins: plugins
 	@echo "installing plugins to prefix '$(PREFIX)'"
 	@install -d $(PLUGINS_DIR)
@@ -445,6 +453,7 @@ endif
 uninstall: uninstall_plugins
 	@echo "uninstalling $(TARGET) from prefix '$(PREFIX)'"
 	@rm -f $(BIN_DIR)/$(TARGET)
+	@rm -rf $(PREFIX)/share/$(TARGET)/fonts
 	@rm -rf $(DOC_DIR)
 #	@echo -e "\nif you like you can also delete the icon directory:\n\t$(ICON_DIR)\n"
 	@rm -rf $(ICON_DIR)

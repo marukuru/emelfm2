@@ -332,3 +332,13 @@ When opening text files for viewing or editing, the character-encoding of the fi
 EmelFM2 has basic encoding conversion capability which is applied when appropriate to files opened with the internal viewer or editor. There is also a configuration option to specify an external command to perform encoding conversion. If enabled, that command will be applied in preference to the internal conversion, for files opened in the internal viewer or editor. Any such external command must send the converted text to stdout. The command may contain any of the macros %f, %%f, %p, %%p. Otherwise, the current filename, surrounded by '', will be appended to the command string.
 
 EmelFM2 has configuration options to use an external text-file viewer and/or editor, with corresponding commands. If those applications require the text encoding to be altered, custom command-string(s) can be crafted accordingly. If it's appropriate to use the default external encoder command, then prepending "$[command-encoder] |" to the viwer/editor command will achieve that (e.g. $[command-encoder] | leafpad).
+
+[File viewer]
+The internal file viewer has settings for maximum text width (20-500 character
+cells), ASCII art detection, the ordinary-text font, HTTP/HTTPS hyperlinks,
+a custom browser executable, line numbers, and foreground/background/link colors.
+Detected artwork uses bundled IBM VGA or Amiga Topaz at its native pixel size.
+Long lines are retained and can be scrolled or wrapped. Line numbers are a gutter,
+not part of the document. Browser paths may contain spaces; do not quote them or
+include command-line arguments. Leaving the custom browser toggle off uses the
+desktop browser. Existing dialog-view-* settings keep their names for compatibility.

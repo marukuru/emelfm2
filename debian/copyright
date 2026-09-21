@@ -106,3 +106,17 @@ Additional copyrights:
 
  * src/utils/e2_utf8.c
   Portion _maybe_ copyright (C) 2004-2005 Tarot Osuji
+
+Bundled viewer fonts (resources/fonts):
+
+ * IBM_VGA_8x16.ttf: PxPlus IBM VGA 8x16 by VileR, from The Ultimate
+   Oldschool PC Font Pack 2.2, licensed under CC BY-SA 4.0. The full license
+   is resources/fonts/LICENSE.TXT. Source: https://int10h.org/oldschool-pc-fonts/
+ * Topaz_a1200.ttf and Topaz_a1200.raw: Topaz is credited to AmigaInc.;
+   TTF and raw versions are copyright dMG of TrueSchool / Divine Stylers.
+   Licensed upstream under GPL with the Font Exception. See
+   resources/fonts/amigafonts-README.txt, GPL-2.txt and FONT-EXCEPTION.txt.
+   Source: https://github.com/rewtnull/amigafonts
+
+The unmodified fonts and their notices are installed in
+/usr/share/emelfm2/fonts/.

@@ -510,8 +510,8 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 	}
 
 	gboolean usable;
-	gulong length;
-	gpointer contents;
+	gulong length = 0;
+	gpointer contents = NULL;
 	gchar *utfconverter = NULL;
 	if (e2_option_bool_get ("use-external-encoder"))
 	{
@@ -602,9 +602,9 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 
 	if (utfconverter == NULL	//not externally converted
 #ifdef E2_VFS
-		&& !e2_fs_get_file_contents (&ddata, &contents, &length, TRUE E2_ERR_PTR()))
+		&& !e2_fs_get_file_contents (&ddata, &contents, &length, !rt->is_viewer E2_ERR_PTR()))
 #else
-		&& !e2_fs_get_file_contents (localpath, &contents, &length, TRUE E2_ERR_PTR()))
+		&& !e2_fs_get_file_contents (localpath, &contents, &length, !rt->is_viewer E2_ERR_PTR()))
 #endif
 	{
 		e2_fs_error_local (_("Error reading file %s"),
@@ -618,6 +618,14 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 		return FALSE;
 	}
 
+	if (utfconverter != NULL && contents != NULL) length = strlen (contents);
+	if (rt->is_viewer)
+	{
+		rt->viewer = e2_viewer_new (contents, length); //takes ownership of raw bytes
+		rt->textbuffer = e2_viewer_buffer (rt->viewer);
+		rt->charset = e2_viewer_encoding (rt->viewer);
+		goto loaded;
+	}
 	if (length > 0)
 	{
 		//fix CR's in the text if necessary
@@ -888,6 +896,7 @@ rewait:
 		printd (DEBUG, "Read text file charset is %s", rt->charset);
 	}
 
+loaded:
 	if (rt->localpath != NULL)
 		g_free (rt->localpath);
 	rt->localpath = localpath;	//we're ok, so remember the real path
@@ -908,6 +917,11 @@ rewait:
 */
 void e2_view_dialog_set_font (gint *char_width, gint *char_height, E2_ViewDialogRuntime *rt)
 {
+	if (rt->viewer != NULL)
+	{
+		e2_viewer_set_font (rt->viewer, rt->textview, char_width, char_height);
+		return;
+	}
 	gchar *fntname;
 	if (e2_option_bool_get ("dialog-view-use-font"))
 	{
@@ -1045,7 +1059,7 @@ static void _e2_view_dialog_show_context_menu (GtkWidget *textview,
 	item_name = g_strconcat (_A(3),".",_A(34),NULL);
 	e2_menu_add_action (menu, _("_Settings"), STOCK_NAME_PREFERENCES,
 		_("Open the configuration dialog at the options page"), item_name,
-		_C(11)); //_("dialogs")
+		_("File viewer"));
 	g_free(item_name);
 
 	g_signal_connect (G_OBJECT (menu), "selection-done",
@@ -1263,6 +1277,7 @@ void e2_view_dialog_destroy (E2_ViewDialogRuntime *rt)
 	//NOTE all dialog bindings cleared during destruction
 
 	gtk_widget_destroy (rt->dialog);
+	e2_viewer_free (rt->viewer);
 	gtk_widget_grab_focus (curr_view->treeview);	//CHECKME consistency ok ?
 	g_free (rt->localpath);
 //	if (rt->idle_id != 0)
@@ -1509,7 +1524,7 @@ static void _e2_view_dialog_response_cb (GtkDialog *dialog, gint response,
 	switch (response)
 	{
 	  case E2_RESPONSE_USER1:  //text wrap
-		rt->textwrap = !rt->textwrap;
+		rt->textwrap = gtk_text_view_get_wrap_mode (GTK_TEXT_VIEW (rt->textview)) == GTK_WRAP_NONE;
 		gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (rt->textview),
 			rt->textwrap ? GTK_WRAP_WORD: GTK_WRAP_NONE);
 		break;
@@ -1712,6 +1727,7 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 		return NULL;
 	}
 #endif
+	rt->is_viewer = TRUE;
 	//get the file content into rt->textbuf
 	if (!e2_view_dialog_read_text (localpath, rt))
 	{
@@ -1735,13 +1751,23 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	e2_view_dialog_init_hilites (rt);
 #endif
 	gchar *utfpath = F_FILENAME_FROM_LOCALE (rt->localpath);
-	rt->dialog = e2_dialog_create (_("displaying file"), NULL, (ResponseFunc)_e2_view_dialog_response_cb, rt, utfpath);
+	gchar *escaped_path = g_markup_escape_text (utfpath, -1);
+	rt->dialog = e2_dialog_create (_("displaying file"), NULL, (ResponseFunc)_e2_view_dialog_response_cb, rt, "%s", escaped_path);
+	g_free (escaped_path);
 	F_FREE (utfpath, rt->localpath);
 //	gtk_window_set_type_hint (GTK_WINDOW (rt->dialog), GDK_WINDOW_TYPE_HINT_NORMAL);
 	//override some default label properties
 	GtkWidget *label = g_object_get_data (G_OBJECT (rt->dialog),
 		"e2-dialog-label");
 	gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+	gtk_label_set_line_wrap (GTK_LABEL (label), FALSE);
+	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
+	gtk_box_set_child_packing (GTK_BOX (gtk_widget_get_parent (label)), label,
+		TRUE, TRUE, E2_PADDING, GTK_PACK_START);
+#ifdef USE_GTK3_0
+	gtk_widget_set_halign (label, GTK_ALIGN_FILL);
+#endif
+	gtk_widget_set_tooltip_text (label, gtk_label_get_text (GTK_LABEL (label)));
 
 	GtkWidget *dialog_vbox =
 #ifdef USE_GTK2_14
@@ -1750,8 +1776,7 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 		GTK_DIALOG (rt->dialog)->vbox;
 #endif
 	e2_widget_add_separator (dialog_vbox, FALSE, 0);
-	GtkWidget *sw = e2_widget_add_sw (dialog_vbox,
-			GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC, TRUE, E2_PADDING);
+	GtkWidget *sw = e2_viewer_scrolled (rt->viewer, dialog_vbox);
 	//create the view
 	//BGL must be closed from textview-creation until dialog show, to block
 	//idle-callback happening too early (hence on gtk3 at least, no styling, crash)
@@ -1759,25 +1784,24 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	//set view defaults
 	gtk_text_view_set_editable (GTK_TEXT_VIEW (rt->textview), FALSE);
 	gtk_text_view_set_cursor_visible ((GtkTextView*)rt->textview, FALSE);
-	rt->textwrap = e2_option_bool_get ("dialog-view-wrap");
+	rt->textwrap = !e2_viewer_is_art (rt->viewer) && e2_option_bool_get ("dialog-view-wrap");
 	gtk_text_view_set_wrap_mode ((GtkTextView*)rt->textview,
 		rt->textwrap ? GTK_WRAP_WORD : GTK_WRAP_NONE);
 	gtk_container_add (GTK_CONTAINER (sw), rt->textview);
 	gint char_width, char_height;
 	e2_view_dialog_set_font (&char_width, &char_height, rt);
+	e2_viewer_attach (rt->viewer, rt->textview, dialog_vbox);
 	rt->window_width = e2_option_int_get ("dialog-view-width");
+	rt->window_width = MIN (rt->window_width, e2_option_int_get ("dialog-view-max-width"));
 	rt->window_height = e2_option_int_get ("dialog-view-height");;
 //	rt->idle_id = 0;
 	//init search runtime data
 	rt->history = e2_list_copy_with_data (find_history);
 
-	//action area is a GtkHButtonBox packed at the end of the dialog's vbox
-	//ditto for dialog->separator
-	//locate find-bar between those 2
+	//The search panel sits between the document and the responsive footer.
 	rt->panel = e2_widget_get_box (TRUE, FALSE, 0);
-	gtk_box_pack_end (GTK_BOX (dialog_vbox), rt->panel, FALSE, TRUE,
+	gtk_box_pack_start (GTK_BOX (dialog_vbox), rt->panel, FALSE, TRUE,
 		E2_PADDING_XSMALL);
-	gtk_box_reorder_child (GTK_BOX (dialog_vbox), rt->panel, 1);
 
 	//add handlebox
 #ifdef USE_GTK3_4
@@ -1806,9 +1830,10 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 		(rt->dialog, STOCK_NAME_ZOOM_FIT, labeltext, E2_RESPONSE_USER3);
 	e2_widget_set_safetip (rt->hidebtn, _("Hide the search options bar"));
 
-	e2_dialog_add_check_button (rt->dialog, rt->textwrap, _("_wrap"),
+	GtkWidget *wrap = e2_dialog_add_check_button (rt->dialog, rt->textwrap, _("_wrap"),
 		_("If activated, text in the window will be word-wrapped"),
 		E2_RESPONSE_USER1);
+	g_object_set_data (G_OBJECT (rt->textview), "viewer-wrap-toggle", wrap);
 
 	labeltext = _("_Find");
 	find_keycode = e2_utils_get_mnemonic_keycode (labeltext);
@@ -1862,6 +1887,10 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 #endif
 	//left-align the label
 	gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (hbbox), rt->info_label, TRUE);
+	e2_viewer_add_actions (rt->viewer, hbbox);
+#ifndef USE_GTK3_0
+	gtk_dialog_set_has_separator (GTK_DIALOG (rt->dialog), FALSE);
+#endif
 
 	//highest priority - arrange for key-translations from locale
 #ifdef USE_GTK3_0
@@ -2160,43 +2189,61 @@ void e2_view_dialog_actions_register (void)
 */
 void e2_view_dialog_options_register (void)
 {
-	gchar *group_name = g_strconcat(_C(11),":",_C(42),NULL); //_("dialogs:view"
+	gchar *group_name = g_strconcat (_C(20), ".", _("File viewer"), NULL);
 	//first some options that may, but probably won't, change during the session
 	e2_option_bool_register ("dialog-view-wrap",
 		group_name, _("wrap text"),
 		_("This causes the view window to open with text-wrapping enabled"),
 		NULL, TRUE,
-		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_FREEGROUP);
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT | E2_OPTION_FLAG_FREEGROUP);
 	e2_option_int_register ("dialog-view-width",
-		group_name, _("window width"),
+		group_name, _("initial window width"),
 		_("The view window will default to showing this many characters per line (but the the displayed buttons may make it wider than this)")
 		, NULL, 84, 20, 1000,
-		E2_OPTION_FLAG_ADVANCED);
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_COMPACT);
 	e2_option_int_register ("dialog-view-height",
 		group_name, _("window height"),
 		_("The view window will default to showing this many lines of text"), NULL, 30, 10, 1000,
-		E2_OPTION_FLAG_ADVANCED);
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-use-font",
 		group_name, _("use custom font"),
 		_("If activated, the font specified below will be used, instead of the theme default"),
-		NULL, FALSE,
-		E2_OPTION_FLAG_BASIC);
-	e2_option_font_register ("dialog-view-font", group_name, _("custom font for viewing files"),
-		_("This is the font used for text in each view dialog"), "dialog-view-use-font", "Sans 10", 	//_I( font name
-		E2_OPTION_FLAG_BASIC);
+		NULL, TRUE,
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_font_register ("dialog-view-font", group_name, _("text font"),
+		_("Font for ordinary text when ASCII art is not detected"), "dialog-view-use-font", "Monospace 10",
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_int_register ("dialog-view-max-width", group_name, _("maximum width (characters)"),
+		_("Limit the text area width; longer lines can be scrolled or wrapped"), NULL, 100, 20, 500, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_bool_register ("dialog-view-ascii-art", group_name, _("detect ASCII art"),
+		_("Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font without wrapping"), NULL, TRUE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_bool_register ("dialog-view-links", group_name, _("clickable hyperlinks"),
+		_("Open HTTP and HTTPS links with a click; dragging still selects text"), NULL, TRUE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_bool_register ("dialog-view-custom-browser", group_name, _("use custom browser"),
+		_("Use the browser executable below instead of the desktop's default browser"), "dialog-view-links", FALSE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_str_register ("dialog-view-browser", group_name, _("browser executable"),
+		_("Executable name or full path, without arguments; the link is passed as one argument"), "dialog-view-custom-browser", "", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_bool_register ("dialog-view-line-numbers", group_name, _("show line numbers"),
+		_("Show logical line numbers beside the text; copied text is unchanged"), NULL, FALSE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_color_register ("dialog-view-foreground", group_name, _("foreground color"),
+		_("Text and line-number color"), NULL, "#dddddd", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_color_register ("dialog-view-background", group_name, _("background color"),
+		_("Background color of the file viewer"), NULL, "#202020", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_color_register ("dialog-view-link-color", group_name, _("link color"),
+		_("Color of clickable hyperlinks"), "dialog-view-links", "#72b7ff", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register
 		("dialog-search-case-sensitive", group_name, _("case sensitive searches"),
 		_("This causes the view window search-bar to first open with case-sensitive searching enabled"),
 		NULL, FALSE,
-		E2_OPTION_FLAG_BASIC);
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-search-show-last",
 		group_name, _("show last search string"),
 		_("This shows the last search-string in the entry field, when the view window search-bar is displayed"),
 		NULL, TRUE,
-		E2_OPTION_FLAG_ADVANCED);
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register
 		("dialog-search-history", group_name, _("keep search history"),
 		_("This causes search strings to be remembered between sessions"),
 		NULL, FALSE,
-		E2_OPTION_FLAG_ADVANCED);
+		E2_OPTION_FLAG_ADVANCED | E2_OPTION_FLAG_COMPACT);
 }

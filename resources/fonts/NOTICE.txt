@@ -1,0 +1,15 @@
+emelFM2 bundles the following unmodified fonts for its internal file viewer.
+
+PxPlus IBM VGA 8x16
+By VileR, from The Ultimate Oldschool PC Font Pack 2.2.
+Source: https://int10h.org/oldschool-pc-fonts/
+License: Creative Commons Attribution-ShareAlike 4.0 International.
+The full license is included in LICENSE.TXT.
+
+Topaz a600a1200a4000
+Topaz is copyright AmigaInc.
+The TTF and raw versions are copyright dMG of TrueSchool / Divine Stylers.
+Source: https://github.com/rewtnull/amigafonts
+Released upstream under the GNU GPL with the Font Exception (GPL-FE).
+See amigafonts-README.txt, GPL-2.txt and FONT-EXCEPTION.txt.
+The corresponding raw font source is included in Topaz_a1200.raw.

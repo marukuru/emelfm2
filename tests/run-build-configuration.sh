@@ -31,3 +31,5 @@ else
 fi
 sh tests/run-command-wildcards.sh
 TEST_VTE="$vte" tests/run-application-smoke.sh
+tests/run-viewer-text.sh
+tests/run-viewer-ui.sh

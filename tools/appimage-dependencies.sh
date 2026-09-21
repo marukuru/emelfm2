@@ -13,4 +13,4 @@ case "$vte" in
     1) packages="$packages $terminal" ;;
     *) echo 'WITH_VTE must be 0 or 1' >&2; exit 2 ;;
 esac
-printf '%s\n' "$packages"
+printf '%s\n' "$packages libfontconfig1-dev libpango1.0-dev"

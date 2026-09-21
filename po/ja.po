@@ -1530,7 +1530,7 @@ msgstr "アクション(_A)"
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
 #: e2_option_tree_context_menu.c:287 e2_output.c:1754 e2_terminal.c:462
-#: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1034 e2p_copy.c:757
+#: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1048 e2p_copy.c:757
 msgid "_Copy"
 msgstr "コピー(_C)"
 
@@ -1964,15 +1964,15 @@ msgstr "選んだものを保存(_l)"
 msgid "Save the selected text"
 msgstr "選んだテキストを保存"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1040
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1054
 msgid "Print file"
 msgstr "ファイルを印刷"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1040
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1054
 msgid "Print selected text"
 msgstr "選んだテキストを印刷"
 
-#: e2_edit_dialog.c:929 e2_view_dialog.c:1041
+#: e2_edit_dialog.c:929 e2_view_dialog.c:1055
 msgid "_Print.."
 msgstr "印刷(_P)"
 
@@ -1997,11 +1997,11 @@ msgid "Find and replace matching text"
 msgstr "合致するテキストを検索して置換"
 
 #: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1709
-#: e2_view_dialog.c:1798
+#: e2_view_dialog.c:1822
 msgid "_Hide"
 msgstr "隠す(_H)"
 
-#: e2_edit_dialog.c:943 e2_view_dialog.c:1807
+#: e2_edit_dialog.c:943 e2_view_dialog.c:1831
 msgid "Hide the search options bar"
 msgstr "検索オプションバーを隠す"
 
@@ -2049,7 +2049,7 @@ msgstr "スペルチェックする言語を指定"
 msgid "_Wrap"
 msgstr "折り返す(_W)"
 
-#: e2_edit_dialog.c:974 e2_view_dialog.c:1810
+#: e2_edit_dialog.c:974 e2_view_dialog.c:1834
 msgid "If activated, text in the window will be word-wrapped"
 msgstr "有効にすると、ウィンドウのテキストを折り返します"
 
@@ -2057,7 +2057,7 @@ msgstr "有効にすると、ウィンドウのテキストを折り返します
 msgid "Se_ttings"
 msgstr "設定(_t)"
 
-#: e2_edit_dialog.c:978 e2_view_dialog.c:1047
+#: e2_edit_dialog.c:978 e2_view_dialog.c:1061
 msgid "Open the configuration dialog at the options page"
 msgstr "オプションページに設定ダイアログを開く"
 
@@ -2111,16 +2111,16 @@ msgid "Replace this match"
 msgstr "これを置き換える"
 
 #: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1701
-#: e2_terminal.c:467 e2_view_dialog.c:1813 e2p_find.c:4241
+#: e2_terminal.c:467 e2_view_dialog.c:1838 e2p_find.c:4241
 msgid "_Find"
 msgstr "検索(_F)"
 
-#: e2_edit_dialog.c:1720 e2_view_dialog.c:1828
+#: e2_edit_dialog.c:1720 e2_view_dialog.c:1853
 msgid "Find the next match"
 msgstr "次を検索"
 
-#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1839
-#: e2_view_dialog.c:1860
+#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1864
+#: e2_view_dialog.c:1885
 msgid "not found"
 msgstr "見つかりません"
 
@@ -2150,7 +2150,7 @@ msgstr "アイテム:"
 msgid "Mime:"
 msgstr "Mime:"
 
-#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830
+#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:554
 msgid "Encoding:"
 msgstr "エンコーディング:"
 
@@ -2318,7 +2318,7 @@ msgstr "ディレクトリ"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1765 e2_view_dialog.c:715
+#: e2_output.c:1765 e2_view_dialog.c:723
 msgid "_Open"
 msgstr "開く(_O)"
 
@@ -3883,11 +3883,11 @@ msgstr "背景を縞状に"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr ""
 
-#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2180
+#: e2_option__default.c:293 e2_output.c:4366 e2_view_dialog.c:2209
 msgid "use custom font"
 msgstr "カスタムフォントを使う"
 
-#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2181
+#: e2_option__default.c:294 e2_output.c:4367 e2_view_dialog.c:2210
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4044,7 +4044,7 @@ msgstr "カスタム背景色"
 msgid "If enabled, the color specified below will be used for background"
 msgstr "有効にすると、指定した色を背景に使う"
 
-#: e2_option__default.c:371
+#: e2_option__default.c:371 e2_view_dialog.c:2230
 msgid "background color"
 msgstr "背景色"
 
@@ -4343,7 +4343,7 @@ msgstr "クリア(_L)"
 msgid "Clear this tab"
 msgstr "このタブをクリア"
 
-#: e2_output.c:1755 e2_view_dialog.c:1035
+#: e2_output.c:1755 e2_view_dialog.c:1049
 msgid "Copy selected text"
 msgstr "選んだテキストをコピー"
 
@@ -4359,7 +4359,7 @@ msgstr "コマンドの出力(_m)"
 msgid "Show output from a completed command"
 msgstr "完了したコマンドからの出力を表示"
 
-#: e2_output.c:1819 e2_view_dialog.c:1046
+#: e2_output.c:1819 e2_view_dialog.c:1060
 msgid "_Settings"
 msgstr "設定(_S)"
 
@@ -5880,139 +5880,255 @@ msgstr "%s を読めません"
 msgid "Encoding conversion command '%s' failed"
 msgstr "エンコーディング変換コマンド '%s' は失敗しました"
 
-#: e2_view_dialog.c:628
+#: e2_view_dialog.c:636
 #, c-format
 msgid "Conversion from %s encoding failed: \"%s\""
 msgstr "%s エンコーディングからの変換は失敗しました: \"%s\""
 
-#: e2_view_dialog.c:666
+#: e2_view_dialog.c:674
 msgid "choose file encoding"
 msgstr "ファイルのエンコーディングを選択"
 
-#: e2_view_dialog.c:679
+#: e2_view_dialog.c:687
 msgid "Select one or more encodings to test"
 msgstr "1つ以上のエンコーディングをテスト用に選択"
 
-#: e2_view_dialog.c:710
+#: e2_view_dialog.c:718
 msgid "_Test"
 msgstr "テスト(_T)"
 
-#: e2_view_dialog.c:777
+#: e2_view_dialog.c:785
 msgid "The file encoding may be any of the selected ones"
 msgstr "ファイルエンコーディングは選んだ物の中のいずれか"
 
-#: e2_view_dialog.c:797
+#: e2_view_dialog.c:805
 msgid "File encoding cannot be converted from any selected type"
 msgstr "選択したいずれの種類にもファイルエンコーディングを変換できません"
 
-#: e2_view_dialog.c:1105
+#: e2_view_dialog.c:1062 e2_view_dialog.c:2192
+msgid "File viewer"
+msgstr ""
+
+#: e2_view_dialog.c:1119
 msgid "Finds"
 msgstr "検索"
 
-#: e2_view_dialog.c:1119
+#: e2_view_dialog.c:1133
 msgid "If activated, text case does matter when searching"
 msgstr "有効にすると、検索時に大文字と小文字を区別する"
 
-#: e2_view_dialog.c:1119
+#: e2_view_dialog.c:1133
 msgid "_match case"
 msgstr "大文字小文字を区別(_m)"
 
-#: e2_view_dialog.c:1124
+#: e2_view_dialog.c:1138
 msgid "If activated, matches must be surrounded by word-separator characters"
 msgstr ""
 
-#: e2_view_dialog.c:1124
+#: e2_view_dialog.c:1138
 msgid "wh_ole words"
 msgstr "語句全体(_o)"
 
-#: e2_view_dialog.c:1128
+#: e2_view_dialog.c:1142
 msgid "If activated, searching proceeds toward document start"
 msgstr "有効にすると、ドキュメントの最初から検索します"
 
-#: e2_view_dialog.c:1128
+#: e2_view_dialog.c:1142
 msgid "_backward"
 msgstr "後方(_b)"
 
-#: e2_view_dialog.c:1131
+#: e2_view_dialog.c:1145
 msgid "If activated, searching cycles from either end to the other"
 msgstr "有効にすると、最後から最初を循環して検索します"
 
-#: e2_view_dialog.c:1131
+#: e2_view_dialog.c:1145
 msgid "_loop"
 msgstr "繰り返し(_l)"
 
-#: e2_view_dialog.c:1738
+#: e2_view_dialog.c:1755
 msgid "displaying file"
 msgstr "ファイルを表示"
 
-#: e2_view_dialog.c:1809
+#: e2_view_dialog.c:1833
 msgid "_wrap"
 msgstr "折り返す(_w)"
 
-#: e2_view_dialog.c:1828
+#: e2_view_dialog.c:1853
 msgid "Show the search options bar"
 msgstr "検索オプションバーを表示"
 
-#: e2_view_dialog.c:2166
+#: e2_view_dialog.c:2195
 msgid "wrap text"
 msgstr "テキストを折り返す"
 
-#: e2_view_dialog.c:2167
+#: e2_view_dialog.c:2196
 msgid "This causes the view window to open with text-wrapping enabled"
 msgstr ""
 
-#: e2_view_dialog.c:2171
-msgid "window width"
+#: e2_view_dialog.c:2200
+#, fuzzy
+msgid "initial window width"
 msgstr "ウィンドウの幅"
 
-#: e2_view_dialog.c:2172
+#: e2_view_dialog.c:2201
 msgid ""
 "The view window will default to showing this many characters per line (but "
 "the the displayed buttons may make it wider than this)"
 msgstr ""
 
-#: e2_view_dialog.c:2176
+#: e2_view_dialog.c:2205
 msgid "window height"
 msgstr "ウィンドウの高さ"
 
-#: e2_view_dialog.c:2177
+#: e2_view_dialog.c:2206
 msgid "The view window will default to showing this many lines of text"
 msgstr ""
 
-#: e2_view_dialog.c:2184
-msgid "custom font for viewing files"
-msgstr "ファイル閲覧用のカスタムフォント"
+#: e2_view_dialog.c:2213
+#, fuzzy
+msgid "text font"
+msgstr "テキスト文書"
 
-#: e2_view_dialog.c:2185
-msgid "This is the font used for text in each view dialog"
-msgstr "ビューダイアログの文字のフォント"
+#: e2_view_dialog.c:2214
+msgid "Font for ordinary text when ASCII art is not detected"
+msgstr ""
 
-#: e2_view_dialog.c:2188
+#: e2_view_dialog.c:2216
+msgid "maximum width (characters)"
+msgstr ""
+
+#: e2_view_dialog.c:2217
+msgid "Limit the text area width; longer lines can be scrolled or wrapped"
+msgstr ""
+
+#: e2_view_dialog.c:2218
+msgid "detect ASCII art"
+msgstr ""
+
+#: e2_view_dialog.c:2219
+msgid ""
+"Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font "
+"without wrapping"
+msgstr ""
+
+#: e2_view_dialog.c:2220
+msgid "clickable hyperlinks"
+msgstr ""
+
+#: e2_view_dialog.c:2221
+msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
+msgstr ""
+
+#: e2_view_dialog.c:2222
+#, fuzzy
+msgid "use custom browser"
+msgstr "カスタムフォントを使う"
+
+#: e2_view_dialog.c:2223
+msgid ""
+"Use the browser executable below instead of the desktop's default browser"
+msgstr ""
+
+#: e2_view_dialog.c:2224
+#, fuzzy
+msgid "browser executable"
+msgstr "所有者の実行"
+
+#: e2_view_dialog.c:2225
+msgid ""
+"Executable name or full path, without arguments; the link is passed as one "
+"argument"
+msgstr ""
+
+#: e2_view_dialog.c:2226
+#, fuzzy
+msgid "show line numbers"
+msgstr "メニューにアイコンを表示"
+
+#: e2_view_dialog.c:2227
+msgid "Show logical line numbers beside the text; copied text is unchanged"
+msgstr ""
+
+#: e2_view_dialog.c:2228
+#, fuzzy
+msgid "foreground color"
+msgstr "背景色"
+
+#: e2_view_dialog.c:2229
+msgid "Text and line-number color"
+msgstr ""
+
+#: e2_view_dialog.c:2231
+#, fuzzy
+msgid "Background color of the file viewer"
+msgstr "テーマ色の代わりに使う背景色"
+
+#: e2_view_dialog.c:2232
+#, fuzzy
+msgid "link color"
+msgstr "ハイライト時の色"
+
+#: e2_view_dialog.c:2233
+msgid "Color of clickable hyperlinks"
+msgstr ""
+
+#: e2_view_dialog.c:2235
 msgid "case sensitive searches"
 msgstr "大文字小文字を区別して検索"
 
-#: e2_view_dialog.c:2189
+#: e2_view_dialog.c:2236
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
 msgstr ""
 
-#: e2_view_dialog.c:2193
+#: e2_view_dialog.c:2240
 msgid "show last search string"
 msgstr "最後に検索した語句を表示"
 
-#: e2_view_dialog.c:2194
+#: e2_view_dialog.c:2241
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
 msgstr ""
 
-#: e2_view_dialog.c:2198
+#: e2_view_dialog.c:2245
 msgid "keep search history"
 msgstr "検索履歴を保持"
 
-#: e2_view_dialog.c:2199
+#: e2_view_dialog.c:2246
 msgid "This causes search strings to be remembered between sessions"
+msgstr ""
+
+#: e2_viewer.c:315
+msgid "Text"
+msgstr ""
+
+#: e2_viewer.c:319
+msgid "Invalid bytes replaced; try another encoding"
+msgstr ""
+
+#: e2_viewer.c:323
+#, c-format
+msgid "NUL bytes shown as %s"
+msgstr ""
+
+#: e2_viewer.c:426
+#, fuzzy, c-format
+msgid "Could not open link: %s"
+msgstr "ファイル %s を開けません"
+
+#: e2_viewer.c:426
+#, fuzzy
+msgid "No browser configured"
+msgstr "設定"
+
+#: e2_viewer.c:558
+msgid "Automatic"
+msgstr ""
+
+#: e2_viewer.c:562
+msgid "Override encoding detection for this file"
 msgstr ""
 
 #: e2_window.c:1280
@@ -7433,6 +7549,12 @@ msgstr "最初に選んだアイテムを %s テキストファイルビュー�
 #: e2p_view.c:83
 msgid "view_with_plugin"
 msgstr "プラグインで見る"
+
+#~ msgid "custom font for viewing files"
+#~ msgstr "ファイル閲覧用のカスタムフォント"
+
+#~ msgid "This is the font used for text in each view dialog"
+#~ msgstr "ビューダイアログの文字のフォント"
 
 #, fuzzy
 #~ msgid "Open terminal here"

@@ -19,6 +19,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 #ifndef __E2_VIEW_DIALOG_H__
 #define __E2_VIEW_DIALOG_H__
+#include "e2_viewer.h"
 
 #ifdef E2_SPELLCHECK
 //NOTE to access internals for the dialog's context-menu-creation, we must
@@ -54,6 +55,8 @@ typedef struct _E2_ViewDialogRuntime
 	GtkWidget *dialog;
 	GtkWidget *textview;
 	GtkTextBuffer *textbuffer;
+	gboolean is_viewer;
+	E2_Viewer *viewer;
 	gchar *localpath;	//localised absolute path string
 #ifdef E2_VFS
 	PlaceInfo *spacedata;
