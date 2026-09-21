@@ -10,6 +10,7 @@ static GtkWidget *dialog, *view;
 static guint step;
 static gchar *root, *marker;
 static gint64 wait_until;
+static gint narrow_width, narrow_line_height;
 static GtkWidget *find (GtkWidget *widget, const gchar *name)
 {
     if (!g_strcmp0 (gtk_widget_get_name (widget), name)) return widget;
@@ -50,7 +51,11 @@ static void capture (const gchar *name)
     GtkAllocation size; gtk_widget_get_allocation (dialog, &size);
     GdkWindow *window = gtk_widget_get_window (dialog);
 #ifdef USE_GTK3_0
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (window, 0, 0, size.width, size.height);
+    /* Read the screen without touching the text view's cached Cairo surface. */
+    gint x, y;
+    gdk_window_get_origin (window, &x, &y);
+    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (
+        gdk_screen_get_root_window (gtk_widget_get_screen (dialog)), x, y, size.width, size.height);
 #else
     GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, window,
         gtk_widget_get_colormap (dialog), 0, 0, 0, 0, size.width, size.height);
@@ -124,10 +129,39 @@ static void click (gint extra, gboolean drag, GdkModifierType modifier)
     if (drag) { x += 40; event (GDK_MOTION_NOTIFY, x, y, GDK_BUTTON1_MASK); }
     event (GDK_BUTTON_RELEASE, x, y, modifier);
 }
+static gint check_text_width (void)
+{
+    GtkWidget *scroll = gtk_widget_get_ancestor (view, GTK_TYPE_SCROLLED_WINDOW);
+    GtkAllocation window, area;
+    GdkRectangle visible;
+    gint x, y;
+    gtk_widget_get_allocation (dialog, &window);
+    gtk_widget_get_allocation (scroll, &area);
+    g_assert_true (gtk_widget_translate_coordinates (scroll, dialog, 0, 0, &x, &y));
+    /* Allow the dialog borders, scrollbar and line-number gutter, but no
+     * unused region between the document and the window's right edge. */
+    g_assert_cmpint (x, >=, 0);
+    g_assert_cmpint (x, <, 24);
+    g_assert_cmpint (window.width - x - area.width, >=, 0);
+    g_assert_cmpint (window.width - x - area.width, <, 24);
+    gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (view), &visible);
+    gint gutter = gtk_text_view_get_border_window_size (GTK_TEXT_VIEW (view), GTK_TEXT_WINDOW_LEFT);
+    g_assert_cmpint (visible.width, >, area.width - gutter - 40);
+    return visible.width;
+}
+static gint long_line_height (void)
+{
+    GtkTextIter iter;
+    gint y, height;
+    gtk_text_buffer_get_iter_at_line (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)), &iter, 2);
+    gtk_text_view_get_line_yrange (GTK_TEXT_VIEW (view), &iter, &y, &height);
+    return height;
+}
 /* Compare actual widget positions after the window manager has resized the
  * viewer. Checking requisitions alone would miss the collapsed filename bug. */
 static void check_layout (gboolean wrapped)
 {
+    check_text_width ();
     GtkWidget *encoding = find (dialog, "file-viewer-encoding");
     GtkWidget *info = find (dialog, "file-viewer-info");
     GtkWidget *toggle = g_object_get_data (G_OBJECT (view), "viewer-wrap-toggle");
@@ -189,8 +223,7 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (gutter, >, 0);
             PangoLayout *layout = gtk_widget_create_pango_layout (view, "M");
             gint width; pango_layout_get_pixel_size (layout, &width, NULL); g_object_unref (layout);
-            GdkRectangle visible; gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (view), &visible);
-            g_assert_cmpint (visible.width, <=, 40 * width + 4);
+            g_assert_cmpint (check_text_width (), >, 40 * width);
             GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
             GtkTextTag *link = gtk_text_tag_table_lookup (gtk_text_buffer_get_tag_table (buffer), "viewer-link");
             GdkColor *color;
@@ -230,6 +263,7 @@ static gboolean tick (gpointer data)
             break;
         case 5:
         {
+            check_text_width ();
             font_is ("PxPlus IBM VGA 8x16", "IBM_VGA_8x16.ttf");
             capture ("pc.png");
             g_assert_cmpint (gtk_text_view_get_wrap_mode (GTK_TEXT_VIEW (view)), ==, GTK_WRAP_NONE);
@@ -240,6 +274,7 @@ static gboolean tick (gpointer data)
         }
         case 6:
         {
+            check_text_width ();
             font_is ("Topaz a600a1200a400", "Topaz_a1200.ttf");
             capture ("amiga.png");
             gchar *text = content (); g_assert_nonnull (strstr (text, "ÆØØØ")); g_free (text);
@@ -308,9 +343,28 @@ static gboolean tick (gpointer data)
             g_assert_false (gtk_widget_get_mapped (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_USER3)));
             gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE)));
             dialog = view = NULL;
-            e2_config_dialog_create ("File viewer");
+            e2_option_bool_set ("dialog-view-wrap", TRUE);
+            open_viewer ("plain.txt");
+            gtk_window_resize (GTK_WINDOW (dialog), 600, 500);
             break;
         case 16:
+            narrow_width = check_text_width ();
+            narrow_line_height = long_line_height ();
+            gtk_window_resize (GTK_WINDOW (dialog), 1200, 700);
+            break;
+        case 17:
+            g_assert_cmpint (check_text_width (), >, narrow_width + 500);
+            g_assert_cmpint (long_line_height (), <, narrow_line_height);
+            capture ("text-wide.png");
+            gtk_window_resize (GTK_WINDOW (dialog), 600, 500);
+            break;
+        case 18:
+            g_assert_cmpint (check_text_width (), ==, narrow_width);
+            g_assert_cmpint (long_line_height (), ==, narrow_line_height);
+            close_viewer ();
+            e2_config_dialog_create ("File viewer");
+            break;
+        case 19:
         {
             /* Verify the requested page is usable, not merely registered. */
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");

@@ -1792,6 +1792,7 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	e2_view_dialog_set_font (&char_width, &char_height, rt);
 	e2_viewer_attach (rt->viewer, rt->textview, dialog_vbox);
 	rt->window_width = e2_option_int_get ("dialog-view-width");
+	//Limit the opening size only; the text area follows subsequent window resizes.
 	rt->window_width = MIN (rt->window_width, e2_option_int_get ("dialog-view-max-width"));
 	rt->window_height = e2_option_int_get ("dialog-view-height");;
 //	rt->idle_id = 0;
@@ -2213,8 +2214,8 @@ void e2_view_dialog_options_register (void)
 	e2_option_font_register ("dialog-view-font", group_name, _("text font"),
 		_("Font for ordinary text when ASCII art is not detected"), "dialog-view-use-font", "Monospace 10",
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
-	e2_option_int_register ("dialog-view-max-width", group_name, _("maximum width (characters)"),
-		_("Limit the text area width; longer lines can be scrolled or wrapped"), NULL, 100, 20, 500, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_int_register ("dialog-view-max-width", group_name, _("maximum initial width (characters)"),
+		_("Limit the opening width; the text area fills the window when resized"), NULL, 100, 20, 500, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-ascii-art", group_name, _("detect ASCII art"),
 		_("Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font without wrapping"), NULL, TRUE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-links", group_name, _("clickable hyperlinks"),

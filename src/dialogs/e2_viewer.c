@@ -9,27 +9,6 @@
 #include <gio/gio.h>
 #include <string.h>
 
-/* Limit the character viewport even when dialog buttons or the window manager
- * make the surrounding window wider. Long lines remain scrollable/selectable. */
-typedef struct { GtkAlignment parent; gint maximum; } E2ViewerArea;
-typedef struct { GtkAlignmentClass parent; } E2ViewerAreaClass;
-G_DEFINE_TYPE (E2ViewerArea, e2_viewer_area, GTK_TYPE_ALIGNMENT)
-static void area_allocate (GtkWidget *widget, GtkAllocation *allocation)
-{
-    GtkAllocation limited = *allocation;
-    gint maximum = ((E2ViewerArea *)widget)->maximum;
-    if (maximum > 0 && limited.width > maximum)
-    {
-        if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL) limited.x += limited.width - maximum;
-        limited.width = maximum;
-    }
-    GTK_WIDGET_CLASS (e2_viewer_area_parent_class)->size_allocate (widget, &limited);
-}
-static void e2_viewer_area_class_init (E2ViewerAreaClass *klass)
-{ GTK_WIDGET_CLASS (klass)->size_allocate = area_allocate; }
-static void e2_viewer_area_init (E2ViewerArea *area)
-{ gtk_alignment_set (GTK_ALIGNMENT (area), 0.0, 0.0, 1.0, 1.0); }
-
 /* Keep the encoding group and the dialog's action area on one line when they
  * fit. Retaining the action area preserves GtkDialog responses and mnemonics.
  * GTK2 needs a second size request when wrapping changes; GTK3 can negotiate
@@ -173,7 +152,7 @@ struct _E2_Viewer
     gsize length;
     E2_ViewerText decoded;
     GtkTextBuffer *buffer;
-    GtkWidget *view, *area, *scroll, *info;
+    GtkWidget *view, *scroll, *info;
     E2ViewerControls *controls;
     GPtrArray *links;
     gint char_width, char_height, gutter, press_x, press_y;
@@ -210,35 +189,13 @@ static void register_fonts (void)
     if (PANGO_IS_FC_FONT_MAP (map)) pango_fc_font_map_config_changed (PANGO_FC_FONT_MAP (map));
     g_free (relative); g_free (bin); g_free (executable);
 }
-static void metrics (E2_Viewer *viewer)
+static void update_gutter (E2_Viewer *viewer)
 {
     gint lines = gtk_text_buffer_get_line_count (viewer->buffer), digits = 1;
     while (lines >= 10) { lines /= 10; digits++; }
     viewer->gutter = e2_option_bool_get ("dialog-view-line-numbers") ? digits * viewer->char_width + 12 : 0;
     gtk_text_view_set_border_window_size (GTK_TEXT_VIEW (viewer->view), GTK_TEXT_WINDOW_LEFT, viewer->gutter);
-    GtkRequisition scrollbar;
-    gtk_widget_size_request (gtk_scrolled_window_get_vscrollbar (GTK_SCROLLED_WINDOW (viewer->scroll)), &scrollbar);
-    gint xborder, yborder;
-    gtk_widget_style_get (viewer->scroll, "scrollbar-spacing", &xborder, NULL);
-    yborder = gtk_container_get_border_width (GTK_CONTAINER (viewer->scroll));
-    gint chrome = viewer->gutter + MAX (scrollbar.width, 0) + MAX (xborder, 0) + 2 * yborder;
-    if (gtk_widget_get_realized (viewer->view))
-    {
-        GtkAllocation allocation;
-        GdkRectangle visible;
-        gtk_widget_get_allocation (viewer->scroll, &allocation);
-        gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (viewer->view), &visible);
-        if (visible.width > 1) chrome = MAX (0, allocation.width - visible.width);
-    }
-    gint maximum = e2_option_int_get ("dialog-view-max-width") * viewer->char_width + chrome;
-    if (((E2ViewerArea *)viewer->area)->maximum != maximum)
-    {
-        ((E2ViewerArea *)viewer->area)->maximum = maximum;
-        gtk_widget_queue_resize (viewer->area);
-    }
 }
-static void view_allocated (GtkWidget *widget, GtkAllocation *allocation, E2_Viewer *viewer)
-{ metrics (viewer); }
 void e2_viewer_set_font (E2_Viewer *viewer, GtkWidget *view, gint *width, gint *height)
 {
     register_fonts ();
@@ -287,7 +244,7 @@ void e2_viewer_set_font (E2_Viewer *viewer, GtkWidget *view, gint *width, gint *
     gtk_text_view_set_tabs (GTK_TEXT_VIEW (view), tabs);
     pango_tab_array_free (tabs);
     *width = viewer->char_width; *height = viewer->char_height;
-    if (viewer->view != NULL) metrics (viewer);
+    if (viewer->view != NULL) update_gutter (viewer);
 }
 static void update_links (E2_Viewer *viewer)
 {
@@ -513,12 +470,10 @@ const gchar *e2_viewer_encoding (E2_Viewer *viewer) { return viewer->decoded.enc
 gboolean e2_viewer_is_art (E2_Viewer *viewer) { return viewer->decoded.art != E2_VIEWER_PLAIN; }
 GtkWidget *e2_viewer_scrolled (E2_Viewer *viewer, GtkWidget *box)
 {
-    viewer->area = g_object_new (e2_viewer_area_get_type (), NULL);
-    gtk_box_pack_start (GTK_BOX (box), viewer->area, TRUE, TRUE, E2_PADDING);
     viewer->scroll = gtk_scrolled_window_new (NULL, NULL);
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (viewer->scroll), GTK_POLICY_AUTOMATIC, GTK_POLICY_AUTOMATIC);
     gtk_scrolled_window_set_shadow_type (GTK_SCROLLED_WINDOW (viewer->scroll), GTK_SHADOW_IN);
-    gtk_container_add (GTK_CONTAINER (viewer->area), viewer->scroll);
+    gtk_box_pack_start (GTK_BOX (box), viewer->scroll, TRUE, TRUE, E2_PADDING);
     return viewer->scroll;
 }
 void e2_viewer_attach (E2_Viewer *viewer, GtkWidget *view, GtkWidget *box)
@@ -544,8 +499,7 @@ void e2_viewer_attach (E2_Viewer *viewer, GtkWidget *view, GtkWidget *box)
     gtk_widget_modify_base (view, GTK_STATE_NORMAL, &bg);
 #endif
     update_links (viewer);
-    metrics (viewer);
-    g_signal_connect_after (view, "size-allocate", G_CALLBACK (view_allocated), viewer);
+    update_gutter (viewer);
     viewer->controls = g_object_new (e2_viewer_controls_get_type (), NULL);
     gtk_widget_set_name (GTK_WIDGET (viewer->controls), "file-viewer-controls");
     gtk_box_pack_end (GTK_BOX (box), GTK_WIDGET (viewer->controls), FALSE, TRUE, E2_PADDING_XSMALL);

@@ -2074,11 +2074,11 @@ msgid "Find and replace matching text"
 msgstr "Text suchen und ersetzen"
 
 #: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
-#: e2_view_dialog.c:1822
+#: e2_view_dialog.c:1823
 msgid "_Hide"
 msgstr "Vers_tecken"
 
-#: e2_edit_dialog.c:943 e2_view_dialog.c:1831
+#: e2_edit_dialog.c:943 e2_view_dialog.c:1832
 msgid "Hide the search options bar"
 msgstr "Such-Parameter verstecken"
 
@@ -2126,7 +2126,7 @@ msgstr "Stellt die Sprache der Rechtschreibkontrolle ein."
 msgid "_Wrap"
 msgstr "Zei_lenumbruch"
 
-#: e2_edit_dialog.c:974 e2_view_dialog.c:1834
+#: e2_edit_dialog.c:974 e2_view_dialog.c:1835
 msgid "If activated, text in the window will be word-wrapped"
 msgstr "Wenn aktiviert, wird der Text im Fenster mit Zeilenumbruch angezeigt."
 
@@ -2193,16 +2193,16 @@ msgid "Replace this match"
 msgstr "Diesen Text ersetzen"
 
 #: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1712
-#: e2_terminal.c:467 e2_view_dialog.c:1838 e2p_find.c:4241
+#: e2_terminal.c:467 e2_view_dialog.c:1839 e2p_find.c:4241
 msgid "_Find"
 msgstr "_Suchen"
 
-#: e2_edit_dialog.c:1720 e2_view_dialog.c:1853
+#: e2_edit_dialog.c:1720 e2_view_dialog.c:1854
 msgid "Find the next match"
 msgstr "Finde das nächste Vorkommen des Suchtextes"
 
-#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1864
-#: e2_view_dialog.c:1885
+#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1865
+#: e2_view_dialog.c:1886
 msgid "not found"
 msgstr "nicht gefunden"
 
@@ -2234,7 +2234,7 @@ msgstr "Objekt:"
 msgid "Mime:"
 msgstr "Mime-Typ:"
 
-#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:554
+#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:508
 msgid "Encoding:"
 msgstr "Kodierung:"
 
@@ -4046,11 +4046,11 @@ msgstr ""
 "Wenn aktiviert, so wird jede zweite Zeile im Fenster durch einen anderen "
 "Hintergrund hervorgehoben."
 
-#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2209
+#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2210
 msgid "use custom font"
 msgstr "Eigene Schriftart verwenden"
 
-#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2210
+#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2211
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4221,7 +4221,7 @@ msgid "If enabled, the color specified below will be used for background"
 msgstr ""
 "Wenn aktiviert, wird die nachstehende Farbe für den Hintergrund benutzt."
 
-#: e2_option__default.c:371 e2_view_dialog.c:2230
+#: e2_option__default.c:371 e2_view_dialog.c:2231
 msgid "background color"
 msgstr "Hintergrund-Farbe"
 
@@ -6150,7 +6150,7 @@ msgstr "Die Zeichenkodierung könnte eine der gewählten sein."
 msgid "File encoding cannot be converted from any selected type"
 msgstr "Die Zeichenkodierung konnte nicht konvertiert werden."
 
-#: e2_view_dialog.c:1062 e2_view_dialog.c:2192
+#: e2_view_dialog.c:1062 e2_view_dialog.c:2193
 msgid "File viewer"
 msgstr ""
 
@@ -6198,30 +6198,30 @@ msgstr "_zyklisch"
 msgid "displaying file"
 msgstr "Interner Dateibetrachter"
 
-#: e2_view_dialog.c:1833
+#: e2_view_dialog.c:1834
 msgid "_wrap"
 msgstr "_Zeilenumbruch"
 
-#: e2_view_dialog.c:1853
+#: e2_view_dialog.c:1854
 msgid "Show the search options bar"
 msgstr "Such-Parameter anzeigen"
 
-#: e2_view_dialog.c:2195
+#: e2_view_dialog.c:2196
 msgid "wrap text"
 msgstr "Zeilenumbruch"
 
-#: e2_view_dialog.c:2196
+#: e2_view_dialog.c:2197
 msgid "This causes the view window to open with text-wrapping enabled"
 msgstr ""
 "Wenn aktiviert, wird das Betrachter-/Editor-Fenster mit aktiviertem "
 "Zeilenumbruch geöffnet."
 
-#: e2_view_dialog.c:2200
+#: e2_view_dialog.c:2201
 #, fuzzy
 msgid "initial window width"
 msgstr "Fensterbreite"
 
-#: e2_view_dialog.c:2201
+#: e2_view_dialog.c:2202
 msgid ""
 "The view window will default to showing this many characters per line (but "
 "the the displayed buttons may make it wider than this)"
@@ -6229,108 +6229,108 @@ msgstr ""
 "Hier stellen Sie die Breite des Betrachter-Fensters ein (Anzahl der Zeichen, "
 "Minimum ist abhängig von den Buttons)."
 
-#: e2_view_dialog.c:2205
+#: e2_view_dialog.c:2206
 msgid "window height"
 msgstr "Fensterhöhe"
 
-#: e2_view_dialog.c:2206
+#: e2_view_dialog.c:2207
 msgid "The view window will default to showing this many lines of text"
 msgstr ""
 "Hier stellen Sie die Höhe des Betrachter-Fensters ein (Anzahl der Zeilen)."
 
-#: e2_view_dialog.c:2213
+#: e2_view_dialog.c:2214
 #, fuzzy
 msgid "text font"
 msgstr "Text-Dateien"
 
-#: e2_view_dialog.c:2214
+#: e2_view_dialog.c:2215
 msgid "Font for ordinary text when ASCII art is not detected"
 msgstr ""
 
-#: e2_view_dialog.c:2216
-msgid "maximum width (characters)"
-msgstr ""
-
 #: e2_view_dialog.c:2217
-msgid "Limit the text area width; longer lines can be scrolled or wrapped"
+msgid "maximum initial width (characters)"
 msgstr ""
 
 #: e2_view_dialog.c:2218
-msgid "detect ASCII art"
+msgid "Limit the opening width; the text area fills the window when resized"
 msgstr ""
 
 #: e2_view_dialog.c:2219
+msgid "detect ASCII art"
+msgstr ""
+
+#: e2_view_dialog.c:2220
 msgid ""
 "Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font "
 "without wrapping"
 msgstr ""
 
-#: e2_view_dialog.c:2220
+#: e2_view_dialog.c:2221
 msgid "clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2221
+#: e2_view_dialog.c:2222
 msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
 msgstr ""
 
-#: e2_view_dialog.c:2222
+#: e2_view_dialog.c:2223
 #, fuzzy
 msgid "use custom browser"
 msgstr "Eigene Schriftart verwenden"
 
-#: e2_view_dialog.c:2223
+#: e2_view_dialog.c:2224
 msgid ""
 "Use the browser executable below instead of the desktop's default browser"
 msgstr ""
 
-#: e2_view_dialog.c:2224
+#: e2_view_dialog.c:2225
 #, fuzzy
 msgid "browser executable"
 msgstr "Ausführen-Eigentümer"
 
-#: e2_view_dialog.c:2225
+#: e2_view_dialog.c:2226
 msgid ""
 "Executable name or full path, without arguments; the link is passed as one "
 "argument"
 msgstr ""
 
-#: e2_view_dialog.c:2226
+#: e2_view_dialog.c:2227
 #, fuzzy
 msgid "show line numbers"
 msgstr "Icons in den Menüs zeigen"
 
-#: e2_view_dialog.c:2227
+#: e2_view_dialog.c:2228
 msgid "Show logical line numbers beside the text; copied text is unchanged"
 msgstr ""
 
-#: e2_view_dialog.c:2228
+#: e2_view_dialog.c:2229
 #, fuzzy
 msgid "foreground color"
 msgstr "Hintergrund-Farbe"
 
-#: e2_view_dialog.c:2229
+#: e2_view_dialog.c:2230
 msgid "Text and line-number color"
 msgstr ""
 
-#: e2_view_dialog.c:2231
+#: e2_view_dialog.c:2232
 #, fuzzy
 msgid "Background color of the file viewer"
 msgstr "Hintergrund-Farbe anstatt Themen-Farbe verwenden"
 
-#: e2_view_dialog.c:2232
+#: e2_view_dialog.c:2233
 #, fuzzy
 msgid "link color"
 msgstr "Hintergrundfarbe markierter Objekte"
 
-#: e2_view_dialog.c:2233
+#: e2_view_dialog.c:2234
 msgid "Color of clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2235
+#: e2_view_dialog.c:2236
 msgid "case sensitive searches"
 msgstr "Groß-/Kleinbuchstaben unterscheiden"
 
-#: e2_view_dialog.c:2236
+#: e2_view_dialog.c:2237
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
@@ -6338,11 +6338,11 @@ msgstr ""
 "Wenn aktiviert, so wird in der Suchleiste des Betrachter-Fensters die Gross-/"
 "Kleinschreibung aktiviert."
 
-#: e2_view_dialog.c:2240
+#: e2_view_dialog.c:2241
 msgid "show last search string"
 msgstr "Letzten Suchtext anzeigen"
 
-#: e2_view_dialog.c:2241
+#: e2_view_dialog.c:2242
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
@@ -6350,42 +6350,42 @@ msgstr ""
 "Wenn aktiviert, wird der zuletzt gesuchte Text im Eingabefeld der Suchleiste "
 "angezeigt."
 
-#: e2_view_dialog.c:2245
+#: e2_view_dialog.c:2246
 msgid "keep search history"
 msgstr "Such-Chronik speichern"
 
-#: e2_view_dialog.c:2246
+#: e2_view_dialog.c:2247
 msgid "This causes search strings to be remembered between sessions"
 msgstr "Wenn aktiviert, merkt sich emelFM2 die letzten Suchstrings."
 
-#: e2_viewer.c:315
+#: e2_viewer.c:272
 msgid "Text"
 msgstr ""
 
-#: e2_viewer.c:319
+#: e2_viewer.c:276
 msgid "Invalid bytes replaced; try another encoding"
 msgstr ""
 
-#: e2_viewer.c:323
+#: e2_viewer.c:280
 #, c-format
 msgid "NUL bytes shown as %s"
 msgstr ""
 
-#: e2_viewer.c:426
+#: e2_viewer.c:383
 #, fuzzy, c-format
 msgid "Could not open link: %s"
 msgstr "Fehler beim Öffnen der Datei %s"
 
-#: e2_viewer.c:426
+#: e2_viewer.c:383
 #, fuzzy
 msgid "No browser configured"
 msgstr "Konfigurieren"
 
-#: e2_viewer.c:558
+#: e2_viewer.c:512
 msgid "Automatic"
 msgstr ""
 
-#: e2_viewer.c:562
+#: e2_viewer.c:516
 msgid "Override encoding detection for this file"
 msgstr ""
 

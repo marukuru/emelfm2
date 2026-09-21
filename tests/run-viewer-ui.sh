@@ -40,7 +40,7 @@ with open(root/'log', 'w') as output:
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: fonts, decoding, links, filename sizing, responsive controls and settings passed')
+        print('viewer UI: fonts, decoding, links, full-width text and reflow, filename sizing, responsive controls and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY
