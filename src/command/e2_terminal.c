@@ -977,14 +977,16 @@ static GtkWidget *pane_create (TerminalPane *pane, GtkWidget *output, guint numb
     GtkWidget *buttons = gtk_hbox_new (FALSE, 0);
     gtk_widget_set_name (buttons, "terminal-actions");
     GtkWidget *add = e2_button_get_full (NULL, STOCK_NAME_ADD, GTK_ICON_SIZE_MENU,
-        _("New terminal in this pane's folder"), button_action, GUINT_TO_POINTER (0), E2_BUTTON_SHOW_MISSING_ICON);
+        NULL, button_action, GUINT_TO_POINTER (0), E2_BUTTON_SHOW_MISSING_ICON);
     gtk_widget_set_name (add, "terminal-new");
+    gtk_widget_set_tooltip_text (add, _("New terminal in this pane's folder"));
     atk_object_set_name (gtk_widget_get_accessible (add), _("New terminal"));
     g_object_set_data (G_OBJECT (add), "terminal-pane", pane);
     gtk_box_pack_start (GTK_BOX (buttons), add, FALSE, FALSE, 0);
     GtkWidget *menu = e2_button_get_full (NULL, STOCK_NAME_PROPERTIES, GTK_ICON_SIZE_MENU,
-        _("Actions for the selected log or terminal"), tools_menu, pane, E2_BUTTON_SHOW_MISSING_ICON);
+        NULL, tools_menu, pane, E2_BUTTON_SHOW_MISSING_ICON);
     gtk_widget_set_name (menu, "terminal-menu");
+    gtk_widget_set_tooltip_text (menu, _("Actions for the selected log or terminal"));
     atk_object_set_name (gtk_widget_get_accessible (menu), _("View actions"));
     gtk_box_pack_start (GTK_BOX (buttons), menu, FALSE, FALSE, 0);
     gtk_widget_show_all (buttons);

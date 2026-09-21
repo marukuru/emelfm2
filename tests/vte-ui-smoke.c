@@ -198,6 +198,10 @@ static gboolean tick (gpointer data)
             for (link = buttons; link != NULL; link = link->next)
             {
                 g_assert_true (gtk_widget_get_has_tooltip (link->data));
+                gchar *tip = gtk_widget_get_tooltip_text (link->data);
+                g_assert_nonnull (tip);
+                g_assert_true (*tip != '\0');
+                g_free (tip);
                 g_assert_nonnull (find_widget (link->data, NULL, GTK_TYPE_IMAGE));
             }
             open_button = buttons->data;
