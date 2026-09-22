@@ -16,6 +16,9 @@ root = pathlib.Path(os.environ['E2_VIEWER_TEST'])
 (root/'plain.txt').write_text('https://example.test/a?x=$(id)&b=1\nHello 日本語\n' + 'long line ' * 100 + '\n' + 'another line\n' * 60)
 (root/'pc.nfo').write_bytes(bytes.fromhex('c9cdcdcdbb0ab ab0b1b2ba0ac8cdcd cdbc'.replace(' ', '')))
 (root/'amiga.nfo').write_bytes('ÆØØØ:........:ØØØ\r\n'.encode('latin1'))
+for name in ('pc.NFO', 'art.txt', 'untyped'):
+    (root/name).write_bytes((root/'pc.nfo').read_bytes())
+(root/'amiga.aSc').write_bytes((root/'amiga.nfo').read_bytes())
 (root/'100% <notes> & longer file viewer filename.txt').write_text('Viewer layout regression\n')
 (root/'utf16.txt').write_bytes('Hello 世界\r\nlast line\r\n'.encode('utf-16'))
 browser = root/'fake browser'
@@ -40,7 +43,7 @@ with open(root/'log', 'w') as output:
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: fonts, decoding, links, full-width text and reflow, filename sizing, responsive controls and settings passed')
+        print('viewer UI: artwork scope and extension filters, fonts, decoding, links, full-width text and reflow, filename sizing, responsive controls and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY

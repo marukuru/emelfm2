@@ -150,6 +150,7 @@ struct _E2_Viewer
 {
     gpointer bytes;
     gsize length;
+    gchar *filename;
     E2_ViewerText decoded;
     GtkTextBuffer *buffer;
     GtkWidget *view, *scroll, *info;
@@ -162,6 +163,14 @@ struct _E2_Viewer
 };
 static const gchar *encodings[] = {NULL, "UTF-8", "UTF-16LE", "UTF-16BE",
     "UTF-32LE", "UTF-32BE", "CP437", "ISO-8859-1", "WINDOWS-1252"};
+
+static gboolean detect_art (E2_Viewer *viewer)
+{
+    return e2_option_bool_get ("dialog-view-ascii-art")
+        && (e2_option_sel_get ("dialog-view-ascii-art-scope") == 0
+            || e2_viewer_matches_extensions (viewer->filename,
+                e2_option_str_get ("dialog-view-ascii-art-extensions")));
+}
 
 static void register_fonts (void)
 {
@@ -291,7 +300,7 @@ static void encoding_changed (GtkComboBox *combo, E2_Viewer *viewer)
     g_clear_pointer (&viewer->pressed, g_free);
     g_free (viewer->decoded.text);
     viewer->decoded = e2_viewer_decode (viewer->bytes, viewer->length,
-        e2_option_bool_get ("dialog-view-ascii-art"), encodings[selected]);
+        detect_art (viewer), encodings[selected]);
     gtk_text_buffer_set_text (viewer->buffer, viewer->decoded.text, -1);
     update_links (viewer);
     e2_viewer_set_font (viewer, viewer->view, &viewer->char_width, &viewer->char_height);
@@ -447,11 +456,12 @@ static gboolean numbers_draw (GtkWidget *widget, GdkEventExpose *event, E2_Viewe
     return FALSE;
 }
 #endif
-E2_Viewer *e2_viewer_new (gpointer bytes, gsize length)
+E2_Viewer *e2_viewer_new (gpointer bytes, gsize length, const gchar *filename)
 {
     E2_Viewer *viewer = g_new0 (E2_Viewer, 1);
     viewer->bytes = bytes; viewer->length = length;
-    viewer->decoded = e2_viewer_decode (bytes, length, e2_option_bool_get ("dialog-view-ascii-art"), NULL);
+    viewer->filename = g_strdup (filename);
+    viewer->decoded = e2_viewer_decode (bytes, length, detect_art (viewer), NULL);
     viewer->buffer = gtk_text_buffer_new (NULL);
     gtk_text_buffer_set_text (viewer->buffer, viewer->decoded.text, -1);
     return viewer;
@@ -460,6 +470,7 @@ void e2_viewer_free (E2_Viewer *viewer)
 {
     if (viewer == NULL) return;
     g_free (viewer->bytes); g_free (viewer->decoded.text); g_free (viewer->pressed);
+    g_free (viewer->filename);
     if (viewer->links != NULL) g_ptr_array_free (viewer->links, TRUE);
     if (viewer->font != NULL) pango_font_description_free (viewer->font);
     g_object_unref (viewer->buffer);

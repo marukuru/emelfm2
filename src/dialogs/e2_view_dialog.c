@@ -621,7 +621,7 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 	if (utfconverter != NULL && contents != NULL) length = strlen (contents);
 	if (rt->is_viewer)
 	{
-		rt->viewer = e2_viewer_new (contents, length); //takes ownership of raw bytes
+		rt->viewer = e2_viewer_new (contents, length, localpath); //takes ownership of raw bytes
 		rt->textbuffer = e2_viewer_buffer (rt->viewer);
 		rt->charset = e2_viewer_encoding (rt->viewer);
 		goto loaded;
@@ -1059,7 +1059,7 @@ static void _e2_view_dialog_show_context_menu (GtkWidget *textview,
 	item_name = g_strconcat (_A(3),".",_A(34),NULL);
 	e2_menu_add_action (menu, _("_Settings"), STOCK_NAME_PREFERENCES,
 		_("Open the configuration dialog at the options page"), item_name,
-		_("File viewer"));
+		_("file viewer"));
 	g_free(item_name);
 
 	g_signal_connect (G_OBJECT (menu), "selection-done",
@@ -2190,7 +2190,7 @@ void e2_view_dialog_actions_register (void)
 */
 void e2_view_dialog_options_register (void)
 {
-	gchar *group_name = g_strconcat (_C(20), ".", _("File viewer"), NULL);
+	gchar *group_name = g_strconcat (_C(20), ".", _("file viewer"), NULL);
 	//first some options that may, but probably won't, change during the session
 	e2_option_bool_register ("dialog-view-wrap",
 		group_name, _("wrap text"),
@@ -2218,6 +2218,13 @@ void e2_view_dialog_options_register (void)
 		_("Limit the opening width; the text area fills the window when resized"), NULL, 100, 20, 500, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-ascii-art", group_name, _("detect ASCII art"),
 		_("Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font without wrapping"), NULL, TRUE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	const gchar *art_scopes[] = {_("all files"), _("matching extensions"), NULL};
+	e2_option_sel_register ("dialog-view-ascii-art-scope", group_name, _("detect ASCII art in"),
+		_("Choose whether to check all files or only files matching the extension list below"),
+		"dialog-view-ascii-art", 0, art_scopes, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_str_register ("dialog-view-ascii-art-extensions", group_name, _("ASCII art file extensions"),
+		_("Semicolon-separated filename patterns, matched case-insensitively when matching extensions is selected (for example *.nfo; *.asc)"),
+		"dialog-view-ascii-art", "*.nfo; *.asc", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-links", group_name, _("clickable hyperlinks"),
 		_("Open HTTP and HTTPS links with a click; dragging still selects text"), NULL, TRUE, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-custom-browser", group_name, _("use custom browser"),

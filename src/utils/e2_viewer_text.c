@@ -4,6 +4,27 @@
 #include <gio/gio.h>
 #include <string.h>
 
+gboolean e2_viewer_matches_extensions (const gchar *filename, const gchar *patterns)
+{
+    if (filename == NULL || *filename == '\0' || patterns == NULL) return FALSE;
+    gchar *basename = g_filename_display_basename (filename);
+    gchar *folded = g_utf8_casefold (basename, -1);
+    gchar **list = g_strsplit (patterns, ";", -1);
+    gboolean matched = FALSE;
+    for (guint i = 0; list[i] != NULL && !matched; i++)
+    {
+        gchar *pattern = g_strstrip (list[i]);
+        if (*pattern == '\0') continue;
+        gchar *folded_pattern = g_utf8_casefold (pattern, -1);
+        matched = g_pattern_match_simple (folded_pattern, folded);
+        g_free (folded_pattern);
+    }
+    g_strfreev (list);
+    g_free (folded);
+    g_free (basename);
+    return matched;
+}
+
 static E2_ViewerArt byte_art (const guint8 *bytes, gsize length)
 {
     guint blocks = 0, pairs = 0, run = 0, topaz = 0;

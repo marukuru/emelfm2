@@ -15,7 +15,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Gtranslator 2.91.6\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3257
+#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3295
 msgid "help"
 msgstr "ヘルプ"
 
@@ -985,130 +985,130 @@ msgstr ""
 "起動時のオプションは \"-\" or \"--\" で始めるか、有効なファイルシステムのパス"
 "にする\n"
 
-#: e2_command.c:653 e2_command.c:1321 e2_command.c:1673
+#: e2_command.c:695 e2_command.c:1282 e2_command.c:1711
 msgid "returned"
 msgstr "returned"
 
-#: e2_command.c:816
+#: e2_command.c:853
 #, c-format
 msgid "Command '%s' - %s"
 msgstr "コマンド '%s' - %s"
 
-#: e2_command.c:1128
+#: e2_command.c:1177
 #, c-format
 msgid "Error while launching '%s'"
 msgstr "'%s' の起動中にエラー"
 
-#: e2_command.c:1154
+#: e2_command.c:1203
 msgid "Cannot find last child process"
 msgstr "最後の子プロセスが見つかりません"
 
-#: e2_command.c:1162
+#: e2_command.c:1211
 #, c-format
 msgid "Cannot find child process with pid %ld"
 msgstr "pid %ld の子プロセスが見つかりません"
 
-#: e2_command.c:1165
+#: e2_command.c:1214
 #, c-format
 msgid "Cannot communicate to process %ld"
 msgstr "プロセス %ld に通信できません"
 
-#: e2_command.c:1180
+#: e2_command.c:1229
 msgid "Failed writing to child"
 msgstr "子への書き込みに失敗"
 
-#: e2_command.c:1681
+#: e2_command.c:1719
 #, c-format
 msgid "Strange error: could not run '%s'"
 msgstr "不明なエラー: '%s' を実行できません"
 
-#: e2_command.c:1706
+#: e2_command.c:1744
 #, c-format
 msgid "The process with pid %ld is not our child"
 msgstr "pid %ld のプロセスは子ではありません"
 
-#: e2_command.c:1726 e2_command.c:1744
+#: e2_command.c:1764 e2_command.c:1782
 #, c-format
 msgid "Failed writing to child: %s"
 msgstr "子への書き込みに失敗: %s"
 
-#: e2_command.c:1970
+#: e2_command.c:2008
 msgid "nothing is waiting"
 msgstr "待機しているものはありません"
 
-#: e2_command.c:1974 e2_task.c:4523
+#: e2_command.c:2012 e2_task.c:4523
 msgid "task"
 msgstr "タスク"
 
-#: e2_command.c:1994 e2_command.c:2099 e2_command.c:2167 e2_menu.c:985
+#: e2_command.c:2032 e2_command.c:2137 e2_command.c:2205 e2_menu.c:985
 msgid "<selected items>"
 msgstr "<選んだアイテム>"
 
-#: e2_command.c:2068
+#: e2_command.c:2106
 msgid "nothing is running"
 msgstr "実行しているものはありません"
 
-#: e2_command.c:2072
+#: e2_command.c:2110
 msgid " (pid)   task    directory"
 msgstr " (pid)   タスク    ディレクトリ"
 
-#: e2_command.c:2141
+#: e2_command.c:2179
 msgid "task @ directory || result"
 msgstr "タスク @ ディレクトリ || 結果"
 
-#: e2_command.c:2173 e2_command.c:2185
+#: e2_command.c:2211 e2_command.c:2223
 msgid "OK"
 msgstr "OK"
 
-#: e2_command.c:2173 e2_command.c:2188
+#: e2_command.c:2211 e2_command.c:2226
 msgid "error"
 msgstr "エラー"
 
-#: e2_command.c:2557
+#: e2_command.c:2595
 #, c-format
 msgid "Cannot run '%s'"
 msgstr "%s を実行できません"
 
-#: e2_command.c:2707 e2p_du.c:333
+#: e2_command.c:2745 e2p_du.c:333
 msgid "Failed to expand macros"
 msgstr "マクロの展開に失敗"
 
-#: e2_command.c:3007
+#: e2_command.c:3045
 #, c-format
 msgid "Failed parsing command '%s' - %s"
 msgstr "コマンド '%s' の解析に失敗 - %s"
 
-#: e2_command.c:3100
+#: e2_command.c:3138
 #, c-format
 msgid "Cannot send \"%s\" to a child process"
 msgstr "\"%s\" を子プロセスに送れません"
 
-#: e2_command.c:3322
+#: e2_command.c:3360
 msgid "x terminal emulator:"
 msgstr "ターミナルエミュレータ:"
 
-#: e2_command.c:3323
+#: e2_command.c:3361
 msgid ""
 "This is the external command/application that will be be run when emelFM2 is "
 "asked to open a terminal"
 msgstr "emelFM2 がターミナルを実行するときの外部コマンド/アプリケーション"
 
-#: e2_command.c:3326
+#: e2_command.c:3364
 msgid "use external file-viewer"
 msgstr "外部のファイルビューアを使う"
 
-#: e2_command.c:3327
+#: e2_command.c:3365
 msgid ""
 "If activated, the command entered below will be run to view file content, "
 "instead of launching the internal viewer"
 msgstr ""
 "有効にすると、内蔵ビューアの代わりにこのコマンドでファイル内容を閲覧します"
 
-#: e2_command.c:3330
+#: e2_command.c:3368
 msgid "viewer command:"
 msgstr "ビューアのコマンド:"
 
-#: e2_command.c:3331
+#: e2_command.c:3369
 msgid ""
 "This is a command to run an external application for viewing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1116,22 +1116,22 @@ msgstr ""
 "ファイルを閲覧するための外部アプリケーションを実行するコマンド。\n"
 "最初に選んだアイテムが最初の引数に当てられます"
 
-#: e2_command.c:3335
+#: e2_command.c:3373
 msgid "use external file-editor"
 msgstr "外部のファイルエディタを使う"
 
-#: e2_command.c:3336
+#: e2_command.c:3374
 msgid ""
 "If activated, the command entered below will be run to edit file content, "
 "instead of launching the internal editor"
 msgstr ""
 "有効にすると、内蔵エディタの代わりにこのコマンドでファイル内容を編集します"
 
-#: e2_command.c:3339
+#: e2_command.c:3377
 msgid "editor command:"
 msgstr "エディタのコマンド:"
 
-#: e2_command.c:3340
+#: e2_command.c:3378
 msgid ""
 "This is a command to run an external application for editing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1139,11 +1139,11 @@ msgstr ""
 "ファイルを編集するための外部アプリケーションを実行するコマンド。\n"
 "最初に選んだアイテムが最初の引数に当てられます"
 
-#: e2_command.c:3344
+#: e2_command.c:3382
 msgid "use external encoding converter"
 msgstr "外部のエンコーディング変換ツールを使う"
 
-#: e2_command.c:3345
+#: e2_command.c:3383
 msgid ""
 "If activated, the command entered below will be run, instead of using the "
 "internal conversion functions, to convert file character encoding when needed"
@@ -1151,15 +1151,15 @@ msgstr ""
 "有効にすると、内部変換機能の代わりに 指定したコマンドでファイルの文字エンコー"
 "ディングを変換します"
 
-#: e2_command.c:3348
+#: e2_command.c:3386
 msgid "File encoding:"
 msgstr "ファイルのエンコーディング:"
 
-#: e2_command.c:3349
+#: e2_command.c:3387
 msgid "converter command:"
 msgstr "変換ツールのコマンド:"
 
-#: e2_command.c:3350
+#: e2_command.c:3388
 msgid ""
 "A command which runs an external application to convert text encoding to "
 "UTF-8"
@@ -1167,29 +1167,29 @@ msgstr ""
 "テキストエンコーディングを UTF-8 に変換するための外部アプリケーションのコマン"
 "ド"
 
-#: e2_command.c:3354
+#: e2_command.c:3392
 msgid "use aliases"
 msgstr "エイリアスを使う"
 
-#: e2_command.c:3355
+#: e2_command.c:3393
 msgid "This is a general switch to turn on/off alias handling for commands"
 msgstr "コマンド操作全般のオンオフスイッチ"
 
-#: e2_command.c:3358
+#: e2_command.c:3396
 msgid "interpret 'relative' paths"
 msgstr "'相対' パスを解釈する"
 
-#: e2_command.c:3359
+#: e2_command.c:3397
 msgid ""
 "This enables correct interpretation of paths containing '..' etc. These "
 "might be typed in, or attached to a button, say"
 msgstr ""
 
-#: e2_command.c:3363
+#: e2_command.c:3401
 msgid "watch priority"
 msgstr "監視の優先度"
 
-#: e2_command.c:3364
+#: e2_command.c:3402
 msgid ""
 "The watch priority of commands influences how fast program\n"
 "output is read from i/o channels. A too-high priority might\n"
@@ -1201,49 +1201,49 @@ msgstr ""
 "効きにくくなる。\n"
 "(注意: 小さい値にすると優先度高, 大きい値にすると優先度低)"
 
-#: e2_command.c:3373
+#: e2_command.c:3411
 msgid "stop after timeout"
 msgstr "タイムアウトしたら停止"
 
-#: e2_command.c:3374
+#: e2_command.c:3412
 msgid ""
 "If activated, each file operation will be terminated if not finished within "
 "the time-interval set below"
 msgstr "有効にすると、指定した時間が過ぎるとファイル操作を中止します"
 
-#: e2_command.c:3377
+#: e2_command.c:3415
 msgid "timeout interval"
 msgstr "タイムアウトまでの時間"
 
-#: e2_command.c:3378
+#: e2_command.c:3416
 msgid "The interval (seconds) allowed to complete any file operation"
 msgstr "ファイル操作の完了を待つ時間"
 
-#: e2_command.c:3381
+#: e2_command.c:3419
 msgid "confirm any delete"
 msgstr "削除時に確認"
 
-#: e2_command.c:3382
+#: e2_command.c:3420
 msgid ""
 "If activated, you will be asked for confirmation before actually deleting "
 "anything"
 msgstr "有効にすると、アイテムの削除前に確認を行います"
 
-#: e2_command.c:3384
+#: e2_command.c:3422
 msgid "confirm any overwrite"
 msgstr "上書き時に確認"
 
-#: e2_command.c:3385
+#: e2_command.c:3423
 msgid ""
 "If activated, you will be asked for confirmation before actually overwriting "
 "anything"
 msgstr "有効にすると、アイテムの上書き前に確認を行います"
 
-#: e2_command.c:3387
+#: e2_command.c:3425
 msgid "relative symlinks"
 msgstr "相対的な symlink"
 
-#: e2_command.c:3388
+#: e2_command.c:3426
 msgid ""
 "This gives each created symlink a relative path to its source, like '../../"
 "<otherbranch>/<file>', instead of a full path referenced to /"
@@ -1862,7 +1862,7 @@ msgstr "中央"
 msgid "mouse"
 msgstr "マウス"
 
-#: e2_dialog.c:1821 e2_output.c:4363 e2_toolbar.c:3384
+#: e2_dialog.c:1821 e2_output.c:4365 e2_toolbar.c:3384
 msgid "none"
 msgstr "なし"
 
@@ -2150,7 +2150,7 @@ msgstr "アイテム:"
 msgid "Mime:"
 msgstr "Mime:"
 
-#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:508
+#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:519
 msgid "Encoding:"
 msgstr "エンコーディング:"
 
@@ -3883,11 +3883,11 @@ msgstr "背景を縞状に"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr ""
 
-#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2210
+#: e2_option__default.c:293 e2_output.c:4380 e2_view_dialog.c:2210
 msgid "use custom font"
 msgstr "カスタムフォントを使う"
 
-#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2211
+#: e2_option__default.c:294 e2_output.c:4381 e2_view_dialog.c:2211
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4044,7 +4044,7 @@ msgstr "カスタム背景色"
 msgid "If enabled, the color specified below will be used for background"
 msgstr "有効にすると、指定した色を背景に使う"
 
-#: e2_option__default.c:371 e2_view_dialog.c:2231
+#: e2_option__default.c:371 e2_view_dialog.c:2238
 msgid "background color"
 msgstr "背景色"
 
@@ -4385,94 +4385,94 @@ msgstr "出力タブ"
 msgid "-- end-of-output --"
 msgstr "-- 出力完了 --"
 
-#: e2_output.c:4329
+#: e2_output.c:4331
 msgid "show output pane when a new message appears"
 msgstr "新しいメッセージが出たら出力ペインを表示"
 
-#: e2_output.c:4330
+#: e2_output.c:4332
 msgid "This will ensure you don't miss any messages"
 msgstr "どんなメッセージも見逃さないようにする"
 
-#: e2_output.c:4337
+#: e2_output.c:4339
 msgid "show output pane if the command line is focused"
 msgstr "コマンドラインがフォーカスされると出力ペインを表示"
 
-#: e2_output.c:4338
+#: e2_output.c:4340
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr ""
 
-#: e2_output.c:4342
+#: e2_output.c:4344
 msgid "hide output pane if the command line is unfocused"
 msgstr "コマンドラインのフォーカスが外れると出力ペインを隠す"
 
-#: e2_output.c:4343
+#: e2_output.c:4345
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
 msgstr ""
 
-#: e2_output.c:4346
+#: e2_output.c:4348
 msgid "show commands"
 msgstr "コマンドを表示"
 
-#: e2_output.c:4347
+#: e2_output.c:4349
 msgid "This echoes the commands that are run and their exit value"
 msgstr ""
 
-#: e2_output.c:4349
+#: e2_output.c:4351
 msgid "scroll to new output"
 msgstr "新しい出力へスクロール"
 
-#: e2_output.c:4350
+#: e2_output.c:4352
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr "新しいメッセージを表示するために出力ペインの内容を自動的にスクロール"
 
-#: e2_output.c:4352
+#: e2_output.c:4354
 msgid "only scroll when really following"
 msgstr "表示を続けているときだけスクロール"
 
-#: e2_output.c:4353
+#: e2_output.c:4355
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr "手動でスクロールすると自動スクロールを止める"
 
-#: e2_output.c:4356
+#: e2_output.c:4358
 msgid "only scroll when new output is at the end"
 msgstr "出力が終わったときだけスクロール"
 
-#: e2_output.c:4357
+#: e2_output.c:4359
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
 msgstr ""
 
-#: e2_output.c:4360
+#: e2_output.c:4362
 msgid "auto-selection boundary characters"
 msgstr "区切りとして使う文字"
 
-#: e2_output.c:4361
+#: e2_output.c:4363
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr "ここで指定した文字を区切りとして使うことができる。たいていは句読点"
 
-#: e2_output.c:4363
+#: e2_output.c:4365
 msgid "everywhere"
 msgstr "全て"
 
-#: e2_output.c:4363
+#: e2_output.c:4365
 msgid "words"
 msgstr "単語"
 
-#: e2_output.c:4365
+#: e2_output.c:4367
 msgid "line wrap mode"
 msgstr "行の折り返しモード"
 
-#: e2_output.c:4366
+#: e2_output.c:4368
 #, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
@@ -4481,64 +4481,64 @@ msgstr ""
 "モードが 'なし' だとスクロールバーを表示する。モードが '単語' だと単語間の行"
 "を分割するだけ"
 
-#: e2_output.c:4369
+#: e2_output.c:4371
 msgid "left margin (pixels)"
 msgstr "左マージン (ピクセル)"
 
-#: e2_output.c:4370
+#: e2_output.c:4372
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr ""
 
-#: e2_output.c:4373
+#: e2_output.c:4375
 msgid "right margin (pixels)"
 msgstr "右マージン (ピクセル)"
 
-#: e2_output.c:4374
+#: e2_output.c:4376
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr ""
 
-#: e2_output.c:4382
+#: e2_output.c:4384
 msgid "custom output font"
 msgstr "出力用フォント"
 
-#: e2_output.c:4383
+#: e2_output.c:4385
 msgid "This is the font used for text in the output pane"
 msgstr "出力ペインの文字のフォント"
 
-#: e2_output.c:4388
+#: e2_output.c:4390
 msgid "positive color"
 msgstr "成功したときの色"
 
-#: e2_output.c:4389
+#: e2_output.c:4391
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
 msgstr ""
 
-#: e2_output.c:4392
+#: e2_output.c:4394
 msgid "negative color"
 msgstr "失敗したときの色"
 
-#: e2_output.c:4393
+#: e2_output.c:4395
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr ""
 
-#: e2_output.c:4396
+#: e2_output.c:4398
 msgid "commands color"
 msgstr "コマンドカラー"
 
-#: e2_output.c:4397
+#: e2_output.c:4399
 msgid "This color is used for echoing issued commands"
 msgstr ""
 
-#: e2_output.c:4400
+#: e2_output.c:4402
 msgid "unimportant color"
 msgstr "重要度低"
 
-#: e2_output.c:4401
+#: e2_output.c:4403
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -5907,8 +5907,9 @@ msgid "File encoding cannot be converted from any selected type"
 msgstr "選択したいずれの種類にもファイルエンコーディングを変換できません"
 
 #: e2_view_dialog.c:1062 e2_view_dialog.c:2193
-msgid "File viewer"
-msgstr ""
+#, fuzzy
+msgid "file viewer"
+msgstr "以下の名前で保存"
 
 #: e2_view_dialog.c:1119
 msgid "Finds"
@@ -6012,123 +6013,152 @@ msgid ""
 "without wrapping"
 msgstr ""
 
+#: e2_view_dialog.c:2221 e2p_find.c:349
+msgid "all files"
+msgstr "全てのファイル"
+
 #: e2_view_dialog.c:2221
-msgid "clickable hyperlinks"
-msgstr ""
+#, fuzzy
+msgid "matching extensions"
+msgstr "拡張子"
 
 #: e2_view_dialog.c:2222
-msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
+msgid "detect ASCII art in"
 msgstr ""
 
 #: e2_view_dialog.c:2223
+msgid ""
+"Choose whether to check all files or only files matching the extension list "
+"below"
+msgstr ""
+
+#: e2_view_dialog.c:2225
+msgid "ASCII art file extensions"
+msgstr ""
+
+#: e2_view_dialog.c:2226
+msgid ""
+"Semicolon-separated filename patterns, matched case-insensitively when "
+"matching extensions is selected (for example *.nfo; *.asc)"
+msgstr ""
+
+#: e2_view_dialog.c:2228
+msgid "clickable hyperlinks"
+msgstr ""
+
+#: e2_view_dialog.c:2229
+msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
+msgstr ""
+
+#: e2_view_dialog.c:2230
 #, fuzzy
 msgid "use custom browser"
 msgstr "カスタムフォントを使う"
 
-#: e2_view_dialog.c:2224
+#: e2_view_dialog.c:2231
 msgid ""
 "Use the browser executable below instead of the desktop's default browser"
 msgstr ""
 
-#: e2_view_dialog.c:2225
+#: e2_view_dialog.c:2232
 #, fuzzy
 msgid "browser executable"
 msgstr "所有者の実行"
 
-#: e2_view_dialog.c:2226
+#: e2_view_dialog.c:2233
 msgid ""
 "Executable name or full path, without arguments; the link is passed as one "
 "argument"
 msgstr ""
 
-#: e2_view_dialog.c:2227
+#: e2_view_dialog.c:2234
 #, fuzzy
 msgid "show line numbers"
 msgstr "メニューにアイコンを表示"
 
-#: e2_view_dialog.c:2228
+#: e2_view_dialog.c:2235
 msgid "Show logical line numbers beside the text; copied text is unchanged"
 msgstr ""
 
-#: e2_view_dialog.c:2229
+#: e2_view_dialog.c:2236
 #, fuzzy
 msgid "foreground color"
 msgstr "背景色"
 
-#: e2_view_dialog.c:2230
+#: e2_view_dialog.c:2237
 msgid "Text and line-number color"
 msgstr ""
 
-#: e2_view_dialog.c:2232
+#: e2_view_dialog.c:2239
 #, fuzzy
 msgid "Background color of the file viewer"
 msgstr "テーマ色の代わりに使う背景色"
 
-#: e2_view_dialog.c:2233
+#: e2_view_dialog.c:2240
 #, fuzzy
 msgid "link color"
 msgstr "ハイライト時の色"
 
-#: e2_view_dialog.c:2234
+#: e2_view_dialog.c:2241
 msgid "Color of clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2236
+#: e2_view_dialog.c:2243
 msgid "case sensitive searches"
 msgstr "大文字小文字を区別して検索"
 
-#: e2_view_dialog.c:2237
+#: e2_view_dialog.c:2244
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
 msgstr ""
 
-#: e2_view_dialog.c:2241
+#: e2_view_dialog.c:2248
 msgid "show last search string"
 msgstr "最後に検索した語句を表示"
 
-#: e2_view_dialog.c:2242
+#: e2_view_dialog.c:2249
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
 msgstr ""
 
-#: e2_view_dialog.c:2246
+#: e2_view_dialog.c:2253
 msgid "keep search history"
 msgstr "検索履歴を保持"
 
-#: e2_view_dialog.c:2247
+#: e2_view_dialog.c:2254
 msgid "This causes search strings to be remembered between sessions"
 msgstr ""
 
-#: e2_viewer.c:272
+#: e2_viewer.c:281
 msgid "Text"
 msgstr ""
 
-#: e2_viewer.c:276
+#: e2_viewer.c:285
 msgid "Invalid bytes replaced; try another encoding"
 msgstr ""
 
-#: e2_viewer.c:280
+#: e2_viewer.c:289
 #, c-format
 msgid "NUL bytes shown as %s"
 msgstr ""
 
-#: e2_viewer.c:383
+#: e2_viewer.c:392
 #, fuzzy, c-format
 msgid "Could not open link: %s"
 msgstr "ファイル %s を開けません"
 
-#: e2_viewer.c:383
+#: e2_viewer.c:392
 #, fuzzy
 msgid "No browser configured"
 msgstr "設定"
 
-#: e2_viewer.c:512
+#: e2_viewer.c:523
 msgid "Automatic"
 msgstr ""
 
-#: e2_viewer.c:516
+#: e2_viewer.c:527
 msgid "Override encoding detection for this file"
 msgstr ""
 
@@ -6614,10 +6644,6 @@ msgstr "拡張子でソート(_s)"
 #: e2p_extsort.c:99
 msgid "Sort the active file pane by filename extension"
 msgstr "アクティブなファイルペインをファイルの拡張子でソート"
-
-#: e2p_find.c:349
-msgid "all files"
-msgstr "全てのファイル"
 
 #: e2p_find.c:352
 msgid "images"

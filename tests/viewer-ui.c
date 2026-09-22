@@ -197,7 +197,9 @@ static gboolean tick (gpointer data)
     {
         case 0:
             root = g_strdup (g_getenv ("E2_VIEWER_TEST")); marker = g_build_filename (root, "opened", NULL);
-            g_assert_cmpstr (e2_option_get ("dialog-view-ascii-art")->group, ==, "interface.File viewer");
+            g_assert_cmpstr (e2_option_get ("dialog-view-ascii-art")->group, ==, "interface.file viewer");
+            g_assert_cmpint (e2_option_sel_get ("dialog-view-ascii-art-scope"), ==, 0);
+            g_assert_cmpstr (e2_option_str_get ("dialog-view-ascii-art-extensions"), ==, "*.nfo; *.asc");
             e2_option_bool_set ("dialog-view-use-font", TRUE);
             e2_option_str_set_direct (e2_option_get ("dialog-view-font"), "DejaVu Sans Mono 11");
             e2_option_bool_set ("dialog-view-line-numbers", TRUE);
@@ -362,15 +364,77 @@ static gboolean tick (gpointer data)
             g_assert_cmpint (check_text_width (), ==, narrow_width);
             g_assert_cmpint (long_line_height (), ==, narrow_line_height);
             close_viewer ();
-            e2_config_dialog_create ("File viewer");
+            e2_option_bool_set ("dialog-view-ascii-art", TRUE);
+            e2_option_sel_set ("dialog-view-ascii-art-scope", 1);
+            open_viewer ("pc.NFO");
             break;
         case 19:
+            font_is ("PxPlus IBM VGA 8x16", "IBM_VGA_8x16.ttf");
+            g_assert_cmpint (gtk_text_view_get_wrap_mode (GTK_TEXT_VIEW (view)), ==, GTK_WRAP_NONE);
+            close_viewer (); open_viewer ("amiga.aSc");
+            break;
+        case 20:
+            font_is ("Topaz a600a1200a400", "Topaz_a1200.ttf");
+            close_viewer (); open_viewer ("art.txt");
+            break;
+        case 21:
+        {
+            font_is ("DejaVu Sans Mono", NULL);
+            g_assert_cmpint (gtk_text_view_get_wrap_mode (GTK_TEXT_VIEW (view)), ==, GTK_WRAP_WORD);
+            GtkWidget *encoding = find (dialog, "file-viewer-encoding");
+            gtk_combo_box_set_active (GTK_COMBO_BOX (encoding), 6); //explicit CP437
+            gchar *text = content ();
+            g_assert_nonnull (strstr (text, "╔═══╗")); g_free (text);
+            font_is ("DejaVu Sans Mono", NULL); //override must respect the filter
+            g_assert_cmpint (gtk_text_view_get_wrap_mode (GTK_TEXT_VIEW (view)), ==, GTK_WRAP_WORD);
+            gtk_combo_box_set_active (GTK_COMBO_BOX (encoding), 0);
+            font_is ("DejaVu Sans Mono", NULL);
+            close_viewer ();
+            e2_option_str_set_direct (e2_option_get ("dialog-view-ascii-art-extensions"), " ; *.TXT; *.bin; ");
+            open_viewer ("art.txt");
+            break;
+        }
+        case 22:
+            font_is ("PxPlus IBM VGA 8x16", "IBM_VGA_8x16.ttf");
+            close_viewer ();
+            e2_option_str_set_direct (e2_option_get ("dialog-view-ascii-art-extensions"), "");
+            open_viewer ("pc.NFO");
+            break;
+        case 23:
+            font_is ("DejaVu Sans Mono", NULL);
+            close_viewer ();
+            e2_option_sel_set ("dialog-view-ascii-art-scope", 0);
+            open_viewer ("untyped");
+            break;
+        case 24:
+            font_is ("PxPlus IBM VGA 8x16", "IBM_VGA_8x16.ttf");
+            close_viewer ();
+            e2_option_bool_set ("dialog-view-ascii-art", FALSE);
+            open_viewer ("pc.NFO");
+            break;
+        case 25:
+            font_is ("DejaVu Sans Mono", NULL);
+            close_viewer ();
+            e2_config_dialog_create ("file viewer");
+            break;
+        case 26:
         {
             /* Verify the requested page is usable, not merely registered. */
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");
             g_assert_true (GTK_IS_SPIN_BUTTON (width->widget));
             g_assert_true (gtk_widget_get_mapped (width->widget));
-            g_assert_true (GTK_IS_TOGGLE_BUTTON (e2_option_get ("dialog-view-ascii-art")->widget));
+            GtkWidget *detect = e2_option_get ("dialog-view-ascii-art")->widget;
+            GtkWidget *scope = e2_option_get ("dialog-view-ascii-art-scope")->widget;
+            GtkWidget *extensions = e2_option_get ("dialog-view-ascii-art-extensions")->widget;
+            g_assert_true (GTK_IS_COMBO_BOX (scope));
+            g_assert_true (GTK_IS_ENTRY (extensions));
+            g_assert_true (gtk_widget_get_mapped (scope));
+            g_assert_true (gtk_widget_get_mapped (extensions));
+            g_assert_false (gtk_widget_get_sensitive (scope));
+            g_assert_false (gtk_widget_get_sensitive (extensions));
+            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (detect), TRUE);
+            g_assert_true (gtk_widget_get_sensitive (scope));
+            g_assert_true (gtk_widget_get_sensitive (extensions));
             dialog = gtk_widget_get_toplevel (width->widget);
             capture ("settings.png");
             gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);

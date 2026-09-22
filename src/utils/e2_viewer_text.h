@@ -13,6 +13,8 @@ typedef struct
 } E2_ViewerText;
 typedef struct { gint start, end; gchar *uri; } E2_ViewerLink;
 
+/* filename is in the filesystem encoding; patterns are UTF-8 and separated by ';'. */
+gboolean e2_viewer_matches_extensions (const gchar *filename, const gchar *patterns);
 E2_ViewerText e2_viewer_decode (const guint8 *bytes, gsize length,
     gboolean detect_art, const gchar *encoding);
 GPtrArray *e2_viewer_find_links (const gchar *text);

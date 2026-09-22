@@ -4,8 +4,9 @@
 #include <gtk/gtk.h>
 
 typedef struct _E2_Viewer E2_Viewer;
-/* Takes ownership of bytes, which must be allocated with GLib's allocator. */
-E2_Viewer *e2_viewer_new (gpointer bytes, gsize length);
+/* Takes ownership of GLib-allocated bytes and copies filename
+ * (in the filesystem encoding). */
+E2_Viewer *e2_viewer_new (gpointer bytes, gsize length, const gchar *filename);
 /* Destroy the attached widgets before freeing their viewer state. */
 void e2_viewer_free (E2_Viewer *viewer);
 /* Returns a new reference; the caller must unref it. */

@@ -20,7 +20,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3257
+#: e2_about_dialog.c:138 e2_action.c:1210 e2_alias.c:329 e2_command.c:3295
 msgid "help"
 msgstr "справка"
 
@@ -1000,109 +1000,109 @@ msgstr ""
 "Параметры запуска программы должны начинаться с \"-\" или \"--\" или быть "
 "существующим в файловой системе путём\n"
 
-#: e2_command.c:653 e2_command.c:1321 e2_command.c:1673
+#: e2_command.c:695 e2_command.c:1282 e2_command.c:1711
 msgid "returned"
 msgstr "вернул"
 
-#: e2_command.c:816
+#: e2_command.c:853
 #, c-format
 msgid "Command '%s' - %s"
 msgstr "Команда '%s' - %s"
 
-#: e2_command.c:1128
+#: e2_command.c:1177
 #, c-format
 msgid "Error while launching '%s'"
 msgstr "Ошибка при запуске '%s'"
 
-#: e2_command.c:1154
+#: e2_command.c:1203
 msgid "Cannot find last child process"
 msgstr "Невозможно найти последний дочерний процесс"
 
-#: e2_command.c:1162
+#: e2_command.c:1211
 #, c-format
 msgid "Cannot find child process with pid %ld"
 msgstr "Невозможно найти дочерний процесс с pid %ld"
 
-#: e2_command.c:1165
+#: e2_command.c:1214
 #, c-format
 msgid "Cannot communicate to process %ld"
 msgstr "Невозможно общение с процессом %ld"
 
-#: e2_command.c:1180
+#: e2_command.c:1229
 msgid "Failed writing to child"
 msgstr "Ошибка при записи в дочерний процесс"
 
-#: e2_command.c:1681
+#: e2_command.c:1719
 #, c-format
 msgid "Strange error: could not run '%s'"
 msgstr "Странная ошибка: невозможно запустить '%s'"
 
-#: e2_command.c:1706
+#: e2_command.c:1744
 #, c-format
 msgid "The process with pid %ld is not our child"
 msgstr "Процесс с pid %ld не является нашим потомком"
 
-#: e2_command.c:1726 e2_command.c:1744
+#: e2_command.c:1764 e2_command.c:1782
 #, c-format
 msgid "Failed writing to child: %s"
 msgstr "Ошибка при общении с потомком: %s"
 
-#: e2_command.c:1970
+#: e2_command.c:2008
 msgid "nothing is waiting"
 msgstr "ничто не ожидает"
 
-#: e2_command.c:1974 e2_task.c:4523
+#: e2_command.c:2012 e2_task.c:4523
 msgid "task"
 msgstr "задача"
 
-#: e2_command.c:1994 e2_command.c:2099 e2_command.c:2167 e2_menu.c:985
+#: e2_command.c:2032 e2_command.c:2137 e2_command.c:2205 e2_menu.c:985
 msgid "<selected items>"
 msgstr "<выделенные элементы>"
 
-#: e2_command.c:2068
+#: e2_command.c:2106
 msgid "nothing is running"
 msgstr "ничто не запущено"
 
-#: e2_command.c:2072
+#: e2_command.c:2110
 msgid " (pid)   task    directory"
 msgstr " (pid)   задача    каталог"
 
-#: e2_command.c:2141
+#: e2_command.c:2179
 msgid "task @ directory || result"
 msgstr "задача @ каталог || результат"
 
-#: e2_command.c:2173 e2_command.c:2185
+#: e2_command.c:2211 e2_command.c:2223
 msgid "OK"
 msgstr "OK"
 
-#: e2_command.c:2173 e2_command.c:2188
+#: e2_command.c:2211 e2_command.c:2226
 msgid "error"
 msgstr "ошибка"
 
-#: e2_command.c:2557
+#: e2_command.c:2595
 #, c-format
 msgid "Cannot run '%s'"
 msgstr "Невозможно запустить '%s'"
 
-#: e2_command.c:2707 e2p_du.c:333
+#: e2_command.c:2745 e2p_du.c:333
 msgid "Failed to expand macros"
 msgstr "Ошибка при обработке макроса"
 
-#: e2_command.c:3007
+#: e2_command.c:3045
 #, c-format
 msgid "Failed parsing command '%s' - %s"
 msgstr "Ошибка при разборе команды '%s' - %s"
 
-#: e2_command.c:3100
+#: e2_command.c:3138
 #, c-format
 msgid "Cannot send \"%s\" to a child process"
 msgstr "Невозможно послать \"%s\" дочернему процессу"
 
-#: e2_command.c:3322
+#: e2_command.c:3360
 msgid "x terminal emulator:"
 msgstr "эмулятор X-терминала:"
 
-#: e2_command.c:3323
+#: e2_command.c:3361
 msgid ""
 "This is the external command/application that will be be run when emelFM2 is "
 "asked to open a terminal"
@@ -1110,11 +1110,11 @@ msgstr ""
 "Внешняя программа, которая будет запускаться, когда emelFM2 потребуется "
 "терминал"
 
-#: e2_command.c:3326
+#: e2_command.c:3364
 msgid "use external file-viewer"
 msgstr "использовать внешний просмотрщик файлов"
 
-#: e2_command.c:3327
+#: e2_command.c:3365
 msgid ""
 "If activated, the command entered below will be run to view file content, "
 "instead of launching the internal viewer"
@@ -1122,11 +1122,11 @@ msgstr ""
 "Если включено, то для просмотра файлов будет использоваться команда, "
 "введённая ниже, вместо встроенного просмотрщика"
 
-#: e2_command.c:3330
+#: e2_command.c:3368
 msgid "viewer command:"
 msgstr "внешний просмотрщик:"
 
-#: e2_command.c:3331
+#: e2_command.c:3369
 msgid ""
 "This is a command to run an external application for viewing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1135,11 +1135,11 @@ msgstr ""
 "Первый выбранный элемент будет использован в качестве первого аргумента "
 "просмотрщика"
 
-#: e2_command.c:3335
+#: e2_command.c:3373
 msgid "use external file-editor"
 msgstr "использовать внешний редактор файлов"
 
-#: e2_command.c:3336
+#: e2_command.c:3374
 msgid ""
 "If activated, the command entered below will be run to edit file content, "
 "instead of launching the internal editor"
@@ -1147,11 +1147,11 @@ msgstr ""
 "Если включено, то для редактирования файлов будет использоваться команда, "
 "введённая ниже, вместо встроенного редактора"
 
-#: e2_command.c:3339
+#: e2_command.c:3377
 msgid "editor command:"
 msgstr "внешний редактор:"
 
-#: e2_command.c:3340
+#: e2_command.c:3378
 msgid ""
 "This is a command to run an external application for editing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1160,11 +1160,11 @@ msgstr ""
 "Первый выбранный элемент будет использован в качестве первого аргумента "
 "редактора"
 
-#: e2_command.c:3344
+#: e2_command.c:3382
 msgid "use external encoding converter"
 msgstr "использовать внешний преобразователь кодировок"
 
-#: e2_command.c:3345
+#: e2_command.c:3383
 msgid ""
 "If activated, the command entered below will be run, instead of using the "
 "internal conversion functions, to convert file character encoding when needed"
@@ -1172,44 +1172,44 @@ msgstr ""
 "Если включено, то для преобразования кодировок будет использована команда, "
 "введённая ниже, вместо внутренних функций"
 
-#: e2_command.c:3348
+#: e2_command.c:3386
 msgid "File encoding:"
 msgstr "Кодировка файла:"
 
-#: e2_command.c:3349
+#: e2_command.c:3387
 msgid "converter command:"
 msgstr "внешний конвертер:"
 
-#: e2_command.c:3350
+#: e2_command.c:3388
 msgid ""
 "A command which runs an external application to convert text encoding to "
 "UTF-8"
 msgstr ""
 "Команда, запускающая программу для преобразования кодировки текстов в UTF-8"
 
-#: e2_command.c:3354
+#: e2_command.c:3392
 msgid "use aliases"
 msgstr "использовать псевдонимы"
 
-#: e2_command.c:3355
+#: e2_command.c:3393
 msgid "This is a general switch to turn on/off alias handling for commands"
 msgstr "Переключатель для включения/выключения обработки псевдонимов команд"
 
-#: e2_command.c:3358
+#: e2_command.c:3396
 msgid "interpret 'relative' paths"
 msgstr "обрабатывать 'относительные' пути"
 
-#: e2_command.c:3359
+#: e2_command.c:3397
 msgid ""
 "This enables correct interpretation of paths containing '..' etc. These "
 "might be typed in, or attached to a button, say"
 msgstr "Включает правильную интерпретацию путей, содержащих '..' и т. п."
 
-#: e2_command.c:3363
+#: e2_command.c:3401
 msgid "watch priority"
 msgstr "приоритет наблюдения"
 
-#: e2_command.c:3364
+#: e2_command.c:3402
 msgid ""
 "The watch priority of commands influences how fast program\n"
 "output is read from i/o channels. A too-high priority might\n"
@@ -1223,11 +1223,11 @@ msgstr ""
 "(замечание: отрицательные значения означают более высокий приоритет, а "
 "положительные — более низкий)"
 
-#: e2_command.c:3373
+#: e2_command.c:3411
 msgid "stop after timeout"
 msgstr "остановка операций по времени"
 
-#: e2_command.c:3374
+#: e2_command.c:3412
 msgid ""
 "If activated, each file operation will be terminated if not finished within "
 "the time-interval set below"
@@ -1235,21 +1235,21 @@ msgstr ""
 "Если включено, то любая файловая операция будет останавливаться, если не "
 "успеет завершиться в интервал времени, введённый ниже"
 
-#: e2_command.c:3377
+#: e2_command.c:3415
 msgid "timeout interval"
 msgstr "временной интервал"
 
-#: e2_command.c:3378
+#: e2_command.c:3416
 msgid "The interval (seconds) allowed to complete any file operation"
 msgstr ""
 "Временной интервал (в секундах), отведённый на завершение любой файловой "
 "операции"
 
-#: e2_command.c:3381
+#: e2_command.c:3419
 msgid "confirm any delete"
 msgstr "подтверждать удаление"
 
-#: e2_command.c:3382
+#: e2_command.c:3420
 msgid ""
 "If activated, you will be asked for confirmation before actually deleting "
 "anything"
@@ -1257,11 +1257,11 @@ msgstr ""
 "Если включено, то у вас будет запрашиваться подтверждение, прежде чем "
 "удалить что-либо"
 
-#: e2_command.c:3384
+#: e2_command.c:3422
 msgid "confirm any overwrite"
 msgstr "подтверждать перезапись"
 
-#: e2_command.c:3385
+#: e2_command.c:3423
 msgid ""
 "If activated, you will be asked for confirmation before actually overwriting "
 "anything"
@@ -1269,11 +1269,11 @@ msgstr ""
 "Если включено, то у вас будет запрашиваться подтверждение, прежде чем "
 "перезаписать что-либо"
 
-#: e2_command.c:3387
+#: e2_command.c:3425
 msgid "relative symlinks"
 msgstr "относительные символьные ссылки"
 
-#: e2_command.c:3388
+#: e2_command.c:3426
 msgid ""
 "This gives each created symlink a relative path to its source, like '../../"
 "<otherbranch>/<file>', instead of a full path referenced to /"
@@ -1910,7 +1910,7 @@ msgstr "в центре"
 msgid "mouse"
 msgstr "на курсоре"
 
-#: e2_dialog.c:1821 e2_output.c:4363 e2_toolbar.c:3384
+#: e2_dialog.c:1821 e2_output.c:4365 e2_toolbar.c:3384
 msgid "none"
 msgstr "нет"
 
@@ -2202,7 +2202,7 @@ msgstr "Элемент:"
 msgid "Mime:"
 msgstr "Тип MIME:"
 
-#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:508
+#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:519
 msgid "Encoding:"
 msgstr "Кодировка файла:"
 
@@ -3985,11 +3985,11 @@ msgstr "разноцветный фон"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "Если включено, то строки в списке файлов будут разных цветов"
 
-#: e2_option__default.c:293 e2_output.c:4378 e2_view_dialog.c:2210
+#: e2_option__default.c:293 e2_output.c:4380 e2_view_dialog.c:2210
 msgid "use custom font"
 msgstr "использовать особый шрифт"
 
-#: e2_option__default.c:294 e2_output.c:4379 e2_view_dialog.c:2211
+#: e2_option__default.c:294 e2_output.c:4381 e2_view_dialog.c:2211
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4154,7 +4154,7 @@ msgid "If enabled, the color specified below will be used for background"
 msgstr ""
 "Если включено, то цвет, указанный ниже, будет использоваться как фоновый"
 
-#: e2_option__default.c:371 e2_view_dialog.c:2231
+#: e2_option__default.c:371 e2_view_dialog.c:2238
 msgid "background color"
 msgstr "цвет фона"
 
@@ -4501,28 +4501,28 @@ msgstr "вкладки вывода"
 msgid "-- end-of-output --"
 msgstr "-- конец-вывода --"
 
-#: e2_output.c:4329
+#: e2_output.c:4331
 msgid "show output pane when a new message appears"
 msgstr "показывать панель вывода когда появляется новое сообщение"
 
-#: e2_output.c:4330
+#: e2_output.c:4332
 msgid "This will ensure you don't miss any messages"
 msgstr "Позволяет быть уверенным, что вы не пропустите ни одного сообщения"
 
-#: e2_output.c:4337
+#: e2_output.c:4339
 msgid "show output pane if the command line is focused"
 msgstr "показывать панель вывода, если командная строка активна"
 
-#: e2_output.c:4338
+#: e2_output.c:4340
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "Заставляет панель вывода открываться, когда вы набираете команду"
 
-#: e2_output.c:4342
+#: e2_output.c:4344
 msgid "hide output pane if the command line is unfocused"
 msgstr "скрывать панель вывода, если командная строка не активна"
 
-#: e2_output.c:4343
+#: e2_output.c:4345
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4530,30 +4530,30 @@ msgstr ""
 "Заставляет панель вывода закрываться, когда вы перестаёте работать с "
 "командной строкой"
 
-#: e2_output.c:4346
+#: e2_output.c:4348
 msgid "show commands"
 msgstr "показывать команды"
 
-#: e2_output.c:4347
+#: e2_output.c:4349
 msgid "This echoes the commands that are run and their exit value"
 msgstr "Выводит названия запущенных команд и их возвращаемые значения"
 
-#: e2_output.c:4349
+#: e2_output.c:4351
 msgid "scroll to new output"
 msgstr "перемещаться за новыми сообщениями"
 
-#: e2_output.c:4350
+#: e2_output.c:4352
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr ""
 "Включает автоматическую прокрутку вниз, чтобы показывать новые сообщения"
 
-#: e2_output.c:4352
+#: e2_output.c:4354
 msgid "only scroll when really following"
 msgstr "перемещаться только когда действительно необходимо"
 
-#: e2_output.c:4353
+#: e2_output.c:4355
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4561,11 +4561,11 @@ msgstr ""
 "Останавливает автоматическую прокрутку вниз, когда вы прокручиваете окно "
 "вручную"
 
-#: e2_output.c:4356
+#: e2_output.c:4358
 msgid "only scroll when new output is at the end"
 msgstr "перемещаться только если в конце появились новые сообщения"
 
-#: e2_output.c:4357
+#: e2_output.c:4359
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4573,11 +4573,11 @@ msgstr ""
 "Останавливает прокрутку, если другой процесс выводит текст после текущей "
 "позиции вставки"
 
-#: e2_output.c:4360
+#: e2_output.c:4362
 msgid "auto-selection boundary characters"
 msgstr "символы границы автоматически выбранного текста"
 
-#: e2_output.c:4361
+#: e2_output.c:4363
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
@@ -4585,19 +4585,19 @@ msgstr ""
 "Символ(ы), обычно знак препинания, любой из которых установит границу для "
 "автоматически выбранного текста."
 
-#: e2_output.c:4363
+#: e2_output.c:4365
 msgid "everywhere"
 msgstr "в любом месте"
 
-#: e2_output.c:4363
+#: e2_output.c:4365
 msgid "words"
 msgstr "по словам"
 
-#: e2_output.c:4365
+#: e2_output.c:4367
 msgid "line wrap mode"
 msgstr "режим переноса строк"
 
-#: e2_output.c:4366
+#: e2_output.c:4368
 #, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
@@ -4606,36 +4606,36 @@ msgstr ""
 "Если включен режим 'нет', то будет доступна горизонтальня линия прокрутки. В "
 "режиме 'слова' строки будут разбиваться между словами"
 
-#: e2_output.c:4369
+#: e2_output.c:4371
 msgid "left margin (pixels)"
 msgstr "отступ слева (пиксели)"
 
-#: e2_output.c:4370
+#: e2_output.c:4372
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "Отступ слева между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4373
+#: e2_output.c:4375
 msgid "right margin (pixels)"
 msgstr "отступ справа (пиксели)"
 
-#: e2_output.c:4374
+#: e2_output.c:4376
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "Отступ справа между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4382
+#: e2_output.c:4384
 msgid "custom output font"
 msgstr "особый шрифт"
 
-#: e2_output.c:4383
+#: e2_output.c:4385
 msgid "This is the font used for text in the output pane"
 msgstr "Шрифт, используемый для текста в окне вывода"
 
-#: e2_output.c:4388
+#: e2_output.c:4390
 msgid "positive color"
 msgstr "положительный цвет"
 
-#: e2_output.c:4389
+#: e2_output.c:4391
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -4643,11 +4643,11 @@ msgstr ""
 "Этот цвет используется для сообщений об успешных операциях или о других "
 "положительных событиях"
 
-#: e2_output.c:4392
+#: e2_output.c:4394
 msgid "negative color"
 msgstr "отрицательный цвет"
 
-#: e2_output.c:4393
+#: e2_output.c:4395
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -4655,20 +4655,20 @@ msgstr ""
 "Этот цвет используется для ошибок, предупреждений и других сообщений, "
 "которые должны привлекать внимание"
 
-#: e2_output.c:4396
+#: e2_output.c:4398
 msgid "commands color"
 msgstr "цвет команд"
 
-#: e2_output.c:4397
+#: e2_output.c:4399
 msgid "This color is used for echoing issued commands"
 msgstr ""
 "Этот цвет используется для подсветки названий элементов и других надписей"
 
-#: e2_output.c:4400
+#: e2_output.c:4402
 msgid "unimportant color"
 msgstr "нейтральный цвет"
 
-#: e2_output.c:4401
+#: e2_output.c:4403
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -6053,8 +6053,9 @@ msgid "File encoding cannot be converted from any selected type"
 msgstr "Файл не может быть преобразован ни из одного выбранного типа"
 
 #: e2_view_dialog.c:1062 e2_view_dialog.c:2193
-msgid "File viewer"
-msgstr ""
+#, fuzzy
+msgid "file viewer"
+msgstr "сохранение файла"
 
 #: e2_view_dialog.c:1119
 msgid "Finds"
@@ -6161,124 +6162,153 @@ msgid ""
 "without wrapping"
 msgstr ""
 
+#: e2_view_dialog.c:2221 e2p_find.c:349
+msgid "all files"
+msgstr "все файлы"
+
 #: e2_view_dialog.c:2221
-msgid "clickable hyperlinks"
-msgstr ""
+#, fuzzy
+msgid "matching extensions"
+msgstr "расширения"
 
 #: e2_view_dialog.c:2222
-msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
+msgid "detect ASCII art in"
 msgstr ""
 
 #: e2_view_dialog.c:2223
+msgid ""
+"Choose whether to check all files or only files matching the extension list "
+"below"
+msgstr ""
+
+#: e2_view_dialog.c:2225
+msgid "ASCII art file extensions"
+msgstr ""
+
+#: e2_view_dialog.c:2226
+msgid ""
+"Semicolon-separated filename patterns, matched case-insensitively when "
+"matching extensions is selected (for example *.nfo; *.asc)"
+msgstr ""
+
+#: e2_view_dialog.c:2228
+msgid "clickable hyperlinks"
+msgstr ""
+
+#: e2_view_dialog.c:2229
+msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
+msgstr ""
+
+#: e2_view_dialog.c:2230
 #, fuzzy
 msgid "use custom browser"
 msgstr "использовать особый шрифт"
 
-#: e2_view_dialog.c:2224
+#: e2_view_dialog.c:2231
 msgid ""
 "Use the browser executable below instead of the desktop's default browser"
 msgstr ""
 
-#: e2_view_dialog.c:2225
+#: e2_view_dialog.c:2232
 #, fuzzy
 msgid "browser executable"
 msgstr "запуск для владельца"
 
-#: e2_view_dialog.c:2226
+#: e2_view_dialog.c:2233
 msgid ""
 "Executable name or full path, without arguments; the link is passed as one "
 "argument"
 msgstr ""
 
-#: e2_view_dialog.c:2227
+#: e2_view_dialog.c:2234
 #, fuzzy
 msgid "show line numbers"
 msgstr "показывать значки в меню"
 
-#: e2_view_dialog.c:2228
+#: e2_view_dialog.c:2235
 msgid "Show logical line numbers beside the text; copied text is unchanged"
 msgstr ""
 
-#: e2_view_dialog.c:2229
+#: e2_view_dialog.c:2236
 #, fuzzy
 msgid "foreground color"
 msgstr "цвет фона"
 
-#: e2_view_dialog.c:2230
+#: e2_view_dialog.c:2237
 msgid "Text and line-number color"
 msgstr ""
 
-#: e2_view_dialog.c:2232
+#: e2_view_dialog.c:2239
 #, fuzzy
 msgid "Background color of the file viewer"
 msgstr "Цвет фона, исползуемый вместо цвета из темы"
 
-#: e2_view_dialog.c:2233
+#: e2_view_dialog.c:2240
 #, fuzzy
 msgid "link color"
 msgstr "цвет подсветки"
 
-#: e2_view_dialog.c:2234
+#: e2_view_dialog.c:2241
 msgid "Color of clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2236
+#: e2_view_dialog.c:2243
 msgid "case sensitive searches"
 msgstr "поиск с учётом регистра"
 
-#: e2_view_dialog.c:2237
+#: e2_view_dialog.c:2244
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
 msgstr "Включает поиск с учётом регистра в окне просмотра"
 
-#: e2_view_dialog.c:2241
+#: e2_view_dialog.c:2248
 msgid "show last search string"
 msgstr "показывать последнюю строку поиска"
 
-#: e2_view_dialog.c:2242
+#: e2_view_dialog.c:2249
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
 msgstr ""
 "Включает показ предыдущей строки поиска при отображении окна просмотра файла"
 
-#: e2_view_dialog.c:2246
+#: e2_view_dialog.c:2253
 msgid "keep search history"
 msgstr "хранить историю поиска"
 
-#: e2_view_dialog.c:2247
+#: e2_view_dialog.c:2254
 msgid "This causes search strings to be remembered between sessions"
 msgstr "Включает запоминание строк поиска между запусками программы"
 
-#: e2_viewer.c:272
+#: e2_viewer.c:281
 msgid "Text"
 msgstr ""
 
-#: e2_viewer.c:276
+#: e2_viewer.c:285
 msgid "Invalid bytes replaced; try another encoding"
 msgstr ""
 
-#: e2_viewer.c:280
+#: e2_viewer.c:289
 #, c-format
 msgid "NUL bytes shown as %s"
 msgstr ""
 
-#: e2_viewer.c:383
+#: e2_viewer.c:392
 #, fuzzy, c-format
 msgid "Could not open link: %s"
 msgstr "Невозможно открыть файл %s"
 
-#: e2_viewer.c:383
+#: e2_viewer.c:392
 #, fuzzy
 msgid "No browser configured"
 msgstr "конфигурация"
 
-#: e2_viewer.c:512
+#: e2_viewer.c:523
 msgid "Automatic"
 msgstr ""
 
-#: e2_viewer.c:516
+#: e2_viewer.c:527
 msgid "Override encoding detection for this file"
 msgstr ""
 
@@ -6769,10 +6799,6 @@ msgstr "_Сортировка по расширению"
 #: e2p_extsort.c:99
 msgid "Sort the active file pane by filename extension"
 msgstr "Сортировать активную файловую панель по расширению имён файлов"
-
-#: e2p_find.c:349
-msgid "all files"
-msgstr "все файлы"
 
 #: e2p_find.c:352
 msgid "images"

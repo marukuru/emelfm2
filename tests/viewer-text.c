@@ -4,6 +4,19 @@ static E2_ViewerText decode (const gchar *bytes, gsize length)
 { return e2_viewer_decode ((const guint8 *)bytes, length, TRUE, NULL); }
 int main (void)
 {
+    const gchar *patterns = "*.nfo; *.asc";
+    g_assert_true (e2_viewer_matches_extensions ("scene.nfo", patterns));
+    g_assert_true (e2_viewer_matches_extensions ("scene.NfO", patterns));
+    g_assert_true (e2_viewer_matches_extensions ("/tmp/日本語.ASc", patterns));
+    g_assert_true (e2_viewer_matches_extensions ("notes.Txt", " ; *.TXT; ; *.log; "));
+    g_assert_true (e2_viewer_matches_extensions ("archive.tar.GZ", "*.tar.gz"));
+    g_assert_false (e2_viewer_matches_extensions ("scene.nfo.txt", patterns));
+    g_assert_false (e2_viewer_matches_extensions ("/tmp/folder.nfo/readme", patterns));
+    g_assert_false (e2_viewer_matches_extensions ("notes.txt", patterns));
+    g_assert_false (e2_viewer_matches_extensions ("scene.nfo", " ; ; "));
+    g_assert_false (e2_viewer_matches_extensions ("scene.nfo", ""));
+    g_assert_false (e2_viewer_matches_extensions ("scene.nfo", NULL));
+    g_assert_false (e2_viewer_matches_extensions (NULL, patterns));
     const gchar pc[] = "\xc9\xcd\xcd\xcd\xbb\n\xba\xb0\xb1\xb2\xba\n\xc8\xcd\xcd\xcd\xbc\r\n";
     E2_ViewerText text = decode (pc, sizeof (pc)-1);
     g_assert_cmpstr (text.encoding, ==, "CP437");
@@ -90,6 +103,6 @@ int main (void)
         g_free (text.text);
     }
     g_rand_free (random);
-    g_print ("viewer text: Unicode, legacy artwork, SAUCE, malformed bytes, plain text and web links passed\n");
+    g_print ("viewer text: extension matching, Unicode, legacy artwork, SAUCE, malformed bytes, plain text and web links passed\n");
     return 0;
 }
