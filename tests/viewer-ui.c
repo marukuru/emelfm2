@@ -44,6 +44,25 @@ static void close_viewer (void)
     gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
     dialog = view = NULL;
 }
+static void close_viewer_event (GdkEventType type)
+{
+    GtkWidget *remaining = dialog;
+    g_signal_connect (dialog, "destroy", G_CALLBACK (gtk_widget_destroyed), &remaining);
+    GdkEvent *event = gdk_event_new (type);
+    event->any.window = g_object_ref (gtk_widget_get_window (dialog));
+    if (type == GDK_KEY_PRESS)
+    {
+        event->key.keyval = gdk_keyval_from_name ("Escape");
+#ifdef USE_GTK3_0
+        GdkDeviceManager *manager = gdk_display_get_device_manager (gtk_widget_get_display (dialog));
+        gdk_event_set_device (event, gdk_device_get_associated_device (gdk_device_manager_get_client_pointer (manager)));
+#endif
+    }
+    gtk_main_do_event (event);
+    gdk_event_free (event);
+    g_assert_null (remaining);
+    dialog = view = NULL;
+}
 static void capture (const gchar *name)
 {
     const gchar *directory = g_getenv ("E2_VIEWER_CAPTURE_DIR");
@@ -190,17 +209,34 @@ static void check_layout (gboolean wrapped)
     GtkWidget *encoding = find (dialog, "file-viewer-encoding");
     GtkWidget *info = find (dialog, "file-viewer-info");
     GtkWidget *toggle = g_object_get_data (G_OBJECT (view), "viewer-wrap-toggle");
-    GtkWidget *close = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
+    g_assert_null (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE));
+    const gint responses[] = {E2_RESPONSE_FIND, E2_RESPONSE_USER3, E2_RESPONSE_USER4};
+    for (guint i = 0; i < G_N_ELEMENTS (responses); i++)
+    {
+        GtkWidget *action = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), responses[i]);
+        g_assert_nonnull (action);
+        g_assert_nonnull (find (action, "GtkImage"));
+        g_assert_null (find (action, "GtkLabel"));
+        g_assert_true (gtk_widget_get_has_tooltip (action));
+        const gchar *name = atk_object_get_name (gtk_widget_get_accessible (action));
+        g_assert_nonnull (name);
+        g_assert_cmpstr (name, !=, "");
+    }
+    GtkWidget *find_button = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_FIND);
     GtkWidget *filename = g_object_get_data (G_OBJECT (dialog), "e2-dialog-label");
-    GtkAllocation size, title, combo, button;
+    GtkAllocation size, title, combo, button, wrap_size;
     gtk_widget_get_allocation (dialog, &size);
     gtk_widget_get_allocation (filename, &title);
     gtk_widget_get_allocation (encoding, &combo);
-    gtk_widget_get_allocation (close, &button);
-    gint x, encoding_y, button_y, wrap_y, info_y;
+    gtk_widget_get_allocation (find_button, &button);
+    gtk_widget_get_allocation (toggle, &wrap_size);
+    gint x, button_x, wrap_x, encoding_y, button_y, wrap_y, info_y;
     g_assert_true (gtk_widget_translate_coordinates (encoding, dialog, 0, 0, &x, &encoding_y));
-    g_assert_true (gtk_widget_translate_coordinates (close, dialog, 0, 0, &x, &button_y));
-    g_assert_true (gtk_widget_translate_coordinates (toggle, dialog, 0, 0, &x, &wrap_y));
+    g_assert_true (gtk_widget_translate_coordinates (find_button, dialog, 0, 0, &button_x, &button_y));
+    g_assert_true (gtk_widget_translate_coordinates (toggle, dialog, 0, 0, &wrap_x, &wrap_y));
+    /* Allow theme borders around buttons, but no extra layout gap. */
+    g_assert_cmpint (button_x - wrap_x - wrap_size.width, >=, 0);
+    g_assert_cmpint (button_x - wrap_x - wrap_size.width, <=, 6);
     g_assert_true (gtk_widget_translate_coordinates (info, dialog, 0, 0, &x, &info_y));
     g_assert_cmpint (title.width, >, size.width - 60);
     g_assert_cmpint (ABS (wrap_y - button_y), <, button.height);
@@ -230,6 +266,7 @@ static gboolean tick (gpointer data)
             e2_option_bool_set ("dialog-view-line-numbers", TRUE);
             e2_option_bool_set ("dialog-view-custom-browser", TRUE);
             e2_option_bool_set ("dialog-view-wrap", FALSE);
+            e2_option_sel_set ("dialog-button-icons", 2);
             e2_option_int_set ("dialog-view-max-width", 40);
             e2_option_color_set_str ("dialog-view-foreground", "#eeeecc");
             e2_option_color_set_str ("dialog-view-background", "#202030");
@@ -368,8 +405,7 @@ static gboolean tick (gpointer data)
             break;
         case 15:
             g_assert_false (gtk_widget_get_mapped (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_USER3)));
-            gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE)));
-            dialog = view = NULL;
+            close_viewer_event (GDK_KEY_PRESS);
             e2_option_bool_set ("dialog-view-wrap", TRUE);
             open_viewer ("plain.txt");
             gtk_window_resize (GTK_WINDOW (dialog), 600, 500);
@@ -470,10 +506,27 @@ static gboolean tick (gpointer data)
             break;
         case 29:
             g_assert_cmpint (check_opening_width (TRUE), ==, numbered_width);
-            close_viewer ();
-            e2_config_dialog_create ("file viewer");
+            gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_USER4)));
+            wait_until = g_get_monotonic_time () + 5000000;
             break;
         case 30:
+        {
+            GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+            GtkTextIter cursor;
+            gtk_text_buffer_get_iter_at_mark (buffer, &cursor, gtk_text_buffer_get_insert (buffer));
+            g_assert_true (gtk_text_iter_is_end (&cursor));
+            GtkWidget *scroll = gtk_widget_get_ancestor (view, GTK_TYPE_SCROLLED_WINDOW);
+            GtkAdjustment *vertical = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scroll));
+            g_assert_cmpfloat (gtk_adjustment_get_value (vertical), >, 0);
+            /* GTK3 animates scrolling; wait for the viewport to reach the end. */
+            if (ABS (gtk_adjustment_get_value (vertical) + gtk_adjustment_get_page_size (vertical)
+                - gtk_adjustment_get_upper (vertical)) > 1)
+            { g_assert_cmpint (g_get_monotonic_time (), <, wait_until); goto wait; }
+            close_viewer_event (GDK_DELETE);
+            e2_config_dialog_create ("file viewer");
+            break;
+        }
+        case 31:
         {
             /* Verify the requested page is usable, not merely registered. */
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");

@@ -579,4 +579,23 @@ void e2_viewer_add_actions (E2_Viewer *viewer, GtkWidget *actions)
     gtk_container_add (GTK_CONTAINER (viewer->controls), actions);
     g_object_unref (actions);
     gtk_button_box_set_layout (GTK_BUTTON_BOX (actions), GTK_BUTTONBOX_END);
+    gtk_box_set_spacing (GTK_BOX (actions), 0);
+    /* These compact controls have no default action or reserved label width. */
+    GList *children = gtk_container_get_children (GTK_CONTAINER (actions));
+    for (GList *p = children; p != NULL; p = p->next)
+    {
+#ifdef USE_GTK2_18
+        gtk_widget_set_can_default (p->data, FALSE);
+#else
+        GTK_WIDGET_UNSET_FLAGS (p->data, GTK_CAN_DEFAULT);
+#endif
+#ifdef USE_GTK3_2
+        gtk_button_box_set_child_non_homogeneous (GTK_BUTTON_BOX (actions), p->data, TRUE);
+#endif
+    }
+    g_list_free (children);
+#ifndef USE_GTK3_0
+    gtk_button_box_set_child_size (GTK_BUTTON_BOX (actions), 0, 0);
+    gtk_button_box_set_child_ipadding (GTK_BUTTON_BOX (actions), 0, 0);
+#endif
 }

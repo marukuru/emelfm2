@@ -1626,6 +1626,16 @@ static void _e2_view_dialog_response_cb (GtkDialog *dialog, gint response,
 		gtk_widget_grab_focus (rt->textview);
 	  }
 		break;
+	  case E2_RESPONSE_USER4: //bottom of content
+	  {
+		GtkTextIter end;
+		gtk_text_buffer_get_end_iter (rt->textbuffer, &end);
+		gtk_text_buffer_place_cursor (rt->textbuffer, &end);
+		gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (rt->textview),
+			gtk_text_buffer_get_insert (rt->textbuffer), 0.0, TRUE, 0.0, 1.0);
+		gtk_widget_grab_focus (rt->textview);
+	  }
+		break;
 	  default:
 		e2_view_dialog_destroy (rt);
 		break;
@@ -1700,6 +1710,17 @@ static void _e2_view_dialog_mousegestures (E2_OptionSet *set)
   /**********************/
  /**** dialog setup ****/
 /**********************/
+
+/* Icon-only actions must remain visible even when dialog button icons are
+ * disabled globally. Keep their tooltips and accessible names. */
+static GtkWidget *_e2_view_dialog_add_icon_button (GtkWidget *dialog,
+	const gchar *icon, const gchar *tip, gint response)
+{
+	GtkWidget *button = e2_button_get (NULL, icon, tip, NULL, NULL);
+	atk_object_set_name (gtk_widget_get_accessible (button), tip);
+	gtk_dialog_add_action_widget (GTK_DIALOG (dialog), button, response);
+	return button;
+}
 
 /**
 @brief create and show view dialog
@@ -1827,9 +1848,8 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	if (asciicode != 0)
 		hide_keycode = asciicode;
 
-	rt->hidebtn = e2_dialog_add_simple_button
-		(rt->dialog, STOCK_NAME_ZOOM_FIT, labeltext, E2_RESPONSE_USER3);
-	e2_widget_set_safetip (rt->hidebtn, _("Hide the search options bar"));
+	rt->hidebtn = _e2_view_dialog_add_icon_button
+		(rt->dialog, STOCK_NAME_ZOOM_FIT, _("Hide the search options bar"), E2_RESPONSE_USER3);
 
 	GtkWidget *wrap = e2_dialog_add_check_button (rt->dialog, rt->textwrap, _("_wrap"),
 		_("If activated, text in the window will be word-wrapped"),
@@ -1843,8 +1863,8 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	if (asciicode != 0)
 		find_keycode = asciicode;
 
-	rt->findbtn = e2_dialog_add_simple_button
-		(rt->dialog, STOCK_NAME_FIND, labeltext, E2_RESPONSE_FIND);
+	rt->findbtn = _e2_view_dialog_add_icon_button
+		(rt->dialog, STOCK_NAME_FIND, _("Show the search options bar"), E2_RESPONSE_FIND);
 #ifdef USE_GTK2_12TIPS
 	e2_widget_set_toggletip (
 #else
@@ -1852,7 +1872,8 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 #endif
 		rt->findbtn,
 		_("Show the search options bar"), _("Find the next match"));
-	e2_dialog_add_defined_button (rt->dialog, &E2_BUTTON_CLOSE);
+	_e2_view_dialog_add_icon_button (rt->dialog, STOCK_NAME_GOTO_BOTTOM,
+		_("Jump to the bottom of the content"), E2_RESPONSE_USER4);
 //	e2_dialog_set_responses (rt->dialog, E2_RESPONSE_FIND, GTK_RESPONSE_CLOSE);
 	e2_dialog_set_negative_response (rt->dialog, GTK_RESPONSE_CLOSE);
 	//this prevents a check button from being activated by keyboard
