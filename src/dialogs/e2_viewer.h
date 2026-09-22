@@ -18,4 +18,6 @@ GtkWidget *e2_viewer_scrolled (E2_Viewer *viewer, GtkWidget *box);
 void e2_viewer_set_font (E2_Viewer *viewer, GtkWidget *textview, gint *width, gint *height);
 void e2_viewer_attach (E2_Viewer *viewer, GtkWidget *textview, GtkWidget *box);
 void e2_viewer_add_actions (E2_Viewer *viewer, GtkWidget *actions);
+/* Measure an opening window width without restricting subsequent resizes. */
+gint e2_viewer_initial_width (E2_Viewer *viewer, GtkWidget *dialog, gint columns);
 #endif

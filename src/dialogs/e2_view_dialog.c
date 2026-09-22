@@ -1932,7 +1932,8 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 	gtk_widget_hide (rt->info_label);
 	gtk_widget_hide (rt->hidebtn);
 
-	gtk_window_resize (GTK_WINDOW (rt->dialog), char_width * rt->window_width,
+	gtk_window_resize (GTK_WINDOW (rt->dialog),
+				e2_viewer_initial_width (rt->viewer, rt->dialog, rt->window_width),
 				(char_height+3) * rt->window_height);
 
 	if (srt != NULL)

@@ -11,6 +11,7 @@ static guint step;
 static gchar *root, *marker;
 static gint64 wait_until;
 static gint narrow_width, narrow_line_height;
+static gint numbered_width, numbered_gutter;
 static GtkWidget *find (GtkWidget *widget, const gchar *name)
 {
     if (!g_strcmp0 (gtk_widget_get_name (widget), name)) return widget;
@@ -156,6 +157,30 @@ static gint long_line_height (void)
     gtk_text_buffer_get_iter_at_line (gtk_text_view_get_buffer (GTK_TEXT_VIEW (view)), &iter, 2);
     gtk_text_view_get_line_yrange (GTK_TEXT_VIEW (view), &iter, &y, &height);
     return height;
+}
+static gint character_width (void)
+{
+    PangoLayout *layout = gtk_widget_create_pango_layout (view, "M");
+    gint width;
+    pango_layout_get_pixel_size (layout, &width, NULL);
+    g_object_unref (layout);
+    return width;
+}
+static gint check_opening_width (gboolean scrolls)
+{
+    GtkWidget *scroll = gtk_widget_get_ancestor (view, GTK_TYPE_SCROLLED_WINDOW);
+    GtkAdjustment *horizontal = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (scroll));
+    GtkAllocation size;
+    gtk_widget_get_allocation (dialog, &size);
+    /* The 80-column opening limit applies to the text, excluding the gutter,
+     * scrollbar and borders. Longer unwrapped lines must still scroll. */
+    g_assert_cmpint (check_text_width (), >=, 80 * character_width ());
+    g_assert_cmpint (check_text_width (), <, 81 * character_width ());
+    gdouble excess = gtk_adjustment_get_upper (horizontal) - gtk_adjustment_get_page_size (horizontal);
+    if (scrolls) g_assert_cmpfloat (excess, >, 0);
+    else g_assert_cmpfloat (excess, <=, 0);
+    g_assert_cmpint (gtk_widget_get_mapped (gtk_scrolled_window_get_hscrollbar (GTK_SCROLLED_WINDOW (scroll))), ==, scrolls);
+    return size.width;
 }
 /* Compare actual widget positions after the window manager has resized the
  * viewer. Checking requisitions alone would miss the collapsed filename bug. */
@@ -415,9 +440,40 @@ static gboolean tick (gpointer data)
         case 25:
             font_is ("DejaVu Sans Mono", NULL);
             close_viewer ();
-            e2_config_dialog_create ("file viewer");
+            e2_option_int_set ("dialog-view-width", 100);
+            e2_option_int_set ("dialog-view-max-width", 80);
+            e2_option_int_set ("dialog-view-height", 20);
+            e2_option_bool_set ("dialog-view-line-numbers", TRUE);
+            e2_option_bool_set ("dialog-view-wrap", FALSE);
+            open_viewer ("80-columns-100-lines.txt");
             break;
         case 26:
+            numbered_width = check_opening_width (FALSE);
+            numbered_gutter = gtk_text_view_get_border_window_size (GTK_TEXT_VIEW (view), GTK_TEXT_WINDOW_LEFT);
+            capture ("80-columns-numbered.png");
+            close_viewer ();
+            e2_option_bool_set ("dialog-view-line-numbers", FALSE);
+            open_viewer ("80-columns-100-lines.txt");
+            break;
+        case 27:
+            g_assert_cmpint (numbered_width - check_opening_width (FALSE), ==, numbered_gutter);
+            close_viewer ();
+            e2_option_bool_set ("dialog-view-line-numbers", TRUE);
+            open_viewer ("80-columns-1000-lines.txt");
+            break;
+        case 28:
+            g_assert_cmpint (check_opening_width (FALSE) - numbered_width, ==, character_width ());
+            close_viewer ();
+            e2_option_int_set ("dialog-view-width", 80);
+            e2_option_int_set ("dialog-view-max-width", 100);
+            open_viewer ("120-columns-100-lines.txt");
+            break;
+        case 29:
+            g_assert_cmpint (check_opening_width (TRUE), ==, numbered_width);
+            close_viewer ();
+            e2_config_dialog_create ("file viewer");
+            break;
+        case 30:
         {
             /* Verify the requested page is usable, not merely registered. */
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");

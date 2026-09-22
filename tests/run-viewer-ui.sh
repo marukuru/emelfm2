@@ -21,6 +21,8 @@ for name in ('pc.NFO', 'art.txt', 'untyped'):
 (root/'amiga.aSc').write_bytes((root/'amiga.nfo').read_bytes())
 (root/'100% <notes> & longer file viewer filename.txt').write_text('Viewer layout regression\n')
 (root/'utf16.txt').write_bytes('Hello 世界\r\nlast line\r\n'.encode('utf-16'))
+for columns, lines in ((80, 100), (80, 1000), (120, 100)):
+    (root/f'{columns}-columns-{lines}-lines.txt').write_text('\n'.join(['X' * columns] * lines))
 browser = root/'fake browser'
 browser.write_text('#!/bin/sh\nprintf "%s\\n" "$#" "$1" >> "$E2_VIEWER_TEST/opened"\n')
 browser.chmod(0o755)
@@ -43,7 +45,7 @@ with open(root/'log', 'w') as output:
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: artwork scope and extension filters, fonts, decoding, links, full-width text and reflow, filename sizing, responsive controls and settings passed')
+        print('viewer UI: artwork scope and extension filters, fonts, decoding, links, full-width text and reflow, opening width with line numbers, filename sizing, responsive controls and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY

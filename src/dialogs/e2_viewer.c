@@ -487,6 +487,34 @@ GtkWidget *e2_viewer_scrolled (E2_Viewer *viewer, GtkWidget *box)
     gtk_box_pack_start (GTK_BOX (box), viewer->scroll, TRUE, TRUE, E2_PADDING);
     return viewer->scroll;
 }
+gint e2_viewer_initial_width (E2_Viewer *viewer, GtkWidget *dialog, gint columns)
+{
+    /* Reserve text columns plus the gutter and the text view's cursor pixel.
+     * Let GTK add theme-dependent scrollbar, frame and dialog borders. These
+     * requests are temporary: the text must still follow later window resizes. */
+    gint width = columns * viewer->char_width + viewer->gutter + 1;
+    GtkScrolledWindow *scroll = GTK_SCROLLED_WINDOW (viewer->scroll);
+    GtkPolicyType horizontal, vertical;
+    gtk_scrolled_window_get_policy (scroll, &horizontal, &vertical);
+    gtk_scrolled_window_set_policy (scroll, horizontal, GTK_POLICY_ALWAYS);
+#ifdef USE_GTK3_0
+    gint previous = gtk_scrolled_window_get_min_content_width (scroll);
+    gtk_scrolled_window_set_min_content_width (scroll, width);
+#else
+    gint previous, height;
+    gtk_widget_get_size_request (viewer->view, &previous, &height);
+    gtk_widget_set_size_request (viewer->view, width, height);
+#endif
+    GtkRequisition request;
+    gtk_widget_size_request (dialog, &request);
+#ifdef USE_GTK3_0
+    gtk_scrolled_window_set_min_content_width (scroll, previous);
+#else
+    gtk_widget_set_size_request (viewer->view, previous, height);
+#endif
+    gtk_scrolled_window_set_policy (scroll, horizontal, vertical);
+    return request.width;
+}
 void e2_viewer_attach (E2_Viewer *viewer, GtkWidget *view, GtkWidget *box)
 {
     viewer->view = view;
