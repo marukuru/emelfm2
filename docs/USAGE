@@ -623,6 +623,8 @@ Note that emelfm2 can (and by default does) watch for and respond to changes to 
 
 Commands used in the emelFM2 (e2) command-line, or associated with a key binding, filetype, alias, are normal shell commands except as set out here.
 
+The Command log shows terminal-sensitive progress messages, including Git clone progress, and updates progress lines in place. Standard input and output retain their pipe behavior, and shell redirections and quiet options are respected. Interactive shells and full-screen programs can be run in a Terminal tab when terminal support is enabled.
+
 Multiple commands may be joined by ';', as for normal shells.
 
 In the following, surrounding parentheses ' ' are not part of the actual command.

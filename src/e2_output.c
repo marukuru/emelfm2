@@ -3763,6 +3763,8 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 			{	//return is at end of msg
 				*s1 = '\0';	//doesn't matter if it's also the start of msg
 				line_return = TRUE;	//wait until next msg before doing anything
+				strend = s1;
+				break; //exclude the replaced CR/NUL from the styled text insertion
 			}
 			else
 			{

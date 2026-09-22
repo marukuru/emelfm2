@@ -67,6 +67,7 @@ typedef struct _E2_CommandTaskData
 	VOLATILE gint child_stderr_fd;
 #else
 	VOLATILE GIOChannel *to_child;	//channel used for messages to an async child (= child's stdin)
+	guint open_channels;	//stdout and stderr must both drain before completion
 #endif
 	VOLATILE gint exit;	//command exit code, 0 = success
 } E2_CommandTaskData;

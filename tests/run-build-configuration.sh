@@ -30,6 +30,7 @@ else
     tests/run-terminal.sh
 fi
 sh tests/run-command-wildcards.sh
+tests/run-command-progress.sh
 TEST_VTE="$vte" tests/run-application-smoke.sh
 tests/run-content-drag.sh
 tests/run-output-wrap.sh

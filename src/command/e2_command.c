@@ -47,6 +47,8 @@ ToDo
 #include <signal.h>
 #include <pwd.h>
 #include <pthread.h>
+#include <fcntl.h>
+#include <termios.h>
 #include "e2_task.h"
 #include "e2_filestore.h"
 #include "e2_alias.h"
@@ -58,6 +60,72 @@ extern pthread_mutex_t task_mutex;
 const gchar *shellcmd;	//the command interpreter to use for external shell
 //list of utf8 strings, each like "name-string=value-string", (not quoted), no whitespace surrounding "="
 static GList *variables;
+
+/* Progress reporters (including git) test stderr with isatty(). Keep stdin
+ * and stdout as pipes, but give stderr a terminal without a controlling
+ * session. Shell redirections still override it normally. */
+static gboolean _e2_command_stderr_pty (gint fds[2], gchar **name)
+{
+	static pthread_mutex_t name_mutex = PTHREAD_MUTEX_INITIALIZER;
+	*name = NULL;
+	fds[0] = posix_openpt (O_RDWR | O_NOCTTY);
+	fds[1] = -1;
+	if (fds[0] < 0) return FALSE;
+	if (grantpt (fds[0]) != 0 || unlockpt (fds[0]) != 0) goto fail;
+	//ptsname() may use a shared buffer.
+	pthread_mutex_lock (&name_mutex);
+	*name = g_strdup (ptsname (fds[0]));
+	pthread_mutex_unlock (&name_mutex);
+	if (*name == NULL) goto fail;
+	fds[1] = open (*name, O_RDWR | O_NOCTTY);
+	if (fds[1] < 0) goto fail;
+	struct termios mode;
+	if (tcgetattr (fds[1], &mode) != 0) goto fail;
+	//Preserve the original CR progress updates and LF line endings.
+	mode.c_oflag &= ~OPOST;
+	if (tcsetattr (fds[1], TCSANOW, &mode) != 0
+		|| fcntl (fds[0], F_SETFD, FD_CLOEXEC) < 0
+		|| fcntl (fds[1], F_SETFD, FD_CLOEXEC) < 0) goto fail;
+	return TRUE;
+fail:
+	if (fds[1] >= 0) close (fds[1]);
+	close (fds[0]);
+	g_free (*name);
+	*name = NULL;
+	return FALSE;
+}
+
+#ifndef E2_NEW_COMMAND
+/* GLib closes unrelated descriptors before child_setup. Reopen the prepared
+ * slave using only async-signal-safe calls; the parent keeps it alive until
+ * spawning finishes. Failure must not silently discard stderr. */
+static void _e2_command_setup_stderr (gpointer name)
+{
+	gint fd = open (name, O_RDWR | O_NOCTTY);
+	if (fd < 0 || dup2 (fd, STDERR_FILENO) < 0) _exit (127);
+	if (fd != STDERR_FILENO) close (fd);
+}
+
+typedef struct
+{
+	gint fd;
+	GString *text;
+} E2_CommandStderr;
+
+/* Synchronous GLib spawning drains its stdout pipe itself. Drain the PTY in
+ * parallel so a command cannot block on a full stderr buffer. */
+static gpointer _e2_command_collect_stderr (gpointer data)
+{
+	E2_CommandStderr *capture = data;
+	gchar buffer[4096];
+	ssize_t count;
+	e2_utils_block_thread_signals ();
+	while ((count = TEMP_FAILURE_RETRY (read (capture->fd, buffer, sizeof (buffer)))) > 0)
+		g_string_append_len (capture->text, buffer, count);
+	//Linux PTY masters report EIO when the last slave is closed.
+	return NULL;
+}
+#endif
 
 #ifdef E2_NEW_COMMAND
 //static void _e2_command_sigpoll_handler (gint num, siginfo_t *info, void *context);
@@ -306,31 +374,10 @@ The buffer pointed to by @a buffer must be big enough to hold @a count bytes
 */
 static ssize_t _e2_command_piperead (gint fd, gchar *buffer, gint count)
 {
-	ssize_t i, n = 0;
-	while (n < count)
-	{
-		i = read (fd, buffer + n, count - n);	//vfs?? e2_fs_file_blockread;
-		if (i >= 0)
-			return (i+n);
-		else
-		{
-			switch (errno)
-			{
-				//some errors we don't care about
-				case EINTR:
-				case EAGAIN:
-#ifdef ERESTART
-				case ERESTART:
-#endif
-					n += i;
-					break;
-				default:
-					return -1;
-					break;
-			}
-		}
-	}
-	return count;
+	ssize_t bytes = TEMP_FAILURE_RETRY (read (fd, buffer, count));
+	//Treat PTY hangup as EOF, and leave temporarily empty channels open.
+	if (bytes < 0 && errno != EAGAIN && errno != EWOULDBLOCK) return 0;
+	return bytes;
 }
 /*
 //FOR DEBUGGING
@@ -519,7 +566,7 @@ reselect:
 //#endif
 
 			//to minimise race-risk, check again for stderr if stdout was processed
-			if (!FD_ISSET (cmddata->child_stderr_fd, &in_fds) && outread)
+			if (!FD_ISSET (cmddata->child_stderr_fd, &in_fds) && outread && errread)
 			{
 //				printd (DEBUG, "re-check child stderr ready");
 				wait.tv_sec = 0;
@@ -631,37 +678,27 @@ reselect:
 				close (cmddata->child_stdin_fd);
 				close (cmddata->child_stdout_fd);
 				close (cmddata->child_stderr_fd);
+				//EOF can arrive before the child exits. Wait for its actual status
+				//even when completion messages are disabled or the command is sync.
+				do
+				{
+					pthread_mutex_lock (&task_mutex);
+					done = (rt->status >= E2_TASK_COMPLETED);
+					pthread_mutex_unlock (&task_mutex);
+					if (!done) usleep (20000);
+				} while (!done);
 				if ((rt->flags & E2_RUN_SHOW) && e2_option_bool_get ("fileop-show"))
 				{
-#ifdef E2CMDTYPEB
-					//wait at most 5 secs for completion code to be logged
-					guint i = 0;
-					while (!done && i < 250)
-					{
-						usleep (20000);
-						pthread_mutex_lock (&task_mutex);
-						done = (rt->status >= E2_TASK_COMPLETED);
-						pthread_mutex_unlock (&task_mutex);
-						i++;
-					}
-					if (i < 250)
-					{
-#endif
-						gchar *shorter = e2_utils_str_shorten (cmddata->command, 60, E2_DOTS_MIDDLE);
-						gchar *message = g_strdup_printf ("%s>%s (%s) %s '%d'\n",
-							(rt->flags & E2_RUN_EXT) ? "sh" : "", shorter,
-							rt->pidstr, _("returned"), cmddata->exit);
-						g_free (shorter);
-						CLOSEBGL
-						e2_output_print (rt->current_tab, message, rt->pidstr,
-							TRUE, "small", (cmddata->exit == 0) ? "posit" : "negat", NULL);
-						OPENBGL
-						g_free (message);
-#ifdef E2CMDTYPEB
-					}
-					else
-						printd (WARN, "timeout - failed to detect child completion");
-#endif
+					gchar *shorter = e2_utils_str_shorten (cmddata->command, 60, E2_DOTS_MIDDLE);
+					gchar *message = g_strdup_printf ("%s>%s (%s) %s '%d'\n",
+						(rt->flags & E2_RUN_EXT) ? "sh" : "", shorter,
+						rt->pidstr, _("returned"), cmddata->exit);
+					g_free (shorter);
+					CLOSEBGL
+					e2_output_print (rt->current_tab, message, rt->pidstr,
+						TRUE, "small", (cmddata->exit == 0) ? "posit" : "negat", NULL);
+					OPENBGL
+					g_free (message);
 				}
 #ifdef E2_OUTPUTSTYLES
 				e2_output_clear_styles (rt->current_tab, rt->pidstr);
@@ -860,6 +897,7 @@ static gint _e2_command_fork (gchar *command, gchar **args, const gchar *cwd,
 	gint stdin_pipe[2];
 	gint stdout_pipe[2];
 	gint stderr_pipe[2];
+	gchar *stderr_name;
 	if (pipe (stdin_pipe) < 0)	//no need to worry about VFS
 	{
 		goto launch_error;
@@ -870,7 +908,9 @@ static gint _e2_command_fork (gchar *command, gchar **args, const gchar *cwd,
 		close (stdin_pipe[OUTWARDS]);
 		goto launch_error;
 	}
-	if (pipe (stderr_pipe) < 0)
+	if (_e2_command_stderr_pty (stderr_pipe, &stderr_name))
+		g_free (stderr_name);
+	else if (pipe (stderr_pipe) < 0)
     {
 		close (stdin_pipe[INWARDS]);
 		close (stdin_pipe[OUTWARDS]);
@@ -878,6 +918,15 @@ static gint _e2_command_fork (gchar *command, gchar **args, const gchar *cwd,
 		close (stdout_pipe[OUTWARDS]);
 		goto launch_error;
 	}
+	//Do not leak another command's endpoints into concurrently launched children.
+	for (gint i = 0; i < 2; i++)
+	{
+		fcntl (stdin_pipe[i], F_SETFD, FD_CLOEXEC);
+		fcntl (stdout_pipe[i], F_SETFD, FD_CLOEXEC);
+		fcntl (stderr_pipe[i], F_SETFD, FD_CLOEXEC);
+	}
+	fcntl (stdout_pipe[INWARDS], F_SETFL, O_NONBLOCK);
+	fcntl (stderr_pipe[INWARDS], F_SETFL, O_NONBLOCK);
 	E2_TaskRuntime *rt;
 	//keep trying this until data set fn not busy
 	//real pid is set later
@@ -1214,10 +1263,38 @@ static gboolean _e2_command_watch_err (GIOChannel *ioc, GIOCondition cond,
 {
 	return _e2_command_watch (ioc, cond, rt, TRUE);
 }
+/* Report completion only after both streams have drained and the PID monitor
+ * has recorded the real exit status. stdout may close before stderr. */
+static gboolean _e2_command_finish_output (gpointer data)
+{
+	E2_TaskRuntime *rt = data;
+	pthread_mutex_lock (&task_mutex);
+	gboolean done = rt->status >= E2_TASK_COMPLETED;
+	pthread_mutex_unlock (&task_mutex);
+	if (!done) return TRUE;
+	E2_CommandTaskData *cmddata = &rt->ex.command;
+	CLOSEBGL
+	if ((rt->flags & E2_RUN_SHOW) && e2_option_bool_get ("fileop-show"))
+	{
+		gchar *shorter = e2_utils_str_shorten (cmddata->command, 60, E2_DOTS_MIDDLE);
+		gchar *message = g_strdup_printf ("%s%s (%s) %s '%d'\n",
+			(rt->flags & E2_RUN_EXT) ? "sh>" : ">", shorter,
+			rt->pidstr, _("returned"), cmddata->exit);
+		g_free (shorter);
+		e2_output_print (rt->current_tab, message, rt->pidstr, TRUE, "small",
+			(cmddata->exit == 0) ? "posit" : "negat", NULL);
+		g_free (message);
+	}
+#ifdef E2_OUTPUTSTYLES
+	e2_output_clear_styles (rt->current_tab, rt->pidstr);
+#endif
+	OPENBGL
+	return FALSE;
+}
 /**
 @brief process iochannel data
 
-Data are grabbed in parcels up to 4095 bytes, which are then separated
+Data are grabbed in parcels up to 4096 bytes, which are then separated
 into lines (\n), and those lines are sent to the output printer
 Will shut the channel down upon error
 
@@ -1230,121 +1307,38 @@ Will shut the channel down upon error
 static gboolean _e2_command_watch (GIOChannel *ioc, GIOCondition cond,
 	E2_TaskRuntime *rt, gboolean error)
 {
-	printd (DEBUG, "_e2_command_watch (ioc:,cond:%x,rt:,%s channel)", cond, (error) ? "stderr":"stdout");
-	E2_CommandTaskData *cmddata = &rt->ex.command;
-	if (cond & (G_IO_IN | G_IO_PRI))
+	if (cond & (G_IO_IN | G_IO_PRI | G_IO_HUP | G_IO_ERR))
 	{
-		gchar buf[5000];	//space (rounded) to read 4096 and add trailing \0
-		//buf[0] = buf[4096] = '\0';
-		gsize len = 0;
-
-//		e2_command_block_childsignal ();
-
-		GIOStatus ret;
-reread:
-		ret = g_io_channel_read_chars (ioc, buf, 4096 * sizeof(gchar), &len, NULL);
-		if (ret == G_IO_STATUS_NORMAL && len > 0)	//len==0 is also a proxy for ret == G_IO_STATUS_EOF
+		gchar buf[4097];
+		gsize len;
+		GIOStatus status = g_io_channel_read_chars (ioc, buf, sizeof (buf) - 1, &len, NULL);
+		if (status == G_IO_STATUS_NORMAL && len > 0)
 		{
-			*(buf + len) = '\0';
-			//line-by-line processing needed to parse and handle CR's BS's etc
+			buf[len] = '\0';
 			_e2_command_display (buf, error, rt);
-
-//			e2_command_unblock_childsignal ();
+			//Keep draining even when HUP arrives with the last buffered output.
 			return TRUE;
 		}
-		else if (ret == G_IO_STATUS_AGAIN)
-			goto reread;
-
-//		e2_command_unblock_childsignal ();
+		if (status == G_IO_STATUS_AGAIN) return TRUE;
+		//EOF or EIO (PTY hangup): retire the channel without changing exit status.
+		cond |= G_IO_HUP;
 	}
-
 	if (cond & (G_IO_ERR | G_IO_HUP | G_IO_NVAL))
 	{
-		gint fd;
-		if (error)
-		{	//shutting down child's error channel normally with flag G_IO_HUP
-//			printd (DEBUG, "stderr iochannel cleanup");
-//			rt->status = E2_TASK_COMPLETED;
-			//possible race here - SIGCHILD handler may be called after this
-			//so store a dummy exit value if that handler has not logged the real value
-			if ((cond & (G_IO_ERR | G_IO_NVAL))
-				&& rt->status != E2_TASK_COMPLETED)
-			{
-				rt->status = E2_TASK_INCOMPLETE;	//ensure this
-				cmddata->exit = 1;
-//				printd (DEBUG, "child status 1 stored");
-			}
-//			else
-//				printd (DEBUG, "child status NOT stored here");
-
-			fd = g_io_channel_unix_get_fd (ioc);
-			g_io_channel_shutdown (ioc, TRUE, NULL);
-//			g_io_channel_unref (ioc); the return FALSE has this effect
-			e2_fs_safeclose (fd);
-			//shutdown the output channel
-//			if (cmddata->to_child != NULL)
-//			{
-				fd = g_io_channel_unix_get_fd (cmddata->to_child);
-				g_io_channel_shutdown (cmddata->to_child, FALSE, NULL);
-				g_io_channel_unref (cmddata->to_child); //like source-removal
-				e2_fs_safeclose (fd);
-//			}
+		g_io_channel_shutdown (ioc, FALSE, NULL);
+		E2_CommandTaskData *cmddata = &rt->ex.command;
+		if (--cmddata->open_channels == 0)
+		{
+			g_io_channel_shutdown (cmddata->to_child, FALSE, NULL);
+			g_io_channel_unref (cmddata->to_child);
+			cmddata->to_child = NULL;
+			g_timeout_add (10, _e2_command_finish_output, rt);
 		}
-		else
-		{	//shutting down child's stdout channel normally with flag G_IO_HUP
-//			printd (DEBUG, "stdout iochannel cleanup");
-//			e2_command_block_childsignal ();
-
-			fd = g_io_channel_unix_get_fd (ioc);
-			//shutdown the error input channel
-			g_io_channel_shutdown (ioc, TRUE, NULL);
-//			g_io_channel_unref (ioc); the return FALSE has this effect
-			e2_fs_safeclose (fd);
-
-//irrelevant for *NIX g_spawn_close_pid (rt->pid);
-			//possible race here - SIGCHILD handler may be called after this
-			//so store a dummy exit value if that handler has not logged the real value
-			if (!(cond & (G_IO_ERR | G_IO_NVAL))
-				&& rt->status != E2_TASK_COMPLETED)
-			{
-				cmddata->exit = 0;
-//				printd (DEBUG, "child status 0 stored");
-			}
-//			else
-//				printd (DEBUG, "child status NOT stored here");
-
-			if ((rt->flags & E2_RUN_SHOW) && e2_option_bool_get ("fileop-show"))
-			{
-				gchar *shorter = e2_utils_str_shorten (cmddata->command, 60, E2_DOTS_MIDDLE);
-				gchar *message = g_strdup_printf ("%s%s (%s) %s '%d'\n",
-					(rt->flags & E2_RUN_EXT) ? "sh>" : ">", shorter,
-					rt->pidstr, _("returned"), cmddata->exit);
-				g_free (shorter);
-				WAIT_FOR_EVENTS_UNLOCKED //maybe this will help sporadic crash with fast output
-				CLOSEBGL
-				e2_output_print (rt->current_tab, message, rt->pidstr, TRUE, "small",
-					(cmddata->exit == 0) ? "posit" : "negat", NULL);
-				OPENBGL
-				g_free (message);
-				printd (DEBUG, "child status printed");
-			}
-			else
-			{	//this is a hack to get small amounts of command-output text to
-				//display when there's no completion message
-				WAIT_FOR_EVENTS_UNLOCKED //maybe this will help sporadic crash with fast output
-				CLOSEBGL
-				e2_output_print (rt->current_tab, "", rt->pidstr, FALSE, NULL);
-				OPENBGL
-			}
-//			e2_command_unblock_childsignal ();
-#ifdef E2_OUTPUTSTYLES
-			e2_output_clear_styles (rt->current_tab, rt->pidstr);
-#endif
-		}
-		return FALSE;	//removes the source
+		return FALSE;
 	}
-	return TRUE;	//should never get to here
+	return TRUE;
 }
+
 /* *
 @brief for a sync command, get the real pid before the child command is executed
 @param rt pointer to task data struct for the command
@@ -1442,6 +1436,9 @@ static gint _e2_command_run_async (gchar *command, gchar **args, const gchar *cw
 #endif
 	GPid pid = 0;
 	gint stdinfd = 0, stdoutfd = 0, stderrfd = 0;	//file descriptors to write to and read from child
+	gint stderr_pty[2];
+	gchar *stderr_name;
+	gboolean terminal = _e2_command_stderr_pty (stderr_pty, &stderr_name);
 	GError *error = NULL;
 	g_spawn_async_with_pipes (local, args,
 #ifdef E2_SU_ACTIONS
@@ -1450,7 +1447,19 @@ static gint _e2_command_run_async (gchar *command, gchar **args, const gchar *cw
 		NULL,
 #endif
 		G_SPAWN_DO_NOT_REAP_CHILD | G_SPAWN_SEARCH_PATH,
-		NULL, NULL, &pid, &stdinfd, &stdoutfd, &stderrfd, &error);
+		terminal ? _e2_command_setup_stderr : NULL, stderr_name,
+		&pid, &stdinfd, &stdoutfd, &stderrfd, &error);
+	if (terminal)
+	{
+		close (stderr_pty[1]);
+		if (error == NULL)
+		{
+			close (stderrfd);
+			stderrfd = stderr_pty[0];
+		}
+		else close (stderr_pty[0]);
+	}
+	g_free (stderr_name);
 #ifdef E2_VFS
 	if (curr_view->spacedata == NULL)
 #endif
@@ -1487,6 +1496,7 @@ static gint _e2_command_run_async (gchar *command, gchar **args, const gchar *cw
 	}
 	rt->flags = flags;
 
+	rt->ex.command.open_channels = 2;
 	//channel for getting the child's stdout
 #if E2_DEBUG_LEVEL > 2
 	stdoutchannel =
@@ -1616,6 +1626,23 @@ static gint _e2_command_run_sync (gchar *command, gchar **args, const gchar *cwd
 	e2_command_block_childsignal ();
 
 	rt->status = E2_TASK_RUNNING;
+	gint stderr_pty[2];
+	gchar *stderr_name;
+	gboolean terminal = _e2_command_stderr_pty (stderr_pty, &stderr_name);
+	E2_CommandStderr capture;
+	pthread_t collector;
+	if (terminal)
+	{
+		capture.fd = stderr_pty[0];
+		capture.text = g_string_new (NULL);
+		if (pthread_create (&collector, NULL, _e2_command_collect_stderr, &capture) != 0)
+		{
+			close (stderr_pty[0]);
+			close (stderr_pty[1]);
+			g_string_free (capture.text, TRUE);
+			terminal = FALSE;
+		}
+	}
 	success = g_spawn_sync (local, args,
 #ifdef E2_SU_ACTIONS
 		envp,
@@ -1624,8 +1651,17 @@ static gint _e2_command_run_sync (gchar *command, gchar **args, const gchar *cwd
 #endif
 		G_SPAWN_SEARCH_PATH,
 //DOES NOTHING		(GSpawnChildSetupFunc) _e2_command_set_childdata, rt,
-		NULL, NULL,
+		terminal ? _e2_command_setup_stderr : NULL, stderr_name,
 		&sout, &serr, &exit, NULL);	//&error);
+	if (terminal)
+	{
+		close (stderr_pty[1]);
+		pthread_join (collector, NULL);
+		close (stderr_pty[0]);
+		g_free (serr);
+		serr = g_string_free (capture.text, FALSE);
+	}
+	g_free (stderr_name);
 	//no rt cleanup after error
 	rt->status = (success) ? E2_TASK_COMPLETED : E2_TASK_FAILED;
 
@@ -1648,14 +1684,16 @@ static gint _e2_command_run_sync (gchar *command, gchar **args, const gchar *cwd
 	}
 #endif
 
+	OPENBGL
 	if (success && (flags & E2_RUN_SHOW) && sout != NULL && *sout != '\0')
 	{
-		e2_output_print (rt->current_tab, sout, rt->pidstr, FALSE, NULL);
+		_e2_command_display (sout, FALSE, rt);
 	}
 	if (success && serr != NULL && *serr != '\0')
 	{
-		e2_output_print_error (serr, FALSE);
+		_e2_command_display (serr, TRUE, rt);
 	}
+	CLOSEBGL
 	if (sout != NULL)
 		g_free (sout);
 	if (serr != NULL)
