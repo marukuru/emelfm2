@@ -12,6 +12,22 @@ static gchar *root, *marker;
 static gint64 wait_until;
 static gint narrow_width, narrow_line_height;
 static gint numbered_width, numbered_gutter;
+static const struct
+{
+    const gchar *file, *patterns;
+    gboolean enabled, wrap, at_end;
+} opening_cases[] = {
+    {"viewer.log", "*.log", TRUE, FALSE, TRUE},
+    {"viewer.LOG", "*.log", TRUE, FALSE, TRUE},
+    {"viewer.LoG", "*.log", TRUE, TRUE, TRUE},
+    {"viewer.log", "*.log", FALSE, FALSE, FALSE},
+    {"plain.txt", "*.log", TRUE, FALSE, FALSE},
+    {"viewer.log", " ; ; ", TRUE, FALSE, FALSE},
+    {"plain.txt", " ; *.OUT; *.TXT; ", TRUE, TRUE, TRUE},
+    {"empty.log", "*.log", TRUE, FALSE, TRUE},
+};
+static guint opening_case;
+static gboolean refreshed, positioned;
 static GtkWidget *find (GtkWidget *widget, const gchar *name)
 {
     if (!g_strcmp0 (gtk_widget_get_name (widget), name)) return widget;
@@ -43,6 +59,39 @@ static void close_viewer (void)
 {
     gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
     dialog = view = NULL;
+}
+static void open_position_case (void)
+{
+    e2_option_bool_set ("dialog-view-open-at-end", opening_cases[opening_case].enabled);
+    e2_option_str_set_direct (e2_option_get ("dialog-view-open-at-end-extensions"), (gchar *) opening_cases[opening_case].patterns);
+    e2_option_bool_set ("dialog-view-wrap", opening_cases[opening_case].wrap);
+    open_viewer (opening_cases[opening_case].file);
+    wait_until = g_get_monotonic_time () + 5000000;
+    refreshed = positioned = FALSE;
+}
+static gboolean position_ready (gboolean at_end)
+{
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+    GtkTextIter cursor;
+    gtk_text_buffer_get_iter_at_mark (buffer, &cursor, gtk_text_buffer_get_insert (buffer));
+    GtkWidget *scroll = gtk_widget_get_ancestor (view, GTK_TYPE_SCROLLED_WINDOW);
+    GtkAdjustment *vertical = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scroll));
+    gdouble expected = at_end ? MAX (0, gtk_adjustment_get_upper (vertical) - gtk_adjustment_get_page_size (vertical)) : 0;
+    if (at_end) g_assert_true (gtk_text_iter_is_end (&cursor));
+    else if (positioned && opening_case == 3)
+    {
+        g_assert_cmpint (gtk_text_iter_get_line (&cursor), ==, 50);
+        GdkRectangle location;
+        gtk_text_view_get_iter_location (GTK_TEXT_VIEW (view), &cursor, &location);
+        expected = location.y;
+    }
+    else g_assert_true (gtk_text_iter_is_start (&cursor));
+    if (ABS (gtk_adjustment_get_value (vertical) - expected) <= 1) return TRUE;
+    if (g_get_monotonic_time () >= wait_until)
+        g_printerr ("opening case %u, refreshed %d: scroll %.1f, expected %.1f\n",
+            opening_case, refreshed, gtk_adjustment_get_value (vertical), expected);
+    g_assert_cmpint (g_get_monotonic_time (), <, wait_until);
+    return FALSE;
 }
 static void close_viewer_event (GdkEventType type)
 {
@@ -210,7 +259,7 @@ static void check_layout (gboolean wrapped)
     GtkWidget *info = find (dialog, "file-viewer-info");
     GtkWidget *toggle = g_object_get_data (G_OBJECT (view), "viewer-wrap-toggle");
     g_assert_null (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE));
-    const gint responses[] = {E2_RESPONSE_FIND, E2_RESPONSE_USER3, E2_RESPONSE_USER4};
+    const gint responses[] = {E2_RESPONSE_FIND, E2_RESPONSE_USER3, E2_RESPONSE_USER4, E2_RESPONSE_REFRESH};
     for (guint i = 0; i < G_N_ELEMENTS (responses); i++)
     {
         GtkWidget *action = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), responses[i]);
@@ -261,6 +310,9 @@ static gboolean tick (gpointer data)
             g_assert_cmpstr (e2_option_get ("dialog-view-ascii-art")->group, ==, "interface.file viewer");
             g_assert_cmpint (e2_option_sel_get ("dialog-view-ascii-art-scope"), ==, 0);
             g_assert_cmpstr (e2_option_str_get ("dialog-view-ascii-art-extensions"), ==, "*.nfo; *.asc");
+            g_assert_cmpstr (e2_option_get ("dialog-view-open-at-end")->group, ==, "interface.file viewer");
+            g_assert_true (e2_option_bool_get ("dialog-view-open-at-end"));
+            g_assert_cmpstr (e2_option_str_get ("dialog-view-open-at-end-extensions"), ==, "*.log");
             e2_option_bool_set ("dialog-view-use-font", TRUE);
             e2_option_str_set_direct (e2_option_get ("dialog-view-font"), "DejaVu Sans Mono 11");
             e2_option_bool_set ("dialog-view-line-numbers", TRUE);
@@ -523,10 +575,77 @@ static gboolean tick (gpointer data)
                 - gtk_adjustment_get_upper (vertical)) > 1)
             { g_assert_cmpint (g_get_monotonic_time (), <, wait_until); goto wait; }
             close_viewer_event (GDK_DELETE);
-            e2_config_dialog_create ("file viewer");
+            open_position_case ();
             break;
         }
         case 31:
+        {
+            if (!position_ready (opening_cases[opening_case].at_end)) goto wait;
+            if (!refreshed)
+            {
+                if (opening_case == 3 && !positioned)
+                {
+                    /* With automatic end positioning disabled, refresh must
+                     * preserve a reading position partway through the file. */
+                    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+                    GtkTextIter cursor;
+                    GdkRectangle location;
+                    gtk_text_buffer_get_iter_at_line (buffer, &cursor, 50);
+                    gtk_text_buffer_place_cursor (buffer, &cursor);
+                    gtk_text_view_get_iter_location (GTK_TEXT_VIEW (view), &cursor, &location);
+                    GtkWidget *scroll = gtk_widget_get_ancestor (view, GTK_TYPE_SCROLLED_WINDOW);
+                    gtk_adjustment_set_value (gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (scroll)), location.y);
+                    positioned = TRUE;
+                    wait_until = g_get_monotonic_time () + 5000000;
+                    goto wait;
+                }
+                gchar *path = g_build_filename (root, opening_cases[opening_case].file, NULL);
+                gchar *before;
+                g_assert_true (g_file_get_contents (path, &before, NULL, NULL));
+                gchar *after = g_strconcat (before, "\nReloaded from disk\n", NULL);
+                g_assert_true (g_file_set_contents (path, after, -1, NULL));
+                g_free (after); g_free (before); g_free (path);
+                /* A user-selected encoding must survive the reload. */
+                if (opening_cases[opening_case].at_end)
+                    gtk_combo_box_set_active (GTK_COMBO_BOX (find (dialog, "file-viewer-encoding")), 6);
+                GtkWidget *original = view;
+                gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_REFRESH)));
+                g_assert_true (find (dialog, "file-viewer-text") == original);
+                refreshed = TRUE;
+                wait_until = g_get_monotonic_time () + 5000000;
+                goto wait;
+            }
+            g_assert_cmpint (gtk_combo_box_get_active (GTK_COMBO_BOX (find (dialog, "file-viewer-encoding"))), ==,
+                opening_cases[opening_case].at_end ? 6 : 0);
+            gchar *text = content ();
+            g_assert_true (g_str_has_suffix (text, "\nReloaded from disk\n"));
+            if (opening_case == G_N_ELEMENTS (opening_cases) - 1)
+            {
+                /* A failed read retains the displayed contents; a later refresh
+                 * must also handle a file that has been replaced or truncated. */
+                gchar *path = g_build_filename (root, opening_cases[opening_case].file, NULL);
+                GtkWidget *refresh = gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_REFRESH);
+                g_assert_cmpint (g_unlink (path), ==, 0);
+                gtk_button_clicked (GTK_BUTTON (refresh));
+                gchar *retained = content ();
+                g_assert_cmpstr (retained, ==, text);
+                g_free (retained);
+                g_assert_true (g_file_set_contents (path, "truncated\n", -1, NULL));
+                gtk_button_clicked (GTK_BUTTON (refresh));
+                retained = content ();
+                g_assert_cmpstr (retained, ==, "truncated\n");
+                g_free (retained); g_free (path);
+            }
+            g_free (text);
+            close_viewer ();
+            if (++opening_case < G_N_ELEMENTS (opening_cases))
+            { open_position_case (); goto wait; }
+            e2_option_bool_set ("dialog-view-open-at-end", FALSE);
+            e2_option_str_set_direct (e2_option_get ("dialog-view-open-at-end-extensions"), "*.log");
+            e2_config_dialog_create ("file viewer");
+            break;
+        }
+        case 32:
         {
             /* Verify the requested page is usable, not merely registered. */
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");
@@ -544,6 +663,18 @@ static gboolean tick (gpointer data)
             gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (detect), TRUE);
             g_assert_true (gtk_widget_get_sensitive (scope));
             g_assert_true (gtk_widget_get_sensitive (extensions));
+            GtkWidget *open_at_end = e2_option_get ("dialog-view-open-at-end")->widget;
+            GtkWidget *end_patterns = e2_option_get ("dialog-view-open-at-end-extensions")->widget;
+            g_assert_true (GTK_IS_TOGGLE_BUTTON (open_at_end));
+            g_assert_true (GTK_IS_ENTRY (end_patterns));
+            g_assert_true (gtk_widget_get_mapped (open_at_end));
+            g_assert_true (gtk_widget_get_mapped (end_patterns));
+            g_assert_cmpstr (gtk_entry_get_text (GTK_ENTRY (end_patterns)), ==, "*.log");
+            g_assert_false (gtk_widget_get_sensitive (end_patterns));
+            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (open_at_end), TRUE);
+            g_assert_true (gtk_widget_get_sensitive (end_patterns));
+            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (open_at_end), FALSE);
+            g_assert_false (gtk_widget_get_sensitive (end_patterns));
             dialog = gtk_widget_get_toplevel (width->widget);
             capture ("settings.png");
             gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);

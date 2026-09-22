@@ -14,6 +14,9 @@ LC_ALL=C.UTF-8 NO_AT_BRIDGE=1 GIO_USE_VFS=local dbus-run-session -- xvfb-run -a 
 import os, pathlib, subprocess, time
 root = pathlib.Path(os.environ['E2_VIEWER_TEST'])
 (root/'plain.txt').write_text('https://example.test/a?x=$(id)&b=1\nHello 日本語\n' + 'long line ' * 100 + '\n' + 'another line\n' * 60)
+for name in ('viewer.log', 'viewer.LOG', 'viewer.LoG'):
+    (root/name).write_text('old line\n' * 2000 + 'newest line\n')
+(root/'empty.log').write_text('')
 (root/'pc.nfo').write_bytes(bytes.fromhex('c9cdcdcdbb0ab ab0b1b2ba0ac8cdcd cdbc'.replace(' ', '')))
 (root/'amiga.nfo').write_bytes('ÆØØØ:........:ØØØ\r\n'.encode('latin1'))
 for name in ('pc.NFO', 'art.txt', 'untyped'):
@@ -45,7 +48,7 @@ with open(root/'log', 'w') as output:
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: artwork scope and extension filters, fonts, decoding, links, full-width text and reflow, opening width with line numbers, filename sizing, responsive controls and settings passed')
+        print('viewer UI: artwork and extension filters, fonts, decoding, links, text sizing and reflow, line numbers, compact controls, refresh, automatic end positioning and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY

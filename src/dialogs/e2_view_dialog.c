@@ -21,6 +21,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #include <string.h>
 #include "e2_dialog.h"
 #include "e2_view_dialog.h"
+#include "e2_viewer_text.h"
 #include "e2_textiter.h"
 #include "e2_task.h"
 #include "e2_print.h"
@@ -621,8 +622,13 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 	if (utfconverter != NULL && contents != NULL) length = strlen (contents);
 	if (rt->is_viewer)
 	{
-		rt->viewer = e2_viewer_new (contents, length, localpath); //takes ownership of raw bytes
-		rt->textbuffer = e2_viewer_buffer (rt->viewer);
+		if (rt->viewer == NULL)
+		{
+			rt->viewer = e2_viewer_new (contents, length, localpath); //takes ownership of raw bytes
+			rt->textbuffer = e2_viewer_buffer (rt->viewer);
+		}
+		else
+			e2_viewer_set_content (rt->viewer, contents, length);
 		rt->charset = e2_viewer_encoding (rt->viewer);
 		goto loaded;
 	}
@@ -1506,13 +1512,96 @@ gboolean e2_view_dialog_combokey_cb (GtkWidget *entry, GdkEventKey *event,
 	NEEDOPENBGL
 	return FALSE;
 }
+static gboolean _e2_view_dialog_opens_at_end (E2_ViewDialogRuntime *rt)
+{
+	return e2_option_bool_get ("dialog-view-open-at-end")
+		&& e2_viewer_matches_extensions (rt->localpath,
+			e2_option_str_get ("dialog-view-open-at-end-extensions"));
+}
+
+static gboolean _e2_view_dialog_scroll_idle (GtkTextView *view)
+{
+	NEEDCLOSEBGL
+	//A retained widget can have been destroyed before this idle runs.
+	if (gtk_widget_get_parent (GTK_WIDGET (view)) != NULL)
+	{
+		GtkTextBuffer *buffer = gtk_text_view_get_buffer (view);
+		GtkTextMark *mark = gtk_text_buffer_get_mark (buffer, "e2-viewer-position");
+		if (mark != NULL)
+		{
+			gboolean at_end = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (mark), "align-end"));
+			gtk_text_view_scroll_to_mark (view, mark, 0.0, TRUE, 0.0, at_end ? 1.0 : 0.0);
+			gtk_text_buffer_delete_mark (buffer, mark);
+		}
+	}
+	NEEDOPENBGL
+	return FALSE;
+}
+
+static void _e2_view_dialog_queue_scroll (E2_ViewDialogRuntime *rt,
+	GtkTextIter *position, gboolean at_end)
+{
+	GtkTextMark *mark = gtk_text_buffer_get_mark (rt->textbuffer, "e2-viewer-position");
+	if (mark == NULL)
+		mark = gtk_text_buffer_create_mark (rt->textbuffer, "e2-viewer-position", position, FALSE);
+	else
+		gtk_text_buffer_move_mark (rt->textbuffer, mark, position);
+	g_object_set_data (G_OBJECT (mark), "align-end", GINT_TO_POINTER (at_end));
+	//Allow initial window sizing and replacement-buffer layout to finish first.
+	g_idle_add_full (G_PRIORITY_DEFAULT_IDLE, (GSourceFunc) _e2_view_dialog_scroll_idle,
+		g_object_ref (rt->textview), g_object_unref);
+}
+
+static void _e2_view_dialog_scroll_to_end (E2_ViewDialogRuntime *rt)
+{
+	GtkTextIter end;
+	gtk_text_buffer_get_end_iter (rt->textbuffer, &end);
+	gtk_text_buffer_place_cursor (rt->textbuffer, &end);
+	_e2_view_dialog_queue_scroll (rt, &end, TRUE);
+}
+
+static void _e2_view_dialog_refresh (E2_ViewDialogRuntime *rt)
+{
+	GtkTextIter iter;
+	GdkRectangle visible;
+	gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (rt->textview), &visible);
+	gtk_text_view_get_iter_at_location (GTK_TEXT_VIEW (rt->textview), &iter, visible.x, visible.y);
+	gint top = gtk_text_iter_get_offset (&iter);
+	gtk_text_buffer_get_iter_at_mark (rt->textbuffer, &iter,
+		gtk_text_buffer_get_insert (rt->textbuffer));
+	gint cursor = gtk_text_iter_get_offset (&iter);
+#ifdef E2_VFS
+	VPATH path = { rt->localpath, rt->spacedata };
+	if (!e2_view_dialog_read_text (&path, rt)) return;
+#else
+	if (!e2_view_dialog_read_text (rt->localpath, rt)) return;
+#endif
+#ifdef E2_MARK_FINDS
+	e2_view_dialog_clear_hilites (rt);
+#endif
+	_e2_view_dialog_unattach_search_iters (rt->textbuffer);
+	gtk_widget_hide (rt->info_label);
+	if (_e2_view_dialog_opens_at_end (rt))
+		_e2_view_dialog_scroll_to_end (rt);
+	else
+	{
+		//Preserve the reading position when automatic end positioning is off.
+		gint length = gtk_text_buffer_get_char_count (rt->textbuffer);
+		gtk_text_buffer_get_iter_at_offset (rt->textbuffer, &iter, MIN (cursor, length));
+		gtk_text_buffer_place_cursor (rt->textbuffer, &iter);
+		gtk_text_buffer_get_iter_at_offset (rt->textbuffer, &iter, MIN (top, length));
+		_e2_view_dialog_queue_scroll (rt, &iter, FALSE);
+	}
+	gtk_widget_grab_focus (rt->textview);
+}
+
 /**
 @brief view dialog response callback
 This can also be called directly, from other mechanisms to initiate a search
 The trigger may have been a <Ctrl>f or <Ctrl>g keypress
 @param dialog UNUSED the dialog where the response was triggered
 @param response the number assigned the activated widget
-@param view rt data for the dialog
+@param rt runtime data for the dialog
 
 @return
 */
@@ -1627,14 +1716,11 @@ static void _e2_view_dialog_response_cb (GtkDialog *dialog, gint response,
 	  }
 		break;
 	  case E2_RESPONSE_USER4: //bottom of content
-	  {
-		GtkTextIter end;
-		gtk_text_buffer_get_end_iter (rt->textbuffer, &end);
-		gtk_text_buffer_place_cursor (rt->textbuffer, &end);
-		gtk_text_view_scroll_to_mark (GTK_TEXT_VIEW (rt->textview),
-			gtk_text_buffer_get_insert (rt->textbuffer), 0.0, TRUE, 0.0, 1.0);
+		_e2_view_dialog_scroll_to_end (rt);
 		gtk_widget_grab_focus (rt->textview);
-	  }
+		break;
+	  case E2_RESPONSE_REFRESH:
+		_e2_view_dialog_refresh (rt);
 		break;
 	  default:
 		e2_view_dialog_destroy (rt);
@@ -1874,6 +1960,8 @@ static GtkWidget *_e2_view_dialog_create (VPATH *localpath,
 		_("Show the search options bar"), _("Find the next match"));
 	_e2_view_dialog_add_icon_button (rt->dialog, STOCK_NAME_GOTO_BOTTOM,
 		_("Jump to the bottom of the content"), E2_RESPONSE_USER4);
+	_e2_view_dialog_add_icon_button (rt->dialog, STOCK_NAME_REFRESH,
+		_("Reload the file from disk"), E2_RESPONSE_REFRESH);
 //	e2_dialog_set_responses (rt->dialog, E2_RESPONSE_FIND, GTK_RESPONSE_CLOSE);
 	e2_dialog_set_negative_response (rt->dialog, GTK_RESPONSE_CLOSE);
 	//this prevents a check button from being activated by keyboard
@@ -2158,10 +2246,14 @@ gboolean e2_view_dialog_create (VPATH *localpath)
 			gtk_widget_show (dialog);
 		gtk_text_view_set_buffer (GTK_TEXT_VIEW (vrt->textview), vrt->textbuffer);
 		g_object_unref (G_OBJECT (vrt->textbuffer)); //destroy buffer with view
-		//put cursor at start of buffer, for searching etc
-		GtkTextIter start;
-		gtk_text_buffer_get_start_iter (vrt->textbuffer, &start);
-		gtk_text_buffer_place_cursor (vrt->textbuffer, &start);
+		if (_e2_view_dialog_opens_at_end (vrt))
+			_e2_view_dialog_scroll_to_end (vrt);
+		else
+		{
+			GtkTextIter start;
+			gtk_text_buffer_get_start_iter (vrt->textbuffer, &start);
+			gtk_text_buffer_place_cursor (vrt->textbuffer, &start);
+		}
 		return TRUE;
 	}
 	return FALSE;
@@ -2219,6 +2311,12 @@ void e2_view_dialog_options_register (void)
 		_("This causes the view window to open with text-wrapping enabled"),
 		NULL, TRUE,
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT | E2_OPTION_FLAG_FREEGROUP);
+	e2_option_bool_register ("dialog-view-open-at-end", group_name, _("automatically jump to the newest line"),
+		_("Open and refresh matching files at the end of their content"), NULL, TRUE,
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
+	e2_option_str_register ("dialog-view-open-at-end-extensions", group_name, _("jump-to-end filetypes"),
+		_("Semicolon-separated filename patterns, matched case-insensitively (for example *.log; *.out)"),
+		"dialog-view-open-at-end", "*.log", E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_int_register ("dialog-view-width",
 		group_name, _("initial window width"),
 		_("The view window will default to showing this many characters per line (but the the displayed buttons may make it wider than this)")

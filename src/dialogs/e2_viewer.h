@@ -9,6 +9,8 @@ typedef struct _E2_Viewer E2_Viewer;
 E2_Viewer *e2_viewer_new (gpointer bytes, gsize length, const gchar *filename);
 /* Destroy the attached widgets before freeing their viewer state. */
 void e2_viewer_free (E2_Viewer *viewer);
+/* Replace the contents, taking ownership of bytes and keeping the encoding override. */
+void e2_viewer_set_content (E2_Viewer *viewer, gpointer bytes, gsize length);
 /* Returns a new reference; the caller must unref it. */
 GtkTextBuffer *e2_viewer_buffer (E2_Viewer *viewer);
 /* Borrowed encoding name; do not free it. */

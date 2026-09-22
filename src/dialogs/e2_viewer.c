@@ -157,6 +157,7 @@ struct _E2_Viewer
     E2ViewerControls *controls;
     GPtrArray *links;
     gint char_width, char_height, gutter, press_x, press_y;
+    gint selected_encoding;
     gchar *pressed;
     gboolean dragged;
     PangoFontDescription *font;
@@ -292,15 +293,12 @@ static void update_info (E2_Viewer *viewer)
     gtk_widget_set_tooltip_text (viewer->info, text->str);
     g_string_free (text, TRUE);
 }
-static void encoding_changed (GtkComboBox *combo, E2_Viewer *viewer)
+static void update_content (E2_Viewer *viewer)
 {
-    gint selected = gtk_combo_box_get_active (combo);
-    if (selected < 0 || selected >= G_N_ELEMENTS (encodings)) return;
-    NEEDCLOSEBGL
     g_clear_pointer (&viewer->pressed, g_free);
     g_free (viewer->decoded.text);
     viewer->decoded = e2_viewer_decode (viewer->bytes, viewer->length,
-        detect_art (viewer), encodings[selected]);
+        detect_art (viewer), encodings[viewer->selected_encoding]);
     gtk_text_buffer_set_text (viewer->buffer, viewer->decoded.text, -1);
     update_links (viewer);
     e2_viewer_set_font (viewer, viewer->view, &viewer->char_width, &viewer->char_height);
@@ -311,7 +309,22 @@ static void encoding_changed (GtkComboBox *combo, E2_Viewer *viewer)
         gtk_text_view_set_wrap_mode (GTK_TEXT_VIEW (viewer->view), GTK_WRAP_NONE);
     }
     update_info (viewer);
+}
+static void encoding_changed (GtkComboBox *combo, E2_Viewer *viewer)
+{
+    gint selected = gtk_combo_box_get_active (combo);
+    if (selected < 0 || selected >= G_N_ELEMENTS (encodings)) return;
+    NEEDCLOSEBGL
+    viewer->selected_encoding = selected;
+    update_content (viewer);
     NEEDOPENBGL
+}
+void e2_viewer_set_content (E2_Viewer *viewer, gpointer bytes, gsize length)
+{
+    g_free (viewer->bytes);
+    viewer->bytes = bytes;
+    viewer->length = length;
+    update_content (viewer);
 }
 static E2_ViewerLink *link_at (E2_Viewer *viewer, GdkWindow *window, gint x, gint y)
 {
