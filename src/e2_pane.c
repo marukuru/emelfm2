@@ -225,6 +225,9 @@ headers will be re-coloured, or the filename column title will be
 */
 void e2_pane_flag_active (void)
 {
+	/* Keep the source pane visible even when an entry or output has focus. */
+	gtk_widget_queue_draw (app.pane1.outer_box);
+	gtk_widget_queue_draw (app.pane2.outer_box);
 	E2_OptionSet *set;
 #ifdef E2_SMALLSCREEN
 	set = e2_option_get ("active-pane-tools");
@@ -2423,11 +2426,40 @@ void e2_pane_create (E2_PaneRuntime *rt)
 	//after the actions are in place, fill in the pane contents
 	e2_pane_create_part (rt);
 }
+/* A separate drawing area cannot be obscured by a theme's header background.
+ * Reserve the same width in both panes so switching does not move the lists. */
+#ifdef USE_GTK3_0
+static gboolean _e2_pane_indicator_draw (GtkWidget *widget, cairo_t *cr,
+	E2_PaneRuntime *rt)
+{
+	if (rt == curr_pane)
+	{
+		GdkRGBA color;
+		GtkStyleContext *context = gtk_widget_get_style_context (rt->view.treeview);
+		if (!gtk_style_context_lookup_color (context, "theme_selected_bg_color", &color))
+			color = *e2_option_color_get ("color-active-pane");
+		gdk_cairo_set_source_rgba (cr, &color);
+		cairo_paint (cr);
+	}
+	return FALSE;
+}
+#else
+static gboolean _e2_pane_indicator_draw (GtkWidget *widget, GdkEventExpose *event,
+	E2_PaneRuntime *rt)
+{
+	if (rt == curr_pane)
+	{
+		gdk_draw_rectangle (widget->window,
+			gtk_widget_get_style (rt->view.treeview)->base_gc[GTK_STATE_SELECTED],
+			TRUE, 0, 0, widget->allocation.width, widget->allocation.height);
+	}
+	return FALSE;
+}
+#endif
+
 /**
 @brief part of pane creation, used also in re-creation
-
 @param rt pointer to pane data struct
-
 @return
 */
 void e2_pane_create_part (E2_PaneRuntime *rt)
@@ -2441,6 +2473,18 @@ void e2_pane_create_part (E2_PaneRuntime *rt)
 	rt->inner_box = gtk_vbox_new (FALSE, 0);
 	rt->outer_box = gtk_hbox_new (FALSE, 0);
 #endif
+	GtkWidget *indicator = gtk_drawing_area_new ();
+	gtk_widget_set_name (indicator, "active-pane-indicator");
+	gtk_widget_set_size_request (indicator, 3, -1);
+	g_signal_connect (indicator,
+#ifdef USE_GTK3_0
+		"draw",
+#else
+		"expose-event",
+#endif
+		G_CALLBACK (_e2_pane_indicator_draw), rt);
+	gtk_box_pack_start (GTK_BOX (rt->outer_box), indicator, FALSE, FALSE, 0);
+	gtk_widget_show (indicator);
 	gtk_box_pack_start (GTK_BOX (rt->inner_box), rt->pane_sw, TRUE, TRUE, 0);
 	gtk_box_pack_start (GTK_BOX (rt->outer_box), rt->inner_box, TRUE, TRUE, 0);
 
