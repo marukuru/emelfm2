@@ -25,6 +25,7 @@ env = dict(os.environ, LD_PRELOAD=str(root/'smoke.so'))
 if os.environ.get("E2_TABS_GDB"):
     args = ["gdb", "-batch", "-ex", "set startup-with-shell off", "-ex", "set environment LD_PRELOAD="+env.pop("LD_PRELOAD"),
             "-ex", "run", "-ex", "thread apply all bt", "--args"] + args
+args += ['-s', 'modern-ui='+os.environ.get('E2_TEST_MODERN_UI', 'false')]
 with open(root/'log', 'w') as output:
     p = subprocess.Popen(args, env=env,
                          stdout=output, stderr=output)

@@ -1,0 +1,70 @@
+Optional modern appearance
+==========================
+
+Configuration / interface / miscellaneous contains:
+  Use modern flat appearance (restart required)
+
+It defaults to off. Save the setting and restart emelFM2 to use it. Changing
+the setting does not interrupt the current session, including running file
+operations and terminals. Other preference changes and window rebuilds keep
+the appearance selected at startup. Turn the option off and restart to return
+to the original GTK appearance. No other saved settings are rewritten.
+
+The modern appearance flattens control surfaces and uses consistent symbolic
+icons for recognized built-in actions. It preserves the selected GTK palette,
+including dark backgrounds, text, and selection colors. File-type colors,
+output tags, ANSI terminal colors, user fonts and custom icon directories are
+unchanged. Explicit icon paths and unrecognized plugin/user icons retain their
+normal lookup. If SVG loading is unavailable, existing icons are used instead.
+Symbolic icons retain each original image's actual dimensions.
+
+The same native widgets, action identifiers, layouts, column sizing, toolbar
+placements, keyboard/mouse bindings and confirmation dialogs are used. There
+is no new sidebar, header bar, theme selector or file-operation code path.
+GTK 3 uses local CSS providers for control surfaces, without color or size
+overrides. GTK 2 uses a flat style engine with the resolved theme palettes and
+metrics. GTK 2 combo-box arrow buttons and file column headers retain their
+native styles to preserve private spacing and theme-specific dark backgrounds.
+Highlighted GTK 2 menu items use the theme's selection background, including
+themes whose normal highlight is painted from artwork instead of a hover color.
+Window decorations remain desktop-managed.
+
+Build and packaging
+-------------------
+
+WITH_MODERN_UI ?= 1 is the default in Makefile.config and debian/rules. Including
+support does not enable the appearance in user profiles. Both GTK 2 and GTK 3,
+with or without VTE, support the setting. No new linked library is required.
+
+Use WITH_MODERN_UI=0 for a binary without the presentation module or embedded
+symbolic artwork. The configuration checkbox is omitted, and a modern-ui=true
+value from another build is safely retained as an unknown option. The compiled
+capability is reported by --build. Feature changes participate in the existing
+build signature so switching the flag rebuilds the relevant objects.
+
+Pass the same flags when building and installing. For example:
+  make WITH_GTK2=1 WITH_MODERN_UI=1
+  make install WITH_GTK2=1 WITH_MODERN_UI=1 PREFIX=/your/staging/root/usr
+
+The artwork is embedded in the optional module. There is no separate asset
+directory to install or remove. UI.md and docs/ui-concept/ are design materials,
+not runtime resources, and are not installed by the package.
+
+Validation
+----------
+
+After building with the matching GTK generation:
+  GTK_PACKAGE=gtk+-2.0 tests/run-modern-ui.sh
+  GTK_PACKAGE=gtk+-3.0 tests/run-modern-ui.sh
+
+These tests compare resolved palettes and widget allocations in light and dark
+themes with the preference off/on, check custom colors/icons, and verify that
+menu highlights remain visible for pointer and keyboard navigation and the
+preference remains fixed through window rebuilds. Run them with both build
+flag values to verify the omitted-capability path too. The tests use temporary
+profiles and a virtual display, leaving the user's configuration untouched.
+
+Existing content-drag, pane-tabs, application-smoke and VTE UI tests also accept
+E2_TEST_MODERN_UI=true to exercise the same interactions with modern styling.
+E2_MODERN_TEST_THEMES can select additional installed themes for palette and
+geometry comparisons, for example E2_MODERN_TEST_THEMES=Matcha-dark-sea.

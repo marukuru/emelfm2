@@ -28,6 +28,13 @@ Optional embedded terminals for GTK 2 and GTK 3 are available with explicit
 `WITH_VTE=1`. The existing command panel remains the default. See
 [terminal build, usage and validation instructions](docs/TERMINAL).
 
+An optional flat appearance is included with `WITH_MODERN_UI=1` (the default,
+including Debian packages). Enable **Use modern flat appearance (restart required)**
+in Configuration → interface → miscellaneous, then restart emelFM2. It is off by
+default and retains the current theme colors, file/output colors, fonts, custom
+icons, and layout. Build with `WITH_MODERN_UI=0` to omit this support and setting.
+See [appearance settings and validation](docs/MODERN_UI).
+
 #### Changes in this fork
 - Crash prevention and memory hardening in file lists, dialogs, and filesystem operations.
 - Safer background directory reads, refresh handling, and child-process cleanup.

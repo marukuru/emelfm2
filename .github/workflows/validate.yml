@@ -21,8 +21,8 @@ jobs:
           python3 - <<'PY'
           import json, os
           vtes = [0, 1] if os.environ['INCLUDE_VTE'] == 'true' else [0]
-          matrix = {'include': [{'gtk': gtk, 'vte': vte, 'command': command}
-                    for gtk in (2, 3) for vte in vtes for command in (0, 1)]}
+          matrix = {'include': [{'gtk': gtk, 'vte': vte, 'command': command, 'modern': modern}
+                    for gtk in (2, 3) for vte in vtes for command in (0, 1) for modern in (0, 1)]}
           with open(os.environ['GITHUB_OUTPUT'], 'a') as f:
               f.write('value=' + json.dumps(matrix) + '\n')
           PY
@@ -43,16 +43,17 @@ jobs:
             else packages="$packages libvte-2.91-dev"; fi
           fi
           sudo apt-get update
-          sudo apt-get install -y build-essential pkg-config libmagic-dev libx11-dev libxtst6 libfontconfig1-dev libpango1.0-dev xvfb xauth dbus-x11 fonts-dejavu-core procps htop zsh fish $packages
+          sudo apt-get install -y build-essential pkg-config libmagic-dev libx11-dev libxtst6 libfontconfig1-dev libpango1.0-dev xvfb xauth dbus-x11 fonts-dejavu-core gnome-themes-extra librsvg2-common procps htop zsh fish $packages
       - name: Build and validate
         env:
           TEST_GTK: ${{ matrix.gtk }}
           TEST_VTE: ${{ matrix.vte }}
           TEST_COMMAND: ${{ matrix.command }}
+          TEST_MODERN_UI: ${{ matrix.modern }}
         run: tests/run-build-configuration.sh
       - name: Upload optional validation binary (never a release)
         if: matrix.vte == 1
         uses: actions/upload-artifact@v4
         with:
-          name: validation-only-gtk${{ matrix.gtk }}-vte-command${{ matrix.command }}
+          name: validation-only-gtk${{ matrix.gtk }}-vte-command${{ matrix.command }}-modern${{ matrix.modern }}
           path: emelfm2

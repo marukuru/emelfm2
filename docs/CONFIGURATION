@@ -28,6 +28,13 @@ Where an option involves doing/running something, the text of the function (mean
 Note that for convenience when creating toolbars or menus, the actions list includes things that do not actually run anything directly. Part or all of their name is enclosed in <> - examples are 'command.<line>', '<submenu>', '<separator>'. These pseudo-actions may have argument(s) if appropriate.
 
 [general]
+On the interface / miscellaneous page, 'Use modern flat appearance (restart
+required)' enables flat controls and symbolic built-in icons after saving and
+restarting. It defaults to off and preserves theme colors, file/output colors,
+fonts, custom icons and layout. Turn it off and restart to restore the original
+appearance. This option is available when built with WITH_MODERN_UI=1 (the
+default). See MODERN_UI for build and validation details.
+
 Enable 'show tray icon' to put the main application icon in the desktop tray.
 The 'tray icon behaviour' selector is available while this option is enabled.
 Changes take effect when you apply or commit the configuration.

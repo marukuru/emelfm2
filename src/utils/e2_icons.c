@@ -24,6 +24,7 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 #include "emelfm2.h"
 #include "e2_icons.h"
+#include "e2_modern_ui.h"
 
 #ifdef E2_ICONCACHE
 /*
@@ -465,6 +466,7 @@ static void _e2_icons_cache_remove (gchar *key, GArray *icondata, gpointer userd
 */
 void e2_icons_cache_clear (void)
 {
+	e2_modern_ui_clear_icons ();
 //	icons_mtime = 0;
 	g_hash_table_foreach (cached_icons, (GHFunc) _e2_icons_cache_remove, NULL); //manual cleanup necessary
 	g_hash_table_destroy (cached_icons);
@@ -496,7 +498,7 @@ If not already cached, the relevant image will be created and added to the cache
 @param missing TRUE to return missing-image icon if no pixbuf available for @a name
 @return pointer to cached GdkPixbuf (no extra refcount) for the image, or NULL if problem occurred
 */
-GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
+static GdkPixbuf *_e2_icons_get_legacy_pixbuf (const gchar *name, gint isize, gboolean missing)
 {
 	if (name == NULL)
 		name = STOCK_NAME_MISSING_IMAGE;	//revert to default icon image
@@ -691,6 +693,20 @@ GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
 	}
 
 	return NULL;
+}
+
+GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
+{
+	GdkPixbuf *original = _e2_icons_get_legacy_pixbuf (name, isize, missing);
+	/* Match the actual legacy image allocation, including non-square icons.
+	 * A missing image must not grow an otherwise empty toolbar slot. */
+	if (original != NULL)
+	{
+		GdkPixbuf *modern = e2_modern_ui_icon (name,
+			gdk_pixbuf_get_width (original), gdk_pixbuf_get_height (original));
+		if (modern != NULL) return modern;
+	}
+	return original;
 }
 
 #endif //def E2_ICONCACHE

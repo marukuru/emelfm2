@@ -21,9 +21,10 @@ endif
 
 # Default CFLAGS are specified in package file Makefile.config.
 # Any override must be passed to make as CFLAGS=<whatever> in MAKEOPTS
+WITH_MODERN_UI ?= 1
 MAKEOPTS = \
  CFLAGS="$(CFLAGS) -std=gnu17 -O2 -Wall -fcommon -Wno-error=incompatible-pointer-types -Wno-error=int-conversion -Wno-error=implicit-function-declaration -Wno-error=implicit-int -Wno-deprecated-declarations" \
- $(GTKOPTS) $(VTEOPT) \
+ $(GTKOPTS) $(VTEOPT) WITH_MODERN_UI=$(WITH_MODERN_UI) \
  WITH_LATEST=1 NEW_COMMAND=1 \
  EXTRA_BINDINGS=0 \
  WITH_KERNELFAM=1 \
@@ -102,7 +103,7 @@ binary-arch: build install
 	dh_installman
 	dh_strip
 	# The built-in help viewer opens these documents as plain text by name.
-	dh_compress -XUSAGE -XCONFIGURATION -XACTIONS -XCREDITS -XTERMINAL
+	dh_compress -XUSAGE -XCONFIGURATION -XACTIONS -XCREDITS -XTERMINAL -XMODERN_UI
 	dh_fixperms
 	dh_installdeb
 	dh_shlibdeps

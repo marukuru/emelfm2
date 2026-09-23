@@ -69,6 +69,9 @@ MKOBJDIRS = $(foreach dir, $(DIRS) $(LIBS) $(OPTLIBS), $(OBJECTS_DIR)/$(dir))
 
 HEADERS = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.h))
 SOURCES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
+ifeq ($(WITH_MODERN_UI),0)
+SOURCES := $(filter-out src/e2_modern_ui.c,$(SOURCES))
+endif
 OBJECTS = $(SOURCES:%.c=$(OBJECTS_DIR)/%.o)
 DEP_FILES = $(SOURCES:%.c=$(OBJECTS_DIR)/%.deps)
 
@@ -228,6 +231,12 @@ endif
 endif
 ifneq ($(filter $(WITH_VTE),0 1),$(WITH_VTE))
 $(error WITH_VTE must be 0 or 1)
+endif
+ifneq ($(words $(WITH_MODERN_UI)),1)
+$(error WITH_MODERN_UI must be 0 or 1)
+endif
+ifeq ($(filter $(WITH_MODERN_UI),0 1),)
+$(error WITH_MODERN_UI must be 0 or 1)
 endif
 
 ifneq ($(WITH_GTK2),0)
@@ -393,6 +402,7 @@ BUILD_PARMS+=|WITH_LATEST=$(WITH_LATEST)|WITH_OUTPUTSTYLES=$(WITH_OUTPUTSTYLES)
 BUILD_PARMS+=|WITH_POLKIT=$(WITH_POLKIT)|WITH_THUMBLIB=$(WITH_THUMBLIB)|WITH_THUMBS=$(WITH_THUMBS)
 BUILD_PARMS+=|WITH_TRACKER=$(WITH_TRACKER)|WITH_TRANSPARENCY=$(WITH_TRANSPARENCY)|WITH_UDISKS=$(WITH_UDISKS)
 BUILD_PARMS+=|WITH_VTE=$(WITH_VTE)|GTK_BACKEND=$(GTK3)
+BUILD_PARMS+=|WITH_MODERN_UI=$(WITH_MODERN_UI)
 BUILD_PARMS+=|XDG_DESKTOP_DIR=$(XDG_DESKTOP_DIR)|XDG_INTEGRATION=$(XDG_INTEGRATION)
 
 .PHONY: all plugins install install_plugins uninstall uninstall_plugins doc \
@@ -415,8 +425,10 @@ install: all install_plugins install_viewer_fonts
 	@chmod -fR 0644 $(ICON_DIR)/*.png || true
 	@chmod -fR 0644 $(ICON_DIR)/*.svg || true
 	@install -d -m 755 $(DOC_DIR)
-	@for file in `ls $(DOCS)/ |grep -v svn |grep -v desktop_environment |grep -v api |grep -v emelfm2.1`; do \
-		install -m 644 $(DOCS)/$$file $(DOC_DIR); \
+	@for file in $(DOCS)/*; do \
+		if test -f "$$file" && test "$$file" != "$(DOCS)/emelfm2.1"; then \
+			install -m 644 "$$file" $(DOC_DIR); \
+		fi; \
 	done
 	@install -d $(MAN_DIR)
 	@install -m 644 $(DOCS)/emelfm2.1 $(MAN_DIR)/$(TARGET).1;
@@ -637,7 +649,7 @@ $(DESKTOP_FILE):
 
 # Track compilation features, including plugins. Installation paths may be
 # staging prefixes; do not rebuild binaries with those paths during install.
-CONFIG_FEATURES = GTK3 WITH_VTE NEW_COMMAND WITH_LATEST USE_WAYLAND DEBUG DEBUG_LEVEL \
+CONFIG_FEATURES = GTK3 WITH_VTE WITH_MODERN_UI NEW_COMMAND WITH_LATEST USE_WAYLAND DEBUG DEBUG_LEVEL \
  I18N WITH_ASSIST WITH_VFS WITH_UDISKS WITH_HAL WITH_POLKIT EDITOR_SPELLCHECK \
  WITH_CUSTOMMOUSE WITH_OUTPUTSTYLES EXTRA_BINDINGS FILES_UTF8ONLY WITH_THUMBS \
  WITH_THUMBLIB WITH_ACL WITH_TRACKER DOCS_VERSION PANES_HORIZONTAL USE_GAMIN \
@@ -674,6 +686,9 @@ $(BUILD_FILE): .build-config Makefile Makefile.config
 ifeq ($(WITH_VTE),1)
 	@echo "#define E2_VTE" >> $(BUILD_FILE)
 	@echo "#define E2_VTE$(VTE_BACKEND)" >> $(BUILD_FILE)
+endif
+ifeq ($(WITH_MODERN_UI),1)
+	@echo "#define E2_MODERN_UI" >> $(BUILD_FILE)
 endif
 
 ifneq ($(WITH_LATEST),0)

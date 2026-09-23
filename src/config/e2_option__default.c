@@ -146,6 +146,12 @@ void e2_option_default_register (void)
 	/*********************/
 
 	group_name = g_strconcat(_C(20) ,":",_C(26),NULL);  //_("interface:miscellaneous"
+#ifdef E2_MODERN_UI
+	e2_option_bool_register ("modern-ui", group_name,
+		_("Use modern flat appearance (restart required)"),
+		_("Flatten controls and use symbolic icons while preserving theme colors, custom icons and fonts. Restart the application to apply."),
+		NULL, FALSE, E2_OPTION_FLAG_BASIC);
+#endif
 	e2_option_bool_register ("pane-tabs", group_name,
 		_("enable tabs"),
 		_("Each tab contains two file panes and their navigation bars. Ctrl+N opens a new tab with the current folders."),

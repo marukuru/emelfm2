@@ -27,6 +27,7 @@ root = pathlib.Path(os.environ['E2_SMOKE_DIR'])
 args = [os.environ.get('E2_SMOKE_BINARY', './emelfm2'), '-c', str(root/'config'), '-1', str(root/'pane'),
         '-s', 'session-end-warning=false']
 env = dict(os.environ, LD_PRELOAD=str(root/'smoke.so'))
+args += ['-s', 'modern-ui='+os.environ.get('E2_TEST_MODERN_UI', 'false')]
 with open(root/'application.log', 'w') as output:
     process = subprocess.Popen(args, stdout=output, stderr=output, env=env)
     try:

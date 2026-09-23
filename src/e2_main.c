@@ -113,6 +113,7 @@ The following items are covered:
 #include "e2_tray.h"
 #include "e2_single_instance.h"
 #include "e2_tabs.h"
+#include "e2_modern_ui.h"
 #ifdef GDK_WINDOWING_X11
 #include <X11/Xlib.h>
 #endif
@@ -800,6 +801,7 @@ WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reas
 	g_free (values); //strings remain owned by e2_cl_options.option_overrides
 	if (!e2_single_instance_start ())
 		return EXIT_SUCCESS;
+	e2_modern_ui_init ();
 
 	//after config & updates, install default tree options where needed
 	e2_option_tree_install_defaults ();

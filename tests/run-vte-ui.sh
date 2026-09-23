@@ -28,6 +28,7 @@ for name in ('left', 'right'):
 (root/'bash').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'left'), '-2', str(root/'right'),
         '-s', 'session-end-warning=false', '-s', 'pane-tabs=true']
+args += ['-s', 'modern-ui='+os.environ.get('E2_TEST_MODERN_UI', 'false')]
 with open(root/'log', 'w') as output:
     p = subprocess.Popen(args, env=dict(os.environ, LD_PRELOAD=str(root/'smoke.so')),
                          stdout=output, stderr=output)

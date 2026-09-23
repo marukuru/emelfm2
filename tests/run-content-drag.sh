@@ -15,7 +15,8 @@ import os, pathlib, subprocess, time
 root = pathlib.Path(os.environ['E2_CONTENT_DRAG_TEST'])
 with open(root/'log', 'w') as output:
     process = subprocess.Popen([os.environ.get('E2_CONTENT_DRAG_BINARY', './emelfm2'),
-        '-c', str(root/'config'), '-1', str(root), '-s', 'session-end-warning=false'],
+        '-c', str(root/'config'), '-1', str(root), '-s', 'session-end-warning=false',
+        '-s', 'modern-ui='+os.environ.get('E2_TEST_MODERN_UI', 'false')],
         env=dict(os.environ, LD_PRELOAD=str(root/'test.so')), stdout=output, stderr=output)
     try:
         deadline = time.monotonic() + 20
