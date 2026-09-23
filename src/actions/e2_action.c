@@ -47,6 +47,7 @@ _action_labels action_labels;
 #include "e2_dialog.h"
 #include "e2_mkdir_dialog.h"
 #include "e2_complete.h"
+#include "e2_action_search.h"
 
 //static
 GHashTable *actions_hash;
@@ -1107,6 +1108,7 @@ void e2_actions_init (void)
 	//register most other actions
 	// (some others are in pane create fn)
 	e2_task_actions_register ();
+	e2_action_search_register ();
 	e2_output_actions_register();
 //	e2_context_menu_actions_register();
 	e2_bookmark_actions_register ();

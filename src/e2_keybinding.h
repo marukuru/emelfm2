@@ -34,6 +34,18 @@ typedef struct _E2_NodeData
 	GtkWidget *widget;
 } E2_NodeData;
 
+/* A snapshot, owned by the caller, of unambiguous single-key bindings in the
+ * main window's current focus context. Complex chains remain fully usable but
+ * are not advertised as shortcuts for an individual action. */
+typedef struct
+{
+	gchar *action;
+	gchar *argument;
+	gchar *label;
+} E2_ActionBinding;
+GList *e2_keybinding_action_bindings (GtkWidget *focus);
+void e2_keybinding_action_bindings_free (GList *bindings);
+
 void e2_keybinding_localise (GtkTreeModel *mdl, GtkTreeIter *iter);
 void e2_keybinding_clear_widget_bindings (GPtrArray *bindings);
 //void e2_keybinding_find_relations (GPtrArray *boundto, const gchar *thisname,

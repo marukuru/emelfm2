@@ -839,13 +839,52 @@ CHECKME	any normal press-callback won't happen i.e. no delocalisation of the eve
  /***** public *****/
 /******************/
 
+static gboolean _e2_keybinding_search_conflict (GtkTreeModel *model,
+	GtkTreePath *path, GtkTreeIter *iter, gpointer data)
+{
+	gchar *key, *action;
+	guint keyval;
+	GdkModifierType mask;
+	gtk_tree_model_get (model, iter, 1, &key, 3, &action, -1);
+	gtk_accelerator_parse (key, &keyval, &mask);
+	gboolean conflict = !strcmp (action, "actions.search")
+		|| (gdk_keyval_to_lower (keyval) == GDK_a
+			&& mask == (GDK_CONTROL_MASK | GDK_SHIFT_MASK));
+	g_free (key);
+	g_free (action);
+	if (conflict) *(gboolean *)data = TRUE;
+	return conflict;
+}
+
+/* Upgrade existing profiles once, without replacing a custom shortcut or
+ * re-adding a binding the user subsequently removes. */
+static void _e2_keybinding_add_action_search (void)
+{
+	if (e2_option_bool_get ("action-search-binding-added")) return;
+	GtkTreeModel *model = e2_option_get ("keybindings")->ex.tree.model;
+	gboolean conflict = FALSE;
+	gtk_tree_model_foreach (model, _e2_keybinding_search_conflict, &conflict);
+	if (!conflict)
+	{
+		GtkTreeIter parent, iter;
+		gchar *category = g_strconcat (_C(17), ".", _C(23), NULL);
+		e2_tree_get_lowest_iter_for_str (model, 0, &parent, category);
+		g_free (category);
+		gtk_tree_store_append (GTK_TREE_STORE (model), &iter, &parent);
+		gtk_tree_store_set (GTK_TREE_STORE (model), &iter,
+			0, "", 1, "<Control><Shift>a", 2, FALSE,
+			3, "actions.search", 4, "", -1);
+	}
+	e2_option_bool_set ("action-search-binding-added", TRUE);
+}
+
 /**
 @brief register all main-window widgets' key bindings, lowest-first order
-
 @return
 */
 void e2_keybinding_register_all (void)
 {
+	_e2_keybinding_add_action_search ();
 	//there's no generic press-handler for the whole window, so no need to muck
 	//about with the order of callback connections
 	//CHECKME specific binding cb for app.main_window ?
@@ -869,6 +908,113 @@ void e2_keybinding_register_all (void)
 		GtkTextView *tvw = ((E2_OutputTabRuntime *)member->data)->text;
 		e2_output_register_keybindings (GTK_WIDGET (tvw));
 	}
+}
+
+/* Follow the same category/Continue precedence as the key-press callback.
+ * Window handlers run before GTK propagates an unhandled key to its focus. */
+static void _e2_keybinding_matches (GtkWidget *widget, E2_KeyRuntime *key,
+	GPtrArray *matches)
+{
+	GPtrArray *bound = g_object_get_data (G_OBJECT (widget), KEY_BINDINGS_KEY);
+	if (bound == NULL) return;
+	GNode *topnode = NULL;
+	guint i;
+	for (i = 0; i < bound->len; i++)
+	{
+		GNode *node = ((E2_KeyCatRuntime *)g_ptr_array_index (bound, i))->node;
+		while (node != NULL)
+		{
+			GSList *member;
+			for (member = ((E2_KeyCatRuntime *)node->data)->keys;
+				member != NULL; member = member->next)
+			{
+				E2_KeyRuntime *candidate = member->data;
+				if (candidate->keyval == key->keyval && candidate->mask == key->mask
+					&& *candidate->action != '\0')
+				{
+					g_ptr_array_add (matches, candidate);
+					topnode = node;
+					if (!candidate->cont) break;
+				}
+			}
+			if (member != NULL) break;
+			node = node->parent;
+			if (node == topnode) break;
+		}
+	}
+}
+
+GList *e2_keybinding_action_bindings (GtkWidget *focus)
+{
+	GList *result = NULL, *widgets = g_list_append (NULL, app.main_window), *item;
+#ifdef E2_VTE
+	if (e2_terminal_has_focus ()) { g_list_free (widgets); return NULL; }
+#endif
+	GtkWidget *widget;
+	for (widget = focus; widget != NULL && widget != app.main_window;
+		widget = gtk_widget_get_parent (widget))
+		widgets = g_list_append (widgets, widget);
+	GHashTable *seen = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
+	for (item = widgets; item != NULL; item = item->next)
+	{
+		GPtrArray *bound = g_object_get_data (G_OBJECT (item->data), KEY_BINDINGS_KEY);
+		if (bound == NULL) continue;
+		guint i;
+		for (i = 0; i < bound->len; i++)
+		{
+			GNode *node;
+			for (node = ((E2_KeyCatRuntime *)g_ptr_array_index (bound, i))->node;
+				node != NULL; node = node->parent)
+			{
+				GSList *member;
+				for (member = ((E2_KeyCatRuntime *)node->data)->keys;
+					member != NULL; member = member->next)
+				{
+					E2_KeyRuntime *key = member->data;
+					gchar *id = gtk_accelerator_name (key->keyval, key->mask);
+					if (g_hash_table_lookup (seen, id)) { g_free (id); continue; }
+					g_hash_table_insert (seen, id, GINT_TO_POINTER (1));
+					/* Workspace keys are handled before configurable bindings. */
+					if (e2_option_bool_get ("pane-tabs") && key->mask == GDK_CONTROL_MASK
+						&& (key->keyval == GDK_n || key->keyval == GDK_Tab)) continue;
+					GPtrArray *matches = g_ptr_array_new ();
+					GList *source;
+					for (source = widgets; source != NULL && matches->len == 0; source = source->next)
+						_e2_keybinding_matches (source->data, key, matches);
+					if (matches->len == 1)
+					{
+						E2_KeyRuntime *match = g_ptr_array_index (matches, 0);
+						if (match->chained == NULL)
+						{
+							E2_ActionBinding *binding = g_new0 (E2_ActionBinding, 1);
+							binding->action = g_strdup (match->action);
+							binding->argument = g_strdup (match->action_data);
+							binding->label = gtk_accelerator_get_label (match->keyval, match->mask);
+							result = g_list_append (result, binding);
+						}
+					}
+					g_ptr_array_free (matches, TRUE);
+				}
+			}
+		}
+	}
+	g_hash_table_destroy (seen);
+	g_list_free (widgets);
+	return result;
+}
+
+void e2_keybinding_action_bindings_free (GList *bindings)
+{
+	GList *item;
+	for (item = bindings; item != NULL; item = item->next)
+	{
+		E2_ActionBinding *binding = item->data;
+		g_free (binding->action);
+		g_free (binding->argument);
+		g_free (binding->label);
+		g_free (binding);
+	}
+	g_list_free (bindings);
 }
 /**
 @brief find tree parent of node whose name-quark is provided in @a data
@@ -1629,6 +1775,8 @@ static void _e2_keybinding_tree_defaults (E2_OptionSet *set)
 */
 void e2_keybinding_options_register (void)
 {
+	e2_option_bool_register ("action-search-binding-added", NULL, NULL, NULL,
+		NULL, FALSE, E2_OPTION_FLAG_HIDDEN);
 	//no screen rebuilds needed after any change to these options
 	gchar *group_name = g_strconcat(_C(20),".",_C(22),NULL);
 	E2_OptionSet *set = e2_option_tree_register ("keybindings", group_name, _C(22),  //_("keybindings"

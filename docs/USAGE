@@ -92,6 +92,10 @@ You can display only items which match specified name(s), date and/or permission
 
 Right-clicking on a file pane or output pane will pop up a menu of things you may wish to do, there. For the file panes, a sub-menu can be opened by pressing a <shift> or <ctrl> button before right-clicking.
 
+Press Ctrl+Shift+A to open Search actions. Type part of an action name or a familiar term such as "copy" or "mkdir", use Up/Down to select a result, and press Enter (or double-click a result) to run it. Escape or Close returns to the initiating control without changing the file selection. The popup shows the active pane, selected-item count, source and destination directories, and current applicable shortcuts. Unavailable actions explain why they cannot run. Parameterized actions are offered with configured arguments when available; arbitrary search text is never executed as a command.
+
+The shortcut is assigned to actions.search on the first run of this version unless Ctrl+Shift+A or that action already has a configured binding. It can be changed or removed in the keybindings configuration. Embedded terminals retain their own keyboard input. Shortcut hints omit chained and multi-action bindings, whose behavior cannot be represented by one action in the results list.
+
 The toolbars are referred to as "pane1 bar", "pane2 bar", "task bar" and "command bar". The pane1 bar is by default at the top of pane 1. The pane2 bar is by default shown at the top of pane 2. The task bar is by default shown between the file panes. The command bar is by default shown near the bottom of the window.
 
 Pane1 bar and pane2 bar typically have the same items in them, in mirrored order (more or less). Commands initiated by the items in those bars apply to the respective pane. Task bar items mostly relate to the active pane. (By default it includes a 'refresh' button which updates both panes.) Command bar items relate to the output pane, or other miscellaneous commands.
