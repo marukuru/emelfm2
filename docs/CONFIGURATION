@@ -44,6 +44,13 @@ window, and right click opens the application menu (Show/hide window and Quit).
 XFCE and GNOME use StatusNotifierItem: left click opens the application menu, while
 right click is handled by the desktop's panel/indicator host. The host controls
 the exact secondary-click menu. Closing the main window still quits normally.
+All three behaviours provide icons for Show/hide, Quit, Needs attention and
+Transfers, including their submenu entries. The 'show icons in menus' setting
+also applies to the tray: 'yes' shows them even when the desktop hides menu
+images, 'no' hides them, and 'theme' follows the GTK setting. Applying changes
+refreshes the active tray menu. Modern and custom icon artwork is also sent to
+XFCE/GNOME indicator hosts.
+
 While tray support is enabled, application dialogs use the main window as their
 owner and omit separate taskbar entries. Hiding to tray also hides visible
 non-modal windows. Transfers continue, and 'Transfers' in the tray menu opens

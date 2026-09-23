@@ -5,6 +5,7 @@
 #include "emelfm2.h"
 
 void e2_tray_sync (void);
+GtkWidget *e2_tray_menu_item_new (const gchar *label, const gchar *icon, gboolean mnemonic);
 void e2_tray_cleanup (void);
 gboolean e2_tray_is_active (void);
 gboolean e2_tray_is_hidden (void);

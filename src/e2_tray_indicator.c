@@ -19,6 +19,7 @@ static GObject *(*menu_item_new) (void);
 static gboolean (*menu_item_append) (GObject *, GObject *);
 static gboolean (*menu_item_set) (GObject *, const gchar *, const gchar *);
 static gboolean (*menu_item_set_bool) (GObject *, const gchar *, gboolean);
+static gboolean (*menu_item_set_bytes) (GObject *, const gchar *, const guint8 *, gsize);
 
 gboolean e2_tray_indicator_available (void)
 {
@@ -30,7 +31,8 @@ gboolean e2_tray_indicator_available (void)
 		|| !g_module_symbol (module, "dbusmenu_menuitem_new", (gpointer*)&menu_item_new)
 		|| !g_module_symbol (module, "dbusmenu_menuitem_child_append", (gpointer*)&menu_item_append)
 		|| !g_module_symbol (module, "dbusmenu_menuitem_property_set", (gpointer*)&menu_item_set)
-		|| !g_module_symbol (module, "dbusmenu_menuitem_property_set_bool", (gpointer*)&menu_item_set_bool))
+		|| !g_module_symbol (module, "dbusmenu_menuitem_property_set_bool", (gpointer*)&menu_item_set_bool)
+		|| !g_module_symbol (module, "dbusmenu_menuitem_property_set_byte_array", (gpointer*)&menu_item_set_bytes))
 	{
 		g_module_close (module);
 		return FALSE;
@@ -337,6 +339,25 @@ static void _e2_indicator_menu_activate (GObject *item, guint timestamp, GtkWidg
 	OPENBGL
 }
 
+static void _e2_indicator_menu_icon (GObject *item, GtkWidget *widget)
+{
+	if (!GTK_IS_IMAGE_MENU_ITEM (widget)) return;
+	GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (widget));
+	if (image == NULL || gtk_image_get_storage_type (GTK_IMAGE (image)) != GTK_IMAGE_PIXBUF)
+		return;
+	GdkPixbuf *pixbuf = gtk_image_get_pixbuf (GTK_IMAGE (image));
+	if (pixbuf == NULL) return;
+	gchar *png;
+	gsize length;
+	/* DBusMenu's icon-data is PNG bytes, not a path or SNI's raw ARGB data.
+	   Export the resolved artwork, including modern and custom icon sets. */
+	if (gdk_pixbuf_save_to_buffer (pixbuf, &png, &length, "png", NULL, NULL))
+	{
+		menu_item_set_bytes (item, "icon-data", (const guint8*)png, length);
+		g_free (png);
+	}
+}
+
 static void _e2_indicator_menu_children (GObject *parent, GtkMenu *menu)
 {
 	GList *children = gtk_container_get_children (GTK_CONTAINER (menu)), *iter;
@@ -351,6 +372,7 @@ static void _e2_indicator_menu_children (GObject *parent, GtkMenu *menu)
 		if (GTK_IS_SEPARATOR_MENU_ITEM (widget)) menu_item_set (item, "type", "separator");
 		else
 		{
+			_e2_indicator_menu_icon (item, widget);
 			GtkWidget *label = gtk_bin_get_child (GTK_BIN (widget));
 			const gchar *text = GTK_IS_LABEL (label) ? gtk_label_get_label (GTK_LABEL (label)) : "";
 			/* DBusMenu labels use underscores for mnemonics. Preserve literal

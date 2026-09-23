@@ -9,6 +9,36 @@
 #include <glib/gstdio.h>
 #include <unistd.h>
 
+static void _e2_tray_menu_item_icon (GtkWidget *item)
+{
+	const gchar *icon = g_object_get_data (G_OBJECT (item), "e2-tray-menu-icon");
+	if (icon == NULL) return;
+	gint choice = e2_option_sel_get ("menu-show-icons");
+	gboolean show = choice == 1;
+	if (choice == 0)
+		g_object_get (gtk_widget_get_settings (item), "gtk-menu-images", &show, NULL);
+	GtkWidget *image = show ? e2_widget_get_icon (icon, GTK_ICON_SIZE_MENU) : NULL;
+	gtk_image_menu_item_set_image (GTK_IMAGE_MENU_ITEM (item), image);
+#ifdef USE_GTK2_16
+	/* The application's explicit "yes" must work even when the desktop's
+	   gtk-menu-images setting is false. Do not change that global setting. */
+	gtk_image_menu_item_set_always_show_image (GTK_IMAGE_MENU_ITEM (item), show);
+#endif
+	if (image != NULL) gtk_widget_show (image);
+}
+
+GtkWidget *e2_tray_menu_item_new (const gchar *label, const gchar *icon,
+	gboolean mnemonic)
+{
+	/* Native image items retain the label/underline API used for live counts
+	   and can also be parsed by the optional AppIndicator GTK bridge. */
+	GtkWidget *item = mnemonic ? gtk_image_menu_item_new_with_mnemonic (label)
+		: gtk_image_menu_item_new_with_label (label);
+	g_object_set_data_full (G_OBJECT (item), "e2-tray-menu-icon", g_strdup (icon), g_free);
+	_e2_tray_menu_item_icon (item);
+	return item;
+}
+
 #ifdef USE_GTK2_10
 /* Keep these values in step with the tray-behaviour option. */
 enum { E2_TRAY_X11, E2_TRAY_XFCE, E2_TRAY_GNOME };
@@ -38,6 +68,18 @@ static void (*indicator_set_attention_icon) (GObject *, const gchar *);
 static void (*indicator_set_label) (GObject *, const gchar *, const gchar *);
 static void (*indicator_stop) (GObject *);
 static void (*indicator_update_menu) (GObject *, GtkMenu *);
+
+static void _e2_tray_menu_icons (GtkWidget *menu)
+{
+	GList *items = gtk_container_get_children (GTK_CONTAINER (menu)), *iter;
+	for (iter = items; iter != NULL; iter = iter->next)
+	{
+		_e2_tray_menu_item_icon (iter->data);
+		GtkWidget *submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (iter->data));
+		if (submenu != NULL) _e2_tray_menu_icons (submenu);
+	}
+	g_list_free (items);
+}
 
 static void _e2_tray_show (void)
 {
@@ -342,6 +384,7 @@ void e2_tray_sync (void)
 		if (mode >= 0)
 		{
 			_e2_tray_load_icons ();
+			_e2_tray_menu_icons (tray_menu);
 			e2_tray_set_attention (attention_count);
 		}
 		e2_tray_windows_sync (mode >= 0);
@@ -364,12 +407,12 @@ void e2_tray_sync (void)
 	_e2_tray_load_icons ();
 	tray_menu = gtk_menu_new ();
 	g_object_ref_sink (tray_menu);
-	GtkWidget *item = gtk_menu_item_new_with_mnemonic (_("_Show/hide window"));
+	GtkWidget *item = e2_tray_menu_item_new (_("_Show/hide window"), STOCK_NAME_FULLSCREEN, TRUE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (tray_menu), item);
 	g_signal_connect (item, "activate", G_CALLBACK (_e2_tray_toggle_cb), NULL);
 	item = gtk_separator_menu_item_new ();
 	gtk_menu_shell_append (GTK_MENU_SHELL (tray_menu), item);
-	item = gtk_menu_item_new_with_mnemonic (_("_Quit"));
+	item = e2_tray_menu_item_new (_("_Quit"), STOCK_NAME_QUIT, TRUE);
 	gtk_menu_shell_append (GTK_MENU_SHELL (tray_menu), item);
 	g_signal_connect (item, "activate", G_CALLBACK (_e2_tray_quit_cb), NULL);
 	gtk_widget_show_all (tray_menu);

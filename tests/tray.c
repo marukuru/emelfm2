@@ -47,6 +47,7 @@ static gboolean enabled;
 static gboolean notifications;
 static gboolean animate_attention = TRUE;
 static gint mode;
+static gint menu_icons = 1;
 static guint quit_count;
 static gboolean quit_again;
 static gchar *icon_path;
@@ -60,7 +61,16 @@ gboolean e2_option_bool_get (gchar *name)
 	if (!strcmp (name, "tray-attention")) return animate_attention;
 	return enabled;
 }
-gint e2_option_sel_get (gchar *name) { return mode; }
+gint e2_option_sel_get (gchar *name)
+{ return !strcmp (name, "menu-show-icons") ? menu_icons : mode; }
+GtkWidget *e2_widget_get_icon (const gchar *icon, GtkIconSize size)
+{
+	GdkPixbuf *pixbuf = gtk_widget_render_icon (app.main_window, icon, size, NULL);
+	g_assert_nonnull (pixbuf);
+	GtkWidget *image = gtk_image_new_from_pixbuf (pixbuf);
+	g_object_unref (pixbuf);
+	return image;
+}
 GList *e2_icons_get_application (void)
 {
 	return g_list_append (NULL, g_object_ref (app_icon));
@@ -101,6 +111,29 @@ static void menu_activate (guint index)
 	g_list_free (items);
 }
 
+static void assert_menu_icons (GtkWidget *menu, gboolean expected)
+{
+	GList *items = gtk_container_get_children (GTK_CONTAINER (menu)), *iter;
+	for (iter = items; iter != NULL; iter = iter->next)
+	{
+		GtkWidget *item = iter->data;
+		if (GTK_IS_SEPARATOR_MENU_ITEM (item)) continue;
+		g_assert_true (GTK_IS_IMAGE_MENU_ITEM (item));
+		GtkWidget *image = gtk_image_menu_item_get_image (GTK_IMAGE_MENU_ITEM (item));
+		if (expected)
+		{
+			g_assert_true (GTK_IS_IMAGE (image));
+			g_assert_true (gtk_widget_get_visible (image));
+			g_assert_nonnull (gtk_image_get_pixbuf (GTK_IMAGE (image)));
+			g_assert_true (gtk_image_menu_item_get_always_show_image (GTK_IMAGE_MENU_ITEM (item)));
+		}
+		else g_assert_null (image);
+		GtkWidget *submenu = gtk_menu_item_get_submenu (GTK_MENU_ITEM (item));
+		if (submenu != NULL) assert_menu_icons (submenu, expected);
+	}
+	g_list_free (items);
+}
+
 static void test_x11 (void)
 {
 	enabled = FALSE;
@@ -117,6 +150,10 @@ static void test_x11 (void)
 	g_assert_true (gtk_widget_get_visible (app.main_window));
 	g_signal_emit_by_name (status_icon, "popup-menu", 3, GDK_CURRENT_TIME);
 	g_assert_true (gtk_widget_get_visible (tray_menu));
+	assert_menu_icons (tray_menu, TRUE);
+	gboolean desktop_images;
+	g_object_get (gtk_settings_get_default (), "gtk-menu-images", &desktop_images, NULL);
+	g_assert_false (desktop_images);
 	gtk_menu_popdown (GTK_MENU (tray_menu));
 	menu_activate (0);
 	g_assert_false (gtk_widget_get_visible (app.main_window));
@@ -398,6 +435,39 @@ static gint remote_menu_find (GVariant *node, const gchar *label)
 	return id;
 }
 
+static void assert_remote_menu_icons (GVariant *node)
+{
+	gint id;
+	g_variant_get_child (node, 0, "i", &id);
+	GVariant *properties = g_variant_get_child_value (node, 1);
+	const gchar *type = NULL;
+	g_variant_lookup (properties, "type", "&s", &type);
+	if (id != 0 && g_strcmp0 (type, "separator"))
+	{
+		GVariant *data = g_variant_lookup_value (properties, "icon-data", G_VARIANT_TYPE ("ay"));
+		g_assert_nonnull (data);
+		gsize length;
+		const guchar *png = g_variant_get_fixed_array (data, &length, 1);
+		GdkPixbufLoader *loader = gdk_pixbuf_loader_new_with_type ("png", NULL);
+		g_assert_true (gdk_pixbuf_loader_write (loader, png, length, NULL));
+		g_assert_true (gdk_pixbuf_loader_close (loader, NULL));
+		g_assert_nonnull (gdk_pixbuf_loader_get_pixbuf (loader));
+		g_object_unref (loader);
+		g_variant_unref (data);
+	}
+	g_variant_unref (properties);
+	GVariant *children = g_variant_get_child_value (node, 2);
+	for (guint i = 0; i < g_variant_n_children (children); i++)
+	{
+		GVariant *wrapped = g_variant_get_child_value (children, i);
+		GVariant *child = g_variant_get_variant (wrapped);
+		assert_remote_menu_icons (child);
+		g_variant_unref (child);
+		g_variant_unref (wrapped);
+	}
+	g_variant_unref (children);
+}
+
 static void remote_menu_click (GDBusConnection *connection, const gchar *label)
 {
 	GVariant *path = remote_property (connection, "Menu"), *reply = NULL;
@@ -407,6 +477,7 @@ static void remote_menu_click (GDBusConnection *connection, const gchar *label)
 		G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &reply);
 	while (reply == NULL) g_main_context_iteration (NULL, TRUE);
 	GVariant *root = g_variant_get_child_value (reply, 1);
+	assert_remote_menu_icons (root);
 	gint id = remote_menu_find (root, label);
 	g_assert_cmpint (id, >, 0);
 	g_variant_unref (root);
@@ -486,6 +557,7 @@ static void test_indicator (void)
 		while (layout == NULL)
 			g_main_context_iteration (NULL, TRUE);
 		GVariant *root = g_variant_get_child_value (layout, 1);
+		assert_remote_menu_icons (root);
 		GVariant *children = g_variant_get_child_value (root, 2);
 		GVariant *wrapped = g_variant_get_child_value (children, 0);
 		GVariant *first = g_variant_get_variant (wrapped);
@@ -688,6 +760,9 @@ static void test_xfce_service (void)
 			g_variant_new ("(ii@as)", 0, -1, g_variant_new_strv (NULL, 0)), NULL,
 			G_DBUS_CALL_FLAGS_NONE, 3000, NULL, call_done, &layout);
 		while (layout == NULL) g_main_context_iteration (NULL, TRUE);
+		GVariant *root = g_variant_get_child_value (layout, 1);
+		assert_remote_menu_icons (root);
+		g_variant_unref (root);
 		g_variant_unref (layout);
 		g_variant_unref (entry);
 		g_variant_unref (applications);
@@ -843,6 +918,21 @@ static void test_deferred_windows (void)
 	g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (banner_label)), ==, "Needs attention (2)");
 	g_assert_true (gtk_widget_get_visible (questions_item));
 	g_assert_true (gtk_widget_get_visible (transfers_item));
+	assert_menu_icons (tray_menu, TRUE);
+	/* Applying menu/icon preferences must update an already active tray too. */
+	menu_icons = 2;
+	e2_tray_sync ();
+	assert_menu_icons (tray_menu, FALSE);
+	menu_icons = 0;
+	e2_tray_sync ();
+	assert_menu_icons (tray_menu, FALSE);
+	g_object_set (gtk_settings_get_default (), "gtk-menu-images", TRUE, NULL);
+	e2_tray_sync ();
+	assert_menu_icons (tray_menu, TRUE);
+	g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
+	menu_icons = 1;
+	e2_tray_sync ();
+	assert_menu_icons (tray_menu, TRUE);
 	g_assert_null (notification_bus);
 	/* Merely restoring the application must not open a pending question. */
 	menu_activate (0);
@@ -1093,6 +1183,8 @@ int main (int argc, char **argv)
 {
 	gtk_init (&argc, &argv);
 	g_test_init (&argc, &argv, NULL);
+	/* Reproduce desktops that suppress ordinary GtkImageMenuItem artwork. */
+	g_object_set (gtk_settings_get_default (), "gtk-menu-images", FALSE, NULL);
 	app.main_window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
 #ifdef USE_GTK3_0
 	app.vbox_main = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);

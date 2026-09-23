@@ -58,6 +58,7 @@ static const struct { const gchar *name; const gchar *paths; } modern_icons[] = 
 	{ "plugin_config", "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\"/><circle cx=\"16\" cy=\"12\" r=\"2\"/><circle cx=\"10\" cy=\"18\" r=\"2\"/>" },
 	{ "plugin-config", "<path d=\"M4 6h16M4 12h16M4 18h16\"/><circle cx=\"8\" cy=\"6\" r=\"2\"/><circle cx=\"16\" cy=\"12\" r=\"2\"/><circle cx=\"10\" cy=\"18\" r=\"2\"/>" },
 	{ "gtk-help", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 8a3 3 0 0 1 6 0c0 2-3 2-3 4m0 4v.1\"/>" },
+	{ "gtk-dialog-question", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 8a3 3 0 0 1 6 0c0 2-3 2-3 4m0 4v.1\"/>" },
 	{ "gtk-about", "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M9 8a3 3 0 0 1 6 0c0 2-3 2-3 4m0 4v.1\"/>" },
 	{ "gtk-quit", "<path d=\"M10 3H3v18h7m5-15 6 6-6 6M8 12h13\"/>" },
 	{ "gtk-add", "<path d=\"M12 4v16M4 12h16\"/>" },

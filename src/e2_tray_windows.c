@@ -1,6 +1,7 @@
 /* Application windows and deferred questions. GPL version 3 or later. */
 #include "emelfm2.h"
 #include "e2_tray.h"
+#include "e2_icons.h"
 #if defined(USE_GTK3_0) && defined(GDK_WINDOWING_X11)
 #include <gtk/gtkx.h>
 #endif
@@ -281,7 +282,8 @@ static void _e2_tray_fill_menu (GtkWidget *item, gboolean questions)
 		if (questions ? !record->pending : !record->transfer)
 			continue;
 		const gchar *label = gtk_window_get_title (GTK_WINDOW (record->window));
-		GtkWidget *child = gtk_menu_item_new_with_label (label != NULL ? label : PROGNAME);
+		GtkWidget *child = e2_tray_menu_item_new (label != NULL ? label : PROGNAME,
+			questions ? STOCK_NAME_DIALOG_QUESTION : STOCK_NAME_COPY, FALSE);
 		gtk_menu_shell_append (GTK_MENU_SHELL (submenu), child);
 		g_signal_connect_object (child, "activate", G_CALLBACK (_e2_tray_review_cb),
 			record->window, 0);
@@ -365,8 +367,8 @@ static void _e2_tray_schedule (void)
 
 void e2_tray_windows_menu (GtkWidget *menu)
 {
-	questions_item = gtk_menu_item_new_with_label ("");
-	transfers_item = gtk_menu_item_new_with_label ("");
+	questions_item = e2_tray_menu_item_new ("", STOCK_NAME_DIALOG_QUESTION, FALSE);
+	transfers_item = e2_tray_menu_item_new ("", STOCK_NAME_COPY, FALSE);
 	g_object_add_weak_pointer (G_OBJECT (questions_item), (gpointer*)&questions_item);
 	g_object_add_weak_pointer (G_OBJECT (transfers_item), (gpointer*)&transfers_item);
 	gtk_menu_shell_append (GTK_MENU_SHELL (menu), questions_item);
