@@ -42,6 +42,14 @@ static gboolean key (GtkWidget *widget, guint keyval, GdkModifierType state)
 	event.keyval = keyval;
 	event.state = state;
 	event.window = gtk_widget_get_window (widget);
+	GdkKeymapKey *keys;
+	gint count;
+	if (gdk_keymap_get_entries_for_keyval (gdk_keymap_get_default (), keyval, &keys, &count))
+	{
+		event.hardware_keycode = keys[0].keycode;
+		event.group = keys[0].group;
+		g_free (keys);
+	}
 	gboolean handled = FALSE;
 	g_signal_emit_by_name (widget, "key-press-event", &event, &handled);
 	return handled;
@@ -89,6 +97,57 @@ static void select_file (void)
 	GtkTreePath *path = gtk_tree_model_get_path (curr_view->model, &iter);
 	gtk_tree_view_set_cursor (GTK_TREE_VIEW (curr_view->treeview), path, NULL, FALSE);
 	gtk_tree_path_free (path);
+}
+
+static gint cursor_row (ViewInfo *view)
+{
+	GtkTreePath *path = NULL;
+	gtk_tree_view_get_cursor (GTK_TREE_VIEW (view->treeview), &path, NULL);
+	g_assert_nonnull (path);
+	gint row = *gtk_tree_path_get_indices (path);
+	gtk_tree_path_free (path);
+	return row;
+}
+
+static void window_focus (gboolean in)
+{
+	/* Xvfb has no window manager to transfer focus to/from the popup. */
+	GdkEvent *event = gdk_event_new (GDK_FOCUS_CHANGE);
+	event->focus_change.window = g_object_ref (gtk_widget_get_window (app.main_window));
+	event->focus_change.in = in;
+	gtk_widget_event (app.main_window, event);
+	gdk_event_free (event);
+}
+
+static void switch_from_search (gboolean from_results)
+{
+	E2_PaneRuntime *before = curr_pane;
+	GtkTreePath *first = gtk_tree_path_new_first ();
+	gtk_tree_view_set_cursor (GTK_TREE_VIEW (curr_view->treeview), first, NULL, FALSE);
+	gtk_tree_view_set_cursor (GTK_TREE_VIEW (other_view->treeview), first, NULL, FALSE);
+	gtk_tree_path_free (first);
+	gtk_widget_grab_focus (curr_view->treeview);
+	open_search ();
+	window_focus (FALSE);
+	gtk_entry_set_text (GTK_ENTRY (entry), "switch active pane");
+	g_assert_true (row ("Switch active pane", NULL, TRUE));
+	if (from_results)
+	{
+		gtk_widget_grab_focus (tree);
+		g_assert_true (key (dialog, GDK_Return, 0));
+	}
+	else g_signal_emit_by_name (entry, "activate");
+	g_assert_null (popup ());
+	g_assert_true (curr_pane != before);
+	g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
+	window_focus (TRUE);
+	/* Send arrow keys through the window, as normal keyboard input arrives. */
+	g_assert_true (key (app.main_window, GDK_Down, 0));
+	g_assert_cmpint (cursor_row (curr_view), ==, 1);
+	g_assert_cmpint (cursor_row (other_view), ==, 0);
+	g_assert_true (key (app.main_window, GDK_Up, 0));
+	g_assert_cmpint (cursor_row (curr_view), ==, 0);
+	g_assert_cmpint (cursor_row (other_view), ==, 0);
 }
 
 static gboolean configured_action (gpointer from, E2_ActionRuntime *art)
@@ -172,6 +231,8 @@ static gboolean tick (gpointer data)
 				return FALSE;
 			}
 			gtk_widget_grab_focus (curr_view->treeview);
+			switch_from_search (FALSE);
+			switch_from_search (TRUE);
 			select_file ();
 			screenshot (app.main_window, "-panes");
 			open_search ();

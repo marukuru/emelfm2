@@ -16,6 +16,9 @@ root = pathlib.Path(os.environ['E2_SEARCH_TEST'])
 (root/'source').mkdir()
 (root/'destination').mkdir()
 (root/'source'/'one.txt').write_text('Action search copy test 日本語\n')
+(root/'source'/'two.txt').write_text('Second source row\n')
+(root/'destination'/'three.txt').write_text('First destination row\n')
+(root/'destination'/'two.txt').write_text('Second destination row\n')
 
 def run(scenario=None):
     (root/'passed').unlink(missing_ok=True)
@@ -65,5 +68,5 @@ else:
 conflict = '\n'.join(lines) + '\n'
 config.write_text(conflict)
 run('conflict')
-print('action search: shortcut, copy dispatch, filtering, navigation, cancellation, availability, aliases, Unicode, effective bindings, registry updates and profile migration passed')
+print('action search: shortcut, pane switching and arrow-key focus, copy dispatch, filtering, navigation, cancellation, availability, aliases, Unicode, effective bindings, registry updates and profile migration passed')
 PY

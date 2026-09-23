@@ -370,12 +370,10 @@ void e2_pane_activate_other (void)
 	e2_window_set_title_path (app.main_window, curr_view); //change window title, if relevant
 	e2_pane_flag_active ();	//change the status-indicator for the panes
 
-//	gtk_widget_grab_focus (tmp->focus_widget);
-#ifdef USE_GTK2_18
-	if (gtk_widget_has_focus (other_view->treeview))
-#else
-	if (GTK_WIDGET_HAS_FOCUS (other_view->treeview))
-#endif
+	/* A closing action dialog can still own the toplevel keyboard focus.
+	 * Follow the main window's remembered focus so input returns to the new
+	 * pane, while preserving focus in command/directory entries or output. */
+	if (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == other_view->treeview)
 		gtk_widget_grab_focus (curr_view->treeview);
 	OPENBGL
 	e2_hook_list_run (&app.hook_pane_focus_changed, tmp);
