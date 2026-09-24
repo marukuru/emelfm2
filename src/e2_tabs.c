@@ -13,6 +13,31 @@
 #include "e2_terminal.h"
 #include <gdk/gdkkeysyms.h>
 
+#ifdef USE_GTK3_0
+/* GtkNotebook allocates tab labels at their minimum width. For an ellipsized
+ * GtkLabel that is only an ellipsis; request the natural width instead, which
+ * still respects max-width-chars and changes with the text/font. */
+typedef GtkLabel E2_TabLabel;
+typedef GtkLabelClass E2_TabLabelClass;
+static GType e2_tab_label_get_type (void);
+G_DEFINE_TYPE (E2_TabLabel, e2_tab_label, GTK_TYPE_LABEL)
+
+static void _e2_tab_label_width (GtkWidget *widget, gint *minimum, gint *natural)
+{
+	GTK_WIDGET_CLASS (e2_tab_label_parent_class)->get_preferred_width (widget, minimum, natural);
+	*minimum = *natural;
+}
+
+static void e2_tab_label_class_init (E2_TabLabelClass *klass)
+{
+	GTK_WIDGET_CLASS (klass)->get_preferred_width = _e2_tab_label_width;
+}
+
+static void e2_tab_label_init (E2_TabLabel *label)
+{
+}
+#endif
+
 typedef struct
 {
 	gchar *path;
@@ -27,7 +52,7 @@ typedef struct
 
 typedef struct
 {
-	GtkWidget *page, *label;
+	GtkWidget *page, *title, *labels[2];
 	E2_TabPane panes[2];
 	gboolean second_active;
 	gdouble ratio;
@@ -130,14 +155,13 @@ static void _e2_tabs_label (E2_PaneTab *tab, const gchar *left, const gchar *rig
 {
 	gchar *a = g_path_get_basename ((left != NULL && *left) ? left : "/");
 	gchar *b = g_path_get_basename ((right != NULL && *right) ? right : "/");
-	gchar *title = g_strconcat (a, " | ", b, NULL);
-	gtk_label_set_text (GTK_LABEL (tab->label), title);
+	gtk_label_set_text (GTK_LABEL (tab->labels[0]), a);
+	gtk_label_set_text (GTK_LABEL (tab->labels[1]), b);
 #ifdef USE_GTK2_12
 	gchar *tip = g_strdup_printf ("%s\n%s", left ? left : "/", right ? right : "/");
-	gtk_widget_set_tooltip_text (tab->label, tip);
+	gtk_widget_set_tooltip_text (tab->title, tip);
 	g_free (tip);
 #endif
-	g_free (title);
 	g_free (a);
 	g_free (b);
 }
@@ -302,13 +326,27 @@ static E2_PaneTab *_e2_tabs_add (gboolean capture)
 #ifdef USE_GTK3_0
 	tab->page = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
 	GtkWidget *labelbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
+	tab->title = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
 #else
 	tab->page = gtk_vbox_new (FALSE, 0);
 	GtkWidget *labelbox = gtk_hbox_new (FALSE, 4);
+	tab->title = gtk_hbox_new (FALSE, 0);
 #endif
-	tab->label = gtk_label_new (NULL);
-	gtk_label_set_ellipsize (GTK_LABEL (tab->label), PANGO_ELLIPSIZE_MIDDLE);
-	gtk_label_set_max_width_chars (GTK_LABEL (tab->label), 32);
+	/* Ellipsize each basename separately so both ends of both folder names
+	 * survive, with the separator outside either shortening region. */
+	for (guint i = 0; i < 2; i++)
+	{
+#ifdef USE_GTK3_0
+		tab->labels[i] = g_object_new (e2_tab_label_get_type (), NULL);
+#else
+		tab->labels[i] = gtk_label_new (NULL);
+#endif
+		gtk_label_set_ellipsize (GTK_LABEL (tab->labels[i]), PANGO_ELLIPSIZE_MIDDLE);
+		gtk_label_set_max_width_chars (GTK_LABEL (tab->labels[i]), 16);
+		gtk_box_pack_start (GTK_BOX (tab->title), tab->labels[i], TRUE, TRUE, 0);
+		if (i == 0)
+			gtk_box_pack_start (GTK_BOX (tab->title), gtk_label_new (" | "), FALSE, FALSE, 0);
+	}
 	GtkWidget *close = gtk_button_new_with_label ("×");
 	gtk_button_set_relief (GTK_BUTTON (close), GTK_RELIEF_NONE);
 #if GTK_CHECK_VERSION(3,20,0)
@@ -320,7 +358,7 @@ static E2_PaneTab *_e2_tabs_add (gboolean capture)
 	gtk_widget_set_tooltip_text (close, _("Close tab"));
 #endif
 	g_signal_connect (close, "clicked", G_CALLBACK (_e2_tabs_close), tab);
-    gtk_box_pack_start (GTK_BOX (labelbox), tab->label, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (labelbox), tab->title, TRUE, TRUE, 0);
 #ifdef E2_VTE
     tab->unread = gtk_label_new ("");
     gtk_widget_set_name (tab->unread, "main-tab-unread");

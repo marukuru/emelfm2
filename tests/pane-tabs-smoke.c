@@ -12,6 +12,9 @@
 static GtkWidget *book, *output, *commandbar;
 static guint step, first_history_length;
 static const gchar *root;
+static const gchar *long_left = "left-folder-with-a-very-long-name-and-distinct-ending";
+static const gchar *long_right = "right-folder-with-a-very-long-name-and-another-ending";
+static const gchar *long_unicode = "日本語-長いフォルダー名と中央の文字列-終わり";
 static gboolean idle (void)
 {
 	return app.pane1.view.dir[0] && app.pane2.view.dir[0]
@@ -105,14 +108,60 @@ static void structure (void)
 	g_assert_false (gtk_widget_is_ancestor (app.outbook, book));
 	g_assert_true (gtk_paned_get_child2 (GTK_PANED (app.window.output_paned)) == output);
 }
-static const gchar *label (gint index)
+static GtkWidget *title (gint index)
 {
 	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (book), index);
 	GtkWidget *box = gtk_notebook_get_tab_label (GTK_NOTEBOOK (book), page);
 	GList *children = gtk_container_get_children (GTK_CONTAINER (box));
-	const gchar *text = gtk_label_get_text (GTK_LABEL (children->data));
+	GtkWidget *title = children->data;
 	g_list_free (children);
-	return text;
+	return title;
+}
+static void label_is (gint index, const gchar *left, const gchar *right)
+{
+	GList *children = gtk_container_get_children (GTK_CONTAINER (title (index)));
+	g_assert_cmpuint (g_list_length (children), ==, 3);
+	g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (children->data)), ==, left);
+	g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (children->next->data)), ==, " | ");
+	g_assert_cmpstr (gtk_label_get_text (GTK_LABEL (children->next->next->data)), ==, right);
+	g_list_free (children);
+}
+static void shortening_is (gint index, gboolean left, gboolean right)
+{
+	GList *children = gtk_container_get_children (GTK_CONTAINER (title (index)));
+	gboolean expected[] = { left, FALSE, right };
+	for (guint i = 0; i < 3; i++)
+	{
+		GtkLabel *label = GTK_LABEL (g_list_nth_data (children, i));
+		PangoLayout *layout = gtk_label_get_layout (label);
+		if (pango_layout_is_ellipsized (layout) != expected[i])
+			g_error ("tab title at step %u: '%s' unexpectedly %s at width %d", step,
+				gtk_label_get_text (label), expected[i] ? "unshortened" : "shortened",
+				pango_layout_get_width (layout) / PANGO_SCALE);
+		if (!expected[i]) continue;
+		/* Check actual shaped runs: the ellipsis must leave text at both ends,
+		 * including for multibyte names, rather than hide an entire folder. */
+		PangoLayoutLine *line = pango_layout_get_line_readonly (layout, 0);
+		guint ellipses = 0;
+		for (GSList *link = line->runs; link != NULL; link = link->next)
+		{
+			PangoItem *item = ((PangoGlyphItem *) link->data)->item;
+			if (item->analysis.flags & PANGO_ANALYSIS_FLAG_IS_ELLIPSIS)
+			{
+				ellipses++;
+				g_assert_cmpint (item->offset, >, 0);
+				g_assert_cmpint (item->offset + item->length, <,
+					strlen (gtk_label_get_text (label)));
+			}
+		}
+		g_assert_cmpuint (ellipses, ==, 1);
+	}
+	g_list_free (children);
+	gchar *tip = gtk_widget_get_tooltip_text (title (index));
+	gchar *expected_tip = g_strdup_printf ("%s\n%s", app.pane1.view.dir, app.pane2.view.dir);
+	g_assert_cmpstr (tip, ==, expected_tip);
+	g_free (expected_tip);
+	g_free (tip);
 }
 static void close_tab (gint index)
 {
@@ -129,6 +178,17 @@ static void close_tab (gint index)
 static gboolean tick (gpointer data)
 {
 	if (app.main_window == NULL || curr_view == NULL || !idle ()) return TRUE;
+	/* GTK 3 allocates the updated labels on the next frame, after directory
+	 * workers finish. Inspect the rendered layouts only once paths settle. */
+	static gchar *painted_left, *painted_right;
+	if (g_strcmp0 (painted_left, app.pane1.view.dir) != 0
+		|| g_strcmp0 (painted_right, app.pane2.view.dir) != 0)
+	{
+		g_free (painted_left); g_free (painted_right);
+		painted_left = g_strdup (app.pane1.view.dir);
+		painted_right = g_strdup (app.pane2.view.dir);
+		return TRUE;
+	}
 	CLOSEBGL
 	switch (step)
 	{
@@ -141,7 +201,8 @@ static gboolean tick (gpointer data)
 			g_assert_true (page_is (0, 1));
 			structure ();
 			path_is (&app.pane1, "alpha"); path_is (&app.pane2, "beta");
-			g_assert_cmpstr (label (0), ==, "alpha | beta");
+			label_is (0, "alpha", "beta");
+			shortening_is (0, FALSE, FALSE);
 			focus_name (&app.pane1.view, "two");
 			GtkTreeIter selected;
 			g_assert_true (e2_tree_find_iter_from_str (app.pane1.view.model,
@@ -188,7 +249,7 @@ static gboolean tick (gpointer data)
 			g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == curr_view->treeview);
 			g_assert_cmpint (gtk_tree_selection_count_selected_rows (app.pane1.view.selection), ==, 2);
 			g_assert_cmpint (gtk_tree_selection_count_selected_rows (app.pane2.view.selection), ==, 0);
-			g_assert_cmpstr (label (1), ==, "gamma | delta");
+			label_is (1, "gamma", "delta");
 			g_assert_cmpuint (g_list_length (app.pane1.opendirs), ==, first_history_length);
 			gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 1);
 			break;
@@ -257,7 +318,7 @@ static gboolean tick (gpointer data)
 		case 9:
 			if (!page_is (0, 2)) goto wait;
 			path_is (&app.pane1, "gamma");
-			g_assert_cmpstr (label (1), ==, "$HOME %f 日本語 | delta");
+			label_is (1, "$HOME %f 日本語", "delta");
 			gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 1);
 			break;
 		case 10:
@@ -310,9 +371,43 @@ static gboolean tick (gpointer data)
 				g_free (marker); g_free (pid);
 			}
 #endif
+			cd (&app.pane1, long_left); cd (&app.pane2, long_right);
+			break;
+		case 17:
+			label_is (0, long_left, long_right);
+			shortening_is (0, TRUE, TRUE);
+			new_tab ();
+			break;
+		case 18:
+			if (!page_is (1, 2)) goto wait;
+			label_is (1, long_left, long_right);
+			shortening_is (1, TRUE, TRUE);
+			cd (&app.pane1, "alpha");
+			break;
+		case 19:
+			label_is (1, "alpha", long_right);
+			shortening_is (1, FALSE, TRUE);
+			cd (&app.pane1, long_unicode); cd (&app.pane2, "beta");
+			break;
+		case 20:
+			label_is (1, long_unicode, "beta");
+			shortening_is (1, TRUE, FALSE);
+			e2_pane_restore_dir (&app.pane2, "/");
+			break;
+		case 21:
+			label_is (1, long_unicode, "/");
+			shortening_is (1, TRUE, FALSE);
+			gtk_notebook_set_current_page (GTK_NOTEBOOK (book), 0);
+			break;
+		case 22:
+			if (!page_is (0, 2)) goto wait;
+			label_is (0, long_left, long_right);
+			shortening_is (0, TRUE, TRUE);
+			close_tab (1);
 			gchar *done = g_build_filename (root, "passed", NULL);
 			g_file_set_contents (done, "passed", -1, NULL);
 			g_free (done);
+			g_free (painted_left); g_free (painted_right);
 			e2_main_closedown (TRUE, TRUE, TRUE);
 			return FALSE;
 	}
