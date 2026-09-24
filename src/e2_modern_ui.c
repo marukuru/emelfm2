@@ -37,6 +37,34 @@ static gboolean _e2_modern_ui_chrome (GtkWidget *widget)
 		|| GTK_IS_PROGRESS_BAR (widget) || GTK_IS_SEPARATOR (widget);
 }
 
+/* Text views keep their own renderer and palette. Only their enclosing frame
+ * changes when keyboard focus moves into or out of the text area. */
+static GtkWidget *_e2_modern_ui_text_frame (GtkWidget *text)
+{
+	GtkWidget *frame = gtk_widget_get_parent (text);
+	if (frame != NULL && GTK_IS_VIEWPORT (frame))
+		frame = gtk_widget_get_parent (frame);
+	return (frame != NULL && GTK_IS_SCROLLED_WINDOW (frame)) ? frame : NULL;
+}
+
+static gboolean _e2_modern_ui_text_focus (GtkWidget *widget,
+	GdkEventFocus *event, gpointer unused)
+{
+	GtkWidget *frame = _e2_modern_ui_text_frame (widget);
+	if (frame != NULL)
+	{
+#ifdef USE_GTK3_0
+		GtkStyleContext *context = gtk_widget_get_style_context (frame);
+		if (event->in)
+			gtk_style_context_add_class (context, "e2-modern-input-focus");
+		else
+			gtk_style_context_remove_class (context, "e2-modern-input-focus");
+#endif
+		gtk_widget_queue_draw (frame);
+	}
+	return FALSE;
+}
+
 #ifdef USE_GTK3_0
 static GtkCssProvider *provider;
 
@@ -90,8 +118,34 @@ static void _e2_modern_ui_shadow (GtkStyle *style, GdkWindow *window,
 {
 	if (shadow == GTK_SHADOW_NONE) return;
 	cairo_t *cr = _e2_modern_ui_context (window, area, &width, &height);
-	_e2_modern_ui_border (cr, &style->dark[state], x, y, width, height);
+	gboolean input_focus = widget != NULL && GTK_IS_ENTRY (widget)
+		&& gtk_widget_has_focus (widget);
+	if (widget != NULL && GTK_IS_SCROLLED_WINDOW (widget))
+	{
+		GtkWidget *child = gtk_bin_get_child (GTK_BIN (widget));
+		if (child != NULL && GTK_IS_VIEWPORT (child))
+			child = gtk_bin_get_child (GTK_BIN (child));
+		input_focus = child != NULL && GTK_IS_TEXT_VIEW (child)
+			&& gtk_widget_has_focus (child);
+	}
+	_e2_modern_ui_border (cr, input_focus ? &style->bg[GTK_STATE_SELECTED]
+		: &style->dark[state], x, y, width, height);
 	cairo_destroy (cr);
+}
+
+static void _e2_modern_ui_flat_box (GtkStyle *style, GdkWindow *window,
+	GtkStateType state, GtkShadowType shadow, GdkRectangle *area,
+	GtkWidget *widget, const gchar *detail, gint x, gint y, gint width, gint height)
+{
+	/* GtkEntry::state-hint paints a focused entry_bg as ACTIVE. Pixmap themes
+	 * use their normal entry artwork here; GtkStyle instead fills base[ACTIVE],
+	 * which is often the selection color. Keep that hint on the border only.
+	 * Actual text selections use their original selection palette. */
+	if (widget != NULL && GTK_IS_ENTRY (widget) && state == GTK_STATE_ACTIVE
+		&& detail != NULL && !strcmp (detail, "entry_bg"))
+		state = GTK_STATE_NORMAL;
+	GTK_STYLE_CLASS (e2_flat_style_parent_class)->draw_flat_box (style, window,
+		state, shadow, area, widget, detail, x, y, width, height);
 }
 
 static void _e2_modern_ui_box (GtkStyle *style, GdkWindow *window,
@@ -195,6 +249,7 @@ static void _e2_modern_ui_slider (GtkStyle *style, GdkWindow *window,
 static void e2_flat_style_class_init (E2FlatStyleClass *klass)
 {
 	klass->draw_box = _e2_modern_ui_box;
+	klass->draw_flat_box = _e2_modern_ui_flat_box;
 	klass->draw_shadow = _e2_modern_ui_shadow;
 	klass->draw_focus = _e2_modern_ui_focus;
 	klass->draw_hline = _e2_modern_ui_hline;
@@ -277,6 +332,13 @@ static gboolean _e2_modern_ui_mapped (GSignalInvocationHint *hint,
 	guint n_values, const GValue *values, gpointer data)
 {
 	GtkWidget *widget = g_value_get_object (&values[0]);
+	if (GTK_IS_TEXT_VIEW (widget)
+		&& g_object_get_data (G_OBJECT (widget), "e2-modern-text-focus") == NULL)
+	{
+		g_object_set_data (G_OBJECT (widget), "e2-modern-text-focus", GINT_TO_POINTER (1));
+		g_signal_connect (widget, "focus-in-event", G_CALLBACK (_e2_modern_ui_text_focus), NULL);
+		g_signal_connect (widget, "focus-out-event", G_CALLBACK (_e2_modern_ui_text_focus), NULL);
+	}
 	/* A combo can assign its internal button's final style after the child has
 	 * mapped. Wait for the complete map/style emission and native allocation. */
 	if (_e2_modern_ui_chrome (widget)
@@ -296,14 +358,14 @@ void e2_modern_ui_init (void)
 	enabled = e2_option_bool_get ("modern-ui");
 	if (!enabled) return;
 #ifdef USE_GTK3_0
-	/* No colors, font metrics, padding, minimum sizes or border widths here.
-	 * The desktop/user style still owns those, including dark/selected states.
-	 * Local providers cover chrome only, not VTE or file/text renderers. */
+	/* Keep the theme's metrics and palettes. Text-area focus uses its selection
+	 * color on the frame only; file/text renderers and VTE retain their styles. */
 	provider = gtk_css_provider_new ();
 	GError *error = NULL;
 	gtk_css_provider_load_from_data (provider,
 		"* { background-image: none; box-shadow: none; text-shadow: none;"
-		" border-image: none; border-radius: 3px; }",
+		" border-image: none; border-radius: 3px; }"
+		" .e2-modern-input-focus { border-color: @theme_selected_bg_color; }",
 		-1, &error);
 	if (error != NULL)
 	{
