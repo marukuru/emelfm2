@@ -91,6 +91,10 @@ static void _e2_modern_ui_style (GtkWidget *widget)
 		&& !gtk_style_context_has_class (context, "e2-modern-button"))
 	{
 		gtk_style_context_add_class (context, "e2-modern-button");
+		/* Check/radio buttons need their label's focus outline. Ordinary
+		 * buttons instead use the highlighted border as their single ring. */
+		if (!GTK_IS_CHECK_BUTTON (widget))
+			gtk_style_context_add_class (context, "e2-modern-button-border");
 		g_signal_connect (widget, "state-flags-changed",
 			G_CALLBACK (_e2_modern_ui_button_state), NULL);
 		_e2_modern_ui_button_state (widget, 0, NULL);
@@ -214,8 +218,14 @@ static void _e2_modern_ui_focus (GtkStyle *style, GdkWindow *window,
 	GtkStateType state, GdkRectangle *area, GtkWidget *widget,
 	const gchar *detail, gint x, gint y, gint width, gint height)
 {
-	cairo_t *cr = _e2_modern_ui_context (window, area, &width, &height);
 	gboolean button_highlight = _e2_modern_ui_button_highlight (widget, state);
+	/* Ordinary buttons already paint the highlighted border in draw_box.
+	 * A flat button only paints that box while hovered/pressed; keep its sole
+	 * focus indicator otherwise, as well as check/radio label focus. */
+	if (button_highlight && !GTK_IS_CHECK_BUTTON (widget)
+		&& (gtk_button_get_relief (GTK_BUTTON (widget)) != GTK_RELIEF_NONE
+			|| state == GTK_STATE_PRELIGHT || state == GTK_STATE_ACTIVE)) return;
+	cairo_t *cr = _e2_modern_ui_context (window, area, &width, &height);
 	_e2_modern_ui_border (cr, button_highlight ? &style->bg[GTK_STATE_SELECTED]
 		: &style->fg[state], x, y, width, height);
 	if (!button_highlight && width > 4 && height > 4)
@@ -408,7 +418,8 @@ void e2_modern_ui_init (void)
 		" border-image: none; border-radius: 3px; }"
 		" .e2-modern-input-focus { border-color: @theme_selected_bg_color; }"
 		" .e2-modern-button-highlight {"
-		" border-color: @theme_selected_bg_color; outline-color: @theme_selected_bg_color; }",
+		" border-color: @theme_selected_bg_color; outline-color: @theme_selected_bg_color; }"
+		" .e2-modern-button-border.e2-modern-button-highlight { outline-style: none; }",
 		-1, &error);
 	if (error != NULL)
 	{

@@ -4,7 +4,7 @@
 #include "e2_toolbar.h"
 #include "e2_button.h"
 
-static GtkWidget *probe, *plain, *flat, *toggle, *neutral, *command;
+static GtkWidget *probe, *plain, *flat, *toggle, *neutral, *command, *dialog_button;
 static guint step, clicks;
 static gboolean modern;
 
@@ -81,6 +81,29 @@ static void check (GtkWidget *widget, gboolean highlighted, const gchar *name)
          * not add an accent fill to ordinary command or dialog buttons. */
         if (!GTK_IS_TOGGLE_BUTTON (widget) && gtk_widget_get_state (widget) != GTK_STATE_ACTIVE)
             g_assert_cmpuint (interior, ==, 0);
+        if (highlighted && gtk_widget_has_focus (widget)
+            && !GTK_IS_TOGGLE_BUTTON (widget) && gtk_widget_get_state (widget) != GTK_STATE_ACTIVE)
+        {
+            /* Scan horizontal strokes above the caption. Counting separated
+             * bands catches an extra inner focus rectangle, not antialiasing. */
+            guint strokes = 0;
+            gboolean previous = FALSE;
+            for (gint py = 0; py < a.height / 2; py++)
+            {
+                guint matches = 0;
+                for (gint px = 6; px < a.width - 6; px++)
+                {
+                    guchar *p = gdk_pixbuf_get_pixels (pixels) + py * gdk_pixbuf_get_rowstride (pixels)
+                        + px * gdk_pixbuf_get_n_channels (pixels);
+                    matches += ABS (p[0] - accent[0]) < 10 && ABS (p[1] - accent[1]) < 10
+                        && ABS (p[2] - accent[2]) < 10;
+                }
+                gboolean stroke = matches > (a.width - 12) / 4;
+                if (stroke && !previous) strokes++;
+                previous = stroke;
+            }
+            if (strokes != 1) g_error ("%s: expected one highlighted outline, found %u", name, strokes);
+        }
     }
     g_object_unref (pixels);
 }
@@ -100,12 +123,12 @@ static gboolean tick (gpointer unused)
             modern = e2_modern_ui_enabled ();
             command = find_button (GTK_WIDGET (app.commandbar.toolbar));
             g_assert_nonnull (command);
-            probe = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+            probe = gtk_dialog_new ();
             gtk_window_move (GTK_WINDOW (probe), 50, 50);
             gtk_window_set_default_size (GTK_WINDOW (probe), 340, 200);
             GtkWidget *box = gtk_vbox_new (FALSE, 12);
             gtk_container_set_border_width (GTK_CONTAINER (box), 12);
-            gtk_container_add (GTK_CONTAINER (probe), box);
+            gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (probe))), box, TRUE, TRUE, 0);
             plain = e2_button_get_full ("Dialog button", NULL, GTK_ICON_SIZE_BUTTON, NULL,
                 clicked, NULL, E2_BUTTON_CAN_FOCUS);
             flat = e2_button_get_full ("Flat button", NULL, GTK_ICON_SIZE_BUTTON, NULL,
@@ -113,6 +136,9 @@ static gboolean tick (gpointer unused)
             gtk_button_set_relief (GTK_BUTTON (flat), GTK_RELIEF_NONE);
             toggle = gtk_toggle_button_new_with_label ("Toggle button");
             neutral = gtk_entry_new ();
+            dialog_button = e2_button_get ("Delete", GTK_STOCK_DELETE, NULL, NULL, NULL);
+            gtk_dialog_add_action_widget (GTK_DIALOG (probe), dialog_button, GTK_RESPONSE_OK);
+            gtk_dialog_set_default_response (GTK_DIALOG (probe), GTK_RESPONSE_OK);
             gtk_box_pack_start (GTK_BOX (box), neutral, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (box), plain, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (box), flat, FALSE, FALSE, 0);
@@ -147,6 +173,10 @@ static gboolean tick (gpointer unused)
         case 5:
             g_assert_cmpuint (clicks, ==, 1);
             pointer_to (neutral);
+#if GTK_CHECK_VERSION(3,2,0)
+            /* Match keyboard navigation, which enables GTK 3's focus ring. */
+            gtk_window_set_focus_visible (GTK_WINDOW (probe), TRUE);
+#endif
             gtk_widget_grab_focus (plain);
             break;
         case 6:
@@ -182,6 +212,21 @@ static gboolean tick (gpointer unused)
             check (plain, FALSE, "normal-again");
             check (flat, FALSE, "flat-normal-again");
             check (command, FALSE, "toolbar-normal-again");
+            gtk_widget_grab_focus (dialog_button);
+            break;
+        case 12:
+            g_assert_true (gtk_widget_has_focus (dialog_button));
+            g_assert_true (gtk_widget_has_default (dialog_button));
+            check (dialog_button, TRUE, "dialog-default-focus");
+            pointer_to (dialog_button);
+            break;
+        case 13:
+            check (dialog_button, TRUE, "dialog-default-focus-hover");
+            gtk_widget_grab_focus (flat);
+            pointer_to (flat);
+            break;
+        case 14:
+            check (flat, TRUE, "flat-focus-hover");
             gtk_widget_destroy (probe);
             g_print ("button hover, focus, press, toggle, disabled state and activation passed\n");
             e2_main_closedown (TRUE, TRUE, TRUE);
