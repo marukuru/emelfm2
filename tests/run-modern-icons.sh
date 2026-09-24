@@ -39,6 +39,7 @@ for theme in os.environ.get('E2_MODERN_TEST_THEMES', 'Adwaita,Adwaita-dark').spl
         log = run.stdout.decode(errors='replace')
         assert run.returncode == 0 and 'CRITICAL' not in log and 'WARNING' not in log, theme+' '+mode+'\n'+log[-10000:]
         assert 'History selection and custom files passed' in log, log
-        print(theme, 'modern-ui='+mode, 'passed')
+        inventory = re.search(r'Stock picker: (\d+) icons', log).group(1)
+        print(theme, 'modern-ui='+mode, 'passed; stock icons:', inventory)
 print(f'Icon coverage: {len(set(stocks))} stock IDs and {len(names)} bundled filenames')
 PY

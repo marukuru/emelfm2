@@ -26,11 +26,19 @@ static void equal_pixels (GdkPixbuf *actual, GdkPixbuf *expected)
             channels * gdk_pixbuf_get_width (actual)), ==, 0);
 }
 
-static void check_inventory (const gchar *filename)
+static gchar **load_inventory (const gchar *filename)
 {
     gchar *path = g_build_filename (g_getenv ("E2_ICON_TEST_DIR"), filename, NULL), *contents;
     g_assert_true (g_file_get_contents (path, &contents, NULL, NULL));
     gchar **names = g_strsplit (contents, "\n", -1);
+    g_free (contents);
+    g_free (path);
+    return names;
+}
+
+static void check_inventory (const gchar *filename)
+{
+    gchar **names = load_inventory (filename);
     for (guint i = 0; names[i] != NULL && *names[i] != '\0'; i++)
         for (gint size = 16; size <= 32; size += 8)
         {
@@ -53,8 +61,6 @@ static void check_inventory (const gchar *filename)
             }
         }
     g_strfreev (names);
-    g_free (contents);
-    g_free (path);
 }
 
 static void open_picker (void)
@@ -72,6 +78,7 @@ static void check_model (GtkTreeModel *model, gboolean stock, gboolean bundled)
 {
     GtkTreeIter iter;
     guint count = 0;
+    GHashTable *seen = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
     gboolean valid = gtk_tree_model_get_iter_first (model, &iter);
     while (valid)
     {
@@ -82,6 +89,11 @@ static void check_model (GtkTreeModel *model, gboolean stock, gboolean bundled)
         if (!bundled) g_assert_cmpstr (name, ==, "move");
         g_assert_nonnull (actual);
         gchar *id = stock ? g_strconcat ("gtk-", name, NULL) : g_strdup (name);
+        if (stock)
+        {
+            g_assert_false (g_hash_table_contains (seen, id));
+            g_hash_table_add (seen, g_strdup (id));
+        }
         gint w = gdk_pixbuf_get_width (actual), h = gdk_pixbuf_get_height (actual);
         GdkPixbuf *expected = e2_modern_ui_icon (id, w, h);
         if (modern && bundled && !g_str_has_prefix (name, "emelfm2"))
@@ -102,7 +114,21 @@ static void check_model (GtkTreeModel *model, gboolean stock, gboolean bundled)
         g_free (path);
         valid = gtk_tree_model_iter_next (model, &iter);
     }
-    g_assert_cmpuint (count, >, stock ? 90 : bundled ? 40 : 0);
+    if (stock && modern)
+    {
+        /* Modern artwork ships with the application: every declared stock
+         * must be selectable, regardless of the installed icon theme. */
+        gchar **names = load_inventory ("stock.txt");
+        for (guint i = 0; names[i] != NULL && *names[i] != '\0'; i++)
+            if (!g_hash_table_contains (seen, names[i]))
+                g_error ("Stock missing from modern picker: %s", names[i]);
+        g_strfreev (names);
+    }
+    /* Classic GTK 3 exposes only stocks supplied by the current icon theme.
+     * Selection and stock-ID round trips are still checked below. */
+    g_assert_cmpuint (count, >, !stock && bundled ? 40 : 0);
+    if (stock) g_print ("Stock picker: %u icons (%s)\n", count, modern ? "modern" : "classic");
+    g_hash_table_destroy (seen);
 }
 
 static void select_icon (gboolean stock, const gchar *name, const gchar *saved)
@@ -139,6 +165,10 @@ static gboolean tick (gpointer unused)
     switch (step++)
     {
         case 0:
+            /* GTK_THEME selects widget styling, not the icon theme. Match CI
+             * independently of desktop settings and legacy fallback themes. */
+            g_object_set (gtk_settings_get_default (), "gtk-icon-theme-name", "Adwaita",
+                "gtk-fallback-icon-theme", "hicolor", NULL);
             modern = e2_modern_ui_enabled ();
             check_inventory ("stock.txt");
             check_inventory ("bundled.txt");
@@ -147,7 +177,20 @@ static gboolean tick (gpointer unused)
         case 1:
             check_model (picker->stockmodel, TRUE, TRUE);
             check_model (picker->custommodel, FALSE, TRUE);
-            select_icon (TRUE, "cut", "gtk-cut");
+            if (modern) select_icon (TRUE, "cut", "gtk-cut");
+            else
+            {
+                /* Legacy names such as Cut and Directory are not guaranteed
+                 * by every icon theme. Round-trip a stock it actually offers. */
+                GtkTreeIter iter;
+                gchar *name;
+                g_assert_true (gtk_tree_model_get_iter_first (picker->stockmodel, &iter));
+                gtk_tree_model_get (picker->stockmodel, &iter, 1, &name, -1);
+                gchar *saved = g_strconcat ("gtk-", name, NULL);
+                select_icon (TRUE, name, saved);
+                g_free (saved);
+                g_free (name);
+            }
             select_icon (FALSE, "history", "history");
             select_icon (FALSE, "history_48", "history_48");
             /* An external file named like a built-in action keeps its pixels. */

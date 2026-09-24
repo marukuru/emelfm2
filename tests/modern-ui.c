@@ -104,6 +104,10 @@ static gboolean tick (gpointer unused)
     {
         case 0:
         {
+#ifdef USE_GTK3_0
+            /* Compare settled theme colors, not a frame of a CSS transition. */
+            g_object_set (gtk_settings_get_default (), "gtk-enable-animations", FALSE, NULL);
+#endif
             initially_enabled = e2_modern_ui_enabled ();
 #ifdef E2_MODERN_UI
             g_assert_nonnull (e2_option_get ("modern-ui"));
