@@ -68,10 +68,33 @@ static gboolean _e2_modern_ui_text_focus (GtkWidget *widget,
 #ifdef USE_GTK3_0
 static GtkCssProvider *provider;
 
+static void _e2_modern_ui_button_state (GtkWidget *widget,
+	GtkStateFlags previous, gpointer unused)
+{
+	GtkStateFlags state = gtk_widget_get_state_flags (widget);
+	gboolean highlighted = gtk_widget_is_sensitive (widget)
+		&& ((state & (GTK_STATE_FLAG_PRELIGHT | GTK_STATE_FLAG_ACTIVE | GTK_STATE_FLAG_FOCUSED))
+			|| (GTK_IS_TOGGLE_BUTTON (widget)
+				&& gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))));
+	GtkStyleContext *context = gtk_widget_get_style_context (widget);
+	if (highlighted)
+		gtk_style_context_add_class (context, "e2-modern-button-highlight");
+	else
+		gtk_style_context_remove_class (context, "e2-modern-button-highlight");
+}
+
 static void _e2_modern_ui_style (GtkWidget *widget)
 {
 	if (!_e2_modern_ui_chrome (widget)) return;
 	GtkStyleContext *context = gtk_widget_get_style_context (widget);
+	if (GTK_IS_BUTTON (widget)
+		&& !gtk_style_context_has_class (context, "e2-modern-button"))
+	{
+		gtk_style_context_add_class (context, "e2-modern-button");
+		g_signal_connect (widget, "state-flags-changed",
+			G_CALLBACK (_e2_modern_ui_button_state), NULL);
+		_e2_modern_ui_button_state (widget, 0, NULL);
+	}
 	gtk_style_context_add_provider (context, GTK_STYLE_PROVIDER (provider),
 		GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 }
@@ -112,6 +135,16 @@ static void _e2_modern_ui_border (cairo_t *cr, const GdkColor *color,
 	cairo_stroke (cr);
 }
 
+static gboolean _e2_modern_ui_button_highlight (GtkWidget *widget, GtkStateType state)
+{
+	return widget != NULL && GTK_IS_BUTTON (widget)
+		&& gtk_widget_is_sensitive (widget) && state != GTK_STATE_INSENSITIVE
+		&& (state == GTK_STATE_PRELIGHT || state == GTK_STATE_ACTIVE
+			|| gtk_widget_has_focus (widget)
+			|| (GTK_IS_TOGGLE_BUTTON (widget)
+				&& gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (widget))));
+}
+
 static void _e2_modern_ui_shadow (GtkStyle *style, GdkWindow *window,
 	GtkStateType state, GtkShadowType shadow, GdkRectangle *area,
 	GtkWidget *widget, const gchar *detail, gint x, gint y, gint width, gint height)
@@ -128,7 +161,8 @@ static void _e2_modern_ui_shadow (GtkStyle *style, GdkWindow *window,
 		input_focus = child != NULL && GTK_IS_TEXT_VIEW (child)
 			&& gtk_widget_has_focus (child);
 	}
-	_e2_modern_ui_border (cr, input_focus ? &style->bg[GTK_STATE_SELECTED]
+	_e2_modern_ui_border (cr, (input_focus || _e2_modern_ui_button_highlight (widget, state))
+		? &style->bg[GTK_STATE_SELECTED]
 		: &style->dark[state], x, y, width, height);
 	cairo_destroy (cr);
 }
@@ -167,8 +201,12 @@ static void _e2_modern_ui_box (GtkStyle *style, GdkWindow *window,
 	gdk_cairo_set_source_color (cr, color);
 	cairo_rectangle (cr, x, y, width, height);
 	cairo_fill (cr);
-	if (shadow != GTK_SHADOW_NONE)
-		_e2_modern_ui_border (cr, &style->dark[state], x, y, width, height);
+	/* Keep the theme's button fill; hover, focus and toggled/pressed states
+	 * use its selection color only on the existing border. */
+	gboolean button_highlight = _e2_modern_ui_button_highlight (widget, state);
+	if (shadow != GTK_SHADOW_NONE || button_highlight)
+		_e2_modern_ui_border (cr, button_highlight ? &style->bg[GTK_STATE_SELECTED]
+			: &style->dark[state], x, y, width, height);
 	cairo_destroy (cr);
 }
 
@@ -177,8 +215,10 @@ static void _e2_modern_ui_focus (GtkStyle *style, GdkWindow *window,
 	const gchar *detail, gint x, gint y, gint width, gint height)
 {
 	cairo_t *cr = _e2_modern_ui_context (window, area, &width, &height);
-	_e2_modern_ui_border (cr, &style->fg[state], x, y, width, height);
-	if (width > 4 && height > 4)
+	gboolean button_highlight = _e2_modern_ui_button_highlight (widget, state);
+	_e2_modern_ui_border (cr, button_highlight ? &style->bg[GTK_STATE_SELECTED]
+		: &style->fg[state], x, y, width, height);
+	if (!button_highlight && width > 4 && height > 4)
 		_e2_modern_ui_border (cr, &style->fg[state], x + 1, y + 1, width - 2, height - 2);
 	cairo_destroy (cr);
 }
@@ -358,14 +398,17 @@ void e2_modern_ui_init (void)
 	enabled = e2_option_bool_get ("modern-ui");
 	if (!enabled) return;
 #ifdef USE_GTK3_0
-	/* Keep the theme's metrics and palettes. Text-area focus uses its selection
-	 * color on the frame only; file/text renderers and VTE retain their styles. */
+	/* Keep the theme's metrics and palettes. Input focus and button highlights
+	 * use its selection color on borders only; file/text renderers and VTE
+	 * retain their styles. */
 	provider = gtk_css_provider_new ();
 	GError *error = NULL;
 	gtk_css_provider_load_from_data (provider,
 		"* { background-image: none; box-shadow: none; text-shadow: none;"
 		" border-image: none; border-radius: 3px; }"
-		" .e2-modern-input-focus { border-color: @theme_selected_bg_color; }",
+		" .e2-modern-input-focus { border-color: @theme_selected_bg_color; }"
+		" .e2-modern-button-highlight {"
+		" border-color: @theme_selected_bg_color; outline-color: @theme_selected_bg_color; }",
 		-1, &error);
 	if (error != NULL)
 	{
