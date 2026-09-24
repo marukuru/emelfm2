@@ -1583,7 +1583,7 @@ msgstr "_Akcje"
 #: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:897 e2_icons.c:1150
 #: e2_option_tree_context_menu.c:287 e2_output.c:1765 e2_terminal.c:462
-#: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1048 e2p_copy.c:757
+#: e2_toolbar.c:3462 e2_tree_dialog.c:1200 e2_view_dialog.c:1054 e2p_copy.c:757
 msgid "_Copy"
 msgstr "_Kopiuj"
 
@@ -2022,15 +2022,15 @@ msgstr "Wybór zapisu.."
 msgid "Save the selected text"
 msgstr "Zapisz zaznaczony tekst"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1054
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1060
 msgid "Print file"
 msgstr "Drukuj plik"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1054
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1060
 msgid "Print selected text"
 msgstr "Drukuj zaznaczony tekst"
 
-#: e2_edit_dialog.c:929 e2_view_dialog.c:1055
+#: e2_edit_dialog.c:929 e2_view_dialog.c:1061
 msgid "_Print.."
 msgstr "Drukuj.."
 
@@ -2055,11 +2055,11 @@ msgid "Find and replace matching text"
 msgstr "Znajdź i zastąp pasujący tekst"
 
 #: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
-#: e2_view_dialog.c:1823
+#: e2_view_dialog.c:1930
 msgid "_Hide"
 msgstr "Ukryj"
 
-#: e2_edit_dialog.c:943 e2_view_dialog.c:1832
+#: e2_edit_dialog.c:943 e2_view_dialog.c:1938
 msgid "Hide the search options bar"
 msgstr "Ukryj pasek opcji wyszukiwania"
 
@@ -2107,7 +2107,7 @@ msgstr "Ustaw język sprawdzania pisowni"
 msgid "_Wrap"
 msgstr "_Zawijaj"
 
-#: e2_edit_dialog.c:974 e2_view_dialog.c:1835
+#: e2_edit_dialog.c:974 e2_view_dialog.c:1941
 msgid "If activated, text in the window will be word-wrapped"
 msgstr "Gdy aktywowane, tekst w oknie będzie zawijany"
 
@@ -2115,7 +2115,7 @@ msgstr "Gdy aktywowane, tekst w oknie będzie zawijany"
 msgid "Se_ttings"
 msgstr "Ustawienia"
 
-#: e2_edit_dialog.c:978 e2_view_dialog.c:1061
+#: e2_edit_dialog.c:978 e2_view_dialog.c:1067
 msgid "Open the configuration dialog at the options page"
 msgstr "Otwórz dialog konfiguracji przy stronie opcji"
 
@@ -2169,16 +2169,16 @@ msgid "Replace this match"
 msgstr "Zastap to dopasowanie"
 
 #: e2_edit_dialog.c:1712 e2_icons.c:914 e2_icons.c:1167 e2_output.c:1712
-#: e2_terminal.c:467 e2_view_dialog.c:1839 e2p_find.c:4241
+#: e2_terminal.c:467 e2_view_dialog.c:1945 e2p_find.c:4241
 msgid "_Find"
 msgstr "_Znajdź"
 
-#: e2_edit_dialog.c:1720 e2_view_dialog.c:1854
+#: e2_edit_dialog.c:1720 e2_view_dialog.c:1960
 msgid "Find the next match"
 msgstr "Znajdź następne dopasowanie"
 
-#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1865
-#: e2_view_dialog.c:1886
+#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1974
+#: e2_view_dialog.c:1995
 msgid "not found"
 msgstr "nie znaleziono"
 
@@ -2210,7 +2210,7 @@ msgstr "Element:"
 msgid "Mime:"
 msgstr "Typ Mime:"
 
-#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:519
+#: e2_file_info_dialog.c:304 e2_file_info_dialog.c:830 e2_viewer.c:560
 msgid "Encoding:"
 msgstr "Kodowanie:"
 
@@ -2382,7 +2382,7 @@ msgstr "katalogi"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:951 e2_icons.c:1204
-#: e2_output.c:1776 e2_view_dialog.c:723
+#: e2_output.c:1776 e2_view_dialog.c:729
 msgid "_Open"
 msgstr "_Otwórz"
 
@@ -2797,7 +2797,7 @@ msgstr "Nie mogę otworzyć '%s' dla zapisu - %s"
 msgid "Error writing file '%s' - %s"
 msgstr "Błąd zapisu pliku '%s' - %s"
 
-#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:610
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:611
 #: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
@@ -4031,11 +4031,11 @@ msgstr "dwukolorowe tło"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "Linie w listach plików będą miały naprzemienne kolory tła"
 
-#: e2_option__default.c:293 e2_output.c:4380 e2_view_dialog.c:2210
+#: e2_option__default.c:293 e2_output.c:4380 e2_view_dialog.c:2330
 msgid "use custom font"
 msgstr "używaj własnej czcionki"
 
-#: e2_option__default.c:294 e2_output.c:4381 e2_view_dialog.c:2211
+#: e2_option__default.c:294 e2_output.c:4381 e2_view_dialog.c:2331
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4200,7 +4200,7 @@ msgid "If enabled, the color specified below will be used for background"
 msgstr ""
 "Jeżeli opcja jest uaktywniona, wybrany kolor będzie użyty jako kolor tła"
 
-#: e2_option__default.c:371 e2_view_dialog.c:2238
+#: e2_option__default.c:371 e2_view_dialog.c:2358
 msgid "background color"
 msgstr "kolor tła"
 
@@ -4511,7 +4511,7 @@ msgstr "Wyczyść"
 msgid "Clear this tab"
 msgstr "Wyczyść tą zakładkę"
 
-#: e2_output.c:1766 e2_view_dialog.c:1049
+#: e2_output.c:1766 e2_view_dialog.c:1055
 msgid "Copy selected text"
 msgstr "Kopiuj zaznaczony tekst"
 
@@ -4527,7 +4527,7 @@ msgstr "Wyjście komend"
 msgid "Show output from a completed command"
 msgstr "Pokazuj dane wyjściowe po zakończeniu komend"
 
-#: e2_output.c:1830 e2_view_dialog.c:1060
+#: e2_output.c:1830 e2_view_dialog.c:1066
 msgid "_Settings"
 msgstr "_Ustawienia"
 
@@ -6065,119 +6065,147 @@ msgstr "Brakuje znaku '$' w formule akcji"
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr ""
 
-#: e2_view_dialog.c:485 e2p_crypt.c:1579 e2p_crypt.c:1904
+#: e2_view_dialog.c:486 e2p_crypt.c:1579 e2p_crypt.c:1904
 #, c-format
 msgid "Cannot read '%s'"
 msgstr "Nie mogę odczytać '%s'"
 
-#: e2_view_dialog.c:502
+#: e2_view_dialog.c:503
 #, c-format
 msgid "'%s' is a directory"
 msgstr "'%s' jest katalogiem"
 
-#: e2_view_dialog.c:533
+#: e2_view_dialog.c:534
 #, fuzzy, c-format
 msgid "Cannot read %s"
 msgstr "Nie mogę odczytać '%s'"
 
-#: e2_view_dialog.c:588
+#: e2_view_dialog.c:589
 #, c-format
 msgid "Encoding conversion command '%s' failed"
 msgstr "Komenda konwersji znaków '%s' zakończona niepowodzeniem"
 
-#: e2_view_dialog.c:636
+#: e2_view_dialog.c:642
 #, c-format
 msgid "Conversion from %s encoding failed: \"%s\""
 msgstr "Konwersja z kodowania %s nieudana: \"%s\""
 
-#: e2_view_dialog.c:674
+#: e2_view_dialog.c:680
 msgid "choose file encoding"
 msgstr "wybierz kodowanie plików"
 
-#: e2_view_dialog.c:687
+#: e2_view_dialog.c:693
 msgid "Select one or more encodings to test"
 msgstr "Wybierz jeden bądź więcej typów kodowania w celu testowania"
 
-#: e2_view_dialog.c:718
+#: e2_view_dialog.c:724
 msgid "_Test"
 msgstr ""
 
-#: e2_view_dialog.c:785
+#: e2_view_dialog.c:791
 msgid "The file encoding may be any of the selected ones"
 msgstr "Kodowanie plików może być którymkolwiek spośród zaznaczonych"
 
-#: e2_view_dialog.c:805
+#: e2_view_dialog.c:811
 msgid "File encoding cannot be converted from any selected type"
 msgstr "Z zaznaczonego typu kodowania nie można dokonać konwersji"
 
-#: e2_view_dialog.c:1062 e2_view_dialog.c:2193
+#: e2_view_dialog.c:1068 e2_view_dialog.c:2307
 #, fuzzy
 msgid "file viewer"
 msgstr "plik zapisz jako"
 
-#: e2_view_dialog.c:1119
+#: e2_view_dialog.c:1125
 msgid "Finds"
 msgstr "Znajduje"
 
-#: e2_view_dialog.c:1133
+#: e2_view_dialog.c:1139
 msgid "If activated, text case does matter when searching"
 msgstr "Rozmiar znaków ma znaczenie podczas wyszukiwania"
 
-#: e2_view_dialog.c:1133
+#: e2_view_dialog.c:1139
 msgid "_match case"
 msgstr "dopasuj wielkością liter"
 
-#: e2_view_dialog.c:1138
+#: e2_view_dialog.c:1144
 msgid "If activated, matches must be surrounded by word-separator characters"
 msgstr ""
 "Gdy aktywne, szykane wyrażenia muszą być otoczone przez znaki separacji"
 
-#: e2_view_dialog.c:1138
+#: e2_view_dialog.c:1144
 msgid "wh_ole words"
 msgstr "całe słowa"
 
-#: e2_view_dialog.c:1142
+#: e2_view_dialog.c:1148
 msgid "If activated, searching proceeds toward document start"
 msgstr "Gdy aktywne, dokument przeszukiwany jest w kierunku początku"
 
-#: e2_view_dialog.c:1142
+#: e2_view_dialog.c:1148
 msgid "_backward"
 msgstr "wstecz"
 
-#: e2_view_dialog.c:1145
+#: e2_view_dialog.c:1151
 msgid "If activated, searching cycles from either end to the other"
 msgstr "Gdy aktywne, przeszukiwanie przebiega cyklicznie przez cały dokument"
 
-#: e2_view_dialog.c:1145
+#: e2_view_dialog.c:1151
 msgid "_loop"
 msgstr "pętla"
 
-#: e2_view_dialog.c:1755
+#: e2_view_dialog.c:1862
 msgid "displaying file"
 msgstr "wyświetlanie pliku"
 
-#: e2_view_dialog.c:1834
+#: e2_view_dialog.c:1940
 msgid "_wrap"
 msgstr "zawijanie"
 
-#: e2_view_dialog.c:1854
+#: e2_view_dialog.c:1953 e2_view_dialog.c:1960
 msgid "Show the search options bar"
 msgstr "Pokaż pasek opcji przeszukiwania"
 
-#: e2_view_dialog.c:2196
+#: e2_view_dialog.c:1962
+msgid "Jump to the bottom of the content"
+msgstr ""
+
+#: e2_view_dialog.c:1964
+#, fuzzy
+msgid "Reload the file from disk"
+msgstr "Ponownie załaduj edytowany plik"
+
+#: e2_view_dialog.c:2310
 msgid "wrap text"
 msgstr "zawijaj tekst"
 
-#: e2_view_dialog.c:2197
+#: e2_view_dialog.c:2311
 msgid "This causes the view window to open with text-wrapping enabled"
 msgstr "Sprawia, że okno podglądu pliku będzie zawijać zbyt długie wiersze"
 
-#: e2_view_dialog.c:2201
+#: e2_view_dialog.c:2314
+msgid "automatically jump to the newest line"
+msgstr ""
+
+#: e2_view_dialog.c:2315
+msgid "Open and refresh matching files at the end of their content"
+msgstr ""
+
+#: e2_view_dialog.c:2317
+#, fuzzy
+msgid "jump-to-end filetypes"
+msgstr "edytuj typy plików"
+
+#: e2_view_dialog.c:2318
+msgid ""
+"Semicolon-separated filename patterns, matched case-insensitively (for "
+"example *.log; *.out)"
+msgstr ""
+
+#: e2_view_dialog.c:2321
 #, fuzzy
 msgid "initial window width"
 msgstr "szerokość okna"
 
-#: e2_view_dialog.c:2202
+#: e2_view_dialog.c:2322
 msgid ""
 "The view window will default to showing this many characters per line (but "
 "the the displayed buttons may make it wider than this)"
@@ -6185,136 +6213,136 @@ msgstr ""
 "Okno podglądu będzie domyślnie wyświetlać tyle znaków w linii (jednakże "
 "przyciski mogą okno to nieco poszerzyć)"
 
-#: e2_view_dialog.c:2206
+#: e2_view_dialog.c:2326
 msgid "window height"
 msgstr "wysokość okna"
 
-#: e2_view_dialog.c:2207
+#: e2_view_dialog.c:2327
 msgid "The view window will default to showing this many lines of text"
 msgstr "Okno podglądu będzie domyślnie wyświetlać tyle wierszy tekstu"
 
-#: e2_view_dialog.c:2214
+#: e2_view_dialog.c:2334
 #, fuzzy
 msgid "text font"
 msgstr "dokumenty tekstowe"
 
-#: e2_view_dialog.c:2215
+#: e2_view_dialog.c:2335
 msgid "Font for ordinary text when ASCII art is not detected"
 msgstr ""
 
-#: e2_view_dialog.c:2217
+#: e2_view_dialog.c:2337
 msgid "maximum initial width (characters)"
 msgstr ""
 
-#: e2_view_dialog.c:2218
+#: e2_view_dialog.c:2338
 msgid "Limit the opening width; the text area fills the window when resized"
 msgstr ""
 
-#: e2_view_dialog.c:2219
+#: e2_view_dialog.c:2339
 msgid "detect ASCII art"
 msgstr ""
 
-#: e2_view_dialog.c:2220
+#: e2_view_dialog.c:2340
 msgid ""
 "Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font "
 "without wrapping"
 msgstr ""
 
-#: e2_view_dialog.c:2221 e2p_find.c:349
+#: e2_view_dialog.c:2341 e2p_find.c:349
 msgid "all files"
 msgstr "wszystkie pliki"
 
-#: e2_view_dialog.c:2221
+#: e2_view_dialog.c:2341
 #, fuzzy
 msgid "matching extensions"
 msgstr "rozszerzenia"
 
-#: e2_view_dialog.c:2222
+#: e2_view_dialog.c:2342
 msgid "detect ASCII art in"
 msgstr ""
 
-#: e2_view_dialog.c:2223
+#: e2_view_dialog.c:2343
 msgid ""
 "Choose whether to check all files or only files matching the extension list "
 "below"
 msgstr ""
 
-#: e2_view_dialog.c:2225
+#: e2_view_dialog.c:2345
 msgid "ASCII art file extensions"
 msgstr ""
 
-#: e2_view_dialog.c:2226
+#: e2_view_dialog.c:2346
 msgid ""
 "Semicolon-separated filename patterns, matched case-insensitively when "
 "matching extensions is selected (for example *.nfo; *.asc)"
 msgstr ""
 
-#: e2_view_dialog.c:2228
+#: e2_view_dialog.c:2348
 msgid "clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2229
+#: e2_view_dialog.c:2349
 msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
 msgstr ""
 
-#: e2_view_dialog.c:2230
+#: e2_view_dialog.c:2350
 #, fuzzy
 msgid "use custom browser"
 msgstr "używaj własnej czcionki"
 
-#: e2_view_dialog.c:2231
+#: e2_view_dialog.c:2351
 msgid ""
 "Use the browser executable below instead of the desktop's default browser"
 msgstr ""
 
-#: e2_view_dialog.c:2232
+#: e2_view_dialog.c:2352
 #, fuzzy
 msgid "browser executable"
 msgstr "uruchamianie przez właściciela"
 
-#: e2_view_dialog.c:2233
+#: e2_view_dialog.c:2353
 msgid ""
 "Executable name or full path, without arguments; the link is passed as one "
 "argument"
 msgstr ""
 
-#: e2_view_dialog.c:2234
+#: e2_view_dialog.c:2354
 #, fuzzy
 msgid "show line numbers"
 msgstr "pokazuj ikony w menu"
 
-#: e2_view_dialog.c:2235
+#: e2_view_dialog.c:2355
 msgid "Show logical line numbers beside the text; copied text is unchanged"
 msgstr ""
 
-#: e2_view_dialog.c:2236
+#: e2_view_dialog.c:2356
 #, fuzzy
 msgid "foreground color"
 msgstr "kolor tła"
 
-#: e2_view_dialog.c:2237
+#: e2_view_dialog.c:2357
 msgid "Text and line-number color"
 msgstr ""
 
-#: e2_view_dialog.c:2239
+#: e2_view_dialog.c:2359
 #, fuzzy
 msgid "Background color of the file viewer"
 msgstr "Kolr tła używany zamiast koloru standardowego"
 
-#: e2_view_dialog.c:2240
+#: e2_view_dialog.c:2360
 #, fuzzy
 msgid "link color"
 msgstr "kolor podświetlenia"
 
-#: e2_view_dialog.c:2241
+#: e2_view_dialog.c:2361
 msgid "Color of clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2243
+#: e2_view_dialog.c:2363
 msgid "case sensitive searches"
 msgstr "szukanie uwzględnia wielkość liter"
 
-#: e2_view_dialog.c:2244
+#: e2_view_dialog.c:2364
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
@@ -6322,11 +6350,11 @@ msgstr ""
 "Powoduje, że pasek przeszukiwania okna podglądu będzie domyślnie miał "
 "włączoną opcję uwzględniania wielkich liter przy przeszukiwaniu tekstu"
 
-#: e2_view_dialog.c:2248
+#: e2_view_dialog.c:2368
 msgid "show last search string"
 msgstr "pokaż oztatni szukany zwrot"
 
-#: e2_view_dialog.c:2249
+#: e2_view_dialog.c:2369
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
@@ -6334,43 +6362,43 @@ msgstr ""
 "Po otwarciu okna podglądu pole tekstu w pasku szukania zawierało będzie "
 "ostatnio szukane wyrażenie"
 
-#: e2_view_dialog.c:2253
+#: e2_view_dialog.c:2373
 msgid "keep search history"
 msgstr "przechowuj historię szukania"
 
-#: e2_view_dialog.c:2254
+#: e2_view_dialog.c:2374
 msgid "This causes search strings to be remembered between sessions"
 msgstr ""
 "Sprawia, że wyszukiwane zwroty będą pamiętane pomiędzy sesjami programu"
 
-#: e2_viewer.c:281
+#: e2_viewer.c:282
 msgid "Text"
 msgstr ""
 
-#: e2_viewer.c:285
+#: e2_viewer.c:286
 msgid "Invalid bytes replaced; try another encoding"
 msgstr ""
 
-#: e2_viewer.c:289
+#: e2_viewer.c:290
 #, c-format
 msgid "NUL bytes shown as %s"
 msgstr ""
 
-#: e2_viewer.c:392
+#: e2_viewer.c:405
 #, fuzzy, c-format
 msgid "Could not open link: %s"
 msgstr "Nie mogę otworzyć pliku %s"
 
-#: e2_viewer.c:392
+#: e2_viewer.c:405
 #, fuzzy
 msgid "No browser configured"
 msgstr "konfiguruj"
 
-#: e2_viewer.c:523
+#: e2_viewer.c:564
 msgid "Automatic"
 msgstr ""
 
-#: e2_viewer.c:527
+#: e2_viewer.c:568
 msgid "Override encoding detection for this file"
 msgstr ""
 
@@ -6384,7 +6412,7 @@ msgstr "wyświetlonych i %d ukrytych"
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d zaznaczonych elementów z %d %s w '%s'"
 
-#: e2_window.c:1864
+#: e2_window.c:1893
 msgid "WhoAmI"
 msgstr ""
 
