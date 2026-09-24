@@ -653,16 +653,16 @@ static GdkPixbuf *_e2_icons_get_legacy_pixbuf (const gchar *name, gint isize, gb
 					GTK_ICON_LOOKUP_GENERIC_FALLBACK | GTK_ICON_LOOKUP_USE_BUILTIN, NULL);
 # endif
 #elif defined(USE_GTK3_0)
-				pxb = gtk_icon_set_render_icon_pixbuf (
-					gtk_icon_factory_lookup_default (name),
+				GtkIconSet *iset = gtk_icon_factory_lookup_default (check);
+				pxb = (iset != NULL) ? gtk_icon_set_render_icon_pixbuf (iset,
 					gtk_widget_get_style_context (app.main_window),
-					isize);
+					isize) : NULL;
 #else
-				pxb = gtk_icon_set_render_icon (
-					gtk_icon_factory_lookup_default (name),
+				GtkIconSet *iset = gtk_icon_factory_lookup_default (check);
+				pxb = (iset != NULL) ? gtk_icon_set_render_icon (iset,
 					gtk_rc_get_style (app.main_window),
 					gtk_widget_get_default_direction (),
-					GTK_STATE_NORMAL, isize, NULL, NULL);
+					GTK_STATE_NORMAL, isize, NULL, NULL) : NULL;
 #endif
 				if (pxb != NULL)
 				{
@@ -698,12 +698,19 @@ static GdkPixbuf *_e2_icons_get_legacy_pixbuf (const gchar *name, gint isize, gb
 GdkPixbuf *e2_icons_get_puxbuf (const gchar *name, gint isize, gboolean missing)
 {
 	GdkPixbuf *original = _e2_icons_get_legacy_pixbuf (name, isize, missing);
-	/* Match the actual legacy image allocation, including non-square icons.
-	 * A missing image must not grow an otherwise empty toolbar slot. */
+	/* Match the actual legacy image allocation, including non-square icons. */
 	if (original != NULL)
 	{
 		GdkPixbuf *modern = e2_modern_ui_icon (name,
 			gdk_pixbuf_get_width (original), gdk_pixbuf_get_height (original));
+		if (modern != NULL) return modern;
+	}
+	else if (name != NULL && g_str_has_prefix (name, "gtk-"))
+	{
+		/* A supported modern icon need not exist in the desktop icon theme. */
+		gint psize = (isize >= 0 && isize <= GTK_ICON_SIZE_DIALOG) ?
+			e2_icons_get_pixsize (isize) : isize;
+		GdkPixbuf *modern = e2_modern_ui_icon (name, psize, psize);
 		if (modern != NULL) return modern;
 	}
 	return original;
@@ -1292,7 +1299,10 @@ gboolean e2_icons_check_stock (const gchar *name)
 #ifndef USE_GTK3_10
 	GtkStockItem item;
 
-	if (gtk_stock_lookup (name, &item))
+	/* Image-only stocks such as gtk-directory and gtk-missing-image have no
+	 * stock label, but do have an icon set and must keep their normal size. */
+	if (gtk_stock_lookup (name, &item)
+		|| gtk_icon_factory_lookup_default (name) != NULL)
 		return TRUE;
 #endif
 	GtkIconTheme *thm = _e2_icons_get_current_theme ();

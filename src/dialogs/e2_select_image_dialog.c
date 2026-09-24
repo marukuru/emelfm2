@@ -32,6 +32,7 @@ page in the main configuration dialog
 #include "e2_select_image_dialog.h"
 #include "e2_config_dialog.h"
 #include "e2_icons.h"
+#include "e2_modern_ui.h"
 
 enum
 {
@@ -361,6 +362,51 @@ static gint _e2_sidlg_compare_icons (const E2_IconMatch **a, const E2_IconMatch 
 {
 	return strcmp ((*a)->displayname, (*b)->displayname);
 }
+
+/* Only substitute bundled artwork. Browsing another directory must display
+ * the user's actual files, even if their basenames match a bundled icon. */
+static gboolean _e2_sidlg_modern_directory (VPATH *localpath)
+{
+	if (!e2_modern_ui_enabled () || e2_option_bool_get ("use-icon-dir"))
+		return FALSE;
+	gchar *default_path = e2_icons_get_custom_path (FALSE);
+	gchar *root = realpath (default_path, NULL);
+#ifdef E2_VFS
+	gchar *directory = realpath (localpath->path, NULL);
+#else
+	gchar *directory = realpath (localpath, NULL);
+#endif
+	gboolean bundled = FALSE;
+	if (root != NULL && directory != NULL)
+	{
+		gsize length = strlen (root);
+		bundled = strncmp (root, directory, length) == 0
+			&& (directory[length] == '\0' || directory[length] == G_DIR_SEPARATOR);
+	}
+	free (root);
+	free (directory);
+	g_free (default_path);
+	return bundled;
+}
+
+/* Return an owned preview, preserving the original image's aspect ratio. */
+static GdkPixbuf *_e2_sidlg_custom_preview (const gchar *path,
+	const gchar *name, gint width, gint height, gboolean modern)
+{
+	GdkPixbuf *original = gdk_pixbuf_new_from_file_at_scale (path,
+		width, height, TRUE, NULL);
+	if (modern && original != NULL)
+	{
+		GdkPixbuf *preview = e2_modern_ui_icon (name,
+			gdk_pixbuf_get_width (original), gdk_pixbuf_get_height (original));
+		if (preview != NULL)
+		{
+			g_object_unref (original);
+			return g_object_ref (preview);
+		}
+	}
+	return original;
+}
 /**
 @brief fill liststore for custom icons
 
@@ -371,6 +417,7 @@ static gint _e2_sidlg_compare_icons (const E2_IconMatch **a, const E2_IconMatch 
 */
 static void	_e2_sidlg_fill_custom_store (VPATH *localpath, E2_SID_Runtime *rt)
 {
+	gboolean modern = _e2_sidlg_modern_directory (localpath);
 	GPtrArray *iconpaths = g_ptr_array_sized_new (60); //about this many icons to find
 	E2_IPopulator walkdata = { iconpaths, rt->cache };
 	OPENBGL
@@ -462,7 +509,7 @@ static void	_e2_sidlg_fill_custom_store (VPATH *localpath, E2_SID_Runtime *rt)
 			data = (E2_IconMatch*) g_hash_table_lookup (icon_hash, base);
 			if (data == NULL)
 			{
-				pxb = gdk_pixbuf_new_from_file_at_scale (fullpath, w, h, TRUE, NULL);
+				pxb = _e2_sidlg_custom_preview (fullpath, base, w, h, modern);
 				if (pxb != NULL)
 				{
 					data = ALLOCATE (E2_IconMatch);
@@ -477,7 +524,7 @@ static void	_e2_sidlg_fill_custom_store (VPATH *localpath, E2_SID_Runtime *rt)
 			else //this one already present
 				if (data->size != want)
 			{
-				pxb = gdk_pixbuf_new_from_file_at_scale (fullpath, w, h, TRUE, NULL);
+				pxb = _e2_sidlg_custom_preview (fullpath, base, w, h, modern);
 				if (pxb != NULL)
 				{
 					data->size = got;
@@ -556,6 +603,21 @@ static GtkListStore *_e2_sidlg_create_custom_store (E2_SID_Runtime *rt)
 	return store;
 }
 
+/* Use the same renderer as toolbar/menu icons, including stocks absent from
+ * the current GTK theme. The list store takes its own pixbuf reference. */
+static gboolean _e2_sidlg_modern_stock (GtkListStore *store, const gchar *name)
+{
+	gint width = 24, height = 24;
+	gtk_icon_size_lookup (GTK_ICON_SIZE_LARGE_TOOLBAR, &width, &height);
+	GdkPixbuf *preview = e2_modern_ui_icon (name, width, height);
+	if (preview == NULL) return FALSE;
+	GtkTreeIter iter;
+	gtk_list_store_insert_with_values (store, &iter, -1,
+		PIXBUF_COL, preview, TEXT_COL,
+		g_str_has_prefix (name, "gtk-") ? name + 4 : name, -1);
+	return TRUE;
+}
+
 #ifdef E2_ADD_STOCKS
 
 #ifndef USE_GLIB2_16
@@ -569,10 +631,11 @@ typedef struct _E2_StockHashData
 static void _e2_sidlg_stockhash_each (gpointer key, gpointer value, E2_StockHashData *data)
 {
 	const gchar *name = (const gchar*) key;
+	if (_e2_sidlg_modern_stock (data->store, name)) return;
 	GtkIconSet *iset = gtk_style_lookup_icon_set (data->style, name);
 	if (iset != NULL)
 	{
-		GdkPixbuf *pxb = gtk_icon_set_render_icon (iset, style, dir,
+		GdkPixbuf *pxb = gtk_icon_set_render_icon (iset, data->style, data->dir,
 			GTK_STATE_NORMAL, GTK_ICON_SIZE_LARGE_TOOLBAR, NULL, NULL);
 		if (pxb != NULL)
 		{
@@ -636,6 +699,7 @@ static void _e2_sidlg_fill_stock_store (GtkListStore *store)
 	{
 		E2_Stock *data = (E2_Stock *) value;
 		gchar *stock = data->stock;
+		if (_e2_sidlg_modern_stock (store, stock)) continue;
 # ifdef USE_GTK3_10
 		gchar *iname = data->name;
 		if (iname == NULL)
@@ -823,6 +887,7 @@ static void _e2_sidlg_fill_stock_store (GtkListStore *store)
 	for (i = 0; i < c; i++)
 	{
 		const gchar *iname = stocks[i];
+		if (_e2_sidlg_modern_stock (store, iname)) continue;
 		GtkIconInfo *inf = gtk_icon_theme_lookup_icon (thm, iname, psize,
 			GTK_ICON_LOOKUP_GENERIC_FALLBACK | GTK_ICON_LOOKUP_USE_BUILTIN);
 		if (inf != NULL)
@@ -860,6 +925,11 @@ static void _e2_sidlg_fill_stock_store (GtkListStore *store)
 		ids = g_slist_sort (ids, (GCompareFunc) strcmp);
 		for (member = ids; member != NULL; member = g_slist_next (member))
 		{
+			if (_e2_sidlg_modern_stock (store, member->data))
+			{
+				g_free (member->data);
+				continue;
+			}
 #ifdef USE_GTK3_0
 			GtkIconSet *iset = gtk_style_context_lookup_icon_set (sc, (const gchar*) member->data);
 #else

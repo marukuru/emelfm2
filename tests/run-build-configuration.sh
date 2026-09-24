@@ -15,6 +15,7 @@ case "$gtk" in
 esac
 make -j"${JOBS:-2}" WITH_GTK2="$gtk2" WITH_GTK3="$gtk3" WITH_VTE="$vte" WITH_MODERN_UI="$modern" NEW_COMMAND="$command" DEBUG=0 I18N=0
 tests/run-modern-ui.sh
+tests/run-modern-icons.sh
 export E2_TEST_MODERN_UI=true
 libraries=$(ldd ./emelfm2)
 if [ "$gtk" = 2 ]; then
