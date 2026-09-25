@@ -1673,7 +1673,7 @@ static void _e2_menu_fill_filetype_actions_menu (GtkWidget *menu,
 	g_free (localpath);
 }
 /**
-@brief add to @a menu items based on filetypes data for the focused item in active pane
+@brief add to @a menu items based on filetypes data for the first selected item
 
 @param menu the menu widget to which the menu-items are to be added
 @param view data struct for the filelist pane to which the menu applies
@@ -1685,12 +1685,9 @@ void e2_menu_add_filetype_items (GtkWidget *menu, ViewInfo *view)
 	gboolean exec, freeext = TRUE;
 	gchar *viewpath, *ext, *ext2;
 	const gchar **actions = NULL;
-	FileInfo *info;
-	GtkTreeModel *mdl = view->model;
-	GtkTreeIter iter;
-	if (gtk_tree_model_iter_nth_child (mdl, &iter, NULL, view->row))
-		gtk_tree_model_get (mdl, &iter, FINFO, &info, -1);
-	else
+	//Commands expand the selection, so their handlers must use that same item.
+	FileInfo *info = e2_fileview_get_selected_first_local (view, TRUE);
+	if (info == NULL)
 		return;
 
 	viewpath = F_FILENAME_TO_LOCALE (view->dir);

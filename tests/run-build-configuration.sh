@@ -43,6 +43,7 @@ sh tests/run-command-wildcards.sh
 tests/run-command-progress.sh
 TEST_VTE="$vte" tests/run-application-smoke.sh
 tests/run-content-drag.sh
+tests/run-directory-context.sh
 tests/run-output-wrap.sh
 tests/run-pane-tabs.sh
 tests/run-viewer-text.sh

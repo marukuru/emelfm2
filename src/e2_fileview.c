@@ -1117,6 +1117,7 @@ static gboolean _e2_fileview_button_press_cb (GtkWidget *treeview,
 //	NEEDOPENBGL
 	e2_utils_generic_press_cb (treeview, event, view);	//log data for release-checks
 //	NEEDCLOSEBGL
+	gboolean focus_changed = (view != curr_view || !gtk_widget_is_focus (treeview));
 	//make the clicked pane active, if it wasn't already
 	if (view != curr_view)  // && !panechange_started)
 		e2_pane_activate_other ();
@@ -1210,36 +1211,30 @@ static gboolean _e2_fileview_button_press_cb (GtkWidget *treeview,
 		gboolean atitem;
 		atitem = gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (treeview),
 				event->x, event->y, &path, NULL, NULL, NULL);
-		if (
+		gboolean select_clicked = (focus_changed ||
+			e2_option_bool_get ("windows-right-click"));
 #ifdef E2_MOUSECUSTOM
-			(event->state & E2_MODIFIER_MASK) == 0 &&
+		select_clicked &= ((event->state & E2_MODIFIER_MASK) == 0);
 #endif
-			e2_option_bool_get ("windows-right-click")
-//			&& (view->tagged == NULL)
-		   )
+		if (atitem)
 		{
-			//if windows right click is enabled, we want to also select the item,
-			//if not already done, and clear any other selected item(s) unless this
-			//one is selected already
 			sel = view->selection;
-			if (atitem)
+			gboolean selected = gtk_tree_selection_path_is_selected (sel, path);
+			if (select_clicked || selected)
 			{
-				if (!gtk_tree_selection_path_is_selected (sel, path))
-					gtk_tree_selection_unselect_all (sel);
-				gtk_tree_selection_select_path (sel, path);
-				//do this now because menu created before cursor-move cb
-				view->row = *gtk_tree_path_get_indices (path);
-				gtk_tree_path_free (path);
+				//An unfocused pane must target the clicked file, not its old
+				//selection. Keep a selected group when clicking one of its rows,
+				//and move the real cursor along with the selection.
+				e2_fileview_focus_row (view, *gtk_tree_path_get_indices (path),
+					TRUE, !selected, FALSE, TRUE);
 			}
-			else if (! e2_option_bool_get ("windows-right-click-extra"))
-				gtk_tree_selection_unselect_all (sel);
-		}
-		else if (atitem)
-		{
-			//do this now because menu created before cursor-move cb
-			view->row = *gtk_tree_path_get_indices (path);
 			gtk_tree_path_free (path);
 		}
+		else if (select_clicked && e2_option_bool_get ("windows-right-click")
+			&& !e2_option_bool_get ("windows-right-click-extra"))
+			gtk_tree_selection_unselect_all (view->selection);
+		//The handled event will not reach GTK's default focus handler.
+		gtk_widget_grab_focus (treeview);
 		//context menu
 		gint type;
 		guint modifiers = gtk_accelerator_get_default_mod_mask ();

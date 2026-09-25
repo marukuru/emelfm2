@@ -223,11 +223,8 @@ static void _e2_context_menu_add_items (GtkWidget *menu, GtkTreeModel *model,
 						break;
 					case E2_ACTION_TYPE_FILE_HANDLERS:
 					{
-						GtkTreeIter iter2;
-						FileInfo *info;
-						GtkTreeModel *mdl = view->model;
-						if (gtk_tree_model_iter_nth_child (mdl, &iter2, NULL, view->row))
-							gtk_tree_model_get (mdl, &iter2, FINFO, &info, -1);
+						FileInfo *info = e2_fileview_get_selected_first_local (view, TRUE);
+						if (info != NULL)
 						{
 							gchar *infopath = F_FILENAME_TO_LOCALE (view->dir);
 #ifdef E2_VFS
