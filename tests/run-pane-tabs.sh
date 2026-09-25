@@ -8,7 +8,7 @@ ${CC:-cc} -shared -fPIC -Wno-deprecated-declarations -fcommon -D_FILE_OFFSET_BIT
     -Isrc -Isrc/actions -Isrc/build -Isrc/command -Isrc/command/complete \
     -Isrc/config -Isrc/dialogs -Isrc/filesystem -Isrc/utils \
     $(pkg-config --cflags "$gtk_package") tests/pane-tabs-smoke.c \
-    $(pkg-config --libs "$gtk_package") -o "$test_dir/smoke.so"
+    $(pkg-config --libs "$gtk_package") -ldl -o "$test_dir/smoke.so"
 export E2_TABS_TEST="$test_dir"
 LC_ALL=C.UTF-8 GDK_BACKEND=x11 NO_AT_BRIDGE=1 GIO_USE_VFS=local dbus-run-session -- xvfb-run -a python3 - <<'PY'
 import os, pathlib, subprocess, time

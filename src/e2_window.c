@@ -734,6 +734,11 @@ static void _e2_window_show_cb (GtkWidget *window, E2_WindowRuntime *rt)
 	}
 
 #ifdef USE_GTK3_0
+	/* GTK 3 defers allocation until the next frame. Draining currently ready
+	 * events during a rebuild may leave a new GtkPaned's max-position at
+	 * G_MAXINT; using that value collapses its second child on the next frame.
+	 * Allocate the new hierarchy before restoring either divider. */
+	gtk_container_check_resize (GTK_CONTAINER (app.main_window));
 	gint maxpos;
 	g_object_get (G_OBJECT (rt->panes_paned), "max-position", &maxpos, NULL);
 	gtk_paned_set_position (GTK_PANED (rt->panes_paned),

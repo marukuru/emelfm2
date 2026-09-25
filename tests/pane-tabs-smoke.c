@@ -8,9 +8,23 @@
 #include <signal.h>
 #include <gdk/gdkkeysyms.h>
 #include <glib/gstdio.h>
+#ifdef USE_GTK3_0
+#include <dlfcn.h>
+#endif
 
 static GtkWidget *book, *output, *commandbar;
 static guint step, first_history_length;
+#ifdef USE_GTK3_0
+/* Model a rebuild between GTK frames: the event queue may be empty even
+ * though layout is still pending. Do not let incidental events allocate the
+ * replacement panes during the disable/re-enable-tabs regression. */
+gboolean g_main_context_pending (GMainContext *context)
+{
+	if (step == 7 && app.window.rebuilding) return FALSE;
+	gboolean (*pending) (GMainContext *) = dlsym (RTLD_NEXT, "g_main_context_pending");
+	return pending (context);
+}
+#endif
 static const gchar *root;
 static const gchar *long_left = "left-folder-with-a-very-long-name-and-distinct-ending";
 static const gchar *long_right = "right-folder-with-a-very-long-name-and-another-ending";
@@ -95,6 +109,15 @@ static gboolean page_is (gint number, gint count)
 }
 static void structure (void)
 {
+	if (!gtk_widget_get_mapped (app.pane1.view.treeview)
+		|| !gtk_widget_get_mapped (app.pane2.view.treeview))
+	{
+		gint position, maximum;
+		g_object_get (app.window.panes_paned, "position", &position,
+			"max-position", &maximum, NULL);
+		g_printerr ("pane-tabs: step %u, divider %d/%d, ratio %f\n",
+			step, position, maximum, app.window.panes_paned_ratio);
+	}
 	GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (book),
 		gtk_notebook_get_current_page (GTK_NOTEBOOK (book)));
 	g_assert_true (gtk_widget_get_child_visible (page));

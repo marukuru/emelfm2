@@ -6,6 +6,27 @@
 #include "e2_action.h"
 #include <gmodule.h>
 #include <dlfcn.h>
+#include <signal.h>
+
+extern pthread_mutex_t task_mutex;
+
+static gboolean signal_while_locked (gpointer data)
+{
+    const gchar *directory = g_getenv ("E2_SMOKE_DIR");
+    gchar *path = g_build_filename (directory, "signal-requested", NULL);
+    gboolean requested = g_file_test (path, G_FILE_TEST_EXISTS);
+    g_free (path);
+    if (!requested) return TRUE;
+    /* Reproduce delivery while a main-thread task operation owns its lock.
+     * Cleanup in a raw signal handler deadlocks here. */
+    pthread_mutex_lock (&task_mutex);
+    raise (atoi (g_getenv ("E2_SMOKE_SIGNAL")));
+    pthread_mutex_unlock (&task_mutex);
+    path = g_build_filename (directory, "signal-returned", NULL);
+    g_assert_true (g_file_set_contents (path, "unlocked", -1, NULL));
+    g_free (path);
+    return FALSE;
+}
 /* An extracted package must load its own plugins, not a different GTK build
  * already installed in /usr. This redirection exists only in the test helper. */
 GModule *g_module_open (const gchar *filename, GModuleFlags flags)
@@ -45,6 +66,8 @@ static gboolean smoke (gpointer data)
 #endif
     fprintf (stderr, "smoke: all dispatched\n");
     g_free (pane);
+    if (g_getenv ("E2_SMOKE_SIGNAL") != NULL)
+        g_timeout_add (10, signal_while_locked, NULL);
     return FALSE;
 }
 __attribute__((constructor)) static void schedule_smoke (void)

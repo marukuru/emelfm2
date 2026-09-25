@@ -133,6 +133,8 @@ pthread_mutex_t display_mutex;
 #include <locale.h>
 #include <signal.h>
 #include <pthread.h>
+#include <errno.h>
+#include <fcntl.h>
 #include "e2_dialog.h"
 #include "e2_filestore.h"
 #include "e2_filetype.h"
@@ -159,7 +161,10 @@ pthread_mutex_t wait_mutex; // = PTHREAD_MUTEX_INITIALIZER;	if no recursion
 #define WAIT_UNLOCK pthread_mutex_unlock (&wait_mutex);
 #endif
 
-static void _e2_main_system_shutdown (gint num); //__attribute__ ((noreturn));
+static gint shutdown_pipe[2];
+static void _e2_main_shutdown_signal (gint num);
+static gboolean _e2_main_system_shutdown (GIOChannel *channel,
+	GIOCondition condition, gpointer data);
 
 #ifndef DISPLAYTHREADSAFE
 
@@ -912,11 +917,23 @@ WARNING(GTK 3.6 deprecates use of an application-specific display mutex. No reas
 #endif
 	}
 
-	//trap signals that might be (but probably aren't) emitted when a
-	//session-manager requests a shutdown/"save-yourself"
-	//CHECKME only work if not running as daemon ?
+	/* A signal may interrupt GTK, GLib or a task while it owns a lock.
+	 * Only write to a nonblocking pipe in the handler; perform cleanup from
+	 * the main loop once the interrupted operation has returned. */
+	if (pipe (shutdown_pipe) != 0)
+		g_error ("Cannot create shutdown signal pipe: %s", g_strerror (errno));
+	for (guint i = 0; i < G_N_ELEMENTS (shutdown_pipe); i++)
+	{
+		if (fcntl (shutdown_pipe[i], F_SETFL, O_NONBLOCK) == -1
+			|| fcntl (shutdown_pipe[i], F_SETFD, FD_CLOEXEC) == -1)
+			g_error ("Cannot configure shutdown signal pipe: %s", g_strerror (errno));
+	}
+	GIOChannel *shutdown_channel = g_io_channel_unix_new (shutdown_pipe[0]);
+	g_io_add_watch (shutdown_channel, G_IO_IN, _e2_main_system_shutdown, NULL);
+	g_io_channel_unref (shutdown_channel);
+	//trap session-manager and terminal shutdown requests
 	struct sigaction sigdata;
-	sigdata.sa_handler = _e2_main_system_shutdown;
+	sigdata.sa_handler = _e2_main_shutdown_signal;
 //	sigemptyset (&sigdata.sa_mask);	//don't block any signal while the handler is busy
 	sigfillset (&sigdata.sa_mask);	//block all allowed signals while the handller is busy
 	sigdata.sa_flags = 0;
@@ -1167,20 +1184,35 @@ gboolean e2_main_user_shutdown (gpointer from, E2_ActionRuntime *art)
 	return FALSE;
 }
 /**
-@brief perform system-initiated shutdown in repsonse to a shutdown signal
-This is performed the "proper" way, so as to not block signalling to related
-processes
+@brief wake the main loop without calling any async-signal-unsafe functions
 @param num the signal number
-
-@return
 */
-static void _e2_main_system_shutdown (gint num)
+static void _e2_main_shutdown_signal (gint num)
 {
+	gint saved_errno = errno;
+	guchar signal_number = num;
+	ssize_t written;
+	do
+		written = write (shutdown_pipe[1], &signal_number, sizeof (signal_number));
+	while (written == -1 && errno == EINTR);
+	/* EAGAIN means a shutdown request is already waiting in the pipe. */
+	errno = saved_errno;
+}
+/**
+@brief perform system-initiated shutdown from the main loop
+Preserve the original signal exit status and SIGINT's no-save behaviour.
+*/
+static gboolean _e2_main_system_shutdown (GIOChannel *channel,
+	GIOCondition condition, gpointer data)
+{
+	guchar num;
+	if (read (shutdown_pipe[0], &num, sizeof (num)) != sizeof (num))
+		return TRUE;
 	printd (DEBUG, "system shutdown initiated by signal %d", num);
 	CLOSEBGL	//downstream errors expect BGL closed
 	e2_main_closedown (TRUE, (num != SIGINT && num != SIGKILL), FALSE);
 	OPENBGL
-	//in this handler, current signal is blocked, unblock it for this use
+	//restore the default disposition and terminate with the original signal
 	struct sigaction sigdata;
 	sigdata.sa_handler = SIG_DFL;
 	sigemptyset (&sigdata.sa_mask);
@@ -1189,4 +1221,5 @@ static void _e2_main_system_shutdown (gint num)
 	sigaddset (&sigdata.sa_mask, num);
 	sigprocmask (SIG_UNBLOCK, &sigdata.sa_mask, NULL);
 	kill (getpid(), num);
+	return FALSE;
 }
