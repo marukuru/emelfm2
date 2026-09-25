@@ -576,13 +576,14 @@ $(MO): $(PO_DIR)/%.mo: $(PO_DIR)/%.po
 	@$(BIN_MSGFMT) $(PO_DIR)/$*.po -o $@
 
 #gettext:
+# Keep the charset header so Unicode msgids survive extraction and merging.
 i18n:
 	@$(BIN_XGETTEXT) $(foreach dir, $(DIRS) $(LIBS) $(OPTLIBS), -D $(dir)) \
-		-p ./$(PO_DIR) --from-code=UTF-8 --no-wrap --omit-header -i -F \
+		-p "$(PO_DIR)" --from-code=UTF-8 --no-wrap -i -F \
 		--copyright-holder="$(COPYRIGHT)" --keyword=_ --keyword=N_ \
 		$(foreach file, $(SOURCES) $(HEADERS) $(LIBS_SOURCES) $(LIBS_HEADERS) \
 		$(LIBS_XSOURCES) $(LIBS_XHEADERS), $(shell basename $(file)))
-	@mv -f $(PO_DIR)/messages.po $(PO_DIR)/$(TARGET).pot
+	@mv -f "$(PO_DIR)/messages.po" "$(PO_DIR)/$(TARGET).pot"
 # if we want new messages start with english equivalent instead of empty
 # create a po to use for updating
 #	@cd $(PO_DIR); msginit --input $(TARGET).pot --output en_US.po --no-translator \
@@ -595,19 +596,20 @@ i18n:
 #		fi \
 #	done
 #	@rm $(PO_DIR)/en_US.po
-	@cd $(PO_DIR); for i in `ls *.po` ; do \
-		echo "updating $$i" ; \
-		$(BIN_MSGMERGE) --update --backup=none $$i $(TARGET).pot ; \
-		$(BIN_MSGFMT) $$i -o `echo $$i | sed -e s/.po/.mo/` ; \
+	@set -e; cd "$(PO_DIR)"; for i in *.po; do \
+		echo "updating $$i"; \
+		$(BIN_MSGMERGE) --update --backup=none "$$i" "$(TARGET).pot"; \
+		$(BIN_MSGFMT) "$$i" -o "$${i%.po}.mo"; \
 	done
 
 #i18n:	gettext $(MO_FILES)
 
 install_i18n: i18n
 	@echo "installing *.mo files to prefix '$(PREFIX)'"
-	@cd po; for i in `ls *.mo` ; do \
-		mkdir -p $(LOCALE_DIR)/`echo $$i|sed -e s/.mo//`/LC_MESSAGES;\
-		install -m 644 $$i $(LOCALE_DIR)/`echo $$i | sed -e s/.mo//`/LC_MESSAGES/$(TARGET).mo ; \
+	@set -e; cd "$(PO_DIR)"; for i in *.mo; do \
+		dest="$(LOCALE_DIR)/$${i%.mo}/LC_MESSAGES"; \
+		mkdir -p "$$dest"; \
+		install -m 644 "$$i" "$$dest/$(TARGET).mo"; \
 	done
 
 uninstall_i18n:
@@ -800,12 +802,16 @@ endif
 ifneq ($(MAKECMDGOALS),deps)
 ifneq ($(MAKECMDGOALS),clean)
 ifneq ($(MAKECMDGOALS),gettext)
+ifneq ($(MAKECMDGOALS),i18n)
+ifneq ($(MAKECMDGOALS),install_i18n)
 ifneq ($(MAKECMDGOALS),test)
 ifneq ($(MAKECMDGOALS),test2)
 ifneq ($(MAKECMDGOALS),help)
 ifneq ($(MAKECMDGOALS),doc)
 -include $(DEP_FILES)
 -include $(LIBS_DEP_FILES)
+endif
+endif
 endif
 endif
 endif

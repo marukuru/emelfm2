@@ -14,6 +14,7 @@ case "$gtk" in
     *) exit 2 ;;
 esac
 make -j"${JOBS:-2}" WITH_GTK2="$gtk2" WITH_GTK3="$gtk3" WITH_VTE="$vte" WITH_MODERN_UI="$modern" NEW_COMMAND="$command" DEBUG=0 I18N=0
+tests/run-i18n.sh
 tests/run-screenshot.sh
 tests/run-modern-ui.sh
 tests/run-modern-inputs.sh
