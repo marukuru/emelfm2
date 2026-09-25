@@ -1103,7 +1103,12 @@ static void _e2_toolbar_alloc_cb (GtkWidget *toolbar, GtkAllocation *alloc,
 		else
 			gtk_widget_set_size_request (GTK_WIDGET (rt->toolbar),
 				-1, button_total + clmin + 20);
-		rt->size_queued = FALSE;
+		if (rt->size_source != 0)
+		{
+			g_source_remove (rt->size_source);
+			rt->size_source = 0;
+		}
+		NEEDOPENBGL
 		return; // FALSE;
 	}
 
@@ -1147,10 +1152,9 @@ static void _e2_toolbar_alloc_cb (GtkWidget *toolbar, GtkAllocation *alloc,
 				rt->folded = TRUE;
 			}
 		}
-		if (change && !rt->size_queued)
+		if (change && rt->size_source == 0)
 		{
-			rt->size_queued = TRUE;
-			g_idle_add_full (G_PRIORITY_DEFAULT - 10,
+			rt->size_source = g_idle_add_full (G_PRIORITY_DEFAULT - 10,
 				(GSourceFunc) _e2_toolbar_resize_idle, rt, NULL);
 		}
 	}
@@ -1164,10 +1168,19 @@ static void _e2_toolbar_alloc_cb (GtkWidget *toolbar, GtkAllocation *alloc,
 */
 static gboolean _e2_toolbar_resize_idle (E2_ToolbarRuntime *rt)
 {
-	rt->size_queued = FALSE; //now it's safe to start another timer
+	rt->size_source = 0; //now it's safe to start another timer
 	printd (DEBUG, "_e2_toolbar_resize_timer for %s", rt->name);
 	GtkToolItem *padder, *tool = rt->dirline_tool;
 	CLOSEBGL
+	/* Allocations can reverse the requested fold before this idle runs.
+	 * If the line is already in the requested parent, there is nothing to
+	 * move. In particular, it must not be removed as if it were a padder. */
+	GtkWidget *parent = gtk_widget_get_parent (GTK_WIDGET (tool));
+	if (parent == (rt->folded ? rt->toolbar_foldbox : GTK_WIDGET (rt->toolbar)))
+	{
+		OPENBGL
+		return FALSE;
+	}
 	if (rt->folded)
 	{	//transfer the commandline to the toolbar_foldbox
 		printd (DEBUG, "export commandline ");
@@ -3202,6 +3215,15 @@ Destroys widgets only if @a rt ->toolbar_container is non-NULL
 */
 void e2_toolbar_destroy (E2_ToolbarRuntime *rt)
 {
+#ifdef FOLDBARS
+	/* The runtime is reused after a rebuild; an old idle must not operate
+	 * on the replacement toolbar or its directory-line widget. */
+	if (rt->size_source != 0)
+	{
+		g_source_remove (rt->size_source);
+		rt->size_source = 0;
+	}
+#endif
 	if (rt->toolbar_container != NULL)
 	{
 		//ensure any and all toggle buttons are rebuilt with their current state

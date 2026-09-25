@@ -13,6 +13,11 @@ export E2_TABS_TEST="$test_dir"
 LC_ALL=C.UTF-8 GDK_BACKEND=x11 NO_AT_BRIDGE=1 GIO_USE_VFS=local dbus-run-session -- xvfb-run -a python3 - <<'PY'
 import os, pathlib, subprocess, time
 root = pathlib.Path(os.environ['E2_TABS_TEST'])
+# Toolbar folding depends on font metrics. Use known GTK 3 settings so a
+# compact user font cannot hide resize/rebuild failures.
+settings = root/'xdg-config'/'gtk-3.0'
+settings.mkdir(parents=True)
+(settings/'settings.ini').write_text('[Settings]\ngtk-font-name=DejaVu Sans 10\n')
 for name in ['alpha', 'beta', 'gamma', 'delta', '$HOME %f 日本語',
              'left-folder-with-a-very-long-name-and-distinct-ending',
              'right-folder-with-a-very-long-name-and-another-ending',
@@ -24,7 +29,8 @@ for name in ['alpha', 'beta', 'gamma', 'delta', '$HOME %f 日本語',
 (root/'shell').chmod(0o755)
 args = ['./emelfm2', '-c', str(root/'config'), '-1', str(root/'alpha'), '-2', str(root/'beta'),
         '-s', 'pane-tabs=true', '-s', 'session-end-warning=false', '-s', 'single-instance=false']
-env = dict(os.environ, LD_PRELOAD=str(root/'smoke.so'))
+env = dict(os.environ, LD_PRELOAD=str(root/'smoke.so'), XDG_CONFIG_HOME=str(root/'xdg-config'),
+           GTK_THEME=os.environ.get('GTK_THEME', 'Adwaita'))
 if os.environ.get("E2_TABS_GDB"):
     args = ["gdb", "-batch", "-ex", "set startup-with-shell off", "-ex", "set environment LD_PRELOAD="+env.pop("LD_PRELOAD"),
             "-ex", "run", "-ex", "thread apply all bt", "--args"] + args

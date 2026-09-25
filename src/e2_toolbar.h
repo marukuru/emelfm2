@@ -76,7 +76,7 @@ typedef struct _E2_ToolbarRuntime
 	gint dirline_index;	//index of dirline_tool in the toolbar
 	gboolean folded;	//TRUE when dirline_tool is in separate box
 //	gint threshold;	//pixel size when we swap to/from separate box
-	gboolean size_queued;	//TRUE to block repeated resizes before redrew
+	guint size_source;	//pending directory-line move, cancelled when the bar is destroyed
 #endif
 	GList *bar_items_list;  //list of toolbar buttons (not spacers etc), including hidden toggles
 	GtkWidget *menu_starter;	//bar item that is first in the overflow menu

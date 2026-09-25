@@ -5,6 +5,7 @@
 #include "e2_window.h"
 #include "e2_icons.h"
 #include "e2_menu.h"
+#include "screenshot.h"
 #include <string.h>
 
 static guint step, styled;
@@ -25,13 +26,8 @@ static void check_menu_highlight (guint selected)
     g_assert_cmpint (gtk_widget_get_state (menu_items[1 - selected]), ==, GTK_STATE_NORMAL);
     GtkAllocation a;
     gtk_widget_get_allocation (menu, &a);
-#ifdef USE_GTK3_0
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (gtk_widget_get_window (menu),
+    GdkPixbuf *pixels = e2_test_capture_window (gtk_widget_get_window (menu),
         0, 0, a.width, a.height);
-#else
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (menu),
-        NULL, 0, 0, 0, 0, a.width, a.height);
-#endif
     g_assert_nonnull (pixels);
     guchar *samples[2];
     for (guint i = 0; i < 2; i++)

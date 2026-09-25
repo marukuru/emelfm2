@@ -3,6 +3,7 @@
 #include "e2_modern_ui.h"
 #include "e2_toolbar.h"
 #include "e2_button.h"
+#include "screenshot.h"
 
 static GtkWidget *probe, *plain, *flat, *toggle, *neutral, *command, *dialog_button;
 static guint step, clicks;
@@ -40,15 +41,13 @@ static void check (GtkWidget *widget, gboolean highlighted, const gchar *name)
     GtkWidget *top = gtk_widget_get_toplevel (widget);
     gint x, y;
     g_assert_true (gtk_widget_translate_coordinates (widget, top, 0, 0, &x, &y));
+    GdkPixbuf *pixels = e2_test_capture_window (gtk_widget_get_window (top), x, y, a.width, a.height);
 #ifdef USE_GTK3_0
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (gtk_widget_get_window (top), x, y, a.width, a.height);
     GdkRGBA color;
     g_assert_true (gtk_style_context_lookup_color (gtk_widget_get_style_context (widget),
         "theme_selected_bg_color", &color));
     gint accent[] = { color.red * 255 + .5, color.green * 255 + .5, color.blue * 255 + .5 };
 #else
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (top), NULL,
-        x, y, 0, 0, a.width, a.height);
     GdkColor color = gtk_widget_get_style (widget)->bg[GTK_STATE_SELECTED];
     gint accent[] = { color.red / 257, color.green / 257, color.blue / 257 };
 #endif

@@ -1,5 +1,6 @@
 /* Exercise action search against the real GTK application and dispatch path. */
 #include "emelfm2.h"
+#include "screenshot.h"
 #include "e2_action.h"
 #include "e2_keybinding.h"
 #include "e2_option.h"
@@ -183,13 +184,8 @@ static void screenshot (GtkWidget *widget, const gchar *suffix)
 	if (prefix == NULL) return;
 	GtkAllocation allocation;
 	gtk_widget_get_allocation (widget, &allocation);
-#ifdef USE_GTK3_0
-	GdkPixbuf *pixels = gdk_pixbuf_get_from_window (gtk_widget_get_window (widget),
+	GdkPixbuf *pixels = e2_test_capture_window (gtk_widget_get_window (widget),
 		0, 0, allocation.width, allocation.height);
-#else
-	GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (widget),
-		NULL, 0, 0, 0, 0, allocation.width, allocation.height);
-#endif
 	gchar *path = g_strconcat (prefix, suffix, ".png", NULL);
 	gdk_pixbuf_save (pixels, path, "png", NULL, NULL);
 	g_object_unref (pixels);

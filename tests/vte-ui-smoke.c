@@ -1,5 +1,6 @@
 /* Exercise the real VTE controls in a private application profile. */
 #include "emelfm2.h"
+#include "screenshot.h"
 #include "e2_option.h"
 #include "e2_terminal.h"
 #include "e2_terminal_backend.h"
@@ -615,12 +616,8 @@ static gboolean tick (gpointer data)
             if (g_getenv ("E2_VTE_UI_SCREENSHOT") != NULL)
             {
                 GtkAllocation a; gtk_widget_get_allocation (app.main_window, &a);
-#ifdef USE_GTK3_0
-                GdkPixbuf *shot = gdk_pixbuf_get_from_window (gtk_widget_get_window (app.main_window), 0, 0, a.width, a.height);
-#else
-                GdkPixbuf *shot = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (app.main_window),
-                    gtk_widget_get_colormap (app.main_window), 0, 0, 0, 0, a.width, a.height);
-#endif
+                GdkPixbuf *shot = e2_test_capture_window (gtk_widget_get_window (app.main_window),
+                    0, 0, a.width, a.height);
                 g_assert_true (gdk_pixbuf_save (shot, g_getenv ("E2_VTE_UI_SCREENSHOT"), "png", NULL, NULL));
                 g_object_unref (shot);
             }

@@ -1,6 +1,7 @@
 /* Real focus/selection painting regression, preloaded by run-modern-inputs.sh. */
 #include "emelfm2.h"
 #include "e2_modern_ui.h"
+#include "screenshot.h"
 #include <string.h>
 
 static GtkWidget *probe, *button, *inputs[4], *frames[4];
@@ -12,13 +13,8 @@ static GdkPixbuf *capture (const gchar *name)
 {
     GtkAllocation a;
     gtk_widget_get_allocation (probe, &a);
-#ifdef USE_GTK3_0
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (gtk_widget_get_window (probe),
+    GdkPixbuf *pixels = e2_test_capture_window (gtk_widget_get_window (probe),
         0, 0, a.width, a.height);
-#else
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, gtk_widget_get_window (probe),
-        NULL, 0, 0, 0, 0, a.width, a.height);
-#endif
     g_assert_nonnull (pixels);
     const gchar *directory = g_getenv ("E2_INPUT_CAPTURE_DIR");
     if (directory != NULL)

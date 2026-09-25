@@ -1,5 +1,6 @@
 /* Exercise the production viewer in a private application profile. */
 #include "emelfm2.h"
+#include "screenshot.h"
 #include "e2_option.h"
 #include "e2_view_dialog.h"
 #include "e2_config_dialog.h"
@@ -119,16 +120,7 @@ static void capture (const gchar *name)
     g_assert_cmpint (g_mkdir_with_parents (directory, 0700), ==, 0);
     GtkAllocation size; gtk_widget_get_allocation (dialog, &size);
     GdkWindow *window = gtk_widget_get_window (dialog);
-#ifdef USE_GTK3_0
-    /* Read the screen without touching the text view's cached Cairo surface. */
-    gint x, y;
-    gdk_window_get_origin (window, &x, &y);
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_window (
-        gdk_screen_get_root_window (gtk_widget_get_screen (dialog)), x, y, size.width, size.height);
-#else
-    GdkPixbuf *pixels = gdk_pixbuf_get_from_drawable (NULL, window,
-        gtk_widget_get_colormap (dialog), 0, 0, 0, 0, size.width, size.height);
-#endif
+    GdkPixbuf *pixels = e2_test_capture_window (window, 0, 0, size.width, size.height);
     gchar *path = g_build_filename (directory, name, NULL);
     if (pixels != NULL) { gdk_pixbuf_save (pixels, path, "png", NULL, NULL); g_object_unref (pixels); }
     g_free (path);
