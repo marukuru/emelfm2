@@ -457,6 +457,8 @@ static void terminal_paste (GtkMenuItem *item, GtkWidget *terminal)
 static gboolean show_terminal_menu (GtkWidget *terminal, gpointer data, GtkWidget *anchor)
 {
     if (data != NULL) activate_pane (((TerminalSession *)data)->owner);
+    /* Keep keyboard focus and deferred menu actions on the clicked terminal. */
+    gtk_widget_grab_focus (terminal);
     GtkWidget *menu = e2_menu_get ();
     g_object_set_data_full (G_OBJECT (menu), "terminal", g_object_ref (terminal), g_object_unref);
     GtkWidget *copy = e2_menu_add (menu, _("_Copy"), STOCK_NAME_COPY,

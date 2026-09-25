@@ -37,6 +37,7 @@ if [ "$vte" = 0 ]; then
 else
     printf '%s\n' "$libraries" | grep libvte
     tests/run-terminal.sh
+    tests/run-vte-ui.sh
 fi
 sh tests/run-command-wildcards.sh
 tests/run-command-progress.sh

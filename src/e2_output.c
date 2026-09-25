@@ -1701,6 +1701,14 @@ static void _e2_output_show_context_menu (GtkWidget *textview,
 {
 	if (!GTK_IS_TEXT_VIEW (textview) || rt == NULL || !GTK_IS_TEXT_BUFFER (rt->buffer))
 		return;
+#ifdef E2_VTE
+	/* A right-click is handled before GtkTextView's default focus handler.
+	 * Select the clicked log for actions which use app.tab or the active pane,
+	 * then use its current runtime for callbacks which take an explicit tab. */
+	e2_output_select_notebook (rt->book);
+	gtk_widget_grab_focus (textview);
+	rt = &app.tab;
+#endif
 	gchar *item_name;
 	GtkWidget *item;
 	GtkWidget *menu = e2_menu_get ();

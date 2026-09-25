@@ -201,6 +201,101 @@ static void search_key (guint keyval, GdkModifierType state)
     g_signal_emit_by_name (search_entry, "key-press-event", &event, &handled);
     g_assert_true (handled);
 }
+static void check_context_target (GtkWidget *target_book, GtkWidget *other_book,
+    E2_PaneRuntime *target_pane, gboolean terminal, gboolean clear)
+{
+    g_printerr ("vte-ui: right-click %s %s, %s\n",
+        target_pane == &app.pane1 ? "left" : "right",
+        terminal ? "terminal" : "log", clear ? "Clear" : "Find");
+    GtkWidget *page = gtk_notebook_get_nth_page (GTK_NOTEBOOK (target_book), terminal ? -1 : 0);
+    GtkWidget *target = find_widget (page, NULL,
+        terminal ? g_type_from_name ("VteTerminal") : GTK_TYPE_TEXT_VIEW);
+    GtkWidget *other_log = find_widget (gtk_notebook_get_nth_page (GTK_NOTEBOOK (other_book), 0),
+        NULL, GTK_TYPE_TEXT_VIEW);
+    GtkTextBuffer *other_buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (other_log));
+    gchar *other_text = buffer_text (other_buffer);
+    GtkWidget *search = find_widget (gtk_widget_get_parent (target_book), "tools-search", 0);
+    GtkWidget *other_search = find_widget (gtk_widget_get_parent (other_book), "tools-search", 0);
+    gtk_notebook_set_current_page (GTK_NOTEBOOK (target_book), terminal ? -1 : 0);
+    if (curr_pane == target_pane) e2_pane_activate_other ();
+    gtk_widget_grab_focus (curr_view->treeview);
+    g_assert_true (curr_pane != target_pane);
+    if (!terminal)
+    {
+        GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (target));
+        gtk_text_buffer_set_text (buffer, "selected log text", -1);
+        GtkTextIter start, end;
+        gtk_text_buffer_get_bounds (buffer, &start, &end);
+        gtk_text_buffer_select_range (buffer, &start, &end);
+    }
+    /* Deliver an actual right-click to the inactive side, including the GTK
+     * event context used to position its popup. No preparatory focus click. */
+    GdkEvent *event = gdk_event_new (GDK_BUTTON_PRESS);
+    event->button.window = g_object_ref (terminal ? gtk_widget_get_window (target)
+        : gtk_text_view_get_window (GTK_TEXT_VIEW (target), GTK_TEXT_WINDOW_TEXT));
+    event->button.button = 3;
+    event->button.time = GDK_CURRENT_TIME;
+    event->button.x = event->button.y = 5;
+#ifdef USE_GTK3_0
+    GdkDeviceManager *manager = gdk_display_get_device_manager (gtk_widget_get_display (target));
+    gdk_event_set_device (event, gdk_device_manager_get_client_pointer (manager));
+#endif
+    /* GTK 3 VTE can share its parent's GdkWindow, so route its event to the
+     * widget explicitly rather than to the owner of that window. */
+    if (terminal) g_assert_true (gtk_widget_event (target, event));
+    else gtk_main_do_event (event);
+    gdk_event_free (event);
+    GtkWidget *menu = gtk_grab_get_current ();
+    g_assert_true (GTK_IS_MENU (menu));
+    g_assert_true (curr_pane == target_pane);
+    g_assert_true (app.outbook == target_book);
+    g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == target);
+    if (!terminal)
+    {
+        g_assert_true (GTK_WIDGET (app.tab.text) == target);
+        g_assert_true (gtk_text_buffer_get_selection_bounds (app.tab.buffer, NULL, NULL));
+    }
+    GList *items = gtk_container_get_children (GTK_CONTAINER (menu));
+    GtkWidget *action = NULL;
+    for (GList *link = items; link != NULL; link = link->next)
+    {
+        GtkWidget *label = find_widget (link->data, NULL, GTK_TYPE_LABEL);
+        if (label != NULL && !strcmp (gtk_label_get_text (GTK_LABEL (label)), clear ? "Clear" : "Find"))
+            action = link->data;
+    }
+    g_assert_nonnull (action);
+    gtk_menu_item_activate (GTK_MENU_ITEM (action));
+    gtk_menu_popdown (GTK_MENU (menu));
+    g_list_free (items);
+    /* Menu actions run from a deferred callback, after popup dismissal. */
+    gint64 deadline = g_get_monotonic_time () + 2000000;
+    OPENBGL
+    while (g_get_monotonic_time () < deadline)
+    {
+        while (g_main_context_iteration (NULL, FALSE));
+        if (clear ? gtk_text_buffer_get_char_count (gtk_text_view_get_buffer (GTK_TEXT_VIEW (target))) == 0
+            : gtk_widget_get_visible (search)) break;
+        g_usleep (1000);
+    }
+    CLOSEBGL
+    gtk_widget_destroy (menu);
+    g_assert_true (curr_pane == target_pane);
+    g_assert_true (gtk_text_view_get_buffer (GTK_TEXT_VIEW (other_log)) == other_buffer);
+    gchar *unchanged = buffer_text (other_buffer);
+    g_assert_cmpstr (unchanged, ==, other_text);
+    g_free (unchanged); g_free (other_text);
+    g_assert_false (gtk_widget_get_visible (other_search));
+    if (clear)
+        g_assert_cmpint (gtk_text_buffer_get_char_count (app.tab.buffer), ==, 0);
+    else
+    {
+        g_assert_true (gtk_widget_get_visible (search));
+        search_entry = find_widget (search, "tools-search-entry", 0);
+        g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == search_entry);
+        search_key (GDK_Escape, 0);
+        g_assert_true (gtk_window_get_focus (GTK_WINDOW (app.main_window)) == target);
+    }
+}
 static const gchar *unread (gint page)
 {
     GtkWidget *badge = find_widget (tab_title (page), "tools-unread", 0);
@@ -781,6 +876,38 @@ static gboolean tick (gpointer data)
         {
             check_equal_tools (find_widget (app.main_window, "terminal-split", 0));
             g_assert_cmpint (gtk_paned_get_position (GTK_PANED (app.window.panes_paned)), ==, stacked_files_position);
+            e2_option_bool_set ("panes-horizontal", FALSE);
+            e2_window_recreate (&app.window);
+            GtkWidget *split = find_widget (app.main_window, "terminal-split", 0);
+            left_book = find_widget (gtk_paned_get_child1 (GTK_PANED (split)), "terminal-notebook", 0);
+            book = find_widget (gtk_paned_get_child2 (GTK_PANED (split)), "terminal-notebook", 0);
+            gchar *shell = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "shell", NULL);
+            e2_option_str_set_direct (e2_option_get ("terminal-shell"), shell);
+            g_free (shell);
+            for (guint i = 0; i < 2; i++)
+                gtk_button_clicked (GTK_BUTTON (find_widget (i ? book : left_book, "terminal-new", 0)));
+            break;
+        }
+        case 33:
+        {
+            GtkWidget *right_book = book;
+            for (guint i = 0; i < 2; i++)
+            {
+                book = i ? right_book : left_book;
+                gboolean ready = exited (gtk_notebook_get_n_pages (GTK_NOTEBOOK (book)) - 1);
+                book = right_book;
+                if (!ready) goto wait;
+            }
+            for (guint i = 0; i < 2; i++)
+            {
+                GtkWidget *target = i ? right_book : left_book;
+                GtkWidget *other = i ? left_book : right_book;
+                E2_PaneRuntime *pane = i ? &app.pane2 : &app.pane1;
+                check_context_target (target, other, pane, FALSE, FALSE);
+                check_context_target (target, other, pane, FALSE, TRUE);
+                check_context_target (target, other, pane, TRUE, FALSE);
+            }
+            g_printerr ("vte-ui: inactive-side log/terminal menus, selection, Find and Clear passed in both directions\n");
             gchar *done = g_build_filename (g_getenv ("E2_VTE_UI_TEST"), "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL);
             g_free (done);
