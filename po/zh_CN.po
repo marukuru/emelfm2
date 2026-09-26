@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-25 08:04+0200\n"
+"POT-Creation-Date: 2026-09-25 10:41+0200\n"
 "PO-Revision-Date: 2014-01-27 15:18+0800\n"
 "Last-Translator: ccpaging <ccpaging@gmail.com>\n"
 "Language-Team: ccpaging <ccpaging@gmail.com>\n"
@@ -90,7 +90,7 @@ msgstr ""
 msgid "usage"
 msgstr "参数"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3083
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3091
 msgid "commands"
 msgstr "命令"
 
@@ -102,7 +102,7 @@ msgstr "动作"
 msgid "Read the file"
 msgstr "读取文件"
 
-#: e2_about_dialog.c:216 e2_context_menu.c:423 e2_filetype_dialog.c:1201
+#: e2_about_dialog.c:216 e2_context_menu.c:420 e2_filetype_dialog.c:1201
 #: e2p_view.c:84
 msgid "_View"
 msgstr "查看(_V)"
@@ -984,7 +984,7 @@ msgstr ""
 msgid "Clear search"
 msgstr "关闭(_C)"
 
-#: e2_action_search.c:534 e2_context_menu.c:493 e2_keybinding.c:1792
+#: e2_action_search.c:534 e2_context_menu.c:490 e2_keybinding.c:1792
 #: e2_mousebinding.c:1846 e2_mousegesture.c:1327 e2_permissions_dialog.c:454
 #: e2_toolbar.c:3525 e2_toolbar.c:3597 e2_toolbar.c:3763
 msgid "Action"
@@ -1020,11 +1020,11 @@ msgstr "完成. 按 enter "
 msgid "xx"
 msgstr ""
 
-#: e2_alias.c:330 e2_output.c:3088
+#: e2_alias.c:330 e2_output.c:3096
 msgid "keys"
 msgstr ""
 
-#: e2_alias.c:332 e2_output.c:3094
+#: e2_alias.c:332 e2_output.c:3102
 msgid "buttons"
 msgstr "按钮"
 
@@ -1058,7 +1058,7 @@ msgstr "并且"
 
 #: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1533 e2_dialog.c:1663
 #: e2_dialog.c:1669 e2_dialog.c:1741 e2_dialog.c:1782 e2_edit_dialog.c:782
-#: e2_edit_dialog.c:1012 e2_main.c:985 e2_option_tree.c:1520
+#: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1520
 #: e2_option_tree.c:1527 e2p_crypt.c:852 e2p_rename.c:1100
 msgid "confirm"
 msgstr "确认"
@@ -1079,7 +1079,7 @@ msgstr "新增到后面(_A)"
 msgid "Bookmark the current directory after the selected item"
 msgstr "在选择项的后面加入当前文件夹"
 
-#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:432 e2_icons.c:922
+#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:429 e2_icons.c:922
 #: e2_icons.c:1175 e2p_unpack.c:777
 msgid "_Delete"
 msgstr "删除(_D)"
@@ -1128,17 +1128,17 @@ msgstr ""
 msgid "default trash directory"
 msgstr "缺省的回收站文件夹"
 
-#: e2_bookmark.c:794 e2_context_menu.c:484 e2_menu.c:1855 e2_plugins.c:1717
+#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1852 e2_plugins.c:1717
 #: e2_toolbar.c:3519 e2_toolbar.c:3591 e2_toolbar.c:3757
 msgid "Label"
 msgstr "标签"
 
-#: e2_bookmark.c:796 e2_context_menu.c:486 e2_menu.c:1853 e2_plugins.c:1719
+#: e2_bookmark.c:796 e2_context_menu.c:483 e2_menu.c:1850 e2_plugins.c:1719
 #: e2_toolbar.c:3521 e2_toolbar.c:3593 e2_toolbar.c:3759
 msgid "Icon"
 msgstr "图标"
 
-#: e2_bookmark.c:798 e2_menu.c:1857 e2_plugins.c:1721 e2_toolbar.c:3523
+#: e2_bookmark.c:798 e2_menu.c:1854 e2_plugins.c:1721 e2_toolbar.c:3523
 #: e2_toolbar.c:3595 e2_toolbar.c:3761
 msgid "Tooltip"
 msgstr "提示"
@@ -1913,170 +1913,170 @@ msgstr "高级(_V)"
 msgid "Display all configuration options"
 msgstr "显示所有配置选项"
 
-#: e2_context_menu.c:421 e2p_thumbnail.c:1228
+#: e2_context_menu.c:418 e2p_thumbnail.c:1228
 msgid "Open _with.."
 msgstr "打开, 其它(_W).."
 
-#: e2_context_menu.c:425
+#: e2_context_menu.c:422
 msgid "_Info"
 msgstr "信息(_I)"
 
-#: e2_context_menu.c:427
+#: e2_context_menu.c:424
 msgid "_Actions"
 msgstr "动作(_A)"
 
-#: e2_context_menu.c:428 e2_dnd.c:827 e2_file_info_dialog.c:343
+#: e2_context_menu.c:425 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:725 e2_icons.c:920 e2_icons.c:1173
-#: e2_option_tree_context_menu.c:287 e2_output.c:1765 e2_terminal.c:462
+#: e2_option_tree_context_menu.c:287 e2_output.c:1773 e2_terminal.c:464
 #: e2_toolbar.c:3484 e2_tree_dialog.c:1200 e2_view_dialog.c:1054 e2p_copy.c:757
 msgid "_Copy"
 msgstr "复制(_C)"
 
-#: e2_context_menu.c:429 e2_dnd.c:833 e2_toolbar.c:3486 e2p_move.c:809
+#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3486 e2p_move.c:809
 msgid "_Move"
 msgstr "移动(_M)"
 
-#: e2_context_menu.c:430 e2_dnd.c:839 e2_toolbar.c:3488
+#: e2_context_menu.c:427 e2_dnd.c:839 e2_toolbar.c:3488
 msgid "_Link"
 msgstr "链接(_L)"
 
-#: e2_context_menu.c:431 e2_toolbar.c:3492
+#: e2_context_menu.c:428 e2_toolbar.c:3492
 msgid "_Trash"
 msgstr "回收站(_T)"
 
-#: e2_context_menu.c:434 e2p_rename.c:1974
+#: e2_context_menu.c:431 e2p_rename.c:1974
 msgid "_Rename.."
 msgstr "更名(_R).."
 
-#: e2_context_menu.c:435
+#: e2_context_menu.c:432
 msgid "Change _owners.."
 msgstr "改变所有者(_O)"
 
-#: e2_context_menu.c:437
+#: e2_context_menu.c:434
 msgid "Change _permissions.."
 msgstr "改变权限(_P)"
 
-#: e2_context_menu.c:439
+#: e2_context_menu.c:436
 msgid "Copy as.."
 msgstr "复制到.."
 
-#: e2_context_menu.c:440
+#: e2_context_menu.c:437
 msgid "Move as.."
 msgstr "移动到.."
 
-#: e2_context_menu.c:441
+#: e2_context_menu.c:438
 msgid "Link as.."
 msgstr "链接到.."
 
-#: e2_context_menu.c:442
+#: e2_context_menu.c:439
 msgid "_Plugins"
 msgstr "插件(_P)"
 
-#: e2_context_menu.c:445
+#: e2_context_menu.c:442
 msgid "_Edit plugins.."
 msgstr "编辑插件(_E).."
 
-#: e2_context_menu.c:446
+#: e2_context_menu.c:443
 msgid "_User commands"
 msgstr "用户命令(_U)"
 
-#: e2_context_menu.c:447
+#: e2_context_menu.c:444
 msgid "Enter file name:"
 msgstr "输入文件名:"
 
-#: e2_context_menu.c:447
+#: e2_context_menu.c:444
 msgid "_Make new file.."
 msgstr "建立新文件(_M)"
 
-#: e2_context_menu.c:448
+#: e2_context_menu.c:445
 msgid "The files are different"
 msgstr "文件内容不同"
 
-#: e2_context_menu.c:448
+#: e2_context_menu.c:445
 msgid "The files are identical"
 msgstr "文件内容相同"
 
-#: e2_context_menu.c:448
+#: e2_context_menu.c:445
 msgid "_Compare files"
 msgstr "比较文件(_C)"
 
-#: e2_context_menu.c:449
+#: e2_context_menu.c:446
 msgid "Compare _directories"
 msgstr "比较文件夹"
 
-#: e2_context_menu.c:451
+#: e2_context_menu.c:448
 msgid "_Remove spaces"
 msgstr "移除空间(_R)"
 
-#: e2_context_menu.c:452
+#: e2_context_menu.c:449
 msgid "Enter the piece-size (in kB):"
 msgstr "分割大小(kB)"
 
-#: e2_context_menu.c:452
+#: e2_context_menu.c:449
 msgid "_Split file.."
 msgstr "分割文件(_S).."
 
-#: e2_context_menu.c:453
+#: e2_context_menu.c:450
 msgid "Co_ncatenate files.."
 msgstr "合并文件(_N)"
 
-#: e2_context_menu.c:453
+#: e2_context_menu.c:450
 msgid "Enter the name of the combined file:"
 msgstr "合并后的文件名:"
 
-#: e2_context_menu.c:454
+#: e2_context_menu.c:451
 msgid "Show _usage"
 msgstr "显示命令参数(_U)"
 
-#: e2_context_menu.c:455
+#: e2_context_menu.c:452
 msgid "_Free space"
 msgstr "空闲空间(_F)"
 
-#: e2_context_menu.c:455
+#: e2_context_menu.c:452
 msgid "percent free"
 msgstr "空闲空间百分比"
 
-#: e2_context_menu.c:457
+#: e2_context_menu.c:454
 msgid "_Edit user commands.."
 msgstr "编辑用户命令(_E)"
 
-#: e2_context_menu.c:458 e2_toolbar.c:3494
+#: e2_context_menu.c:455 e2_toolbar.c:3494
 msgid "Ma_ke dir.."
 msgstr "新建文件夹(_K).."
 
-#: e2_context_menu.c:460
+#: e2_context_menu.c:457
 msgid "_Bookmarks"
 msgstr "标签(_B)"
 
-#: e2_context_menu.c:461 e2_toolbar.c:3651 e2_toolbar.c:3716
+#: e2_context_menu.c:458 e2_toolbar.c:3651 e2_toolbar.c:3716
 msgid "Add _top"
 msgstr "新增到顶端(_T)"
 
-#: e2_context_menu.c:463 e2_toolbar.c:3655 e2_toolbar.c:3720
+#: e2_context_menu.c:460 e2_toolbar.c:3655 e2_toolbar.c:3720
 msgid "Add _bottom"
 msgstr "新增到底端(_T)"
 
-#: e2_context_menu.c:465 e2p_upgrade.c:335
+#: e2_context_menu.c:462 e2p_upgrade.c:335
 msgid "_Edit bookmarks.."
 msgstr "管理书签(_E).."
 
-#: e2_context_menu.c:466 e2p_upgrade.c:336
+#: e2_context_menu.c:463 e2p_upgrade.c:336
 msgid "_History"
 msgstr "历史(_H)"
 
-#: e2_context_menu.c:468
+#: e2_context_menu.c:465
 msgid "_Edit filetype.."
 msgstr "编辑文件类型(_E).."
 
-#: e2_context_menu.c:489
+#: e2_context_menu.c:486
 msgid "Shift"
 msgstr ""
 
-#: e2_context_menu.c:491
+#: e2_context_menu.c:488
 msgid "Ctrl"
 msgstr ""
 
-#: e2_context_menu.c:496 e2_keybinding.c:1796 e2_mousebinding.c:1849
+#: e2_context_menu.c:493 e2_keybinding.c:1796 e2_mousebinding.c:1849
 #: e2_mousegesture.c:1330 e2_toolbar.c:3528 e2_toolbar.c:3600 e2_toolbar.c:3766
 msgid "Argument"
 msgstr "参数"
@@ -2254,7 +2254,7 @@ msgstr "中间"
 msgid "mouse"
 msgstr "鼠标"
 
-#: e2_dialog.c:1821 e2_output.c:4365 e2_toolbar.c:3406
+#: e2_dialog.c:1821 e2_output.c:4373 e2_toolbar.c:3406
 msgid "none"
 msgstr "无"
 
@@ -2388,7 +2388,7 @@ msgstr "替换(_R).."
 msgid "Find and replace matching text"
 msgstr "查找并替换"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1720
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1728
 #: e2_view_dialog.c:1930
 msgid "_Hide"
 msgstr "隐藏(_H)"
@@ -2458,7 +2458,7 @@ msgid "Save modified file ?"
 msgstr "保存编辑过的文件 ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:517 e2_filetype.c:552 e2_filetype.c:750
-#: e2_filetype_dialog.c:1197 e2_icons.c:933 e2_icons.c:1186 e2_output.c:1773
+#: e2_filetype_dialog.c:1197 e2_icons.c:933 e2_icons.c:1186 e2_output.c:1781
 msgid "_Edit"
 msgstr "编辑(_E)"
 
@@ -2502,8 +2502,8 @@ msgstr "确认(_N)"
 msgid "Replace this match"
 msgstr "替换找到的"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:937 e2_icons.c:1190 e2_output.c:1712
-#: e2_terminal.c:467 e2_view_dialog.c:1945 e2p_find.c:4241
+#: e2_edit_dialog.c:1712 e2_icons.c:937 e2_icons.c:1190 e2_output.c:1720
+#: e2_terminal.c:469 e2_view_dialog.c:1945 e2p_find.c:4241
 msgid "_Find"
 msgstr "查找(_F)"
 
@@ -2689,12 +2689,12 @@ msgstr ""
 msgid "Cannot access %s, going to %s instead"
 msgstr "无法访问 %s, 用 %s 代替"
 
-#: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1705
+#: e2_filetype.c:116 e2_filetype.c:301 e2_filetype.c:501 e2_menu.c:1702
 #: e2_output.c:1431 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<文件夹>"
 
-#: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1786
+#: e2_filetype.c:117 e2_filetype.c:307 e2_filetype.c:509 e2_menu.c:1783
 #: e2_output.c:1479 e2_task.c:4256
 msgid "<executable>"
 msgstr "<可执行文件>"
@@ -2710,7 +2710,7 @@ msgstr "文件夹"
 #: e2_filetype.c:503 e2_filetype.c:618 e2_filetype.c:632 e2_filetype.c:647
 #: e2_filetype.c:661 e2_filetype.c:675 e2_filetype.c:688 e2_filetype.c:701
 #: e2_filetype.c:736 e2_filetype_dialog.c:1210 e2_icons.c:974 e2_icons.c:1227
-#: e2_output.c:1776 e2_view_dialog.c:729
+#: e2_output.c:1784 e2_view_dialog.c:729
 msgid "_Open"
 msgstr "打开(_O)"
 
@@ -2888,7 +2888,7 @@ msgstr "目标文件"
 msgid "_View symbols"
 msgstr "查看符号(_V)"
 
-#: e2_filetype.c:788 e2_menu.c:1859
+#: e2_filetype.c:788 e2_menu.c:1856
 msgid "Command"
 msgstr "命令"
 
@@ -2918,7 +2918,7 @@ msgid "Copy selected row(s)"
 msgstr "复制所选择的行"
 
 #: e2_filetype_dialog.c:731 e2_icons.c:980 e2_icons.c:1233
-#: e2_option_tree_context_menu.c:291 e2_terminal.c:465
+#: e2_option_tree_context_menu.c:291 e2_terminal.c:467
 msgid "_Paste"
 msgstr "粘贴(_P)"
 
@@ -3398,7 +3398,8 @@ msgstr "报告(_R)"
 msgid "_Properties"
 msgstr "属性(_P)"
 
-#: e2_icons.c:989 e2_icons.c:1242 e2_main.c:990 e2_toolbar.c:3574 e2_tray.c:415
+#: e2_icons.c:989 e2_icons.c:1242 e2_main.c:1007 e2_toolbar.c:3574
+#: e2_tray.c:415
 msgid "_Quit"
 msgstr "退出(_Q)"
 
@@ -3501,12 +3502,12 @@ msgid ""
 "keybindings"
 msgstr "设置组合键的延迟时间, 以毫秒为单位"
 
-#: e2_main.c:346
+#: e2_main.c:351
 #, c-format
 msgid "Your current locale is '%s'.\n"
 msgstr "你现在的区域设置是 '%s'.\n"
 
-#: e2_main.c:348
+#: e2_main.c:353
 #, c-format
 msgid ""
 "You have set the environment variable G_BROKEN_FILENAMES, which\n"
@@ -3521,7 +3522,7 @@ msgstr ""
 "但是, 你并未设置系统本地化参数.\n"
 "请设置环境变量 LANG 或者 LC_CTYPE !\n"
 
-#: e2_main.c:356
+#: e2_main.c:361
 #, c-format
 msgid ""
 "(Note: There is a command line option -i/--ignore-problems, but use it\n"
@@ -3530,7 +3531,7 @@ msgstr ""
 "(注意: 使用命令选项 -i/--ignore-problems, 讲忽略错误\n"
 "可能存在风险!)\n"
 
-#: e2_main.c:361
+#: e2_main.c:366
 #, c-format
 msgid ""
 "%s will ignore locale problems when reading filenames because\n"
@@ -3543,20 +3544,20 @@ msgstr ""
 "其他各种问题. 建议使用环境变量 LANG or LC_CTYPE\n"
 "设置系统本地化参数.\n"
 
-#: e2_main.c:735
+#: e2_main.c:740
 msgid "emelFM2"
 msgstr ""
 
-#: e2_main.c:985
+#: e2_main.c:1002
 #, c-format
 msgid "%u process(es) are running"
 msgstr "%u 进程正在运行"
 
-#: e2_main.c:987
+#: e2_main.c:1004
 msgid "_Continue"
 msgstr "继续(_C)"
 
-#: e2_main.c:988
+#: e2_main.c:1005
 msgid "Continue working"
 msgstr "继续工作"
 
@@ -3588,7 +3589,7 @@ msgstr "也包括文件夹(_D)"
 msgid "_Remove all filters"
 msgstr "删除所有过滤条件(_R)"
 
-#: e2_menu.c:1850 e2_plugins.c:1715
+#: e2_menu.c:1847 e2_plugins.c:1715
 msgid "Menu"
 msgstr "菜单"
 
@@ -4286,11 +4287,11 @@ msgstr "当前行使用背景色"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "文件列表中的当前行将使用不同的背景色"
 
-#: e2_option__default.c:299 e2_output.c:4380 e2_view_dialog.c:2330
+#: e2_option__default.c:299 e2_output.c:4388 e2_view_dialog.c:2330
 msgid "use custom font"
 msgstr "使用自定义字体"
 
-#: e2_option__default.c:300 e2_output.c:4381 e2_view_dialog.c:2331
+#: e2_option__default.c:300 e2_output.c:4389 e2_view_dialog.c:2331
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4680,266 +4681,266 @@ msgstr "在菜单中隐藏所有的插件"
 msgid "Cannot find any output from process %s"
 msgstr "进程 %s 无输出信息"
 
-#: e2_output.c:1713
+#: e2_output.c:1721
 msgid "Find text in the command log"
 msgstr ""
 
-#: e2_output.c:1714 e2_terminal.c:484
+#: e2_output.c:1722 e2_terminal.c:486
 #, fuzzy
 msgid "_Hide tools"
 msgstr "隐藏(_H)"
 
-#: e2_output.c:1715 e2_terminal.c:485
+#: e2_output.c:1723 e2_terminal.c:487
 #, fuzzy
 msgid "Return to the file list"
 msgstr "读取文件"
 
-#: e2_output.c:1716
+#: e2_output.c:1724
 msgid "_Expand / restore view"
 msgstr ""
 
-#: e2_output.c:1717 e2_terminal.c:487
+#: e2_output.c:1725 e2_terminal.c:489
 msgid "Expand this view, or restore the file lists and both tools areas"
 msgstr ""
 
-#: e2_output.c:1721
+#: e2_output.c:1729
 msgid "Do not show the output pane"
 msgstr "不显示到输出面板"
 
-#: e2_output.c:1724
+#: e2_output.c:1732
 msgid "_Toggle full"
 msgstr "全窗口(_T)"
 
-#: e2_output.c:1727
+#: e2_output.c:1735
 msgid "Toggle output pane size to/from the full window size"
 msgstr "切换输出面板的大小到全窗口"
 
-#: e2_output.c:1735
+#: e2_output.c:1743
 msgid "_New tab"
 msgstr "新 TAB(_N)"
 
-#: e2_output.c:1736
+#: e2_output.c:1744
 msgid "Add another tab for the output pane"
 msgstr "在输出面板上增加一个新的 TAB"
 
-#: e2_output.c:1739
+#: e2_output.c:1747
 msgid "_Remove tab"
 msgstr "移除 TAB(_R)"
 
-#: e2_output.c:1740
+#: e2_output.c:1748
 msgid "Close this this tab"
 msgstr "关闭这个 TAB"
 
-#: e2_output.c:1749
+#: e2_output.c:1757
 msgid "_Attach"
 msgstr "附着(_A)"
 
-#: e2_output.c:1750
+#: e2_output.c:1758
 msgid "Move this tab back to output pane"
 msgstr "将这个 TAB 移动到输出面板后面"
 
-#: e2_output.c:1757 e2_output.c:1761
+#: e2_output.c:1765 e2_output.c:1769
 msgid "C_lear"
 msgstr "清空(_L)"
 
-#: e2_output.c:1758 e2_output.c:1762
+#: e2_output.c:1766 e2_output.c:1770
 msgid "Clear this tab"
 msgstr "清空这个 TAB 的内容"
 
-#: e2_output.c:1766 e2_view_dialog.c:1055
+#: e2_output.c:1774 e2_view_dialog.c:1055
 msgid "Copy selected text"
 msgstr "复制所选的文字"
 
-#: e2_output.c:1774
+#: e2_output.c:1782
 msgid "Edit the tab contents"
 msgstr "修改 TAB 里的内同"
 
-#: e2_output.c:1816
+#: e2_output.c:1824
 msgid "Co_mmand output"
 msgstr "命令输出(_M)"
 
-#: e2_output.c:1817
+#: e2_output.c:1825
 msgid "Show output from a completed command"
 msgstr "显示已完成的命令的输出"
 
-#: e2_output.c:1830 e2_view_dialog.c:1066
+#: e2_output.c:1838 e2_view_dialog.c:1066
 msgid "_Settings"
 msgstr "设置(_S)"
 
-#: e2_output.c:1843
+#: e2_output.c:1851
 msgid "_Other"
 msgstr "其它(_O)"
 
-#: e2_output.c:1844
+#: e2_output.c:1852
 msgid "Open the configuration dialog at the output options page"
 msgstr "打开输出选项的配置对话框"
 
-#: e2_output.c:2253
+#: e2_output.c:2261
 msgid ""
 "\n"
 "--- Merged command log ---\n"
 msgstr ""
 
-#: e2_output.c:2934
+#: e2_output.c:2942
 msgid "output tabs"
 msgstr "输出 TAB"
 
-#: e2_output.c:3509
+#: e2_output.c:3517
 msgid "-- end-of-output --"
 msgstr "-- 输出完 --"
 
-#: e2_output.c:4331
+#: e2_output.c:4339
 msgid "show output pane when a new message appears"
 msgstr "有新的信息时, 显示输出面板"
 
-#: e2_output.c:4332
+#: e2_output.c:4340
 msgid "This will ensure you don't miss any messages"
 msgstr "这将避免遗漏任何信息"
 
-#: e2_output.c:4339
+#: e2_output.c:4347
 msgid "show output pane if the command line is focused"
 msgstr "当命令行获取焦点时, 显示输出信息"
 
-#: e2_output.c:4340
+#: e2_output.c:4348
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "当你输入命令时, 输出面板将被打开"
 
-#: e2_output.c:4344
+#: e2_output.c:4352
 msgid "hide output pane if the command line is unfocused"
 msgstr "当命令行失去焦点时, 隐藏输出面板"
 
-#: e2_output.c:4345
+#: e2_output.c:4353
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
 msgstr "当焦点移出命令行时, 输出面板将被自动关闭"
 
-#: e2_output.c:4348
+#: e2_output.c:4356
 msgid "show commands"
 msgstr "显示命令"
 
-#: e2_output.c:4349
+#: e2_output.c:4357
 msgid "This echoes the commands that are run and their exit value"
 msgstr "显示命令的运行和返回值"
 
-#: e2_output.c:4351
+#: e2_output.c:4359
 msgid "scroll to new output"
 msgstr "自动滚动"
 
-#: e2_output.c:4352
+#: e2_output.c:4360
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr "自动滚动输出面板的内容, 显示新信息"
 
-#: e2_output.c:4354
+#: e2_output.c:4362
 msgid "only scroll when really following"
 msgstr "跟随时滚动"
 
-#: e2_output.c:4355
+#: e2_output.c:4363
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
 msgstr "手工滚动后, 将停止自动滚动"
 
-#: e2_output.c:4358
+#: e2_output.c:4366
 msgid "only scroll when new output is at the end"
 msgstr "新的输出完成后, 再滚动"
 
-#: e2_output.c:4359
+#: e2_output.c:4367
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
 msgstr "停止面板滚动, 如果在当前插入位置, 有另一个不同的进程显示字符"
 
-#: e2_output.c:4362
+#: e2_output.c:4370
 msgid "auto-selection boundary characters"
 msgstr "自动选择边界字符"
 
-#: e2_output.c:4363
+#: e2_output.c:4371
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
 msgstr "字符, 通常是标点符号, 其中的任何一个都被设置成自动选择文字时的边界"
 
-#: e2_output.c:4365
+#: e2_output.c:4373
 msgid "everywhere"
 msgstr "任何地方"
 
-#: e2_output.c:4365
+#: e2_output.c:4373
 msgid "words"
 msgstr "断词"
 
-#: e2_output.c:4367
+#: e2_output.c:4375
 msgid "line wrap mode"
 msgstr "折行"
 
-#: e2_output.c:4368
+#: e2_output.c:4376
 #, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
 "wraps between words, splitting words only when they are wider than the pane"
 msgstr "如果模式为'无', 将使用水平滚动条. 模式'断词'时, 折行仅用于两个单词之间"
 
-#: e2_output.c:4371
+#: e2_output.c:4379
 msgid "left margin (pixels)"
 msgstr "左边距(像素)"
 
-#: e2_output.c:4372
+#: e2_output.c:4380
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的左边距"
 
-#: e2_output.c:4375
+#: e2_output.c:4383
 msgid "right margin (pixels)"
 msgstr "右边距(像素)"
 
-#: e2_output.c:4376
+#: e2_output.c:4384
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "输出面板边框与字符之间的右边距"
 
-#: e2_output.c:4384
+#: e2_output.c:4392
 msgid "custom output font"
 msgstr "自定义输出字体"
 
-#: e2_output.c:4385
+#: e2_output.c:4393
 msgid "This is the font used for text in the output pane"
 msgstr "定义输出面板中文字的字体"
 
-#: e2_output.c:4390
+#: e2_output.c:4398
 msgid "positive color"
 msgstr "颜色(正)"
 
-#: e2_output.c:4391
+#: e2_output.c:4399
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
 msgstr "用于成功的操作或者其它正面事件的信息的颜色"
 
-#: e2_output.c:4394
+#: e2_output.c:4402
 msgid "negative color"
 msgstr "颜色(反)"
 
-#: e2_output.c:4395
+#: e2_output.c:4403
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
 msgstr "这个颜色用于错误, 警告和其它需要引起注意的信息"
 
-#: e2_output.c:4398
+#: e2_output.c:4406
 msgid "commands color"
 msgstr "命令文本颜色"
 
-#: e2_output.c:4399
+#: e2_output.c:4407
 msgid "This color is used for echoing issued commands"
 msgstr "这个颜色用于命令返回信息"
 
-#: e2_output.c:4402
+#: e2_output.c:4410
 msgid "unimportant color"
 msgstr "颜色(不重要)"
 
-#: e2_output.c:4403
+#: e2_output.c:4411
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
@@ -5410,218 +5411,218 @@ msgstr ""
 msgid "running"
 msgstr ""
 
-#: e2_terminal.c:463
+#: e2_terminal.c:465
 #, fuzzy
 msgid "Copy selected terminal text"
 msgstr "复制所选的文字"
 
-#: e2_terminal.c:466
+#: e2_terminal.c:468
 msgid "Paste clipboard text into the terminal"
 msgstr ""
 
-#: e2_terminal.c:468
+#: e2_terminal.c:470
 #, fuzzy
 msgid "Find text in this terminal (Ctrl+Shift+F)"
 msgstr "复制所选的文字"
 
-#: e2_terminal.c:470
+#: e2_terminal.c:472
 #, fuzzy
 msgid "Insert selected paths"
 msgstr "复制所选择的路径"
 
-#: e2_terminal.c:471
+#: e2_terminal.c:473
 msgid "Insert quoted file paths without executing them"
 msgstr ""
 
-#: e2_terminal.c:474
+#: e2_terminal.c:476
 #, fuzzy
 msgid "Show terminal folder in pane"
 msgstr "显示这个面板中的虚拟文件夹"
 
-#: e2_terminal.c:475
+#: e2_terminal.c:477
 msgid "Navigate this file pane to the terminal's current local folder"
 msgstr ""
 
-#: e2_terminal.c:479
+#: e2_terminal.c:481
 #, fuzzy
 msgid "_Restart"
 msgstr "启动"
 
-#: e2_terminal.c:481
+#: e2_terminal.c:483
 #, fuzzy
 msgid "_Close terminal"
 msgstr "关闭(_C)"
 
-#: e2_terminal.c:482 e2_terminal.c:616 e2_terminal.c:642
+#: e2_terminal.c:484 e2_terminal.c:618 e2_terminal.c:644
 #, fuzzy
 msgid "Close this terminal"
 msgstr "关闭这个 TAB"
 
-#: e2_terminal.c:486
+#: e2_terminal.c:488
 #, fuzzy
 msgid "_Expand view"
 msgstr "展开(_E)"
 
-#: e2_terminal.c:486
+#: e2_terminal.c:488
 #, fuzzy
 msgid "_Restore tools"
 msgstr "也包括文件夹(_D)"
 
-#: e2_terminal.c:521
+#: e2_terminal.c:523
 #, fuzzy
 msgid "Cancel"
 msgstr "取消(_C)"
 
-#: e2_terminal.c:522
+#: e2_terminal.c:524
 msgid "Close terminals"
 msgstr ""
 
-#: e2_terminal.c:536
+#: e2_terminal.c:538
 msgid ""
 "A program is still running in this terminal. Closing it hangs up its shell "
 "and terminal jobs. Close it?"
 msgstr ""
 
-#: e2_terminal.c:610
+#: e2_terminal.c:612
 #, fuzzy
 msgid "Starting shell…"
 msgstr "设置(_T)"
 
-#: e2_terminal.c:613
+#: e2_terminal.c:615
 #, fuzzy
 msgid "Restart"
 msgstr "启动"
 
-#: e2_terminal.c:614
+#: e2_terminal.c:616
 #, fuzzy
 msgid "Restart this terminal"
 msgstr "关闭这个 TAB"
 
-#: e2_terminal.c:615
+#: e2_terminal.c:617
 #, fuzzy
 msgid "Close"
 msgstr "关闭(_C)"
 
-#: e2_terminal.c:639
+#: e2_terminal.c:641
 #, fuzzy
 msgid "starting"
 msgstr "启动"
 
-#: e2_terminal.c:644
+#: e2_terminal.c:646
 #, fuzzy
 msgid "Close terminal"
 msgstr "关闭(_C)"
 
-#: e2_terminal.c:690
+#: e2_terminal.c:692
 msgid ""
 "A terminal requires an existing local directory. Select a mounted local pane "
 "first."
 msgstr ""
 
-#: e2_terminal.c:803
+#: e2_terminal.c:805
 msgid ""
 "Path insertion supports sh, bash, dash, zsh, ksh, mksh and fish. Select one "
 "in terminal preferences."
 msgstr ""
 
-#: e2_terminal.c:1005
+#: e2_terminal.c:1007
 #, fuzzy
 msgid "Command log"
 msgstr "命令"
 
-#: e2_terminal.c:1019
+#: e2_terminal.c:1021
 msgid ""
 "Command and file-operation output. Type interactive commands directly in a "
 "terminal."
 msgstr ""
 
-#: e2_terminal.c:1025
+#: e2_terminal.c:1027
 #, fuzzy
 msgid "New terminal in this pane's folder"
 msgstr "在当前文件夹打开终端程序"
 
-#: e2_terminal.c:1026
+#: e2_terminal.c:1028
 #, fuzzy
 msgid "New terminal"
 msgstr "关闭(_C)"
 
-#: e2_terminal.c:1032
+#: e2_terminal.c:1034
 #, fuzzy
 msgid "Actions for the selected log or terminal"
 msgstr "对每个被选择的文件执行:"
 
-#: e2_terminal.c:1033
+#: e2_terminal.c:1035
 #, fuzzy
 msgid "View actions"
 msgstr "文件动作"
 
-#: e2_terminal.c:1114
+#: e2_terminal.c:1116
 msgid ""
 "Programs are still running in this tab's terminals. Closing it hangs up "
 "their shells and terminal jobs. Close it?"
 msgstr ""
 
-#: e2_terminal.c:1168
+#: e2_terminal.c:1170
 msgid ""
 "Programs are still running in terminals. Quitting hangs up their shells and "
 "terminal jobs. Quit?"
 msgstr ""
 
-#: e2_terminal.c:1200
+#: e2_terminal.c:1202
 msgid "keep output and terminals with file-pane tabs"
 msgstr ""
 
-#: e2_terminal.c:1201
+#: e2_terminal.c:1203
 msgid ""
 "Give each file-pane tab its own application output and terminals. Disabling "
 "this combines existing outputs and terminals."
 msgstr ""
 
-#: e2_terminal.c:1203
+#: e2_terminal.c:1205
 msgid "terminal"
 msgstr ""
 
-#: e2_terminal.c:1205
+#: e2_terminal.c:1207
 #, fuzzy
 msgid "shell executable"
 msgstr "可执行文件"
 
-#: e2_terminal.c:1206
+#: e2_terminal.c:1208
 msgid ""
 "Executable path only; empty uses SHELL or /bin/sh. New sessions start in the "
 "active local pane."
 msgstr ""
 
-#: e2_terminal.c:1208
+#: e2_terminal.c:1210
 #, fuzzy
 msgid "report Bash prompt locations"
 msgstr "补全文件夹路径"
 
-#: e2_terminal.c:1209
+#: e2_terminal.c:1211
 msgid ""
 "Opt in to current user and folder reports from Bash. Preserves your prompt "
 "and startup files; applies to new sessions."
 msgstr ""
 
-#: e2_terminal.c:1211
+#: e2_terminal.c:1213
 #, fuzzy
 msgid "scrollback lines"
 msgstr "滚动条(_S)"
 
-#: e2_terminal.c:1213
+#: e2_terminal.c:1215
 #, fuzzy
 msgid "terminal font"
 msgstr "X 终端仿真:"
 
-#: e2_terminal.c:1214
+#: e2_terminal.c:1216
 msgid "Terminal preferences apply to new or restarted sessions"
 msgstr ""
 
-#: e2_terminal.c:1215
+#: e2_terminal.c:1217
 msgid "terminal foreground"
 msgstr ""
 
-#: e2_terminal.c:1217
+#: e2_terminal.c:1219
 #, fuzzy
 msgid "terminal background"
 msgstr "当前行使用背景色"
@@ -6589,17 +6590,17 @@ msgstr ""
 msgid "Override encoding detection for this file"
 msgstr ""
 
-#: e2_window.c:1280
+#: e2_window.c:1285
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "显示 & %d 隐藏 "
 
-#: e2_window.c:1283
+#: e2_window.c:1288
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s 已选择 %d 总数 %d %s 当前文件夹 %s"
 
-#: e2_window.c:1893
+#: e2_window.c:1898
 msgid "WhoAmI"
 msgstr ""
 
