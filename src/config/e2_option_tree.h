@@ -48,6 +48,7 @@ typedef enum
 typedef enum
 {
 	E2_OPTION_TREE_COL_NOT_EDITABLE = 1<< 0,
+	E2_OPTION_TREE_COL_OPTIONAL = 1 << 1, //missing trailing field uses its default
 	//flags for things to free when the config data is dumped
 	E2_OPTION_TREE_COL_FREENAME = 1 << 8, //set to free label
 	E2_OPTION_TREE_COL_FREESTRING = 1 << 9, //set to free sdef
@@ -73,6 +74,8 @@ typedef struct _E2_OptionTreeColumn
 //	GDestroyNotify data_cleaner;
 } E2_OptionTreeColumn;
 
+void e2_option_tree_cell_pixbuf_data_func (GtkTreeViewColumn *column,
+	GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, gpointer data);
 void e2_option_tree_flag_change (E2_OptionSet *set);
 void e2_option_tree_adjust_buttons (GtkTreeView *view, gboolean value);
 void e2_option_tree_add_widget (GtkWidget *parent, gboolean single, GtkWidget *box,

@@ -1349,10 +1349,11 @@ static void _e2_output_menu_create_filetype_actions_menu (gchar *text,
 
 	while (*actions != NULL)
 	{
+		const gchar *icon = e2_filetype_get_action_icon (*actions);
 		if ((sep = strchr (*actions, '@')) != NULL)  //if always ascii @, don't need g_utf8_strchr()
 		{
 			*sep = '\0';
-			menu_item = e2_menu_add (menu, (gchar *)*actions, NULL, NULL,
+			menu_item = e2_menu_add (menu, (gchar *)*actions, icon, NULL,
 				_e2_output_choose_filetype_action_cb, NULL);
 			fullcmd = e2_utils_replace_name_macros (sep + sizeof (gchar), text);
 			if (fullcmd == sep + sizeof (gchar))	//no replaced macro in action-string
@@ -1366,7 +1367,7 @@ static void _e2_output_menu_create_filetype_actions_menu (gchar *text,
 		}
 		else
 		{
-			menu_item = e2_menu_add (menu, (gchar *)*actions, NULL, NULL,
+			menu_item = e2_menu_add (menu, (gchar *)*actions, icon, NULL,
 				_e2_output_choose_filetype_action_cb, NULL);
 			fullcmd = e2_utils_replace_name_macros ((gchar *)*actions, text);
 			if (fullcmd == (gchar *)*actions)	//no replaced macro in *actions

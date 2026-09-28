@@ -203,6 +203,15 @@ static gboolean tick (gpointer unused)
             g_assert_cmpstr (folder, ==, g_getenv ("E2_ICON_CUSTOM_DIR"));
             g_free (folder);
             check_model (picker->custommodel, FALSE, FALSE);
+            gchar *selected = g_build_filename (g_getenv ("E2_ICON_CUSTOM_DIR"), "move.svg", NULL);
+            select_icon (FALSE, "move", selected);
+            GdkPixbuf *rendered = e2_icons_get_puxbuf (selected, GTK_ICON_SIZE_MENU, FALSE);
+            g_assert_nonnull (rendered);
+            GdkPixbuf *expected = gdk_pixbuf_new_from_file_at_scale (selected,
+                gdk_pixbuf_get_width (rendered), gdk_pixbuf_get_height (rendered), TRUE, NULL);
+            equal_pixels (rendered, expected);
+            g_object_unref (expected);
+            g_free (selected);
             gtk_widget_destroy (dialog);
             e2_option_set_from_string ("icon-dir", (gchar *)g_getenv ("E2_ICON_CUSTOM_DIR"));
             e2_option_bool_set ("use-icon-dir", TRUE);

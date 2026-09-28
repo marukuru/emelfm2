@@ -37,6 +37,7 @@ GHashTable *tree_view_buffer_hash;
 #include "e2_keybinding.h"
 #include "e2_plugins.h"
 #include "e2_icons.h"
+#include "e2_filetype.h"
 
 //data struct for a deferred tree-option overwrite dialog
 typedef struct _E2_OptionTreeCheck
@@ -244,7 +245,7 @@ static void _e2_option_tree_toggle_cb (GtkCellRendererToggle *cell,
 	gtk_tree_path_free (path);
 }
 
-static void _e2_option_tree_cell_pixbuf_data_func (GtkTreeViewColumn *tree_column,
+void e2_option_tree_cell_pixbuf_data_func (GtkTreeViewColumn *tree_column,
 	GtkCellRenderer *cell, GtkTreeModel *model, GtkTreeIter *iter, gpointer data)
 {
 #ifdef E2_ICONCACHE
@@ -1685,6 +1686,14 @@ void e2_option_tree_adjust_buttons (GtkTreeView *view, gboolean value)
 			gtk_widget_set_sensitive (st->f, value);
 	}
 }
+static void _e2_option_tree_auto_icons_cb (GtkButton *button, E2_OptionSet *set)
+{
+	NEEDCLOSEBGL
+	if (e2_filetype_assign_icons (set->ex.tree.model, TRUE) > 0)
+		e2_option_tree_flag_change (set);
+	NEEDOPENBGL
+}
+
 /**
 @brief create, and add to @a box, a config-data treeview for tree-option @a set
 This also backs up the current option data
@@ -1820,9 +1829,9 @@ void e2_option_tree_add_widget (GtkWidget *parent, gboolean single, GtkWidget *b
 					(opt->label, renderer, NULL);
 				gtk_tree_view_column_set_cell_data_func (column, renderer,
 #ifdef E2_ICONCACHE
-					_e2_option_tree_cell_pixbuf_data_func, GINT_TO_POINTER (isize), NULL);
+					e2_option_tree_cell_pixbuf_data_func, GINT_TO_POINTER (isize), NULL);
 #else
-					_e2_option_tree_cell_pixbuf_data_func, NULL, NULL);
+					e2_option_tree_cell_pixbuf_data_func, NULL, NULL);
 #endif
 //				gtk_tree_view_column_set_resizable (GTK_TREE_VIEW_COLUMN (column), TRUE);
 //				gtk_tree_view_column_set_sizing (GTK_TREE_VIEW_COLUMN (column),
@@ -1949,6 +1958,10 @@ void e2_option_tree_add_widget (GtkWidget *parent, gboolean single, GtkWidget *b
 			e2_button_add_end (bbox, FALSE, 0, _("Co_lor"), STOCK_NAME_SELECT_COLOR,
 			_("Show color-selection dialog"), e2_confdlg_extcolorpick_cb, set);
 #endif
+		if (e2_option_get_simple ("filetypes") == set)
+			e2_button_add_end (bbox, FALSE, 0, _("Auto _icons"), STOCK_NAME_EXECUTE,
+				_("Fill empty command icons from installed applications and the current icon theme"),
+				_e2_option_tree_auto_icons_cb, set);
 		st->a = e2_button_add_end (bbox, FALSE, 0, _("_Help"), STOCK_NAME_HELP,
 			_("Get help on this option"), (void(*)())_e2_option_tree_help_cb, set);
 		//setup to process button-mnemonic keyvals for keybindings
@@ -2771,14 +2784,18 @@ gboolean e2_option_tree_set_from_array (gchar *name, gchar *f[], gint *index,
 		//in case of a missing value/field
 		for (columns = set->ex.tree.columns; columns != NULL; columns = columns->next)
 		{
+			E2_OptionTreeColumn *coldata = columns->data;
 			if (split[i] == NULL)
 			{
+				if (coldata->flags & E2_OPTION_TREE_COL_OPTIONAL)
+				{
+					tmp[j++] = _e2_option_tree_get_void_simple (coldata, coldata->sdef);
+					continue;
+				}
 				//not enough separators in the line = bad config data
 				tree_mode = E2_TREE_ABORTED;
 				break;
 			}
-			//current tree column-data pointer
-			E2_OptionTreeColumn *coldata = columns->data;
 			if ( *(split[i]) != '\0')
 			{
 				gchar *value = split[i];

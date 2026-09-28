@@ -1630,6 +1630,7 @@ static void _e2_menu_fill_filetype_actions_menu (GtkWidget *menu,
 
 	while (*actions != NULL)
 	{
+		const gchar *icon = e2_filetype_get_action_icon (*actions);
 		gchar *s, *sys, *cmd;
 		GtkWidget *menu_item;
 
@@ -1640,7 +1641,7 @@ static void _e2_menu_fill_filetype_actions_menu (GtkWidget *menu,
 			if (sys != NULL)
 				cmd = sys;
 			*s = '\0';
-			menu_item = e2_menu_add (menu, (gchar *)*actions, NULL, NULL,
+			menu_item = e2_menu_add (menu, (gchar *)*actions, icon, NULL,
 				_e2_menu_choose_filetype_action_cb, cmd);
 			*s = '@';	//revert to original form (this is the 'source' data)
 		}
@@ -1657,7 +1658,7 @@ static void _e2_menu_fill_filetype_actions_menu (GtkWidget *menu,
 				label = g_strndup (cmd, s-cmd);
 			else
 				label = cmd;
-			menu_item = e2_menu_add (menu, label, NULL, NULL,
+			menu_item = e2_menu_add (menu, label, icon, NULL,
 				_e2_menu_choose_filetype_action_cb, cmd);
 			if (label != cmd)
 				g_free (label);

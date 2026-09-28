@@ -58,6 +58,8 @@ static VPATH initial_dir;
 static gchar *initial_dir;
 #endif
 
+static gboolean _e2_sidlg_bundled_directory (const gchar *path);
+
   /*********************/
  /***** callbacks *****/
 /*********************/
@@ -94,14 +96,22 @@ static void _e2_sidlg_response_cb (GtkDialog *dialog, gint response, E2_SID_Runt
 			if (selected != NULL)
 			{
 				GtkTreeIter iter;
-				gchar *icon, *fullpath, *instring;
+				gchar *icon, *fullpath;
 				gtk_tree_model_get_iter (rt->custommodel, &iter, tpath);
 				gtk_tree_model_get (rt->custommodel, &iter, PATH_COL, &fullpath, -1);
-				icon = g_path_get_basename (fullpath);
-				g_free (fullpath);
-				instring = strrchr (icon, '.');
-				if (instring != NULL)
-					*instring = 0;
+				gchar *directory = g_path_get_dirname (fullpath);
+				if (_e2_sidlg_bundled_directory (directory))
+				{
+					//Keep portable names and size variants for the supplied icons.
+					icon = g_path_get_basename (fullpath);
+					gchar *extension = strrchr (icon, '.');
+					if (extension != NULL)
+						*extension = '\0';
+					g_free (fullpath);
+				}
+				else
+					icon = fullpath; //retain the chosen file, including its SVG extension
+				g_free (directory);
 				g_object_set_data_full (G_OBJECT (dialog), "image", icon,
 					(GDestroyNotify) g_free);
 			}
@@ -365,17 +375,13 @@ static gint _e2_sidlg_compare_icons (const E2_IconMatch **a, const E2_IconMatch 
 
 /* Only substitute bundled artwork. Browsing another directory must display
  * the user's actual files, even if their basenames match a bundled icon. */
-static gboolean _e2_sidlg_modern_directory (VPATH *localpath)
+static gboolean _e2_sidlg_bundled_directory (const gchar *path)
 {
-	if (!e2_modern_ui_enabled () || e2_option_bool_get ("use-icon-dir"))
+	if (e2_option_bool_get ("use-icon-dir"))
 		return FALSE;
 	gchar *default_path = e2_icons_get_custom_path (FALSE);
 	gchar *root = realpath (default_path, NULL);
-#ifdef E2_VFS
-	gchar *directory = realpath (localpath->path, NULL);
-#else
-	gchar *directory = realpath (localpath, NULL);
-#endif
+	gchar *directory = realpath (path, NULL);
 	gboolean bundled = FALSE;
 	if (root != NULL && directory != NULL)
 	{
@@ -417,7 +423,8 @@ static GdkPixbuf *_e2_sidlg_custom_preview (const gchar *path,
 */
 static void	_e2_sidlg_fill_custom_store (VPATH *localpath, E2_SID_Runtime *rt)
 {
-	gboolean modern = _e2_sidlg_modern_directory (localpath);
+	gboolean modern = e2_modern_ui_enabled ()
+		&& _e2_sidlg_bundled_directory (VPSTR(localpath));
 	GPtrArray *iconpaths = g_ptr_array_sized_new (60); //about this many icons to find
 	E2_IPopulator walkdata = { iconpaths, rt->cache };
 	OPENBGL
@@ -1097,7 +1104,7 @@ Sets rt->page, but does NOT change the notebook page accordingly
 static gint _e2_sidlg_show_current (gboolean checkboth, E2_SID_Runtime *rt)
 {
 	GtkTreeIter iter;
-	if (checkboth
+	if (checkboth && rt->icon != NULL && g_str_has_prefix (rt->icon, "gtk-")
 		&& gtk_tree_model_get_iter_first (rt->stockmodel, &iter)
 		&& e2_tree_find_iter_from_str_simple (rt->stockmodel, TEXT_COL,
 				rt->icon + 4, //the stored data omits leading "gtk-"

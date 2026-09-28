@@ -25,6 +25,8 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 void e2_filetype_config_show (gchar *extension);
 void e2_filetype_apply_allnew (void);
 const gchar **e2_filetype_get_actions (gchar *ext);
+const gchar *e2_filetype_get_action_icon (const gchar *action);
+guint e2_filetype_assign_icons (GtkTreeModel *model, gboolean categories);
 //gchar **e2_filetype_get_extensions (gchar *category);
 gchar *e2_filetype_get_default_action (gchar *ext) G_GNUC_MALLOC;
 // UNUSED gchar **e2_filetype_get (gchar *ext);

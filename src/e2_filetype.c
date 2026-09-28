@@ -20,11 +20,19 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #include "emelfm2.h"
 #include <string.h>
 #include "e2_filetype.h"
+#include "e2_icons.h"
+#if GLIB_CHECK_VERSION(2,26,0)
+#include <gio/gio.h>
+#endif
 #ifdef OLDFTDLG
 #include "e2_config_dialog.h"
 #else
 #include "e2_dialog.h"
 #endif
+
+//Keys borrow runtime action strings; values own their optional icon names.
+//Pointer keys keep identical commands in different categories independent.
+static GHashTable *action_icons = NULL;
 
 /* *
 @brief get extensions array for filetype category @a category
@@ -128,6 +136,190 @@ const gchar **e2_filetype_get_actions (gchar *ext)
 		return NULL;
 }
 /**
+@brief get the optional icon for a runtime filetype action
+@param action an unchanged pointer from e2_filetype_get_actions()
+@return borrowed icon name, or NULL when no icon is configured
+*/
+const gchar *e2_filetype_get_action_icon (const gchar *action)
+{
+	return (action_icons == NULL) ? NULL :
+		g_hash_table_lookup (action_icons, action);
+}
+/* Inspect command text only; automatic icon assignment never runs a command. */
+static gchar *_e2_filetype_command_name (const gchar *command)
+{
+	if (command == NULL)
+		return NULL;
+	while (g_ascii_isspace (*command) || *command == '!' || *command == '>' || *command == '|')
+		command++;
+	gchar **argv;
+	gint argc;
+	if (!g_shell_parse_argv (command, &argc, &argv, NULL))
+		return NULL;
+	gint i = 0;
+	if (!strcmp (argv[i], "x")) //emelFM2 terminal prefix
+		i++;
+	if (i < argc && (!strcmp (argv[i], "env") || g_str_has_suffix (argv[i], "/env")))
+	{
+		i++;
+		while (i < argc && (!strcmp (argv[i], "-i") || !strcmp (argv[i], "--ignore-environment")))
+			i++;
+		if (i < argc && !strcmp (argv[i], "--"))
+			i++;
+	}
+	//Skip leading environment assignments, including quoted values.
+	while (i < argc)
+	{
+		const gchar *p = argv[i];
+		if (!(g_ascii_isalpha (*p) || *p == '_'))
+			break;
+		while (g_ascii_isalnum (*p) || *p == '_')
+			p++;
+		if (*p != '=')
+			break;
+		i++;
+	}
+	gchar *name = NULL;
+	if (i < argc && *argv[i] != '-' && *argv[i] != '\0'
+		&& strpbrk (argv[i], "%$`;&|<>()") == NULL)
+		name = g_path_get_basename (argv[i]);
+	g_strfreev (argv);
+	return name;
+}
+
+static gchar *_e2_filetype_theme_icon (const gchar *name)
+{
+	if (name == NULL || *name == '\0')
+		return NULL;
+	if (g_path_is_absolute (name))
+		return g_file_test (name, G_FILE_TEST_IS_REGULAR) ? g_strdup (name) : NULL;
+	GtkIconInfo *info = gtk_icon_theme_lookup_icon (gtk_icon_theme_get_default (),
+		name, e2_icons_get_pixsize (GTK_ICON_SIZE_MENU), 0);
+	if (info == NULL)
+		return NULL;
+	gchar *path = g_strdup (gtk_icon_info_get_filename (info));
+	gtk_icon_info_free (info);
+	return path;
+}
+
+/* Build this once per button press, so newly installed applications are found. */
+static GHashTable *_e2_filetype_application_icons (void)
+{
+	GHashTable *icons = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+#if GLIB_CHECK_VERSION(2,26,0)
+	GList *applications = g_app_info_get_all ();
+	GList *item;
+	for (item = applications; item != NULL; item = item->next)
+	{
+		GAppInfo *application = item->data;
+		gchar *name = _e2_filetype_command_name (g_app_info_get_commandline (application));
+		if (name == NULL)
+			continue;
+		GIcon *icon = g_app_info_get_icon (application);
+		gchar *path = NULL;
+		if (G_IS_THEMED_ICON (icon))
+		{
+			const gchar * const *names = g_themed_icon_get_names (G_THEMED_ICON (icon));
+			while (*names != NULL && path == NULL)
+				path = _e2_filetype_theme_icon (*names++);
+		}
+		else if (G_IS_FILE_ICON (icon))
+		{
+			gchar *filename = g_file_get_path (g_file_icon_get_file (G_FILE_ICON (icon)));
+			path = _e2_filetype_theme_icon (filename);
+			g_free (filename);
+		}
+		const gchar *existing = g_hash_table_lookup (icons, name);
+		if (path != NULL && existing == NULL)
+			g_hash_table_insert (icons, name, path);
+		else
+		{
+			//Several applications can share a launcher (e.g. flatpak).
+			//Different icons make a command-name-only match ambiguous.
+			if (path != NULL && *existing != '\0' && strcmp (existing, path))
+				g_hash_table_replace (icons, g_strdup (name), g_strdup (""));
+			g_free (name);
+			g_free (path);
+		}
+	}
+	g_list_foreach (applications, (GFunc) g_object_unref, NULL);
+	g_list_free (applications);
+#endif
+	return icons;
+}
+
+typedef struct
+{
+	gboolean categories;
+	GHashTable *icons;
+	guint assigned;
+} E2_FiletypeIconAssignment;
+
+static gboolean _e2_filetype_assign_icon (GtkTreeModel *model, GtkTreePath *path,
+	GtkTreeIter *iter, E2_FiletypeIconAssignment *data)
+{
+	gint label_column = data->categories ? 1 : 0;
+	if (data->categories)
+	{
+		if (gtk_tree_path_get_depth (path) != 3)
+			return FALSE;
+		GtkTreeIter parent;
+		gchar *heading;
+		gtk_tree_model_iter_parent (model, &parent, iter);
+		gtk_tree_model_get (model, &parent, 1, &heading, -1);
+		gboolean commands = !g_strcmp0 (heading, _C(6));
+		g_free (heading);
+		if (!commands)
+			return FALSE;
+	}
+	gchar *icon;
+	gtk_tree_model_get (model, iter, label_column + 2, &icon, -1);
+	gboolean empty = (icon == NULL || *icon == '\0');
+	g_free (icon);
+	if (!empty)
+		return FALSE;
+	gchar *command;
+	gtk_tree_model_get (model, iter, label_column + 1, &command, -1);
+	if (command == NULL || *command == '\0')
+	{
+		g_free (command);
+		gtk_tree_model_get (model, iter, label_column, &command, -1);
+	}
+	gchar *name = _e2_filetype_command_name (command);
+	g_free (command);
+	if (name != NULL)
+	{
+		gchar *match = g_hash_table_lookup (data->icons, name);
+		if (match == NULL || *match == '\0')
+		{
+			match = _e2_filetype_theme_icon (name);
+			if (match != NULL)
+				g_hash_table_insert (data->icons, g_strdup (name), match);
+		}
+		if (match != NULL)
+		{
+			gtk_tree_store_set (GTK_TREE_STORE (model), iter, label_column + 2, match, -1);
+			data->assigned++;
+		}
+		g_free (name);
+	}
+	return FALSE;
+}
+/**
+@brief fill empty command icons once, leaving changes in the editor for review
+@param model the configuration filetype tree or the separate editor's commands store
+@param categories TRUE for the full configuration tree, FALSE for a commands store
+@return number of assigned icons
+*/
+guint e2_filetype_assign_icons (GtkTreeModel *model, gboolean categories)
+{
+	E2_FiletypeIconAssignment data = { categories, _e2_filetype_application_icons (), 0 };
+	gtk_tree_model_foreach (model, (GtkTreeModelForeachFunc) _e2_filetype_assign_icon, &data);
+	g_hash_table_destroy (data.icons);
+	return data.assigned;
+}
+
+/**
 @brief get default action for specified file extension
 
 Allocates and returns the first action from the actions array (in the file types
@@ -166,11 +358,14 @@ void e2_filetype_add_all (void)
 {
 	E2_OptionSet *set;
 	GtkTreeIter iter, iter2, iter3;  //3 tree levels to scan
-	gchar *category, *extension, *cmd_string;
+	gchar *category, *extension, *cmd_string, *icon;
 	GPtrArray *e_ray, *c_ray;
 
 	app.filetypes = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 	app.typelist = NULL;
+	if (action_icons != NULL)
+		g_hash_table_destroy (action_icons);
+	action_icons = g_hash_table_new_full (g_direct_hash, g_direct_equal, NULL, g_free);
 
 	if (
 		((set = e2_option_get_simple ("filetypes")) != NULL) &&
@@ -211,7 +406,7 @@ void e2_filetype_add_all (void)
 							{  //commands loop also = level 3, build the commands array
 								//this time, extension is really a command name
 								gtk_tree_model_get (set->ex.tree.model, &iter3, 1, &extension,
-									2, &cmd_string, -1);
+									2, &cmd_string, 3, &icon, -1);
 								if (*cmd_string != '\0')
 								{  //concatenate with separator
 									gchar *freeme = extension;
@@ -220,6 +415,10 @@ void e2_filetype_add_all (void)
 								}
 								g_free (cmd_string);
 								g_ptr_array_add (c_ray, extension);
+								if (icon != NULL && *icon != '\0')
+									g_hash_table_insert (action_icons, extension, icon);
+								else
+									g_free (icon);
 							} while (gtk_tree_model_iter_next (set->ex.tree.model, &iter3));
 						}
 						else
@@ -787,6 +986,8 @@ void e2_filetype_options_register (void)
 		0, NULL, NULL);
 	e2_option_tree_add_column (set, _("Command"), E2_OPTION_TREE_TYPE_SEL, 0, "",
 		0, NULL, GINT_TO_POINTER (E2_ACTION_EXCLUDE_LAYOUT | E2_ACTION_INCLUDE_FILES));
+	e2_option_tree_add_column (set, _("Icon"), E2_OPTION_TREE_TYPE_ICON, 0, "",
+		E2_OPTION_TREE_COL_OPTIONAL, NULL, NULL);
 	e2_option_tree_create_store (set);
 
 	e2_option_tree_prepare_defaults (set, _e2_filetype_tree_defaults);

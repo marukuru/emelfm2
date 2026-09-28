@@ -23,6 +23,8 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 #include "e2_task.h"
 #include "e2_filetype.h"
 #include "e2_icons.h"
+#include "e2_config_dialog.h"
+#include "e2_select_image_dialog.h"
 
 #ifndef OLDFTDLG
 //no translation of this
@@ -81,7 +83,7 @@ static void _e2_edftdlg_save_current_category (E2_FileTypeDlgRuntime *rt)
 		return;
 
 	GtkTreeModel *mdl;
-	gchar *extension, *cmd_label, *cmd_string;
+	gchar *extension, *cmd_label, *cmd_string, *icon;
 	GtkTreeIter iter, cfg_iter2, cfg_iter3;	//iters for local liststore & 3 levels of filetypes treestore
 	gint cfgi, newi, cfgchildren, newchildren;
 
@@ -155,7 +157,7 @@ static void _e2_edftdlg_save_current_category (E2_FileTypeDlgRuntime *rt)
 				for (newi = 0; newi < newchildren; newi++)
 				{
 					gtk_tree_model_iter_nth_child (mdl, &iter, NULL, newi);
-					gtk_tree_model_get (mdl, &iter, 0, &cmd_label, 1, &cmd_string, -1);
+					gtk_tree_model_get (mdl, &iter, 0, &cmd_label, 1, &cmd_string, 2, &icon, -1);
 					if (cmd_string != NULL)
 					{
 						if (*cmd_string != '\0')
@@ -165,6 +167,7 @@ static void _e2_edftdlg_save_current_category (E2_FileTypeDlgRuntime *rt)
 								if (cmd_label != NULL)
 									g_free (cmd_label);
 								g_free (cmd_string);
+								g_free (icon);
 								break;
 							}
 							if (cmd_label == NULL)
@@ -176,18 +179,19 @@ static void _e2_edftdlg_save_current_category (E2_FileTypeDlgRuntime *rt)
 							}
 							gtk_tree_model_iter_nth_child (cfgmdl, &cfg_iter3, &cfg_iter2, cfgi);
 							gtk_tree_store_set (rt->stores[E2_CATPANE], &cfg_iter3,
-								1, cmd_label, 2, cmd_string, -1);
+								1, cmd_label, 2, cmd_string, 3, icon, -1);
 							cfgi++;
 						}
 						g_free (cmd_string);
 					}
 					g_free (cmd_label);
+					g_free (icon);
 				}
 				//if we ran out of old children, need to add more
 				for (;newi < newchildren; newi++)
 				{
 					gtk_tree_model_iter_nth_child (mdl, &iter, NULL, newi);
-					gtk_tree_model_get (mdl, &iter, 0, &cmd_label, 1, &cmd_string, -1);
+					gtk_tree_model_get (mdl, &iter, 0, &cmd_label, 1, &cmd_string, 2, &icon, -1);
 					if (cmd_string != NULL && *cmd_string != '\0')
 					{
 						if (cmd_label == NULL)
@@ -207,12 +211,13 @@ static void _e2_edftdlg_save_current_category (E2_FileTypeDlgRuntime *rt)
 						//populate it
 						gtk_tree_store_set (rt->stores[E2_CATPANE], &cfg_iter3,
 #endif
-							1, cmd_label, 2, cmd_string, -1);
+							1, cmd_label, 2, cmd_string, 3, icon, -1);
 					}
 					if (cmd_label != NULL)
 						g_free (cmd_label);
 					if (cmd_string != NULL)
 						g_free (cmd_string);
+					g_free (icon);
 				}
 			}
 			else
@@ -252,7 +257,7 @@ static void _e2_edftdlg_update_category (GtkTreePath *path,
 	{
 		GtkTreeIter newiter;	//for dialog stores
 		GtkTreeIter iter2, iter3;	//for cfg levels
-		gchar *extension, *cmd_label, *cmd_string;
+		gchar *extension, *cmd_label, *cmd_string, *icon;
 		//should always be level-2 child nodes, but test anyway ...
 		if (gtk_tree_model_iter_children (cfgmdl, &iter2, &iter))
 		{
@@ -286,7 +291,7 @@ static void _e2_edftdlg_update_category (GtkTreePath *path,
 						do
 						{  //commands loop also = level 3, build the commands array
 							gtk_tree_model_get (cfgmdl, &iter3, 1, &cmd_label, 2,
-								&cmd_string, -1);
+								&cmd_string, 3, &icon, -1);
 #ifdef USE_GTK2_10
 							gtk_tree_store_insert_with_values (
 								rt->stores[E2_CMDPANE], &newiter, NULL, -1,
@@ -296,9 +301,10 @@ static void _e2_edftdlg_update_category (GtkTreePath *path,
 							//populate it
 							gtk_tree_store_set (rt->stores[E2_CMDPANE], &newiter,
 #endif
-								0, cmd_label, 1, cmd_string, -1);
+								0, cmd_label, 1, cmd_string, 2, icon, -1);
 							g_free (cmd_label);
 							g_free (cmd_string);
+							g_free (icon);
 						} while (gtk_tree_model_iter_next (cfgmdl, &iter3));
 					}
 					else
@@ -536,6 +542,9 @@ static void _e2_edftdlg_response_cb (GtkDialog *dialog, gint response,
 					(GTK_TREE_MODEL (rt->stores[rt->currentID]), &nextiter))
 						gtk_tree_store_swap (rt->stores[rt->currentID], &iter, &nextiter);
 			}
+			break;
+		case E2_RESPONSE_USER4:
+			e2_filetype_assign_icons (GTK_TREE_MODEL (rt->stores[E2_CMDPANE]), FALSE);
 			break;
 		case E2_RESPONSE_USER3:
 			//insert-after button pressed
@@ -780,18 +789,76 @@ static gboolean _e2_edftdlg_popup_menu_cb (GtkWidget *treeview,
 	return TRUE;
 }
 /**
+@brief apply an icon choice to the command row which opened the picker
+*/
+static void _e2_edftdlg_icon_set_cb (GtkDialog *dialog, gint response,
+	GtkTreeModel *model)
+{
+	NEEDCLOSEBGL
+	if (response == E2_RESPONSE_APPLY || response == E2_RESPONSE_MORE
+		|| response == E2_RESPONSE_REMOVE)
+	{
+		GtkTreeRowReference *row = g_object_get_data (G_OBJECT (dialog), "filetype-row");
+		const gchar *icon = g_object_get_data (G_OBJECT (dialog), "image");
+		if (icon != NULL && gtk_tree_row_reference_valid (row))
+		{
+			GtkTreePath *path = gtk_tree_row_reference_get_path (row);
+			GtkTreeIter iter;
+			if (gtk_tree_model_get_iter (model, &iter, path))
+				gtk_tree_store_set (GTK_TREE_STORE (model), &iter, 2, icon, -1);
+			gtk_tree_path_free (path);
+		}
+	}
+	if (response != E2_RESPONSE_MORE && response != E2_RESPONSE_REMOVE)
+		gtk_widget_destroy (GTK_WIDGET (dialog));
+	NEEDOPENBGL
+}
+/**
+@brief open the shared icon picker for a command in the filetype editor
+*/
+static gboolean _e2_edftdlg_choose_icon (E2_FileTypeDlgRuntime *rt,
+	GtkTreePath *path, GdkEventButton *event)
+{
+	GtkTreeModel *model = GTK_TREE_MODEL (rt->stores[E2_CMDPANE]);
+	GtkTreeIter iter;
+	gchar *icon;
+	if (!gtk_tree_model_get_iter (model, &iter, path))
+		return FALSE;
+	gtk_tree_model_get (model, &iter, 2, &icon, -1);
+	//New command rows may not have any icon value yet.
+	if (icon == NULL)
+		icon = g_strdup ("");
+	GtkTreeView *view = GTK_TREE_VIEW (rt->views[E2_CMDPANE]);
+	gtk_tree_view_set_cursor (view, path, gtk_tree_view_get_column (view, 2), FALSE);
+	gchar *title = g_strdup_printf (_("select icon for %s"), rt->typeset->name);
+	GtkWidget *dialog = e2_sid_create (filetypes_dialog, title, icon, event);
+	g_free (title);
+	g_free (icon);
+	if (dialog == NULL)
+		return FALSE;
+	//The picker can be reused while open. Keep one handler and track row moves.
+	g_signal_handlers_disconnect_by_func (dialog, _e2_edftdlg_icon_set_cb, model);
+	g_object_set_data_full (G_OBJECT (dialog), "filetype-row",
+		gtk_tree_row_reference_new (model, path),
+		(GDestroyNotify) gtk_tree_row_reference_free);
+	g_signal_connect_object (dialog, "response",
+		G_CALLBACK (_e2_edftdlg_icon_set_cb), G_OBJECT (model), 0);
+	return TRUE;
+}
+/**
 @brief treeview button press callback
 
 @param treeview the clicked treeview widget
 @param event ptr to event data struct
 @param rt pointer to data struct for the dialog
 
-@return FALSE
+@return TRUE when an icon picker or context menu was opened
 */
 static gboolean _e2_edftdlg_button_press_cb (GtkWidget *treeview,
 	GdkEventButton *event, E2_FileTypeDlgRuntime *rt)
 {
 	//FIXME find a way to cancel editing of a renderer that is clicked again
+	gboolean handled = FALSE;
 	NEEDCLOSEBGL
 	if (event->button == 1 && event->type == GDK_BUTTON_PRESS //no multi-clicks
 #ifdef E2_MOUSECUSTOM
@@ -800,14 +867,18 @@ static gboolean _e2_edftdlg_button_press_cb (GtkWidget *treeview,
 		)
 	{
 		GtkTreePath *path;
+		GtkTreeViewColumn *column;
 		if (gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (treeview),
-				event->x, event->y, &path, NULL, NULL, NULL))
+				event->x, event->y, &path, &column, NULL, NULL))
 		{
 			if (treeview == rt->views[E2_CATPANE])
 			{
 				_e2_edftdlg_save_current_category (rt);
 				_e2_edftdlg_update_category (path, rt);
 			}
+			else if (treeview == rt->views[E2_CMDPANE]
+				&& column == gtk_tree_view_get_column (GTK_TREE_VIEW (treeview), 2))
+				handled = _e2_edftdlg_choose_icon (rt, path, event);
 			gtk_tree_path_free (path);
 		}
 		//clicked a bare part of the view
@@ -829,7 +900,7 @@ static gboolean _e2_edftdlg_button_press_cb (GtkWidget *treeview,
 		return TRUE;
 	}
 	NEEDOPENBGL
-	return FALSE;
+	return handled;
 }
 /**
 @brief abandon the dialog without making any change
@@ -900,6 +971,7 @@ void e2_filetype_dialog_edit_create (gchar *open_category)
 	filetypes_dialog = e2_dialog_create (_("edit filetypes"), NULL, (ResponseFunc)_e2_edftdlg_response_cb, rt, NULL);
 
 	e2_option_connect (filetypes_dialog, FALSE);
+	g_object_set_data (G_OBJECT (filetypes_dialog), "dialog-form", GINT_TO_POINTER (E2_CFGDLG_SINGLE));
 
 	//main scrolled window
 	GtkWidget *sw = e2_widget_add_sw (
@@ -989,8 +1061,8 @@ void e2_filetype_dialog_edit_create (gchar *open_category)
 		GTK_SHADOW_IN);
 	gtk_box_pack_start (GTK_BOX (hbox), cmd_sw, TRUE, TRUE, 0);
 	//commands liststore and treeview
-	//store has columns for displayed label, command
-	rt->stores[E2_CMDPANE] = gtk_tree_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
+	//store has columns for displayed label, command, and optional icon
+	rt->stores[E2_CMDPANE] = gtk_tree_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING);
 	rt->views[E2_CMDPANE] = gtk_tree_view_new_with_model (GTK_TREE_MODEL (rt->stores[E2_CMDPANE]));
 	g_object_unref (rt->stores[E2_CMDPANE]);	//destroy store with view
 	gtk_tree_view_set_reorderable (GTK_TREE_VIEW (rt->views[E2_CMDPANE]), TRUE);
@@ -1013,6 +1085,14 @@ void e2_filetype_dialog_edit_create (gchar *open_category)
 		(GTK_TREE_VIEW (rt->views[E2_CMDPANE]), 1, _("Commands"), renderer, "text", 1, NULL);
 	column = gtk_tree_view_get_column (GTK_TREE_VIEW (rt->views[E2_CMDPANE]), 1);
 	g_object_set (G_OBJECT (column), "resizable", TRUE, NULL);
+
+	renderer = gtk_cell_renderer_pixbuf_new ();
+	g_object_set (G_OBJECT (renderer), "stock-size", GTK_ICON_SIZE_MENU, NULL);
+	column = gtk_tree_view_column_new_with_attributes (_("Icon"), renderer, NULL);
+	g_object_set_data (G_OBJECT (column), "column", GINT_TO_POINTER (2));
+	gtk_tree_view_column_set_cell_data_func (column, renderer,
+		e2_option_tree_cell_pixbuf_data_func, GINT_TO_POINTER (GTK_ICON_SIZE_MENU), NULL);
+	gtk_tree_view_append_column (GTK_TREE_VIEW (rt->views[E2_CMDPANE]), column);
 
 	gtk_container_add (GTK_CONTAINER (cmd_sw), rt->views[E2_CMDPANE]);
 	gtk_widget_set_size_request (cmd_sw, 400, 1);
@@ -1088,6 +1168,12 @@ void e2_filetype_dialog_edit_create (gchar *open_category)
 	local_btn.name = STOCK_NAME_ADD;
 	local_btn.tip = _("Add a row after the currently selected one");
 	local_btn.response = E2_RESPONSE_USER3;
+	e2_dialog_add_defined_button (filetypes_dialog, &local_btn);
+
+	local_btn.label = _("Auto _icons");
+	local_btn.name = STOCK_NAME_EXECUTE;
+	local_btn.tip = _("Fill empty command icons in this category from installed applications and the current icon theme");
+	local_btn.response = E2_RESPONSE_USER4;
 	e2_dialog_add_defined_button (filetypes_dialog, &local_btn);
 
 //	e2_button_derive (&local_btn, &E2_BUTTON_NO, BTN_NO_CANCEL);

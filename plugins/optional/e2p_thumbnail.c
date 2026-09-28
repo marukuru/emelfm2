@@ -1158,10 +1158,11 @@ static void _e2p_thumbs_menu_filetype_actions (GtkWidget *menu,
 
 	while (*actions != NULL)
 	{
+		const gchar *icon = e2_filetype_get_action_icon (*actions);
 		if ((s = strchr (*actions, '@')) != NULL)  //if always ASCII @, don't need g_utf8_strchr()
 		{
 			*s = '\0';
-			menu_item = e2_menu_add (menu, (gchar *)*actions, NULL, NULL,
+			menu_item = e2_menu_add (menu, (gchar *)*actions, icon, NULL,
 				_e2p_thumbs_menu_choose_filetype_action_cb, rt);
 			*s = '@';	//revert to original form (this is the 'source' data)
 			s++;	//point to command
@@ -1169,7 +1170,7 @@ static void _e2p_thumbs_menu_filetype_actions (GtkWidget *menu,
 		else
 		{
 			s = (gchar *)*actions;
-			menu_item = e2_menu_add (menu, s, NULL, NULL,
+			menu_item = e2_menu_add (menu, s, icon, NULL,
 				_e2p_thumbs_menu_choose_filetype_action_cb, rt);
 		}
 		//some activation-code wants the command, from the menu item
