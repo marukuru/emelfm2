@@ -21,10 +21,12 @@ Symbolic icons retain each original image's actual dimensions.
 The same native widgets, action identifiers, layouts, column sizing, toolbar
 placements, keyboard/mouse bindings and confirmation dialogs are used. There
 is no new sidebar, header bar, theme selector or file-operation code path.
-GTK 3 uses local CSS providers for control surfaces, without color or size
-overrides. GTK 2 uses a flat style engine with the resolved theme palettes and
-metrics. GTK 2 combo-box arrow buttons and file column headers retain their
-native styles to preserve private spacing and theme-specific dark backgrounds.
+GTK 3 uses local CSS providers for control surfaces, preserving their sizes
+and base colors. GTK 2 uses a flat style engine with the resolved theme palettes
+and metrics. Scrollbar thumbs gain a white outline while hovered or dragged,
+including scrollbars in the file panes, output pane, terminal and dialogs.
+GTK 2 combo-box arrow buttons and file column headers retain their native styles
+to preserve private spacing and theme-specific dark backgrounds.
 Highlighted GTK 2 menu items use the theme's selection background, including
 themes whose normal highlight is painted from artwork instead of a hover color.
 Window decorations remain desktop-managed.

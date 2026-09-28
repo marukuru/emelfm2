@@ -294,6 +294,16 @@ static void _e2_modern_ui_slider (GtkStyle *style, GdkWindow *window,
 {
 	_e2_modern_ui_box (style, window, state, shadow, area, widget, detail,
 		x, y, width, height);
+	if (widget != NULL && GTK_IS_SCROLLBAR (widget) && gtk_widget_is_sensitive (widget)
+		&& (state == GTK_STATE_PRELIGHT || state == GTK_STATE_ACTIVE))
+	{
+		/* Theme engines can paint hover feedback without a distinct palette
+		 * entry. Restore a visible outline when replacing that artwork. */
+		const GdkColor white = {0, 65535, 65535, 65535};
+		cairo_t *cr = _e2_modern_ui_context (window, area, &width, &height);
+		_e2_modern_ui_border (cr, &white, x, y, width, height);
+		cairo_destroy (cr);
+	}
 }
 
 static void e2_flat_style_class_init (E2FlatStyleClass *klass)
@@ -419,7 +429,10 @@ void e2_modern_ui_init (void)
 		" .e2-modern-input-focus { border-color: @theme_selected_bg_color; }"
 		" .e2-modern-button-highlight {"
 		" border-color: @theme_selected_bg_color; outline-color: @theme_selected_bg_color; }"
-		" .e2-modern-button-border.e2-modern-button-highlight { outline-style: none; }",
+		" .e2-modern-button-border.e2-modern-button-highlight { outline-style: none; }"
+		/* An inset stroke leaves the theme's slider size and fill unchanged. */
+		" scrollbar slider:hover:not(:disabled), scrollbar slider:active:not(:disabled) {"
+		" box-shadow: inset 0 0 0 1px white; }",
 		-1, &error);
 	if (error != NULL)
 	{
