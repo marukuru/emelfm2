@@ -20,6 +20,11 @@ Feel free to do another language. Start by asking on the mailing list if anybody
 
 The help documents [USAGE](./docs/USAGE) and [CONFIGURATION](./docs/CONFIGURATION) might well be translated at some future time, but they are not yet mature. Probably not worth translating yet.
 #### BUILD, COMPILE
+The internal viewer includes automatic syntax highlighting, controlled by
+Configuration → interface → file viewer → syntax highlighting. Building with
+GTK 2 requires `libsource-highlight-dev` and a C++ compiler; GTK 3 requires
+`libgtksourceview-4-dev`. The remaining application code is built as C.
+
 See files [CONSTRUCT](./docs/CONSTRUCT) and [Makefile.config](./Makefile.config).
 #### INSTALL, UNINSTALL
 See the [INSTALL](./docs/INSTALL) file.

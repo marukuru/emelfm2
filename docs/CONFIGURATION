@@ -356,7 +356,16 @@ EmelFM2 has configuration options to use an external text-file viewer and/or edi
 [File viewer]
 The internal file viewer has settings for maximum text width (20-500 character
 cells), ASCII art detection, the ordinary-text font, HTTP/HTTPS hyperlinks,
-a custom browser executable, line numbers, and foreground/background/link colors.
+a custom browser executable, line numbers, syntax highlighting, and
+foreground/background/link colors.
+Syntax highlighting is enabled by default. Its toggle on interface > file viewer
+also updates open viewers. The language is detected from the filename and content
+(including script interpreter lines). Refreshing or changing the encoding repeats
+highlighting on the decoded text. Supported languages depend on the installed
+library: GNU Source-highlight for GTK 2, GtkSourceView 4 for GTK 3. Unknown types,
+binary content and detected artwork stay plain. To keep large logs and minified
+files responsive, highlighting is skipped for decoded text over 2 MiB or lines
+longer than 16 KiB. Copying and searching always use the original decoded text.
 Detected artwork uses bundled IBM VGA or Amiga Topaz at its native pixel size.
 Long lines are retained and can be scrolled or wrapped. Line numbers are a gutter,
 not part of the document. Browser paths may contain spaces; do not quote them or

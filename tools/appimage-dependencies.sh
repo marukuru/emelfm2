@@ -4,8 +4,8 @@ set -eu
 gtk=${1:-2}
 vte=${2:-0}
 case "$gtk" in
-    2) packages=libgtk2.0-dev; terminal=libvte-dev ;;
-    3) packages=libgtk-3-dev; terminal=libvte-2.91-dev ;;
+    2) packages="libgtk2.0-dev libsource-highlight-dev"; terminal=libvte-dev ;;
+    3) packages="libgtk-3-dev libgtksourceview-4-dev"; terminal=libvte-2.91-dev ;;
     *) echo 'GTK must be 2 or 3' >&2; exit 2 ;;
 esac
 case "$vte" in

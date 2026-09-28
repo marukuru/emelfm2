@@ -56,7 +56,7 @@ jobs:
           docker run --rm -v ${{ github.workspace }}:/workspace -w /workspace ubuntu:${{ matrix.ubuntu_version }} bash -c "
             export DEBIAN_FRONTEND=noninteractive
             apt-get update
-            apt-get install -y dpkg-dev debhelper devscripts build-essential libglib2.0-dev libgtk2.0-dev libmagic-dev libdbus-glib-1-dev imagemagick git lsb-release
+            apt-get install -y dpkg-dev debhelper devscripts build-essential libglib2.0-dev libgtk2.0-dev libsource-highlight-dev libmagic-dev libdbus-glib-1-dev imagemagick git lsb-release
             
             git config --global --add safe.directory /workspace
             
@@ -110,6 +110,7 @@ jobs:
           make -j$(nproc) WITH_GTK2=1 WITH_GTK3=0 WITH_VTE=0
           make install WITH_GTK2=1 WITH_GTK3=0 WITH_VTE=0 PREFIX=AppDir/usr
           make install_plugins WITH_GTK2=1 WITH_GTK3=0 WITH_VTE=0 PREFIX=AppDir/usr
+          sh tools/appimage-syntax-data.sh AppDir 2
           mkdir -p AppDir/usr/share/applications AppDir/usr/share/icons/hicolor/48x48/apps
           cp docs/desktop_environment/emelfm2.desktop AppDir/usr/share/applications/
           cp icons/emelfm2_48.png AppDir/usr/share/icons/hicolor/48x48/apps/emelfm2.png || true

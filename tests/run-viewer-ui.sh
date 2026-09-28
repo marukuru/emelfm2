@@ -23,6 +23,10 @@ for name in ('pc.NFO', 'art.txt', 'untyped'):
     (root/name).write_bytes((root/'pc.nfo').read_bytes())
 (root/'amiga.aSc').write_bytes((root/'amiga.nfo').read_bytes())
 (root/'100% <notes> & longer file viewer filename.txt').write_text('Viewer layout regression\n')
+(root/'syntax.c').write_text('/* 日本語 */\nint main(void) { return 42; }\n// https://example.test/\n')
+(root/'syntax.py').write_bytes('def greet():\n    return "世界"\n'.encode('utf-16'))
+(root/'binary.c').write_bytes(b'int main(void) { return 0; }\n\0')
+(root/'art.c').write_bytes((root/'pc.nfo').read_bytes() + b'\nreturn\n')
 (root/'utf16.txt').write_bytes('Hello 世界\r\nlast line\r\n'.encode('utf-16'))
 for columns, lines in ((80, 100), (80, 1000), (120, 100)):
     (root/f'{columns}-columns-{lines}-lines.txt').write_text('\n'.join(['X' * columns] * lines))
@@ -46,9 +50,11 @@ with open(root/'log', 'w') as output:
         while not (root/'passed').exists() and p.poll() is None and time.monotonic() < deadline: time.sleep(.05)
         assert (root/'passed').exists(), (root/'log').read_text()
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
+        configs = list((root/'config').glob('config-*'))
+        assert any('dialog-view-syntax-highlighting=false' in p.read_text() for p in configs), configs
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: artwork and extension filters, fonts, decoding, links, text sizing and reflow, line numbers, compact controls, refresh, automatic end positioning and settings passed')
+        print('viewer UI: syntax detection, live toggle, encoding and refresh highlighting, artwork and extension filters, fonts, decoding, links, text sizing and reflow, line numbers, compact controls, refresh, automatic end positioning and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY

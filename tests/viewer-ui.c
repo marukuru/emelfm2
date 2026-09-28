@@ -291,6 +291,68 @@ static void check_layout (gboolean wrapped)
     g_assert_cmpint (pango_layout_is_ellipsized (gtk_label_get_layout (GTK_LABEL (filename))), ==, wrapped);
     g_free (expected);
 }
+static gboolean syntax_colored (const gchar *needle)
+{
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+    GtkTextIter a, b;
+    gtk_text_buffer_get_bounds (buffer, &a, &b);
+    gchar *text = gtk_text_buffer_get_text (buffer, &a, &b, TRUE);
+    const gchar *token = strstr (text, needle);
+    g_assert_nonnull (token);
+    gtk_text_buffer_get_iter_at_offset (buffer, &a, g_utf8_pointer_to_offset (text, token));
+    GSList *tags = gtk_text_iter_get_tags (&a);
+    gboolean colored = FALSE;
+    for (GSList *p = tags; p != NULL; p = p->next)
+    {
+        gboolean set;
+        g_object_get (p->data, "foreground-set", &set, NULL);
+        colored |= set;
+    }
+    g_slist_free (tags);
+    g_free (text);
+    return colored;
+}
+static void check_syntax (void)
+{
+    g_assert_cmpstr (e2_option_get ("dialog-view-syntax-highlighting")->group, ==, "interface.file viewer");
+    g_assert_true (e2_option_bool_get ("dialog-view-syntax-highlighting"));
+    open_viewer ("syntax.c");
+    g_assert_false (gtk_text_view_get_editable (GTK_TEXT_VIEW (view)));
+    g_assert_true (syntax_colored ("return"));
+    GtkTextBuffer *buffer = gtk_text_view_get_buffer (GTK_TEXT_VIEW (view));
+    GtkTextIter a, b;
+    gtk_text_buffer_get_bounds (buffer, &a, &b);
+    GtkTextTag *match = gtk_text_buffer_create_tag (buffer, "syntax-test-match", "background", "yellow", NULL);
+    gtk_text_buffer_apply_tag (buffer, match, &a, &b);
+    e2_option_bool_set ("dialog-view-syntax-highlighting", FALSE);
+    g_assert_false (syntax_colored ("return"));
+    g_assert_true (gtk_text_iter_has_tag (&a, match));
+    g_assert_true (syntax_colored ("https://")); /* Link colours survive the toggle. */
+    e2_option_bool_set ("dialog-view-syntax-highlighting", TRUE);
+    g_assert_true (syntax_colored ("return"));
+    gchar *path = g_build_filename (root, "syntax.c", NULL);
+    g_file_set_contents (path, "/* 世界 */\nint main(void) { return 7; }\n", -1, NULL);
+    g_free (path);
+    gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_REFRESH)));
+    g_assert_true (syntax_colored ("return"));
+    close_viewer ();
+    /* Closing a viewer must detach its option hook. */
+    e2_option_bool_set ("dialog-view-syntax-highlighting", FALSE);
+    open_viewer ("syntax.py");
+    g_assert_false (syntax_colored ("return"));
+    e2_option_bool_set ("dialog-view-syntax-highlighting", TRUE);
+    g_assert_true (syntax_colored ("return"));
+    GtkWidget *encoding = find (dialog, "file-viewer-encoding");
+    gtk_combo_box_set_active (GTK_COMBO_BOX (encoding), 2); /* UTF-16LE */
+    g_assert_true (syntax_colored ("return"));
+    close_viewer ();
+    open_viewer ("binary.c");
+    g_assert_false (syntax_colored ("return"));
+    close_viewer ();
+    open_viewer ("art.c");
+    g_assert_false (syntax_colored ("return"));
+    close_viewer ();
+}
 static gboolean tick (gpointer data)
 {
     if (curr_view == NULL || curr_view->dir[0] == 0 || g_atomic_int_get (&curr_view->listcontrols.cd_working)) return TRUE;
@@ -317,6 +379,7 @@ static gboolean tick (gpointer data)
             e2_option_color_set_str ("dialog-view-link-color", "#00ff66");
             gchar *browser = g_build_filename (root, "fake browser", NULL);
             e2_option_str_set_direct (e2_option_get ("dialog-view-browser"), browser); g_free (browser);
+            check_syntax ();
             open_viewer ("plain.txt");
             gtk_window_resize (GTK_WINDOW (dialog), 1000, 500);
             break;
@@ -640,6 +703,10 @@ static gboolean tick (gpointer data)
         case 32:
         {
             /* Verify the requested page is usable, not merely registered. */
+            GtkWidget *syntax = e2_option_get ("dialog-view-syntax-highlighting")->widget;
+            g_assert_true (GTK_IS_TOGGLE_BUTTON (syntax));
+            g_assert_true (gtk_widget_get_mapped (syntax));
+            g_assert_true (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (syntax)));
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");
             g_assert_true (GTK_IS_SPIN_BUTTON (width->widget));
             g_assert_true (gtk_widget_get_mapped (width->widget));
@@ -669,7 +736,12 @@ static gboolean tick (gpointer data)
             g_assert_false (gtk_widget_get_sensitive (end_patterns));
             dialog = gtk_widget_get_toplevel (width->widget);
             capture ("settings.png");
-            gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
+            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (syntax), FALSE);
+            gtk_dialog_response (GTK_DIALOG (dialog), E2_RESPONSE_APPLY);
+            g_assert_false (e2_option_bool_get ("dialog-view-syntax-highlighting"));
+            open_viewer ("syntax.c");
+            g_assert_false (syntax_colored ("return"));
+            close_viewer ();
             gchar *done = g_build_filename (root, "passed", NULL);
             g_file_set_contents (done, "passed", -1, NULL); g_free (done);
             e2_main_closedown (TRUE, TRUE, TRUE);

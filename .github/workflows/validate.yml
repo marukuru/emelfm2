@@ -36,8 +36,8 @@ jobs:
       - uses: actions/checkout@v4
       - name: Install matching dependencies
         run: |
-          packages="libgtk2.0-dev"
-          if [ '${{ matrix.gtk }}' = 3 ]; then packages="libgtk-3-dev"; fi
+          packages="libgtk2.0-dev libsource-highlight-dev"
+          if [ '${{ matrix.gtk }}' = 3 ]; then packages="libgtk-3-dev libgtksourceview-4-dev"; fi
           if [ '${{ matrix.vte }}' = 1 ]; then
             if [ '${{ matrix.gtk }}' = 2 ]; then packages="$packages libvte-dev";
             else packages="$packages libvte-2.91-dev"; fi

@@ -72,7 +72,9 @@ SOURCES = $(foreach dir, $(DIRS), $(wildcard $(dir)/*.c))
 ifeq ($(WITH_MODERN_UI),0)
 SOURCES := $(filter-out src/e2_modern_ui.c,$(SOURCES))
 endif
-OBJECTS = $(SOURCES:%.c=$(OBJECTS_DIR)/%.o)
+C_OBJECTS = $(SOURCES:%.c=$(OBJECTS_DIR)/%.o)
+CXX_OBJECTS = $(CXX_SOURCES:%.cpp=$(OBJECTS_DIR)/%.o)
+OBJECTS = $(C_OBJECTS) $(CXX_OBJECTS)
 DEP_FILES = $(SOURCES:%.c=$(OBJECTS_DIR)/%.deps)
 
 LIBS_HEADERS = $(foreach dir, $(LIBS), $(wildcard $(dir)/*.h))
@@ -256,6 +258,21 @@ else
  endif
 endif
 
+# The viewer uses the highlighting library matching the selected GTK build.
+ifeq ($(GTK3),1)
+SYNTAX_PACKAGE = gtksourceview-4
+else
+SYNTAX_PACKAGE = source-highlight
+CXX_SOURCES = src/utils/e2_source_highlight.cpp
+SYNTAX_CXX_LIBS = -lstdc++
+endif
+ifneq ($(filter-out clean distclean help,$(or $(MAKECMDGOALS),all)),)
+ifeq ($(shell $(PKG_CONFIG) --exists $(SYNTAX_PACKAGE) && echo yes),)
+$(error The file viewer requires $(SYNTAX_PACKAGE); install libgtksourceview-4-dev for GTK 3 or libsource-highlight-dev for GTK 2)
+endif
+endif
+lCFLAGS += $(shell $(PKG_CONFIG) --cflags $(SYNTAX_PACKAGE))
+
 # Resolve the backend only after resolving GTK. No VTE probes when disabled.
 SOURCES := $(filter-out src/command/e2_terminal%.c,$(SOURCES))
 ifeq ($(WITH_VTE),1)
@@ -360,6 +377,7 @@ endif
 
 lLIBS += -lrt -lm -ldl $(VTE_LIBS)
 lLIBS += $(shell $(PKG_CONFIG) --libs fontconfig pangofc)
+lLIBS += $(shell $(PKG_CONFIG) --libs $(SYNTAX_PACKAGE)) $(SYNTAX_CXX_LIBS)
 ifneq ($(USE_GAMIN),0)
 #gamin code is a superset of FAM code, so gamin needs fam as well
 lLIBS += -lfam
@@ -510,9 +528,14 @@ ifneq ($(STRIP),0)
 	@strip $(TARGET)
 endif
 
-$(OBJECTS): $(OBJECTS_DIR)/%.o: %.c src/emelfm2.h
+$(C_OBJECTS): $(OBJECTS_DIR)/%.o: %.c src/emelfm2.h
 	@echo "compiling '$*.c'"
 	@$(CC) $(lCFLAGS) -c -o $@ $*.c
+
+$(CXX_OBJECTS): $(OBJECTS_DIR)/%.o: %.cpp
+	@echo "compiling '$*.cpp'"
+	@$(CXX) $(CPPFLAGS) $(CXXFLAGS) -std=c++11 -Wno-deprecated-declarations \
+		$(shell $(PKG_CONFIG) --cflags gtk+-2.0 source-highlight) -Isrc/utils -c -o $@ $<
 
 $(LIBS_OBJECTS): $(OBJECTS_DIR)/%.so: %.c src/emelfm2.h src/e2_plugins.h
 	@echo "compiling '$*.c'"
@@ -656,7 +679,7 @@ CONFIG_FEATURES = GTK3 WITH_VTE WITH_MODERN_UI NEW_COMMAND WITH_LATEST USE_WAYLA
  WITH_CUSTOMMOUSE WITH_OUTPUTSTYLES EXTRA_BINDINGS FILES_UTF8ONLY WITH_THUMBS \
  WITH_THUMBLIB WITH_ACL WITH_TRACKER DOCS_VERSION PANES_HORIZONTAL USE_GAMIN \
  WITH_KERNELFAM USE_INOTIFY USE_KQUEUE USE_PORTEVENT WITH_SYSTEM_ICONS XDG_INTEGRATION
-CONFIG_SIGNATURE = $(foreach feature,$(CONFIG_FEATURES),$(feature)=$($(feature))) CC=$(CC) CFLAGS=$(CFLAGS) LDFLAGS=$(LDFLAGS)
+CONFIG_SIGNATURE = $(foreach feature,$(CONFIG_FEATURES),$(feature)=$($(feature))) CC=$(CC) CFLAGS=$(CFLAGS) CXX=$(CXX) CXXFLAGS=$(CXXFLAGS) CPPFLAGS=$(CPPFLAGS) LDFLAGS=$(LDFLAGS)
 .PHONY: FORCE_BUILD_CONFIG
 .build-config: FORCE_BUILD_CONFIG
 	@printf '%s\n' '$(CONFIG_SIGNATURE)' > $@.tmp

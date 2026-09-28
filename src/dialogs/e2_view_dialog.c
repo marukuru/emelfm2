@@ -2311,6 +2311,9 @@ void e2_view_dialog_options_register (void)
 		_("This causes the view window to open with text-wrapping enabled"),
 		NULL, TRUE,
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT | E2_OPTION_FLAG_FREEGROUP);
+	e2_option_bool_register ("dialog-view-syntax-highlighting", group_name, _("syntax highlighting"),
+		_("Automatically detect the language and highlight source code"), NULL, TRUE,
+		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-open-at-end", group_name, _("automatically jump to the newest line"),
 		_("Open and refresh matching files at the end of their content"), NULL, TRUE,
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);

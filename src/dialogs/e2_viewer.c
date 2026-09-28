@@ -2,7 +2,9 @@
 #include "emelfm2.h"
 #include "e2_viewer.h"
 #include "e2_viewer_text.h"
+#include "e2_viewer_syntax.h"
 #include "e2_option.h"
+#include "e2_hook.h"
 #include <fontconfig/fontconfig.h>
 #include <pango/pangofc-fontmap.h>
 #include <pango/pangocairo.h>
@@ -293,6 +295,23 @@ static void update_info (E2_Viewer *viewer)
     gtk_widget_set_tooltip_text (viewer->info, text->str);
     g_string_free (text, TRUE);
 }
+static void update_syntax (E2_Viewer *viewer)
+{
+    GdkColor background;
+    gdk_color_parse (e2_option_str_get ("dialog-view-background"), &background);
+    gboolean dark = 0.2126 * background.red + 0.7152 * background.green
+        + 0.0722 * background.blue < 32768;
+    e2_viewer_syntax_update (viewer->buffer, viewer->filename, viewer->decoded.text,
+        e2_option_bool_get ("dialog-view-syntax-highlighting")
+            && viewer->decoded.art == E2_VIEWER_PLAIN && !viewer->decoded.binary, dark);
+}
+static gboolean syntax_changed (gpointer value, gpointer data)
+{
+    NEEDCLOSEBGL
+    update_syntax (data);
+    NEEDOPENBGL
+    return TRUE;
+}
 static void update_content (E2_Viewer *viewer)
 {
     g_clear_pointer (&viewer->pressed, g_free);
@@ -300,6 +319,7 @@ static void update_content (E2_Viewer *viewer)
     viewer->decoded = e2_viewer_decode (viewer->bytes, viewer->length,
         detect_art (viewer), encodings[viewer->selected_encoding]);
     gtk_text_buffer_set_text (viewer->buffer, viewer->decoded.text, -1);
+    update_syntax (viewer);
     update_links (viewer);
     e2_viewer_set_font (viewer, viewer->view, &viewer->char_width, &viewer->char_height);
     if (viewer->decoded.art != E2_VIEWER_PLAIN)
@@ -475,13 +495,17 @@ E2_Viewer *e2_viewer_new (gpointer bytes, gsize length, const gchar *filename)
     viewer->bytes = bytes; viewer->length = length;
     viewer->filename = g_strdup (filename);
     viewer->decoded = e2_viewer_decode (bytes, length, detect_art (viewer), NULL);
-    viewer->buffer = gtk_text_buffer_new (NULL);
+    viewer->buffer = e2_viewer_syntax_buffer_new ();
     gtk_text_buffer_set_text (viewer->buffer, viewer->decoded.text, -1);
+    update_syntax (viewer);
     return viewer;
 }
 void e2_viewer_free (E2_Viewer *viewer)
 {
     if (viewer == NULL) return;
+    E2_OptionSet *option = e2_option_get_simple ("dialog-view-syntax-highlighting");
+    if (option != NULL && option->hook_value_changed.is_setup)
+        e2_hook_unregister (&option->hook_value_changed, syntax_changed, viewer, TRUE);
     g_free (viewer->bytes); g_free (viewer->decoded.text); g_free (viewer->pressed);
     g_free (viewer->filename);
     if (viewer->links != NULL) g_ptr_array_free (viewer->links, TRUE);
@@ -533,6 +557,11 @@ void e2_viewer_attach (E2_Viewer *viewer, GtkWidget *view, GtkWidget *box)
     viewer->view = view;
     gtk_widget_set_name (view, "file-viewer-text");
     gtk_text_view_set_buffer (GTK_TEXT_VIEW (view), viewer->buffer);
+    /* TextView finalization can lag behind dialog destruction. Tie this hook
+     * to the viewer state, which the dialog frees immediately on closing. */
+    e2_hook_register (
+        &e2_option_get ("dialog-view-syntax-highlighting")->hook_value_changed,
+        syntax_changed, viewer);
 #ifdef USE_GTK3_0
     GdkRGBA fg, bg;
     gdk_rgba_parse (&fg, e2_option_str_get ("dialog-view-foreground"));
