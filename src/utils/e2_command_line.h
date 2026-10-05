@@ -46,9 +46,11 @@ typedef struct _E2_CommandLineRuntime
 //	E2_ToolbarRuntime *bar; //for finding where the commandline is placed
 	E2_OptionSet *opt_history_last;
 	gboolean original;  //TRUE for command line(s), FALSE for dir lines
+	gboolean tab_navigation; //Escape toggles Tab between completion and focus traversal
 } E2_CommandLineRuntime;
 
 gboolean e2_command_line_insert (const gchar *newtext);
+gboolean e2_command_line_key (GtkWidget *window, GdkEventKey *event, gpointer data);
 void e2_command_line_register_keybindings (E2_CommandLineRuntime *rt);
 #ifdef E2_MOUSECUSTOM
 void e2_command_line_register_pointerbindings (E2_CommandLineRuntime *rt);

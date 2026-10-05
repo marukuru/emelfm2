@@ -133,7 +133,9 @@ A find plugin allows heavy-duty searching, with that you can find item(s) anywhe
 
 ENTRY COMPLETION
 
-By default, the Tab key is bound to an action (see KEY BINDINGS section, below) which "completes" entries in directory lines or the command line, as follows.
+The Tab key completes entries in the command line. In directory lines, Tab is bound by default to the completion action (see KEY BINDINGS section, below).
+
+While the command line has focus, Escape toggles Tab between completion and moving to the next GUI item (Shift+Tab moves backwards in navigation mode). Completion is the initial mode, and keeps focus in the command line even when there are no matches. Escape leaves the entered text unchanged. The mode stays in effect when you leave and return to that entry; a newly created entry starts in completion mode.
 
 When entering a path into a directory line, pressing the Tab key will complete that entry, if there is only one valid completion. If there is more than one such completion, they will be listed in the output pane. (Note also that pressing <Ctrl>Tab will open a directory-selection dialog.)
 

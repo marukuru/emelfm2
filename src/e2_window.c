@@ -40,6 +40,7 @@ ToDo - description of how this works
 #include "e2_window.h"
 #include "e2_option.h"
 #include "e2_action.h"
+#include "e2_command_line.h"
 #include "e2_context_menu.h"
 #include "e2_toolbar.h"
 #include "e2_filestore.h"
@@ -1556,6 +1557,8 @@ void e2_window_create (E2_WindowRuntime *rt)
 		app.main_window->allocation.width, app.main_window->allocation.height);
 #endif
 	gtk_window_set_resizable (GTK_WINDOW (app.main_window), TRUE);
+	g_signal_connect (app.main_window, "key-press-event",
+		G_CALLBACK (e2_command_line_key), GUINT_TO_POINTER (1));
 	g_signal_connect (app.main_window, "key-press-event",
 		G_CALLBACK (e2_tabs_key), GUINT_TO_POINTER (1));
 #ifdef E2_VTE

@@ -1086,6 +1086,48 @@ static gboolean _e2_command_line_complete_action
 	return TRUE;
 }
 /**
+@brief handle command-line completion and focus traversal before window bindings
+Only command entries own this mode; directory entries and terminals keep their
+own key handling. The mode lasts until toggled again or the entry is recreated.
+*/
+gboolean e2_command_line_key (GtkWidget *window, GdkEventKey *event, gpointer data)
+{
+	guint modifiers = event->state & gtk_accelerator_get_default_mod_mask ();
+	if (modifiers & ~GDK_SHIFT_MASK)
+		return FALSE;
+	gboolean escape = event->keyval == GDK_Escape && modifiers == 0;
+	gboolean tab = event->keyval == GDK_Tab || event->keyval == GDK_ISO_Left_Tab;
+	if (!escape && !tab)
+		return FALSE;
+	/* Let an open history menu or another grab handle its own Escape/Tab. */
+	if (gtk_grab_get_current () != NULL)
+		return FALSE;
+	GtkWidget *entry = gtk_window_get_focus (GTK_WINDOW (window));
+	if (entry == NULL)
+		return FALSE;
+	E2_CommandLineRuntime *rt = g_object_get_data (G_OBJECT (entry), "command-line-runtime");
+	if (rt == NULL || !rt->original)
+		return FALSE;
+
+	NEEDCLOSEBGL
+	if (escape)
+		rt->tab_navigation = !rt->tab_navigation;
+	else if (rt->tab_navigation)
+		g_signal_emit_by_name (window, "move-focus",
+			(modifiers & GDK_SHIFT_MASK || event->keyval == GDK_ISO_Left_Tab)
+				? GTK_DIR_TAB_BACKWARD : GTK_DIR_TAB_FORWARD);
+	else
+	{
+		gchar argument[] = "";
+		E2_ActionRuntime art = {0};
+		art.data = argument;
+		_e2_command_line_complete_action (entry, &art);
+	}
+	NEEDOPENBGL
+	/* Even an empty entry or a failed match must not fall through to GTK focus. */
+	return TRUE;
+}
+/**
 @brief children-menu "activate" signal callback, prepends a pid string to the command line
 
 @param item UNUSED the activated menu item
@@ -1305,6 +1347,7 @@ E2_CommandLineRuntime *e2_command_line_create (gboolean commands,
 //	rt->func = cb;
 //	rt->flags = flags;
 	rt->original = commands; //TRUE for commandline, FALSE for dirline
+	rt->tab_navigation = FALSE;
 	rt->pane = pane_rt;	//pane rt for dirline, NULL for commandline
 
 	rt->history = NULL;
