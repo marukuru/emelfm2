@@ -1099,14 +1099,17 @@ gboolean e2_command_line_key (GtkWidget *window, GdkEventKey *event, gpointer da
 	gboolean tab = event->keyval == GDK_Tab || event->keyval == GDK_ISO_Left_Tab;
 	if (!escape && !tab)
 		return FALSE;
-	/* Let an open history menu or another grab handle its own Escape/Tab. */
-	if (gtk_grab_get_current () != NULL)
-		return FALSE;
 	GtkWidget *entry = gtk_window_get_focus (GTK_WINDOW (window));
 	if (entry == NULL)
 		return FALSE;
 	E2_CommandLineRuntime *rt = g_object_get_data (G_OBJECT (entry), "command-line-runtime");
 	if (rt == NULL || !rt->original)
+		return FALSE;
+	/* A grab on the entry or one of its containers still belongs to this
+	 * command line. Only defer to grabs outside it, such as history menus
+	 * and dialogs; otherwise Tab can fall through to GTK focus traversal. */
+	GtkWidget *grab = gtk_grab_get_current ();
+	if (grab != NULL && grab != entry && !gtk_widget_is_ancestor (entry, grab))
 		return FALSE;
 
 	NEEDCLOSEBGL

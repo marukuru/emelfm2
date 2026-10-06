@@ -23,12 +23,13 @@ for name in ('unique-file.txt', 'spaced file.txt'):
     (root/'source'/name).touch()
     (root/'destination'/name).touch()
 
-def run(case):
+def run(case, menu_style='false'):
     env = dict(os.environ, LD_PRELOAD=str(root/'test.so'), E2_COMMAND_KEYS_CASE=case,
                PATH=str(root/'bin')+os.pathsep+os.environ['PATH'])
     result = subprocess.run(['./emelfm2', '-c', str(root/'config'),
         '-1', str(root/'source'), '-2', str(root/'destination'),
-        '-s', 'single-instance=false', '-s', 'session-end-warning=false'],
+        '-s', 'single-instance=false', '-s', 'session-end-warning=false',
+        '-s', 'command-line-menu-style='+menu_style],
         env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, timeout=30)
     log = result.stdout.decode(errors='replace')
     assert result.returncode == 0 and 'CRITICAL' not in log and 'WARNING' not in log, log
@@ -36,6 +37,7 @@ def run(case):
     print(case, 'passed')
 
 run('default bindings')
+run('menu-style history popup', 'true')
 # An existing profile may lack completion or bind Tab globally to another action.
 config = next((root/'config').glob('config-*'))
 saved = config.read_text()
