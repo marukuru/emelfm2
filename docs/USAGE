@@ -490,7 +490,9 @@ This offers the possibiitiy of pausing the move process. Any such pause begins a
 
 [names copy plugin]
 
-This normally copies the name(s) of selected item(s) to the clipboard.
+When this plugin is Loaded and enabled in Menu, the file/folder context menu's Plugins submenu offers Copy names, Copy full paths, and Copy full paths (one per line). The full-path entries include each selected item's filename and do not require modifier keys. All three entries follow the plugin's existing Loaded and Menu settings.
+
+Copy names normally copies the name(s) of selected item(s) to the clipboard.
 If a <Shift> key is pressed when the plugin is activated, the full path of each item will be copied, instead of just its name.
 If a <Control> key is pressed when the plugin is activated, copied item paths or names will be separated by a "newline" character, instead of a space.
 

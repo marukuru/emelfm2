@@ -830,11 +830,29 @@ void e2_menu_create_plugins_menu (GtkWidget *menu, gboolean onetime, gboolean is
 			PluginAction *pa = *((PluginAction **)dp);
 			if (IS_SHOWN(pa) && (is_selection || !g_str_has_prefix (pa->aname, prefix)))
 			{
-				E2_ActionRuntime *art = e2_action_pack_runtime (pa->action, pa->action_data, NULL);
-				if (art != NULL)
+				/* Keep the clipboard variants under the existing plugin's Loaded/Menu
+				 * settings, including profiles with a customised Copy names label. */
+				guint count = (IS_LOADED (pa) && !strcmp (pa->signature, "clipnames")) ? 3 : 1;
+				guint variant;
+				for (variant = 0; variant < count; variant++)
 				{
-					GtkWidget *item = e2_menu_add (menu, pa->label, pa->icon,
-						pa->description, activatecb, NULL);
+					const gchar *label = pa->label, *tip = pa->description;
+					gpointer argument = pa->action_data;
+					if (variant == 1)
+					{
+						label = _("Copy full _paths");
+						tip = _("Copy the full path of each selected item to the clipboard");
+						argument = g_strdup (_("shift"));
+					}
+					else if (variant == 2)
+					{
+						label = _("Copy full paths (one per _line)");
+						tip = _("Copy the full path of each selected item to the clipboard, one per line");
+						argument = g_strconcat (_("shift"), " ", _("ctrl"), NULL);
+					}
+					E2_ActionRuntime *art = e2_action_pack_runtime (pa->action, argument,
+						(variant == 0) ? NULL : g_free);
+					GtkWidget *item = e2_menu_add (menu, label, pa->icon, tip, activatecb, NULL);
 					g_object_set_data_full (G_OBJECT (item), "e2-actruntime", art,
 						(GDestroyNotify) e2_action_free_runtime);
 				}
