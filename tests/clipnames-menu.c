@@ -10,8 +10,12 @@
 static GtkWidget *menu;
 static gchar *expected;
 static guint step;
+static GString *expected_paths;
+static GPtrArray *shell_names;
+static gchar *shell_names_data;
 static const gchar *labels[] = {
-	"My copied names", "Copy full paths", "Copy full paths (one per line)"
+	"My copied names", "Copy full paths", "Copy full paths (one per line)",
+	"Copy full paths (Bash-quoted)", "Copy full paths (Bash-quoted, one per line)"
 };
 
 static gboolean has_label (GtkWidget *widget, const gchar *text)
@@ -77,6 +81,8 @@ static void select_name (const gchar *name, gboolean clear)
 
 static void finish (void)
 {
+	if (shell_names != NULL) g_ptr_array_free (shell_names, TRUE);
+	g_free (shell_names_data);
 	g_print ("clipnames menu checks passed\n");
 	OPENBGL
 	e2_action_run_simple_from ("command.quit", NULL, app.main_window);
@@ -126,14 +132,26 @@ static gboolean tick (gpointer unused)
 			OPENBGL
 			return TRUE; //the menu action is deferred until GTK finishes activation
 		}
-		g_assert_cmpstr (actual, ==, expected);
+		if (expected_paths != NULL)
+		{
+			g_assert_true (g_utf8_validate (actual, -1, NULL));
+			gchar *path = g_strdup_printf ("%s/bash-%u", g_getenv ("E2_CLIPNAMES_TEST"), step);
+			g_assert_true (g_file_set_contents (path, actual, -1, NULL));
+			gchar *reference = g_strconcat (path, ".expected", NULL);
+			g_assert_true (g_file_set_contents (reference, expected_paths->str, expected_paths->len, NULL));
+			g_free (reference);
+			g_free (path);
+			g_string_free (expected_paths, TRUE);
+			expected_paths = NULL;
+		}
+		else g_assert_cmpstr (actual, ==, expected);
 		g_free (actual);
 		g_free (expected);
 		expected = NULL;
 		close_menu ();
 		step++;
 	}
-	if (step == 6)
+	if (step == 10)
 	{
 		gtk_tree_selection_unselect_all (curr_view->selection);
 		GtkWidget *plugins = open_menu ();
@@ -148,18 +166,48 @@ static gboolean tick (gpointer unused)
 	select_name (name, TRUE);
 	gboolean multiple = step == 2 || step == 3;
 	if (multiple) select_name ("b-日本語.txt", FALSE);
+	if (step >= 6)
+	{
+		if (shell_names == NULL)
+		{
+			gchar *path = g_build_filename (g_getenv ("E2_CLIPNAMES_TEST"), "shell-names", NULL);
+			gsize length;
+			g_assert_true (g_file_get_contents (path, &shell_names_data, &length, NULL));
+			g_free (path);
+			shell_names = g_ptr_array_new ();
+			for (gchar *p = shell_names_data; p < shell_names_data + length; p += strlen (p) + 1)
+				g_ptr_array_add (shell_names, p);
+		}
+		expected_paths = g_string_new ("");
+		guint count = step < 8 ? shell_names->len : 1;
+		for (guint i = 0; i < count; i++)
+		{
+			const gchar *filename = step < 8 ? g_ptr_array_index (shell_names, i) : "folder name";
+			select_name (filename, i == 0);
+			g_string_append (expected_paths, curr_view->dir);
+			g_string_append (expected_paths, filename);
+			g_string_append_c (expected_paths, '\0');
+		}
+	}
 	GtkWidget *plugins = open_menu ();
 	for (guint i = 0; i < G_N_ELEMENTS (labels); i++)
 		g_assert_nonnull (item (plugins, labels[i]));
 	/* The variants should be adjacent, following the user's customised label. */
 	GList *children = gtk_container_get_children (GTK_CONTAINER (plugins));
 	GList *first = g_list_find (children, item (plugins, labels[0]));
-	g_assert_nonnull (first);
-	g_assert_true (first->next->data == item (plugins, labels[1]));
-	g_assert_true (first->next->next->data == item (plugins, labels[2]));
+	for (guint i = 0; i < G_N_ELEMENTS (labels); i++, first = first->next)
+	{
+		g_assert_nonnull (first);
+		g_assert_true (first->data == item (plugins, labels[i]));
+	}
 	g_list_free (children);
 	guint variant = step == 0 ? 0 : (step == 2 ? 2 : 1);
-	if (variant == 0) expected = g_strdup (name);
+	if (step >= 6)
+	{
+		variant = step % 2 == 0 ? 3 : 4;
+		expected = g_strdup ("Bash arguments");
+	}
+	else if (variant == 0) expected = g_strdup (name);
 	else if (multiple)
 		expected = g_strdup_printf ("%s%s%c%sb-日本語.txt", curr_view->dir, name,
 			variant == 2 ? '\n' : ' ', curr_view->dir);

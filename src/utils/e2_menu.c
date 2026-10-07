@@ -832,7 +832,7 @@ void e2_menu_create_plugins_menu (GtkWidget *menu, gboolean onetime, gboolean is
 			{
 				/* Keep the clipboard variants under the existing plugin's Loaded/Menu
 				 * settings, including profiles with a customised Copy names label. */
-				guint count = (IS_LOADED (pa) && !strcmp (pa->signature, "clipnames")) ? 3 : 1;
+				guint count = (IS_LOADED (pa) && !strcmp (pa->signature, "clipnames")) ? 5 : 1;
 				guint variant;
 				for (variant = 0; variant < count; variant++)
 				{
@@ -849,6 +849,18 @@ void e2_menu_create_plugins_menu (GtkWidget *menu, gboolean onetime, gboolean is
 						label = _("Copy full paths (one per _line)");
 						tip = _("Copy the full path of each selected item to the clipboard, one per line");
 						argument = g_strconcat (_("shift"), " ", _("ctrl"), NULL);
+					}
+					else if (variant == 3)
+					{
+						label = _("Copy full paths (Bash-_quoted)");
+						tip = _("Copy full paths quoted for Bash, separated by spaces");
+						argument = g_strdup ("bash");
+					}
+					else if (variant == 4)
+					{
+						label = _("Copy full paths (Bash-quoted, one per l_ine)");
+						tip = _("Copy full paths quoted for Bash, one per line");
+						argument = g_strdup ("bash-lines");
 					}
 					E2_ActionRuntime *art = e2_action_pack_runtime (pa->action, argument,
 						(variant == 0) ? NULL : g_free);

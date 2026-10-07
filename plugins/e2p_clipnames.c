@@ -32,6 +32,61 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 static PluginIface iface;
 
+/* Bash ANSI-C quoting keeps every path on one physical line, even if a
+ * filename contains a newline. Escape invalid UTF-8 bytes too, since the
+ * clipboard must contain valid UTF-8 while Bash needs the original bytes. */
+static gchar *_e2p_quote_bash_path (const gchar *path)
+{
+	gboolean utf8 = g_utf8_validate (path, -1, NULL);
+	GString *quoted = g_string_new ("$'");
+	const guchar *p;
+	for (p = (const guchar *)path; *p != '\0'; p++)
+	{
+		switch (*p)
+		{
+			case '\\': g_string_append (quoted, "\\\\"); break;
+			case '\'': g_string_append (quoted, "\\'"); break;
+			case '\n': g_string_append (quoted, "\\n"); break;
+			case '\r': g_string_append (quoted, "\\r"); break;
+			case '\t': g_string_append (quoted, "\\t"); break;
+			default:
+				if (*p < 0x20 || *p == 0x7f || (!utf8 && *p >= 0x80))
+					g_string_append_printf (quoted, "\\%03o", (guint)*p);
+				else
+					g_string_append_c (quoted, *p);
+		}
+	}
+	g_string_append_c (quoted, '\'');
+	return g_string_free (quoted, FALSE);
+}
+
+static gboolean _e2p_copy_bash_paths (gboolean lined)
+{
+	/* Use the actual selection, not a macro-expanded string: quotes and
+	 * whitespace inside filenames must not be mistaken for separators. */
+	GPtrArray *selected = e2_fileview_get_selected (curr_view);
+	if (selected == NULL)
+		return FALSE;
+	gchar *directory = F_FILENAME_TO_LOCALE (curr_view->dir);
+	GString *text = g_string_new ("");
+	guint i;
+	for (i = 0; i < selected->len; i++)
+	{
+		E2_SelectedItemInfo *info = g_ptr_array_index (selected, i);
+		gchar *path = g_build_filename (directory, info->filename, NULL);
+		gchar *quoted = _e2p_quote_bash_path (path);
+		if (i > 0) g_string_append_c (text, lined ? '\n' : ' ');
+		g_string_append (text, quoted);
+		g_free (quoted);
+		g_free (path);
+	}
+	F_FREE (directory, curr_view->dir);
+	e2_fileview_clean_selected (selected);
+	gtk_clipboard_set_text (gtk_clipboard_get (GDK_SELECTION_CLIPBOARD), text->str, text->len);
+	g_string_free (text, TRUE);
+	return TRUE;
+}
+
 /**
 @brief copy name and perhaps path of each selected item to the clipboard
 
@@ -42,6 +97,11 @@ static PluginIface iface;
 */
 static gboolean _e2p_copy_to_clipboard (gpointer from, E2_ActionRuntime *art)
 {
+	/* These explicit formats are independent of the current modifier keys. */
+	if (art->data != NULL && !strcmp (art->data, "bash"))
+		return _e2p_copy_bash_paths (FALSE);
+	if (art->data != NULL && !strcmp (art->data, "bash-lines"))
+		return _e2p_copy_bash_paths (TRUE);
 	GString *text;
 	gchar *names;
 	gboolean full =

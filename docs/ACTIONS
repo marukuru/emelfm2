@@ -149,7 +149,7 @@ file.cpbar_with_time	N	copy selected items with original atime, mtime and with a
 file.du					O	determine disk usage of active-pane selected items (if no argument) or items whose name matches supplied argument (name or matchable pattern)
 file.foreach			N	run an entered command on each selecte item
 file.mvbar				N	move selected items with a progress bar and stop/pause potential
-file.copy_name			N	copy names, or (with <Shift>) paths, of selected items to clipboard (with <Control> with a newline between each)
+file.copy_name			N	copy names, or (with <Shift>) paths, of selected items to clipboard (with <Control> with a newline between each); arguments bash or bash-lines copy Bash-quoted full paths separated by spaces or newlines
 file.pack				N	create an archive including the selected items
 file.retag				N	re-select any previously-logged item(s) now in active pane
 file.tag				N	log selected item(s) in active pane
