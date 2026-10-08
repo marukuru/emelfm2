@@ -737,49 +737,26 @@ Intended for finding whitespace or punctuation, and so uses ascii scanning
 */
 gchar *e2_utils_bare_strchr (gchar *string, gchar c)
 {
-	gchar *p = string;
-	gint cnt1 = 0; //counter for ' chars
-	gint cnt2 = 0; //counter for " chars
-	gint prevq = 0; //quote-type most-recently found, for processing nests
-	//FIXME make this bullet-proof for any arbitrary combination of ' and/or "
-	//(is bad for detecting "real" nested quotes of same type e.g. "" c "")
-	while (*p != '\0')
+	gchar quote = '\0';
+	gboolean ansi = FALSE;
+	for (gchar *p = string; *p != '\0'; p++)
 	{
-		if (*p == '\'')
+		if (*p == '\\' && (quote != '\'' || ansi) && p[1] != '\0')
+			p++;
+		else if (quote != '\0')
 		{
-			if (p == string || *(p-1) != '\\')
-			{
-				cnt1++;
-				if (prevq == 2	//handle nested quotes
-					&& cnt2 % 2 == 1
-					&& cnt1 % 2 == 0
-					)
-						cnt2++; //CHECKME reset to 0 if not really using count, depth etc
-				prevq = 1;
-			}
+			if (*p == quote) { quote = '\0'; ansi = FALSE; }
 		}
-		else if (*p == '"')
+		else if (*p == '$' && p[1] == '\'')
 		{
-			if (p == string || *(p-1) != '\\')
-			{
-				cnt2++;
-				if (prevq == 1
-					&& cnt1 % 2 == 1
-					&& cnt2 % 2 == 0
-					)
-						cnt1++;
-				prevq = 2;
-			}
+			quote = '\'';
+			ansi = TRUE;
+			p++;
 		}
+		else if (*p == '\'' || *p == '"')
+			quote = *p;
 		else if (*p == c)
-		{	//check if separator seems to be outside parentheses
-			if (p == string || *(p-1) != '\\')
-			{
-				if (cnt1 % 2 == 0 && cnt2 % 2 == 0)
-					return p; //found one
-			}
-		}
-		p++;
+			return p;
 	}
 	return NULL;
 }

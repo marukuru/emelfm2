@@ -120,6 +120,8 @@ Backwards first, these are displayed in reverse order to their list positions.
 
 static void _e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath,
 	gboolean history, gboolean hook);
+static void _e2_pane_change_dir_full (E2_PaneRuntime *rt, const gchar *newpath,
+	gboolean history, gboolean hook, gboolean literal);
 static GtkWidget *_e2_pane_popup_forward (GtkWidget *from, E2_PaneRuntime *rt);
 static GtkWidget *_e2_pane_popup_backward (GtkWidget *from, E2_PaneRuntime *rt);
 static void _e2_pane_history_activated_cb (GtkMenuItem *menuitem, E2_PaneRuntime *rt);
@@ -743,6 +745,18 @@ New path is also stored in array @ rt->view->dir.
 static void _e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath,
 	gboolean history, gboolean hook)
 {
+	_e2_pane_change_dir_full (rt, newpath, history, hook, FALSE);
+}
+
+/* A parsed command argument must not undergo a second macro/variable expansion. */
+void e2_pane_change_dir_literal (E2_PaneRuntime *rt, const gchar *path)
+{
+	_e2_pane_change_dir_full (rt, path, TRUE, TRUE, TRUE);
+}
+
+static void _e2_pane_change_dir_full (E2_PaneRuntime *rt, const gchar *newpath,
+	gboolean history, gboolean hook, gboolean literal)
+{
 	gchar *freeme, *path, *currpath;
 	printd (DEBUG, "_e2_pane_change_dir (rt:,path:\"%s\",update:%d,hook:%d)",
 		newpath, history, hook);
@@ -750,8 +764,8 @@ static void _e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath,
 	if (newpath == NULL)
 		return;
 
-	path = e2_utils_unquote_string (newpath);
-	g_strchug (path);	//trailing whitespace may be deliberate
+	path = literal ? g_strdup (newpath) : e2_utils_unquote_string (newpath);
+	if (!literal) g_strchug (path);	//trailing whitespace may be deliberate
 
 	if (*path == '\0')
 	{
@@ -796,7 +810,7 @@ static void _e2_pane_change_dir (E2_PaneRuntime *rt, const gchar *newpath,
 		if (path != freeme)
 			g_free (freeme);
 	}
-	else
+	else if (!literal)
 	{
 		//this may be a directly-entered cd, or path-completion may be turned off
 		//so we interpret here too, but with limited "~" handling

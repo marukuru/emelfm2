@@ -657,6 +657,8 @@ Much like shell environment variables, internal variables may be defined and use
 
 Whitespace surrounding the "=" in any variable-related command is ignored.
 
+The command input and Commandlog support Bash-style $'...' quoting, including the output of both Bash-quoted Copy full paths actions. Backslash escapes are decoded while the quoted contents remain literal: variables, e2 macros, wildcards and command separators inside the quotes are not expanded. This works for direct commands, pipes and redirection, and cd into a quoted directory. Invalid or unterminated quoted strings report a parsing error.
+
 COMMAND MODIFIERS
 
 There are several ways to influence how e2 runs a command (action or external command). One or more of the following may be applied:

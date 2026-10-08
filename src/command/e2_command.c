@@ -42,6 +42,7 @@ ToDo
 
 
 #include "e2_command.h"
+#include "e2_command_quoting.h"
 #include <string.h>
 #include <sys/wait.h>
 #include <signal.h>
@@ -2434,6 +2435,25 @@ static gint _e2_command_run_checks (gchar *command, gboolean *macros,
 	*flags = _flags;
 	return retval;
 }
+/* Keep literal paths out of the legacy macro/variable expansion stages. */
+static gboolean _e2_command_protect_quotes (gchar **command, E2_CommandQuotes **quotes)
+{
+	GError *error = NULL;
+	gchar *protected = e2_command_quotes_protect (*command, quotes, &error);
+	if (protected == NULL)
+	{
+		gchar *original = e2_command_quotes_restore (*quotes, *command, E2_COMMAND_QUOTE_ORIGINAL);
+		gchar *msg = g_strdup_printf (_("Failed parsing command '%s' - %s"), original, error->message);
+		e2_output_print_error (msg, TRUE);
+		g_free (original);
+		g_error_free (error);
+		return FALSE;
+	}
+	g_free (*command);
+	*command = protected;
+	return TRUE;
+}
+
 /**
 @brief run a single command @a raw, after interpreting its contents
 Expects BGL to be closed
@@ -2481,7 +2501,7 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 	//(E2_RUN_SYNC and E2_RUN_SHOW flags will be overridden later, if (range & E2_COMMAND_RANGE_FILE_ACTION)
 
 	//if command begins with a variable, decode that, so we can check for command or action etc
-	if (*command1 == '$'
+	if (*command1 == '$' && command1[1] != '\''
 		&& (prior_cmd == NULL || strstr (command1, prior_cmd) == NULL))
 	{
 		command2 = e2_utils_find_whitespace (command1 + sizeof(gchar));
@@ -2701,6 +2721,12 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 
 	//newly-allocated command2 is now the focus ..
 	command1 = command2; //vars & wildcards processing moved below
+	E2_CommandQuotes *quotes = NULL;
+	if (!_e2_command_protect_quotes (&command1, &quotes))
+	{
+		result = 1;
+		goto cleanup;
+	}
 
 	gboolean command_is_cd;
 	//if command is: cd [%]%[f|e|p], when updir '../' line is selected, that item
@@ -2761,6 +2787,12 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 	freeme = command1;
 	command1 = e2_utils_replace_vars (freeme, command_is_cd);
 	g_free (freeme);
+	//Variables can themselves supply ANSI-C quoted arguments.
+	if (!_e2_command_protect_quotes (&command1, &quotes))
+	{
+		result = 1;
+		goto cleanup;
+	}
 
 	if ((flags & E2_RUN_EXT) == 0)
 	{
@@ -2770,7 +2802,7 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 			command2 = e2_utils_pass_whitespace (command1 + 3);
 			if (command2 != NULL && command2 > command1 + 3)
 			{
-				command2 = e2_utf8_to_locale (command2);
+				command2 = quotes == NULL ? e2_utf8_to_locale (command2) : g_strdup (command2);
 				if (command2 != NULL)
 				{
 					gchar *value = e2_utils_find_whitespace (command2);
@@ -2793,14 +2825,29 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 
 					if (value != NULL)
 					{
-						gchar *clean = e2_utils_unquote_string (value);
+						gchar *clean = quotes == NULL ? e2_utils_unquote_string (value) : g_shell_unquote (value, NULL);
+						if (clean == NULL && quotes != NULL)
+						{
+							e2_output_print_error (_("Invalid quoting in variable value"), FALSE);
+							g_free (command2);
+							result = 1;
+							goto cleanup;
+						}
 						if (G_LIKELY(clean != NULL))
 						{
 							value = e2_utf8_unescape (clean, ';'); //maybe these escaped in unquoted value
 							g_free (clean);
 							if (G_LIKELY(value != NULL))
 							{
-								result = (g_setenv (command2, value, TRUE)) ? 0 : 1;
+								if (quotes != NULL)
+								{
+									gchar *native = e2_command_quotes_restore (quotes, value, E2_COMMAND_QUOTE_ARGUMENT);
+									g_free (value);
+									value = native;
+								}
+								gchar *name = quotes == NULL ? g_strdup (command2) : D_FILENAME_TO_LOCALE (command2);
+								result = (g_setenv (name, value, TRUE)) ? 0 : 1;
+								g_free (name);
 								g_free (value); //but not NULL
 							}
 						}
@@ -2834,8 +2881,11 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 				s = e2_utils_pass_whitespace (s+1);
 			if (s == NULL)
 			{
-				_e2_command_handle_variable_value (command1, command2+1);
-				return 0;
+				gchar *value = e2_command_quotes_restore (quotes, command2+1, E2_COMMAND_QUOTE_ORIGINAL);
+				_e2_command_handle_variable_value (command1, value);
+				g_free (value);
+				result = 0;
+				goto cleanup;
 			}
 			*command2 = '=';
 		}
@@ -2856,6 +2906,9 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 	command2 = NULL;
 	if (range & E2_COMMAND_RANGE_TOCHILD)
 	{
+		freeme = command1;
+		command1 = e2_command_quotes_restore (quotes, freeme, E2_COMMAND_QUOTE_ORIGINAL);
+		g_free (freeme);
 		freeme2 = e2_utf8_unescape (command1, ' ');
 		result = (_e2_command_send_to_pid (0, freeme2)) ? 0 : 1;
 		g_free (freeme2);
@@ -2891,7 +2944,9 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 			{
 				//the whole string was used in conversion, so it was a valid
 				//number and nothing else
-				freeme2 = e2_utf8_unescape (command2 + 1, ' ');
+				freeme = e2_command_quotes_restore (quotes, command2 + 1, E2_COMMAND_QUOTE_ORIGINAL);
+				freeme2 = e2_utf8_unescape (freeme, ' ');
+				g_free (freeme);
 				printd (DEBUG, "sending '%s' to process '%s'", freeme2, command1);
 				result = (_e2_command_send_to_pid (i, freeme2)) ? 0 : 1;	//+1 to skip the '\0'
 				g_free (freeme2);
@@ -2911,7 +2966,9 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 #endif
 					{
 						*command2 = ':';
-						e2_combobox_clear_value (parent, command1, TRUE);
+						gchar *original = e2_command_quotes_restore (quotes, command1, E2_COMMAND_QUOTE_ORIGINAL);
+						e2_combobox_clear_value (parent, original, TRUE);
+						g_free (original);
 					}
 				}
 				goto cleanup;
@@ -2949,9 +3006,32 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 		gint len = strlen (command1);
 		if (len > 3) //'cd <path>'
 		{
-			command2 = e2_utf8_unescape (command1 + 3, ' ');
-			e2_pane_change_dir (NULL, command2);	//command1 is UTF-8 or ASCII
-			g_free (command2);
+			if (quotes != NULL)
+			{
+				gchar **paths;
+				gint count;
+				GError *error = NULL;
+				if (!g_shell_parse_argv (command1 + 3, &count, &paths, &error) || count != 1)
+				{
+					if (error != NULL) g_error_free (error);
+					else g_strfreev (paths);
+					e2_output_print_error (_("cd requires one directory"), FALSE);
+					result = 1;
+					goto cleanup;
+				}
+				gchar *native = e2_command_quotes_restore (quotes, paths[0], E2_COMMAND_QUOTE_ARGUMENT);
+				gchar *utf = F_FILENAME_FROM_LOCALE (native);
+				e2_pane_change_dir_literal (NULL, utf);
+				F_FREE (utf, native);
+				g_free (native);
+				g_strfreev (paths);
+			}
+			else
+			{
+				command2 = e2_utf8_unescape (command1 + 3, ' ');
+				e2_pane_change_dir (NULL, command2);
+				g_free (command2);
+			}
 		}
 		else //'cd' or 'cd '
 			e2_pane_change_dir (NULL, "~");
@@ -2970,6 +3050,9 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 	}
 	else if (command_is_action)
 	{
+		freeme = command1;
+		command1 = e2_command_quotes_restore (quotes, freeme, E2_COMMAND_QUOTE_ORIGINAL);
+		g_free (freeme);
 		gchar *gap = e2_utils_find_whitespace (command1);
 		if (gap != NULL)
 		{
@@ -3029,7 +3112,7 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 		args = NEW (gchar*, 4);
 		args[0] = g_strdup (shellcmd);
 		args[1] = g_strdup ("-c");
-		args[2] = g_strdup (command1);
+		args[2] = e2_command_quotes_restore (quotes, command1, E2_COMMAND_QUOTE_SHELL);
 		args[3] = NULL;
 	}
 	else
@@ -3042,8 +3125,10 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 			g_free (command2);
 		if (error != NULL)
 		{
+			gchar *original = e2_command_quotes_restore (quotes, command1, E2_COMMAND_QUOTE_ORIGINAL);
 			gchar *msg = g_strdup_printf (_("Failed parsing command '%s' - %s"),
-				command1, error->message);
+				original, error->message);
+			g_free (original);
 			e2_output_print_error (msg, TRUE);
 			g_error_free (error);
 			result = 1;
@@ -3061,7 +3146,8 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 		gchar **tmp = args;
 		while (*tmp != NULL)
 		{	//we always take a copy and strfreev later
-			local = D_FILENAME_TO_LOCALE (*tmp);
+			if ((flags & E2_RUN_EXT) && tmp == args + 2) break; //already native shell text
+			local = e2_command_quotes_restore (quotes, *tmp, E2_COMMAND_QUOTE_ARGUMENT);
 			g_free (*tmp);
 			*tmp = local;
 			tmp++;
@@ -3069,6 +3155,10 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 //	}
 //#endif
 
+	freeme = command1;
+	command1 = e2_command_quotes_restore (quotes, freeme, E2_COMMAND_QUOTE_ORIGINAL);
+	g_free (freeme);
+	e2_command_quotes_free (quotes);
 	e2_utf8_set_name_conversion_if_requested ();
 
 #ifdef E2_NEW_COMMAND
@@ -3092,6 +3182,7 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 #endif
 
 cleanup:
+	e2_command_quotes_free (quotes);
 	g_free (command1);
 	return result;
 }
