@@ -38,16 +38,17 @@ static GtkWidget *find (GtkWidget *widget, const gchar *name)
     for (GList *p = children; p != NULL && found == NULL; p = p->next) found = find (p->data, name);
     g_list_free (children); return found;
 }
-static void open_viewer (const gchar *name)
+static gboolean try_open_viewer (const gchar *name)
 {
     gchar *path = g_build_filename (root, name, NULL);
 #ifdef E2_VFS
     VPATH file = {path, NULL};
-    g_assert_true (e2_view_dialog_create (&file));
+    gboolean opened = e2_view_dialog_create (&file);
 #else
-    g_assert_true (e2_view_dialog_create (path));
+    gboolean opened = e2_view_dialog_create (path);
 #endif
     g_free (path);
+    if (!opened) return FALSE;
     GList *windows = gtk_window_list_toplevels ();
     dialog = view = NULL;
     for (GList *p = windows; p != NULL; p = p->next)
@@ -55,7 +56,10 @@ static void open_viewer (const gchar *name)
     g_list_free (windows);
     g_assert_nonnull (view);
     gtk_window_move (GTK_WINDOW (dialog), 0, 0);
+    return TRUE;
 }
+static void open_viewer (const gchar *name)
+{ g_assert_true (try_open_viewer (name)); }
 static void close_viewer (void)
 {
     gtk_dialog_response (GTK_DIALOG (dialog), GTK_RESPONSE_CLOSE);
@@ -131,6 +135,101 @@ static gchar *content (void)
     GtkTextIter start, end;
     gtk_text_buffer_get_bounds (buffer, &start, &end);
     return gtk_text_buffer_get_text (buffer, &start, &end, FALSE);
+}
+typedef struct
+{
+    const gchar *name;
+    gboolean expected, answered;
+    gint response;
+} SizeWarning;
+#define WARNING_ESCAPE 1
+static gboolean answer_size_warning (gpointer data)
+{
+    SizeWarning *test = data;
+    NEEDCLOSEBGL
+    GList *windows = gtk_window_list_toplevels ();
+    GtkWidget *warning = NULL;
+    for (GList *p = windows; p != NULL; p = p->next)
+        if (!g_strcmp0 (gtk_widget_get_name (p->data), "file-viewer-size-warning"))
+        { warning = p->data; break; }
+    g_list_free (windows);
+    if (warning == NULL) { NEEDOPENBGL return TRUE; }
+    g_assert_true (test->expected);
+    g_assert_true (gtk_widget_get_mapped (warning));
+    g_assert_true (gtk_window_get_modal (GTK_WINDOW (warning)));
+    g_assert_true (gtk_window_get_default_widget (GTK_WINDOW (warning)) ==
+        gtk_dialog_get_widget_for_response (GTK_DIALOG (warning), GTK_RESPONSE_CANCEL));
+    GtkWidget *label = g_object_get_data (G_OBJECT (warning), "e2-dialog-label");
+    g_assert_nonnull (strstr (gtk_label_get_text (GTK_LABEL (label)), test->name));
+    test->answered = TRUE;
+    if (test->response == WARNING_ESCAPE)
+    {
+        GdkEventKey event = {0};
+        event.type = GDK_KEY_PRESS;
+        event.keyval = gdk_keyval_from_name ("Escape");
+        gboolean handled = FALSE;
+        g_signal_emit_by_name (warning, "key-press-event", &event, &handled);
+        g_assert_true (handled);
+    }
+    else gtk_dialog_response (GTK_DIALOG (warning), test->response);
+    NEEDOPENBGL
+    return FALSE;
+}
+static void check_size_case (const gchar *name, gboolean warning, gint response)
+{
+    SizeWarning test = { name, warning, FALSE, response };
+    guint source = g_timeout_add (25, answer_size_warning, &test);
+    gboolean opened = try_open_viewer (name);
+    if (!test.answered) g_source_remove (source);
+    g_assert_cmpint (test.answered, ==, warning);
+    g_assert_cmpint (opened, ==, !warning || response == GTK_RESPONSE_YES);
+    if (opened) close_viewer ();
+}
+static void check_size_warning (void)
+{
+    g_assert_cmpint (e2_option_int_get ("dialog-view-size-limit"), ==, 128);
+    g_assert_cmpstr (e2_option_get ("dialog-view-size-limit")->group, ==, "interface.file viewer");
+    /* Sparse files exercise the default and 64-bit sizes without reading them. */
+    check_size_case ("large 100% <notes> & 日本語.txt", TRUE, GTK_RESPONSE_CANCEL);
+    check_size_case ("large-link.txt", TRUE, WARNING_ESCAPE);
+    e2_option_int_set ("dialog-view-size-limit", 4096);
+    check_size_case ("five-gb.txt", TRUE, GTK_RESPONSE_DELETE_EVENT);
+    check_size_case ("plain.txt", FALSE, GTK_RESPONSE_CANCEL);
+
+    e2_option_int_set ("dialog-view-size-limit", 1);
+    check_size_case ("below-limit.txt", FALSE, GTK_RESPONSE_CANCEL);
+    check_size_case ("at-limit.txt", FALSE, GTK_RESPONSE_CANCEL);
+    check_size_case ("over-limit.txt", TRUE, GTK_RESPONSE_CANCEL);
+    check_size_case ("over-limit.txt", TRUE, GTK_RESPONSE_YES);
+    e2_option_int_set ("dialog-view-size-limit", 2);
+    check_size_case ("over-limit.txt", FALSE, GTK_RESPONSE_CANCEL);
+
+    e2_option_int_set ("dialog-view-size-limit", 1);
+    open_viewer ("growing.txt");
+    gchar *path = g_build_filename (root, "over-limit.txt", NULL);
+    gchar *large;
+    gsize length;
+    g_assert_true (g_file_get_contents (path, &large, &length, NULL));
+    g_free (path);
+    path = g_build_filename (root, "growing.txt", NULL);
+    g_assert_true (g_file_set_contents (path, large, length, NULL));
+    g_free (path);
+    const gint responses[] = { GTK_RESPONSE_CANCEL, GTK_RESPONSE_YES };
+    for (guint i = 0; i < G_N_ELEMENTS (responses); i++)
+    {
+        SizeWarning test = { "growing.txt", TRUE, FALSE, responses[i] };
+        g_timeout_add (25, answer_size_warning, &test);
+        GtkWidget *original = view;
+        gtk_button_clicked (GTK_BUTTON (gtk_dialog_get_widget_for_response (GTK_DIALOG (dialog), E2_RESPONSE_REFRESH)));
+        g_assert_true (test.answered);
+        g_assert_true (find (dialog, "file-viewer-text") == original);
+        gchar *text = content ();
+        g_assert_cmpstr (text, ==, i == 0 ? "before refresh\n" : large);
+        g_free (text);
+    }
+    g_free (large);
+    close_viewer ();
+    e2_option_int_set ("dialog-view-size-limit", 128);
 }
 static void font_is (const gchar *family, const gchar *file)
 {
@@ -380,6 +479,7 @@ static gboolean tick (gpointer data)
             gchar *browser = g_build_filename (root, "fake browser", NULL);
             e2_option_str_set_direct (e2_option_get ("dialog-view-browser"), browser); g_free (browser);
             check_syntax ();
+            check_size_warning ();
             open_viewer ("plain.txt");
             gtk_window_resize (GTK_WINDOW (dialog), 1000, 500);
             break;
@@ -707,6 +807,11 @@ static gboolean tick (gpointer data)
             g_assert_true (GTK_IS_TOGGLE_BUTTON (syntax));
             g_assert_true (gtk_widget_get_mapped (syntax));
             g_assert_true (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (syntax)));
+            GtkWidget *limit = e2_option_get ("dialog-view-size-limit")->widget;
+            g_assert_true (GTK_IS_SPIN_BUTTON (limit));
+            g_assert_true (gtk_widget_get_mapped (limit));
+            g_assert_cmpint (gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (limit)), ==, 128);
+            gtk_spin_button_set_value (GTK_SPIN_BUTTON (limit), 64);
             E2_OptionSet *width = e2_option_get ("dialog-view-max-width");
             g_assert_true (GTK_IS_SPIN_BUTTON (width->widget));
             g_assert_true (gtk_widget_get_mapped (width->widget));
@@ -739,6 +844,7 @@ static gboolean tick (gpointer data)
             gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (syntax), FALSE);
             gtk_dialog_response (GTK_DIALOG (dialog), E2_RESPONSE_APPLY);
             g_assert_false (e2_option_bool_get ("dialog-view-syntax-highlighting"));
+            g_assert_cmpint (e2_option_int_get ("dialog-view-size-limit"), ==, 64);
             open_viewer ("syntax.c");
             g_assert_false (syntax_colored ("return"));
             close_viewer ();

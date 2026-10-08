@@ -454,6 +454,37 @@ static void _e2_view_dialog_lang_toggle (GtkToggleButton *button,
 }
 #endif
 
+/* Check before reading or converting the file. This also follows symlinks and
+ * protects refreshes, while leaving the shared editor loading path unchanged.
+ * Expects BGL closed. */
+static gboolean _e2_view_dialog_confirm_size (VPATH *localpath, GtkWidget *parent)
+{
+	struct stat sb;
+	gint limit = e2_option_int_get ("dialog-view-size-limit");
+	if (e2_fs_stat (localpath, &sb E2_ERR_NONE()) != 0
+		|| sb.st_size <= 0 || (guint64)sb.st_size <= (guint64)limit * 1024 * 1024)
+		return TRUE; //the normal read path reports any file-access errors
+
+	gchar *utfpath = F_FILENAME_FROM_LOCALE (VPSTR (localpath));
+	gchar *escaped_path = g_markup_escape_text (utfpath, -1);
+	GtkWidget *dialog = e2_dialog_create (_("Large file"), STOCK_NAME_DIALOG_WARNING,
+		DUMMY_RESPONSE_CB, NULL,
+		_("<b>%s</b>\n\nThis file is larger than the configured limit of %d MB.\nOpening it may take a long time and use a lot of memory.\n\nOpen it anyway?"),
+		escaped_path, limit);
+	g_free (escaped_path);
+	F_FREE (utfpath, VPSTR (localpath));
+	gtk_widget_set_name (dialog, "file-viewer-size-warning");
+
+	E2_Button cancel = E2_BUTTON_CANCEL;
+	cancel.response = GTK_RESPONSE_CANCEL;
+	cancel.showflags |= E2_BTN_DEFAULT;
+	E2_Button open = E2_BUTTON_YES;
+	open.label = _("_Open Anyway");
+	open.showflags &= ~E2_BTN_DEFAULT;
+	return e2_dialog_show (dialog, parent, E2_DIALOG_MODAL | E2_DIALOG_FREE,
+		&cancel, &open, NULL) == OK;
+}
+
 /**
 @brief read text file to be viewed, and put it to created @a rt ->textbuffer
 This is used by both view and edit dialogs.
@@ -506,6 +537,18 @@ gboolean e2_view_dialog_read_text (VPATH *localfile, E2_ViewDialogRuntime *rt)
 #else
 		localpath);
 #endif
+		g_free (localpath);
+		return FALSE;
+	}
+
+	if (rt->is_viewer && !_e2_view_dialog_confirm_size (
+#ifdef E2_VFS
+		&ddata,
+#else
+		localpath,
+#endif
+		rt->dialog != NULL ? rt->dialog : app.main_window))
+	{
 		g_free (localpath);
 		return FALSE;
 	}
@@ -2311,6 +2354,9 @@ void e2_view_dialog_options_register (void)
 		_("This causes the view window to open with text-wrapping enabled"),
 		NULL, TRUE,
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT | E2_OPTION_FLAG_FREEGROUP);
+	e2_option_int_register ("dialog-view-size-limit", group_name, _("large file warning threshold (MB)"),
+		_("Ask before loading files larger than this size into the internal viewer (1 MB = 1,048,576 bytes)"),
+		NULL, 128, 1, G_MAXINT, E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);
 	e2_option_bool_register ("dialog-view-syntax-highlighting", group_name, _("syntax highlighting"),
 		_("Automatically detect the language and highlight source code"), NULL, TRUE,
 		E2_OPTION_FLAG_BASIC | E2_OPTION_FLAG_COMPACT);

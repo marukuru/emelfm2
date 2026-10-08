@@ -17,6 +17,18 @@ root = pathlib.Path(os.environ['E2_VIEWER_TEST'])
 for name in ('viewer.log', 'viewer.LOG', 'viewer.LoG'):
     (root/name).write_text('old line\n' * 2000 + 'newest line\n')
 (root/'empty.log').write_text('')
+# Cancel the sparse large files; use small fixtures for boundary/continue tests.
+with (root/'large 100% <notes> & 日本語.txt').open('wb') as file:
+    file.truncate(128 * 1024 * 1024 + 1)
+(root/'large-link.txt').symlink_to('large 100% <notes> & 日本語.txt')
+with (root/'five-gb.txt').open('wb') as file:
+    file.truncate(5 * 1024 * 1024 * 1024)
+payload = (b'ordinary text ' * 4 + b'1234567\n') * 16384
+assert len(payload) == 1024 * 1024
+(root/'below-limit.txt').write_bytes(payload[:-1])
+(root/'at-limit.txt').write_bytes(payload)
+(root/'over-limit.txt').write_bytes(payload + b'X')
+(root/'growing.txt').write_text('before refresh\n')
 (root/'pc.nfo').write_bytes(bytes.fromhex('c9cdcdcdbb0ab ab0b1b2ba0ac8cdcd cdbc'.replace(' ', '')))
 (root/'amiga.nfo').write_bytes('ÆØØØ:........:ØØØ\r\n'.encode('latin1'))
 for name in ('pc.NFO', 'art.txt', 'untyped'):
@@ -46,15 +58,16 @@ with open(root/'log', 'w') as output:
     p = subprocess.Popen([os.environ.get('E2_VIEWER_BINARY', './emelfm2'), '-c', str(root/'config'), '-1', str(root), '-s', 'session-end-warning=false'],
         env=dict(os.environ, LD_PRELOAD=str(root/'test.so')), stdout=output, stderr=output)
     try:
-        deadline = time.monotonic() + 30
+        deadline = time.monotonic() + 60
         while not (root/'passed').exists() and p.poll() is None and time.monotonic() < deadline: time.sleep(.05)
         assert (root/'passed').exists(), (root/'log').read_text()
         assert p.wait(timeout=10) == 0, (root/'log').read_text()
         configs = list((root/'config').glob('config-*'))
         assert any('dialog-view-syntax-highlighting=false' in p.read_text() for p in configs), configs
+        assert any('dialog-view-size-limit=64' in p.read_text() for p in configs), configs
         log = (root/'log').read_text()
         assert 'CRITICAL' not in log and 'WARNING' not in log, log
-        print('viewer UI: syntax detection, live toggle, encoding and refresh highlighting, artwork and extension filters, fonts, decoding, links, text sizing and reflow, line numbers, compact controls, refresh, automatic end positioning and settings passed')
+        print('viewer UI: syntax detection, live toggle, encoding and refresh highlighting, artwork and extension filters, fonts, decoding, links, text sizing and reflow, line numbers, compact controls, refresh, automatic end positioning, large-file warnings and settings passed')
     finally:
         if p.poll() is None: p.kill(); p.wait(timeout=10)
 PY
