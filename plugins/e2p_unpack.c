@@ -584,6 +584,7 @@ ar -rD %s debian-binary control.tar.gz data.tar.gz
 	gchar *local = F_FILENAME_TO_LOCALE (package);
 
 	g_free (data->command);
+	data->command = NULL;
 
 	E2_UnPackType uptype = data->type;
 	switch (uptype)
@@ -646,7 +647,7 @@ ar -rD %s debian-binary control.tar.gz data.tar.gz
 			break;
 		default:
 //		case UPNONE:	//should never happen
-			fmt = qp = NULL;	//warning prevention
+			F_FREE (local, package);
 			_e2p_unpack_cleanup (data);
 			return;
 	}

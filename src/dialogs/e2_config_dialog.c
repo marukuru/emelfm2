@@ -1128,6 +1128,7 @@ void e2_confdlg_choose_plugins_cb (GtkButton *button, E2_OptionSet *set)
 			}
 		}
 		g_free (pname);
+		gtk_tree_path_free (tpath);
 	}
 	else
 		ppath = NULL;
@@ -2261,7 +2262,7 @@ void e2_config_dialog_create (gchar *page)
 						e2_option_bool_get_direct (dep));
 				}
 				else	//always insensitive if dep not boolean
-					if (dep->type != E2_OPTION_TYPE_BOOL)
+					if (dep != NULL)
 				{
 					gtk_widget_set_sensitive (set->widget, FALSE);
 				}

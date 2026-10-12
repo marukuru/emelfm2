@@ -2312,11 +2312,13 @@ static void _e2_command_handle_variable_value (gchar *var_name, gchar *value)
 					variables = g_list_delete_link (variables, member);
 				else
 					member->data = g_strconcat (prefix, value, NULL);
+				g_free (prefix);
 				return;
 			}
 		}
 		this = g_strconcat (prefix, value, NULL);
 		variables = g_list_append (variables, this);
+		g_free (prefix);
 	}
 }
 /**

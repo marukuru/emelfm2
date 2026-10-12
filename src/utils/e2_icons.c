@@ -795,6 +795,7 @@ void e2_icons_register_stocks (void)
 							*s1 = '\0';
 							gtk_icon_theme_add_builtin_icon (iconname, (gint)size, pxb);
 						}
+						g_object_unref (G_OBJECT (pxb));	//theme holds its own ref
 					}
 					//TODO add to theme somehow ?
 				}

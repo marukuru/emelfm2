@@ -242,13 +242,14 @@ DialogButtons e2_ownership_dialog_run (VPATH *localpath,
 				g_strdup_printf ("%u", (guint) src_uid));
 			current = userlist->data;
 		}
-		if (userlist->next != NULL)
+		if (userlist != NULL && userlist->next != NULL)
 		{
 			userlist = g_list_sort (userlist, (GCompareFunc) g_utf8_collate);
 			user_index = g_list_index (userlist, current);
 		}
 
 		gid_t src_gid = statbuf.st_gid;
+		current = NULL;
 		if (myuid == 0)
 		{
 		    setgrent ();
@@ -265,8 +266,10 @@ DialogButtons e2_ownership_dialog_run (VPATH *localpath,
 		}
 		else //not root
 		{
-			gid_t grp_ids[REPORTABLE_GROUPS];
-			gint n = getgroups (REPORTABLE_GROUPS, grp_ids);
+			//a fixed-size buffer makes getgroups() fail when there are more groups
+			gint n = getgroups (0, NULL);
+			gid_t *grp_ids = (n > 0) ? g_try_new (gid_t, n) : NULL;
+			n = (grp_ids != NULL) ? getgroups (n, grp_ids) : 0;
 			gint ctr;
 			for (ctr = 0; ctr < n; ctr++)
 			{
@@ -280,6 +283,7 @@ DialogButtons e2_ownership_dialog_run (VPATH *localpath,
 						current = utf;
 				}
 			}
+			g_free (grp_ids);
 		}
 		if ((grp_buf = getgrgid (src_gid)) == NULL)
 		{
@@ -287,7 +291,7 @@ DialogButtons e2_ownership_dialog_run (VPATH *localpath,
 				g_strdup_printf ("%u", (guint) src_gid));
 			current = grouplist->data;
 		}
-		if (grouplist->next != NULL)
+		if (grouplist != NULL && grouplist->next != NULL)
 		{
 			grouplist = g_list_sort (grouplist, (GCompareFunc) g_utf8_collate);
 			grp_index = g_list_index (grouplist, current);

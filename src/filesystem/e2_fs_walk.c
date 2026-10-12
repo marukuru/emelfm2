@@ -190,7 +190,7 @@ So this uses a kludgy but robust alternative approach
 
 @return callbck status code in accordance with whether the link is valid
 */
-static E2_TwResult _e2_fs_tw_link (VPATH *localpath)
+static E2_TwStatus _e2_fs_tw_link (VPATH *localpath)
 {
 	E2_TwStatus code;
 	gchar buf[PATH_MAX];

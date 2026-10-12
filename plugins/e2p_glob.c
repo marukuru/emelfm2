@@ -97,7 +97,7 @@ static gboolean use_name, use_size, use_date;
 static gint date_index;
 static gchar *previous_pattern;
 //these need to be in same order as config data/dialog date options
-gchar *date_format [6] =
+static gchar *date_format [6] =
 {
 	"%d/%m/%Y",	//default
 	"%d/%m/%Y",	//standard

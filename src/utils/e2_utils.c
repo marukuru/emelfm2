@@ -640,13 +640,12 @@ gchar *e2_utils_strcat (const gchar *string1, const gchar *string2)
 	CHECKALLOCATEDWARN (result, return NULL;); //TODO assumes BGL closed
 	if (result != NULL)
 	{
-#ifdef __USE_GNU
-		gchar *next = mempcpy (result, string1, len1);
-		next = mempcpy (next, string2, len2);
-#else
-		memcpy (result, string1, len1);
-		memcpy (result + len1, string2, len2);
-#endif
+		if (len1 > 0)
+			memcpy (result, string1, len1);
+		if (string2 != NULL)
+			memcpy (result + len1, string2, len2);
+		else
+			result[len1] = '\0';
 	}
 	return result;
 }
@@ -1318,9 +1317,9 @@ gchar *e2_utils_expand_macros (const gchar *text, const gchar *for_each)
 				numfmt[0] = '%';
 				//create count string using value and width
 				if (width > 1)
-					g_snprintf (numfmt+1, sizeof(numfmt)-1, "0%uu", (guint) width);
+					g_snprintf (numfmt+1, sizeof(numfmt)-1, "0%ulu", (guint) width);
 				else
-					g_strlcpy (numfmt+1, "u", sizeof(numfmt)-1);
+					g_strlcpy (numfmt+1, "lu", sizeof(numfmt)-1);
 				g_string_append_printf (command_string, numfmt, count);
 
 				command_copy = s;
@@ -2596,13 +2595,19 @@ const gchar *e2_utils_get_output_font (void)
 		fntname = NULL;
 	if (fntname == NULL)
 	{
+		//callers use the name transiently, so keep only the latest theme copy
+		static gchar *theme_font = NULL;
+		g_free (theme_font);
+		theme_font = NULL;
 		GtkSettings* defs = gtk_settings_get_default ();
-		g_object_get (G_OBJECT (defs), "gtk-font-name", &fntname, NULL);
-		if (fntname == NULL)	//CHECKME needed ?
+		g_object_get (G_OBJECT (defs), "gtk-font-name", &theme_font, NULL);
+		if (theme_font == NULL)	//CHECKME needed ?
 		{
 			printd (WARN, "No default font detected");
 			fntname = "Sans 10";
 		}
+		else
+			fntname = theme_font;
 	}
 	return fntname;
 }
@@ -4214,15 +4219,13 @@ gint e2_utils_check_drag (GdkEventButton *event)
 			if (data->button == event->button)
 			{
 				const gchar *devname = gdk_device_get_name (event->device);
-				match = ((data->device_name == NULL && devname == NULL)
-			  			|| !strcmp (data->device_name, devname));
+				match = (g_strcmp0 (data->device_name, devname) == 0);
 			}
 			else
 				match = FALSE;
 #else
 			match = (data->button == event->button &&
-			((data->device_name == NULL && event->device->name == NULL)
-			  || !strcmp (data->device_name, event->device->name)));
+				g_strcmp0 (data->device_name, event->device->name) == 0);
 #endif
 			if (match)
 			{
@@ -4259,15 +4262,13 @@ gboolean e2_utils_check_release (GdkEventButton *event)
 			if (data->button == event->button)
 			{
 				const gchar *devname = gdk_device_get_name (event->device);
-				match = ((data->device_name == NULL && devname == NULL)
-			  			|| !strcmp (data->device_name, devname));
+				match = (g_strcmp0 (data->device_name, devname) == 0);
 			}
 			else
 				match = FALSE;
 #else
 			match = (data->button == event->button &&
-			((data->device_name == NULL && event->device->name == NULL)
-			  || !strcmp (data->device_name, event->device->name)));
+				g_strcmp0 (data->device_name, event->device->name) == 0);
 #endif
 			if (match)
 			{

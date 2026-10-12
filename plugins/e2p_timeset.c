@@ -996,11 +996,12 @@ static gboolean _e2p_task_timesQ (E2_ActionTaskData *qed)
 #endif
 	e2_filestore_disable_refresh ();
 
+	//declared outside the loop so that 'apply to all' re-uses the last choice
+	gboolean recurse = FALSE;
 	for (count=0; count < names->len; count++, iterator++)
 	{
 		DialogButtons choice;
  		gboolean permission;
-		gboolean recurse;
 		//".." entries filtered when names compiled
 		g_string_printf (path, "%s%s", curr_local, (*iterator)->filename); //separator comes with dir
 #ifdef E2_VFS

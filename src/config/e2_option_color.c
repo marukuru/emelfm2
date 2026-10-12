@@ -141,7 +141,6 @@ void e2_option_color_filetypes_sync (void)
 	gint i = ATOMSPERCHUNK;	//force initial chunk creation
 	GDKCOLOR **id = NULL;	//assignment for complier-warning prevention only
 	gchar *def_color;
-	gboolean freedef;
 
 	GtkTreeModel *mdl = typeset->ex.tree.model;
 	GtkTreeIter iter;
@@ -164,8 +163,6 @@ void e2_option_color_filetypes_sync (void)
 						{
 							//get category-default color, if any
 							gtk_tree_model_get (mdl, &iter2, 2, &def_color, -1);
-			 				//CHECKME better to dup the hashed string ?
-							freedef = TRUE;	//assume the default will not be used
 
 							do
 							{
@@ -179,10 +176,7 @@ void e2_option_color_filetypes_sync (void)
 									if (*ext_color != '\0')
 										usecolor = ext_color;
 									else if (*def_color != '\0')
-									{
 										usecolor = def_color;
-										freedef = FALSE;
-									}
 									else
 										usecolor = NULL;
 									if (usecolor != NULL)
@@ -207,6 +201,8 @@ void e2_option_color_filetypes_sync (void)
 										g_hash_table_replace (app.colors, local, id[i]);
 										i++;
 									}
+									else	//not hashed
+										g_free (ext_type);
 								}
 								else
 								{	//clean this if not hashed
@@ -214,7 +210,7 @@ void e2_option_color_filetypes_sync (void)
 								}
 								g_free (ext_color);
 							} while (gtk_tree_model_iter_next (mdl, &iter3));
-							if (freedef)
+							//colors are parsed into chunk data, the string is not kept
 							g_free (def_color);
 						}
 						else if (strcmp (node_label, _C(6)))  //commands node is ignored

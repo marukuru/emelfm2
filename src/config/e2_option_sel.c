@@ -54,7 +54,9 @@ static gboolean _e2_option_sel_value_changed_hook (gpointer data, GtkWidget *sub
 	gint value = GPOINTER_TO_INT (data);
 	GList *children = gtk_container_get_children (GTK_CONTAINER (submenu));
 	GtkWidget *item = g_list_nth_data (children, value);
-	gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
+	g_list_free (children);
+	if (item != NULL)
+		gtk_check_menu_item_set_active (GTK_CHECK_MENU_ITEM (item), TRUE);
 	return TRUE;
 }
 

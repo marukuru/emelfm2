@@ -1009,7 +1009,7 @@ static void _e2_pane_history_menu_filter_init (void)
 
 static void _e2_pane_history_menu_filter_finalise (void)
 {
-	if (menued == NULL)
+	if (menued != NULL)
 	{
 		g_ptr_array_free (menued, TRUE);
 		menued = NULL;

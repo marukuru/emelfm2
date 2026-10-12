@@ -105,7 +105,7 @@ static void _e2_view_dialog_set_hilites (const gchar *searchstr,
 	if (rt->research)
 		rt->research = FALSE;
 	//avoid repeated scans for the same string
-	else if (rt->is_lit && !strcmp (searchstr, prior_search))
+	else if (rt->is_lit && prior_search != NULL && !strcmp (searchstr, prior_search))
 		return;
 	//clear anything from last scan
 	e2_view_dialog_clear_hilites (rt);
@@ -1301,8 +1301,8 @@ void e2_view_dialog_destroy (E2_ViewDialogRuntime *rt)
 	gtk_text_view_get_visible_rect (GTK_TEXT_VIEW (rt->textview), &visible_rect);
 	gtk_text_view_get_line_at_y (GTK_TEXT_VIEW (rt->textview), &start,
 		visible_rect.y, NULL);
-//	if ()
-//	{
+	if (viewed != NULL)
+	{
 		//when editing the output buffer, we don't want to change it
 		GtkTextIter scan;
 		guint i = 0;
@@ -1311,6 +1311,7 @@ void e2_view_dialog_destroy (E2_ViewDialogRuntime *rt)
 			gtk_text_buffer_get_iter_at_line (rt->textbuffer, &scan, i++);
 		} while (gtk_text_iter_compare (&scan, &start) < 0);
 		viewed->topline = i-1;
+	}
 /*	}
 	else
 	{

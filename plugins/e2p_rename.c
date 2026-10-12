@@ -439,7 +439,10 @@ static gchar *_e2p_ren_count_replace (const gchar *newname, E2_RenDialogRuntime 
 		//substitute count string for counter macro
 		p = strstr (expanded, "%c");
 		if (p == NULL)
+		{
+			g_free (c);
 			break;	//oops !
+		}
 //		p = (expanded + counterdata [i][CINDEX] + adj);
 		*p = '\0';
 		s = (p + counterdata [i][CLEN]);
@@ -528,64 +531,69 @@ static gchar *_e2p_ren_name_replace (gchar *oldtemplate, gchar *oldpath,
 				size_t len = regerror (error, &oldcompiled, NULL, 0);
 				gchar local[len+2];
 				regerror (error,  &oldcompiled,  local, len+2);
-				printd (DEBUG, local);
+				printd (DEBUG, "%s", local);
 				e2_output_print_error (local, FALSE);
+				//match offsets are undefined, keep the current name
+				result = g_string_new (newbase);
 			}
-			//transform newtemplate into new name, with corresponding matches from oldname
-			gchar buf[NAME_MAX+2];
-			regmatch_t rx;
-
-			result = g_string_new ("");
-			//ignore initial chunk and any chunk(s) past what we asked for
-			gint newwilds = (gint)rt->nchunks->len - 1;
-			if (newwilds < matchcount)
-				matchcount = newwilds;
-			gint j = 1; //skip the initial chunk assigned to whole-of-pattern when needed
-			gint i;
-			//ignore the initial 'whole pattern' match in the regex data
-			for (i = 1; i < matchcount; i++)
+			else
 			{
-				//get the matched substring
-				rx = matcholdptr[i];
-				if (rx.rm_so > -1)
-				{	//the substring was actually used in the match
-					//get a null-terminated copy
-					gint L;
-					s1 = newbase + rx.rm_so;
-					L = rx.rm_eo - rx.rm_so;
-					if (L > NAME_MAX+1)
-						L = NAME_MAX+1;	//prevent buffer overflow
-					memcpy (buf, s1, L);
-					buf[L] = '\0';
-				}
-				else
+				//transform newtemplate into new name, with corresponding matches from oldname
+				gchar buf[NAME_MAX+2];
+				regmatch_t rx;
+
+				result = g_string_new ("");
+				//ignore initial chunk and any chunk(s) past what we asked for
+				gint newwilds = (gint)rt->nchunks->len - 1;
+				if (newwilds < matchcount)
+					matchcount = newwilds;
+				gint j = 1; //skip the initial chunk assigned to whole-of-pattern when needed
+				gint i;
+				//ignore the initial 'whole pattern' match in the regex data
+				for (i = 1; i < matchcount; i++)
 				{
-					//FIXME
-					continue;
+					//get the matched substring
+					rx = matcholdptr[i];
+					if (rx.rm_so > -1)
+					{	//the substring was actually used in the match
+						//get a null-terminated copy
+						gint L;
+						s1 = newbase + rx.rm_so;
+						L = rx.rm_eo - rx.rm_so;
+						if (L > NAME_MAX+1)
+							L = NAME_MAX+1;	//prevent buffer overflow
+						memcpy (buf, s1, L);
+						buf[L] = '\0';
+					}
+					else
+					{
+						//FIXME
+						continue;
+					}
+					//progressively join up fixed and variable
+					for ( ; j <= i ; j++)
+					{
+						s1 = (gchar *)g_ptr_array_index (rt->nchunks, j);
+						if (s1 != NULL && *s1 != '\0')
+							result = g_string_append (result, s1);
+					}
+					result = g_string_append (result, buf);
 				}
-				//progressively join up fixed and variable
-				for ( ; j <= i ; j++)
+				//and add any left-over chunks
+				if (newwilds <= (gint)oldcompiled.re_nsub + 1)
 				{
 					s1 = (gchar *)g_ptr_array_index (rt->nchunks, j);
 					if (s1 != NULL && *s1 != '\0')
 						result = g_string_append (result, s1);
 				}
-				result = g_string_append (result, buf);
-			}
-			//and add any left-over chunks
-			if (newwilds <= (gint)oldcompiled.re_nsub + 1)
-			{
-				s1 = (gchar *)g_ptr_array_index (rt->nchunks, j);
-				if (s1 != NULL && *s1 != '\0')
-					result = g_string_append (result, s1);
-			}
-/*??		for ( ; j < rt->nchunks->len; j++)
-			{
-				s1 = (gchar *)g_ptr_array_index (rt->nchunks, j);
-				if (s1 != NULL && *s1 != '\0')
-					result = g_string_append (result, s1);
-			}
+/*??			for ( ; j < rt->nchunks->len; j++)
+				{
+					s1 = (gchar *)g_ptr_array_index (rt->nchunks, j);
+					if (s1 != NULL && *s1 != '\0')
+						result = g_string_append (result, s1);
+				}
 */
+			}
 			//cleanup
 			regfree (&oldcompiled);
 		}
@@ -837,6 +845,7 @@ static void _e2p_ren_rename (E2_RenDialogRuntime *rt)
 	gchar *srctemplate = NULL;//assignment for complier-warning prevention only
 	const gchar *startdir;
 	regex_t compiled;
+	gboolean compiled_ok = FALSE;
 	E2P_RenameData data;
 #ifdef E2_VFS
 	VPATH sdata;
@@ -850,28 +859,33 @@ static void _e2p_ren_rename (E2_RenDialogRuntime *rt)
 
 	if (_e2p_ren_get_flag (OLD_SEL_P))	//, rt))
 	{
+		gboolean other = _e2p_ren_get_flag (SEARCH_OTHER_P);
+		ViewInfo *view = (other) ? other_view : curr_view;
+		E2_ListChoice pane = (other) ? PANEINACTIVE : PANEACTIVE;
 #ifdef E2_VFS
-		sdata.spacedata = curr_view->spacedata;
+		sdata.spacedata = view->spacedata;
 #endif
-		//to distinguish items, get quoted names then remove quotes
-		gchar *macro = (_e2p_ren_get_flag (SEARCH_OTHER_P)) ? "%F" : "%p"; //%F==%P
-
-		gchar *itempaths = e2_utils_expand_macros (macro, NULL);
-		if (itempaths != NULL)
+		//get the selected items directly, parsing a quoted macro-expansion
+		//fails for names which contain quotes or backslashes
+		e2_filestore_disable_one_refresh (pane);
+		GList *member, *sel = e2_fileview_get_selected_local (view, FALSE);
+		if (sel != NULL)
 		{
-			gchar *local, *s, *p = itempaths;
-			while (*p != '\0')
+			gchar *localdir = D_FILENAME_TO_LOCALE (view->dir);
+			for (member = sel; member != NULL; member = member->next)
 			{
-				s = strchr (p, '"');
-				p = s+1;
-				s = strchr (p, '"');
-				*s = '\0';
-				local = D_FILENAME_TO_LOCALE (p);
-				g_ptr_array_add (data.candidates, local);
-				p = s+1;
+				gchar *local = e2_utils_strcat (localdir,
+					((FileInfo *)member->data)->filename);
+				if (local != NULL)
+					g_ptr_array_add (data.candidates, local);
 			}
-			g_free (itempaths);
+			g_free (localdir);
+			g_list_free (sel);
 		}
+		else
+			e2_output_print_error ((other) ?
+				_("No item selected in other pane") : _("No item selected"), FALSE);
+		e2_filestore_enable_one_refresh (pane);
 		result = (data.candidates->len > 0);
 	}
 	else	//not renaming selected items
@@ -964,6 +978,7 @@ static void _e2p_ren_rename (E2_RenDialogRuntime *rt)
 				}
 				else
 				{
+					compiled_ok = TRUE;
 					rt->modeflags = E2PR_REGEX;
 					data.match.regex = &compiled;
 				}
@@ -1043,6 +1058,8 @@ static void _e2p_ren_rename (E2_RenDialogRuntime *rt)
 		g_ptr_array_foreach (data.candidates, (GFunc)g_free, NULL);
 //#endif
 		g_ptr_array_free (data.candidates, TRUE);
+		if (compiled_ok)
+			regfree (&compiled);
 		WAIT_FOR_EVENTS
 		*rt->status = E2_TASK_PAUSED;
 		return;
@@ -1287,6 +1304,8 @@ static void _e2p_ren_rename (E2_RenDialogRuntime *rt)
 	//cleanups
 	g_ptr_array_foreach (data.candidates, (GFunc)g_free, NULL);
 	g_ptr_array_free (data.candidates, TRUE);
+	if (compiled_ok)
+		regfree (&compiled);
 
 	if (_e2p_ren_get_flag (OLD_WILD_P) || _e2p_ren_get_flag (OLD_REGEX_P))
 		//new pattern with wildcards was constructed
@@ -1993,11 +2012,11 @@ Plugin *init_plugin (E2PInit mode)
 	checks[2] = OLD_REGEX_P;
 	_e2p_ren_clean_flags (checks, 3, 0);
 
-	dir_history = (GList *)g_new0 (gpointer, 1);
+	dir_history = NULL;	//set by the cache, if any
 	e2_cache_list_register ("rename-dir-history", &dir_history);
-	pattern_history = (GList *)g_new0 (gpointer, 1);
+	pattern_history = NULL;	//set by the cache, if any
 	e2_cache_list_register ("rename-oldpattern-history", &pattern_history);
-	newpattern_history = (GList *)g_new0 (gpointer, 1);
+	newpattern_history = NULL;	//set by the cache, if any
 	e2_cache_list_register ("rename-newpattern-history", &newpattern_history);
 
 	PLUGINIT_ONE_END

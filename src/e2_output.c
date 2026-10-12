@@ -40,12 +40,6 @@ ToDo
 #include <string.h>
 #include <pthread.h>
 #include <ctype.h>
-#warning "CHECK_USE_GTK3_0"
-#ifdef USE_GTK3_0
-#warning "GTK3 IS DEFINED"
-#else
-#warning "GTK3 IS NOT DEFINED"
-#endif
 #include "e2_output.h"
 #include "e2_dialog.h"
 //for pane-text activation
@@ -3807,13 +3801,15 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 				while (s2 >= utf)
 				{
 					c = *s2;
-					if (c >= 0x80)	//part of UTF-8 multi-byte char
+					if ((guchar) c >= 0x80)	//part of UTF-8 multi-byte char
 					{
-						//overwrite it with backspaces
-						do
+						//overwrite its continuation bytes and then its lead byte
+						while (s2 > utf && ((guchar) *s2 & 0xC0) == 0x80)
 						{
 							*s2 = '\b';
-						} while (--s2 >= utf && *s2 > 0x80);
+							s2--;
+						}
+						*s2 = '\b';
 						break;
 					}
 					else if (c != '\b')

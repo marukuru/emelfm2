@@ -653,7 +653,7 @@ static void _e2_plugins_process_iter (GtkTreeModel *model, GtkTreeIter *iter,
 				p = (*data.init) (E2P_INITALL);
 				if (p->refcount == 0) //setup failed
 				{
-					printd (WARN, "Initialisation of plugin $s failed", sigvers);
+					printd (WARN, "Initialisation of plugin %s failed", sigvers);
 					goto unload;
 				}
 			}

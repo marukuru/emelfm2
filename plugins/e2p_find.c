@@ -1236,7 +1236,7 @@ static void _e2p_find_get_match_data (findtargets *data, E2_FindDialogRuntime *r
 		{
 			gchar *local;
 			//matcher compares file(1) output, CHECKME that's localised text
-			local = g_locale_from_utf8 (tmp2, -1, NULL, NULL, NULL);
+			local = e2_utf8_to_locale (tmp2);	//never NULL
 			//FIXME support exact match
 			tmp3 = strchr (local, G_DIR_SEPARATOR);
 			if (tmp3 == NULL)
@@ -1481,7 +1481,7 @@ static void _e2p_find_get_match_data (findtargets *data, E2_FindDialogRuntime *r
 		if (*tmp != '\0')
 		{
 			struct passwd *pwptr;
-			tmp2 = g_locale_from_utf8 (tmp, -1, NULL, NULL, NULL);	//, rt))
+			tmp2 = e2_utf8_to_locale (tmp);	//, rt))
 			//errno = 0;
 			pwptr = getpwnam (tmp2);
 			if (pwptr != NULL)
@@ -1525,7 +1525,7 @@ static void _e2p_find_get_match_data (findtargets *data, E2_FindDialogRuntime *r
 		if (*tmp != '\0')
 		{
 			struct group *grptr;
-			tmp2 = g_locale_from_utf8 (tmp, -1, NULL, NULL, NULL);	//, rt))
+			tmp2 = e2_utf8_to_locale (tmp);	//, rt))
 			grptr = getgrnam (tmp2);
 			if (grptr != NULL)
 			{
@@ -1561,7 +1561,7 @@ static void _e2p_find_get_match_data (findtargets *data, E2_FindDialogRuntime *r
 		else
 			data->sizeop = ISEQ;
 
-		tmp2 = g_locale_from_utf8 (tmp, -1, NULL, NULL, NULL);
+		tmp2 = e2_utf8_to_locale (tmp);	//never NULL
 		gchar *endptr;
 		data->sizetarget = g_ascii_strtoull (tmp2, &endptr, 10);
 		if (*endptr == '\0')

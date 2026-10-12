@@ -305,7 +305,7 @@ void e2_cache_store_register (gchar *name, gpointer *store,
 	gpointer syncdata)
 {
 	//any cached data will be a list. Try to get that
-	GList *rowdata;
+	GList *rowdata = NULL;	//not set when the cache is already registered
 	E2_Cache *cache = e2_cache_list_register (name, &rowdata);
 
 //	void (*func) (gpointer*, GList*) = fillfunc;

@@ -1783,8 +1783,10 @@ GtkWidget *e2_dialog_slow (gchar *prompt_type, gchar *tip_type,
 
 	E2_Button local_button;
 	local_button.label = _("_Quiet");
+	local_button.name = NULL;
 	local_button.tip = _("Don't ask any more");
-	local_button.showflags = E2_BTN_TIPPED;
+	//showflags revert to default_flags after each button is added
+	local_button.showflags = local_button.default_flags = E2_BTN_TIPPED;
 	local_button.response = E2_RESPONSE_USER1;
 	e2_dialog_add_defined_button (dialog, &local_button);
 

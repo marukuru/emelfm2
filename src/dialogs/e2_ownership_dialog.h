@@ -22,8 +22,6 @@ along with emelFM2; see the file GPL. If not, see http://www.gnu.org/licenses.
 
 #include "emelfm2.h"
 
-// the maximum number of membership groups that a user may see
-#define REPORTABLE_GROUPS 25
 // the lowest alternate UID available to non-root users
 #define UID_LOWLIMIT 500
 

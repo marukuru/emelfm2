@@ -1251,13 +1251,14 @@ static gboolean _e2_option_tree_button_press_cb (GtkWidget *treeview,
 		(GTK_TREE_VIEW (treeview));
 	if (!gtk_tree_selection_path_is_selected (selection, path)) //CHECKME BGL ?
 	{
+		gtk_tree_path_free (path);
 		NEEDOPENBGL
 		return FALSE;
 	}
 	gboolean retval = FALSE;
 	gint column = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (tree_column), "column"));
 	E2_OptionTreeColumn *opt = g_list_nth_data (set->ex.tree.columns, column);
-	if (opt->type == E2_OPTION_TREE_TYPE_ICON)
+	if (opt != NULL && opt->type == E2_OPTION_TREE_TYPE_ICON)
 	{
 		//get the current value
 		gchar *icon;
@@ -1278,7 +1279,7 @@ static gboolean _e2_option_tree_button_press_cb (GtkWidget *treeview,
 		}
 	}
 #ifdef E2_PTRGESTURES
-	else if (opt->type == E2_OPTION_TREE_TYPE_GESTURE)
+	else if (opt != NULL && opt->type == E2_OPTION_TREE_TYPE_GESTURE)
 	{
 		//get the current value
 		gchar *sequence;
@@ -1297,6 +1298,7 @@ static gboolean _e2_option_tree_button_press_cb (GtkWidget *treeview,
 		}
 	}
 #endif
+	gtk_tree_path_free (path);
 	NEEDOPENBGL
 	return retval;
 }
@@ -1503,7 +1505,7 @@ static void e2_option_tree_del_direct_cb (GtkButton *button, E2_OptionSet *set)
 			(GTK_TREE_VIEW (set->widget)), NULL, &iter))
 	{
 		gint children;
-		DialogButtons choice;
+		DialogButtons choice = CANCEL;
 		GtkWidget *dialog = NULL;
 		gboolean do_plugin = (e2_option_get_simple ("plugins") == set);
 
@@ -2583,6 +2585,7 @@ static void _e2_option_tree_add_default (E2_OptionSet *set, GtkTreeIter *iter, G
 				arg[i] = (void *)opt->sdef;
 				break;
 			default:
+				arg[i] = NULL;	//ignored when added
 				break;
 		}
 		i++;
@@ -2592,9 +2595,10 @@ static void _e2_option_tree_add_default (E2_OptionSet *set, GtkTreeIter *iter, G
 
 	if ((parent != NULL) && (sibling == FALSE))
 		gtk_tree_view_expand_all (GTK_TREE_VIEW (set->widget));
-	gtk_tree_view_set_cursor  (GTK_TREE_VIEW (set->widget),
-		gtk_tree_model_get_path (GTK_TREE_MODEL (set->ex.tree.model), iter),
+	GtkTreePath *tpath = gtk_tree_model_get_path (GTK_TREE_MODEL (set->ex.tree.model), iter);
+	gtk_tree_view_set_cursor  (GTK_TREE_VIEW (set->widget), tpath,
 		gtk_tree_view_get_column (GTK_TREE_VIEW (set->widget), 0), FALSE);
+	gtk_tree_path_free (tpath);
 
 	if (set->widget)
 	{

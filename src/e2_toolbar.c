@@ -2231,6 +2231,7 @@ static void _e2_toolbar_add_bookmarks (E2_Action *action, gint bstyle,
 		_e2_toolbar_get_option_row (rt, set->ex.tree.model,
 			iter, &label, &icon, &tip, NULL, &markpath);
 		mdata->mark_path = e2_utils_replace_vars (markpath, TRUE);
+		g_free (markpath);
 
 		GtkWidget *button = _e2_toolbar_add_button (rt, bstyle, label, icon, tip,
 			e2_action_pack_runtime (action, mdata->mark_path, NULL));

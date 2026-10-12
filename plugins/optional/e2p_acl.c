@@ -2105,8 +2105,10 @@ static void _e2p_acl_fill_combo_models (E2_ACLDlgRuntime *rt)
 		}
 		else //not root
 		{
-			gid_t grp_ids[REPORTABLE_GROUPS];
-			gint n = getgroups (REPORTABLE_GROUPS, grp_ids);
+			//a fixed-size buffer makes getgroups() fail when there are more groups
+			gint n = getgroups (0, NULL);
+			gid_t *grp_ids = (n > 0) ? g_try_new (gid_t, n) : NULL;
+			n = (grp_ids != NULL) ? getgroups (n, grp_ids) : 0;
 			gint ctr;
 			for (ctr = 0; ctr < n; ctr++)
 			{
@@ -2120,6 +2122,7 @@ static void _e2p_acl_fill_combo_models (E2_ACLDlgRuntime *rt)
 					g_free (utf);
 				}
 			}
+			g_free (grp_ids);
 		}
 		endgrent ();
 	}
