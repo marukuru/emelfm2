@@ -2207,11 +2207,16 @@ void e2_fileview_refilter_list (ViewInfo *view)
 }
 /** @brief decide whether type-ahead search matches a row
 
+GTK calls this for each row it tests, including all earlier matches when
+moving to the next or previous one, and then itself moves the cursor to the
+wanted match (which updates view->row). So this must not change the view,
+or the list jumps through every earlier match on each up/down key.
+
 @param model the treemodel being searched
 @param column UNUSED the search column (= FILENAME)
 @param key the aggregate string of keys sofar pressed
 @param iter an iter pointing the row of @a model that should be compared with @a key
-@param view pointer to data struct for the view
+@param view UNUSED pointer to data struct for the view
 
 @return FALSE when a match is found
 */
@@ -2221,16 +2226,6 @@ static gboolean _e2_fileview_match_filename (GtkTreeModel *model, gint column,
 	gchar *itemname;
 	gtk_tree_model_get (model, iter, FILENAME, &itemname, -1);
 	gboolean match = g_str_has_prefix (itemname, key);
-	if (match)
-	{	//we have a match
-		GtkTreePath *path = gtk_tree_model_get_path (model, iter);
-		view->row = *gtk_tree_path_get_indices (path);
-		if (view->row > 0)
-			view->row++;	//CHECKME why is this needed ..
-		//these selection-flags probably ineffective
-		e2_fileview_focus_row (view, view->row, FALSE, FALSE, FALSE, TRUE);
-		gtk_tree_path_free (path);
-	}
 	g_free (itemname);
 	return !match;
 }
