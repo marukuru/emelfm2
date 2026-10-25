@@ -177,7 +177,8 @@ static gboolean _e2_combobox_key_press_cb2 (GtkWidget *entry, GdkEventKey *event
 	printd (DEBUG, "parent-combo get @ 8");
 				e2_combobox_clear_value ((GtkWidget*) GTK_COMBO_BOX (
 #ifdef USE_GTK2_14
-					gtk_widget_get_parent (entry)
+					//gtk 3 puts a combo's entry inside an internal box
+					gtk_widget_get_ancestor (entry, GTK_TYPE_COMBO_BOX)
 #else
 					entry->parent
 #endif
@@ -195,7 +196,7 @@ static gboolean _e2_combobox_key_press_cb2 (GtkWidget *entry, GdkEventKey *event
 	printd (DEBUG, "parent-combo get @ 10");
 			combo = GTK_COMBO_BOX (
 #ifdef USE_GTK2_14
-				gtk_widget_get_parent (entry)
+				gtk_widget_get_ancestor (entry, GTK_TYPE_COMBO_BOX)
 #else
 				entry->parent
 #endif
@@ -354,7 +355,7 @@ void e2_combobox_activated_cb (GtkWidget *entry, gpointer data)
 	printd (DEBUG, "parent-combo get @ 12");
 		GtkComboBox *combo = GTK_COMBO_BOX (
 #ifdef USE_GTK2_14
-			gtk_widget_get_parent (entry)
+			gtk_widget_get_ancestor (entry, GTK_TYPE_COMBO_BOX)
 #else
 			entry->parent
 #endif

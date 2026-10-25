@@ -2919,7 +2919,8 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 		{
 			GtkWidget *parent =
 #ifdef USE_GTK2_14
-				gtk_widget_get_parent (GTK_WIDGET(from));
+				//gtk 3 puts a combo's entry inside an internal box
+				gtk_widget_get_ancestor (GTK_WIDGET(from), GTK_TYPE_COMBO_BOX);
 #else
 				GTK_WIDGET(from)->parent;
 #endif
@@ -2957,7 +2958,7 @@ static gint _e2_command_run_single (gchar *raw, const gchar *cwd,
 				{
 					GtkWidget *parent =
 #ifdef USE_GTK2_14
-						gtk_widget_get_parent (GTK_WIDGET(from));
+						gtk_widget_get_ancestor (GTK_WIDGET(from), GTK_TYPE_COMBO_BOX);
 #else
 						GTK_WIDGET(from)->parent;
 #endif
