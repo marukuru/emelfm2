@@ -363,6 +363,21 @@ static gchar *text_colors[256] =
 
 #ifdef E2_OUTPUTSTYLES
 /**
+@brief remove a referenced styling mark from its buffer, if any, and unref it
+The mark is referenced, so it remains valid after its buffer is replaced
+when the log is cleared
+@param mark the mark to release
+
+@return
+*/
+static void _e2_output_release_mark (GtkTextMark *mark)
+{
+	GtkTextBuffer *buffer = gtk_text_mark_get_buffer (mark);
+	if (buffer != NULL)
+		gtk_text_buffer_delete_mark (buffer, mark);
+	g_object_unref (G_OBJECT (mark));
+}
+/**
 @brief cleanup allocated memory for @a data and its contents
 @param data pointer to data value stored in hash table
 
@@ -370,8 +385,10 @@ static gchar *text_colors[256] =
 */
 static void _e2_output_clear_styletrio (E2_Trio *data)
 {
-	//ignore GtkTextmark @ data->a
-	g_array_free ((GArray*)data->b, TRUE);
+	if (data->a != NULL)
+		_e2_output_release_mark ((GtkTextMark*)data->a);
+	if (data->b != NULL)
+		g_array_free ((GArray*)data->b, TRUE);
 	g_free (data->c); //any carryover string
 	DEALLOCATE (E2_Trio, data);
 }
@@ -400,7 +417,7 @@ static void _e2_output_carryover (E2_OutputTabRuntime *rt, const gchar *origin, 
 	if (rt->style_trios == NULL)
 	{
 		rt->style_trios = g_hash_table_new_full (
-			g_str_hash, g_str_equal, NULL,  //assume constant string for key
+			g_str_hash, g_str_equal, g_free,  //origins may be transient
 			(GDestroyNotify)_e2_output_clear_styletrio);
 		data = NULL;
 	}
@@ -409,11 +426,28 @@ static void _e2_output_carryover (E2_OutputTabRuntime *rt, const gchar *origin, 
 	if (data == NULL)
 	{
 		data = ALLOCATE0 (E2_Trio);
-		g_hash_table_insert (rt->style_trios, (gpointer)origin, data);
+		g_hash_table_insert (rt->style_trios, g_strdup (origin), data);
 	}
 	else
 		g_free (data->c);
 	data->c = g_strdup (save);
+}
+/**
+@brief cleanup when printing stops at a partial escape sequence
+@param tab pointer to tab data struct
+@param msg the message being printed
+@param utf the UTF-8 form of @a msg, maybe @a msg itself
+@param msg_start_mark mark at the start of the inserted message, or NULL
+
+@return
+*/
+static void _e2_output_end_partial (E2_OutputTabRuntime *tab, const gchar *msg,
+	gchar *utf, GtkTextMark *msg_start_mark)
+{
+	if (msg_start_mark != NULL)
+		gtk_text_buffer_delete_mark (tab->buffer, msg_start_mark);
+	if (utf != msg)
+		g_free (utf);
 }
 /**
 @brief get terminal-style tag for the current buffer, corresponding to @a tagnum
@@ -3186,6 +3220,14 @@ static gboolean _e2_output_clear_action (gpointer from, E2_ActionRuntime *art)
 	app.tab.mark = mark;
 	g_atomic_int_set (&app.tab.onscreen, 1);
 	g_object_unref (G_OBJECT (buffer));
+# ifdef E2_OUTPUTSTYLES
+	//styling marks belong to the replaced buffer
+	if (app.tab.style_trios != NULL)
+	{
+		g_hash_table_destroy (app.tab.style_trios);
+		app.tab.style_trios = NULL;
+	}
+# endif
 #endif
 	*(curr_tab) = app.tab; //listed tab data needs the updated values too
 	return TRUE;
@@ -3670,14 +3712,14 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 					else
 					{
 						tab->style_trios = g_hash_table_new_full (
-							g_str_hash, g_str_equal, NULL,  //assume constant string for key
+							g_str_hash, g_str_equal, g_free,  //origins may be transient
 							(GDestroyNotify)_e2_output_clear_styletrio);
 						style_data = NULL;
 					}
 					if (style_data == NULL)
 					{
 						style_data = ALLOCATE0 (E2_Trio);
-						g_hash_table_insert (tab->style_trios, origin, style_data);
+						g_hash_table_insert (tab->style_trios, g_strdup (origin), style_data);
 					}
 					//put relevant part of line (if any) into buffer
 					_e2_output_insert_text (tab, origin, strst, s1 - 1, &start, &end,
@@ -3686,10 +3728,20 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 						//set anonymous mark at start of inserted msg, in case overall styling needed
 						msg_start_mark = gtk_text_buffer_create_mark (tab->buffer,
 							NULL, &start, TRUE);
+					if (style_data->a != NULL
+						&& gtk_text_mark_get_buffer ((GtkTextMark*)style_data->a) != tab->buffer)
+					{	//the log was cleared after the mark was set
+						_e2_output_release_mark ((GtkTextMark*)style_data->a);
+						style_data->a = NULL;
+					}
 					if (style_data->a == NULL)
+					{
 						//set temporary anonymous mark at start of this inserted text block
 						style_data->a = gtk_text_buffer_create_mark (tab->buffer,
 							NULL, &start, TRUE);
+						//keep the mark valid if its buffer is replaced when the log is cleared
+						g_object_ref (G_OBJECT (style_data->a));
+					}
 					else
 						gtk_text_buffer_get_iter_at_mark (tab->buffer, &start, (GtkTextMark*)style_data->a);
 					if (style_data->b != NULL)
@@ -3735,6 +3787,7 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 						_e2_output_insert_text (tab, origin, strst, s1 - 1, &start, &end,
 							(strst == msg) && newline, (strst == msg)?back_prior:0);
 						_e2_output_carryover (tab, origin, s1);
+						_e2_output_end_partial (tab, msg, (gchar*)utf, (GtkTextMark*)msg_start_mark);
 						return;
 					}
 				}
@@ -3754,6 +3807,7 @@ void e2_output_print (E2_OutputTabRuntime *tab, gchar *msg, gchar *origin,
 					_e2_output_insert_text (tab, origin, strst, s1 - 1, &start, &end,
 						(strst == msg) && newline, (strst == msg)?back_prior:0);
 					_e2_output_carryover (tab, origin, s1);
+					_e2_output_end_partial (tab, msg, (gchar*)utf, (GtkTextMark*)msg_start_mark);
 					return;
 				}
 			}

@@ -3856,6 +3856,12 @@ void e2_utils_block_thread_signals (void)
 	sigfillset (&set);	//block all allowed signals
 //	sigemptyset (&set);	//block SIGCHILD signals
 //	sigaddset (&set, SIGCHLD);
+	//except faults: when blocked, the kernel kills the process without running
+	//any handler (crash reporters, sanitizers or debuggers)
+	sigdelset (&set, SIGSEGV);
+	sigdelset (&set, SIGBUS);
+	sigdelset (&set, SIGFPE);
+	sigdelset (&set, SIGILL);
 	pthread_sigmask (SIG_BLOCK, &set, NULL);
 }
 /**

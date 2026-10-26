@@ -702,7 +702,10 @@ reselect:
 					g_free (message);
 				}
 #ifdef E2_OUTPUTSTYLES
+				//this thread does not own the display, and the styles hold text marks
+				CLOSEBGL
 				e2_output_clear_styles (rt->current_tab, rt->pidstr);
+				OPENBGL
 #endif
 		//CHECKME sometimes (how?) we can end this func without breaking here
 				printd (DEBUG, "Exiting command select loop");
