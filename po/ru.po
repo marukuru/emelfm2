@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emelfm2-0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-28 21:32+0200\n"
+"POT-Creation-Date: 2026-10-26 22:14+0100\n"
 "PO-Revision-Date: 2014-01-26 18:52+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent@opensuse.org>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -20,7 +20,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Generator: Poedit 1.5.4\n"
 
-#: e2_about_dialog.c:138 e2_action.c:1212 e2_alias.c:329 e2_command.c:3295
+#: e2_about_dialog.c:138 e2_action.c:1212 e2_alias.c:329 e2_command.c:3392
 msgid "help"
 msgstr "справка"
 
@@ -79,11 +79,11 @@ msgstr ""
 msgid "usage"
 msgstr "использование"
 
-#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3092
+#: e2_about_dialog.c:199 e2_option.c:1300 e2_output.c:3120
 msgid "commands"
 msgstr "команды"
 
-#: e2_about_dialog.c:206 e2_option_tree.c:1521
+#: e2_about_dialog.c:206 e2_option_tree.c:1523
 msgid "actions"
 msgstr "действия"
 
@@ -104,7 +104,7 @@ msgstr "закладка"
 msgid "command"
 msgstr "команда"
 
-#: e2_action.c:1156 e2_bookmark.c:441 e2_option_tree.c:1528
+#: e2_action.c:1156 e2_bookmark.c:441 e2_option_tree.c:1530
 msgid "children"
 msgstr "дочерний"
 
@@ -112,7 +112,7 @@ msgstr "дочерний"
 msgid "configure"
 msgstr "конфигурация"
 
-#: e2_action.c:1158 e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_action.c:1158 e2_option__default.c:416 e2_toolbar.c:3443
 msgid "dialog"
 msgstr "диалог"
 
@@ -160,7 +160,7 @@ msgstr "панели"
 msgid "pending"
 msgstr "ожидание"
 
-#: e2_action.c:1170 e2_config_dialog.c:1161
+#: e2_action.c:1170 e2_config_dialog.c:1162
 msgid "plugin"
 msgstr "модуль"
 
@@ -232,7 +232,7 @@ msgstr "подогнать_соотношение"
 msgid "application"
 msgstr "приложение"
 
-#: e2_action.c:1190 e2_config_dialog.c:2169 e2_config_dialog.c:2206
+#: e2_action.c:1190 e2_config_dialog.c:2170 e2_config_dialog.c:2207
 msgid "change"
 msgstr "изменить"
 
@@ -536,12 +536,12 @@ msgstr "смотреть_снова"
 msgid "view_at"
 msgstr "открыть_на"
 
-#: e2_action.c:1272 e2_bookmark.c:441 e2_option_tree.c:1528
+#: e2_action.c:1272 e2_bookmark.c:441 e2_option_tree.c:1530
 msgid "child"
 msgstr "дочерний"
 
-#: e2_action.c:1273 e2_pane.c:1311 e2_pane.c:1463 e2_pane.c:1859 e2_task.c:2178
-#: e2p_clipnames.c:52
+#: e2_action.c:1273 e2_menu.c:851 e2_pane.c:1325 e2_pane.c:1477 e2_pane.c:1873
+#: e2_task.c:2178 e2p_clipnames.c:112
 msgid "ctrl"
 msgstr "ctrl"
 
@@ -573,7 +573,7 @@ msgstr "on"
 msgid "quote"
 msgstr "quote"
 
-#: e2_action.c:1281 e2p_clipnames.c:49
+#: e2_action.c:1281 e2_menu.c:845 e2_menu.c:851 e2p_clipnames.c:109
 msgid "shift"
 msgstr "shift"
 
@@ -605,7 +605,7 @@ msgstr "клавиша"
 msgid "fake"
 msgstr "fake"
 
-#: e2_action.c:1298 e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_action.c:1298 e2_option__default.c:416 e2_toolbar.c:3443
 msgid "button"
 msgstr "кнопка"
 
@@ -961,7 +961,7 @@ msgstr ""
 msgid "Search actions"
 msgstr "операции с файлами"
 
-#: e2_action_search.c:504 e2_button.c:42 e2_icons.c:916 e2_icons.c:1169
+#: e2_action_search.c:504 e2_button.c:42 e2_icons.c:917 e2_icons.c:1170
 msgid "_Close"
 msgstr "_Закрыть"
 
@@ -977,7 +977,7 @@ msgstr "искать"
 
 #: e2_action_search.c:534 e2_context_menu.c:490 e2_keybinding.c:1792
 #: e2_mousebinding.c:1846 e2_mousegesture.c:1327 e2_permissions_dialog.c:454
-#: e2_toolbar.c:3525 e2_toolbar.c:3597 e2_toolbar.c:3763
+#: e2_toolbar.c:3526 e2_toolbar.c:3598 e2_toolbar.c:3764
 msgid "Action"
 msgstr "Действие"
 
@@ -1003,7 +1003,7 @@ msgstr ""
 msgid "x"
 msgstr "x"
 
-#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3565 e2p_upgrade.c:173
+#: e2_alias.c:318 e2_alias.c:323 e2_toolbar.c:3566 e2p_upgrade.c:173
 msgid "Done. Press enter "
 msgstr "Готово. Нажмите ввод "
 
@@ -1011,11 +1011,11 @@ msgstr "Готово. Нажмите ввод "
 msgid "xx"
 msgstr "xx"
 
-#: e2_alias.c:330 e2_output.c:3097
+#: e2_alias.c:330 e2_output.c:3125
 msgid "keys"
 msgstr "клавиши"
 
-#: e2_alias.c:332 e2_output.c:3103
+#: e2_alias.c:332 e2_output.c:3131
 msgid "buttons"
 msgstr "кнопки"
 
@@ -1049,8 +1049,8 @@ msgstr "и"
 
 #: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1533 e2_dialog.c:1663
 #: e2_dialog.c:1669 e2_dialog.c:1741 e2_dialog.c:1782 e2_edit_dialog.c:782
-#: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1521
-#: e2_option_tree.c:1528 e2p_crypt.c:852 e2p_rename.c:1100
+#: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1523
+#: e2_option_tree.c:1530 e2p_crypt.c:852 e2p_rename.c:1117
 msgid "confirm"
 msgstr "подтверждение"
 
@@ -1070,8 +1070,8 @@ msgstr "_Добавить"
 msgid "Bookmark the current directory after the selected item"
 msgstr "Добавить текущий каталог в закладки сразу после выбранной закладки"
 
-#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:429 e2_icons.c:922
-#: e2_icons.c:1175 e2p_unpack.c:777
+#: e2_bookmark.c:559 e2_button.c:57 e2_context_menu.c:429 e2_icons.c:923
+#: e2_icons.c:1176 e2p_unpack.c:778
 msgid "_Delete"
 msgstr "_Удалить"
 
@@ -1119,19 +1119,19 @@ msgstr "usr/local"
 msgid "default trash directory"
 msgstr "каталог корзины по умолчанию"
 
-#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1853 e2_plugins.c:1717
-#: e2_toolbar.c:3519 e2_toolbar.c:3591 e2_toolbar.c:3757
+#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1883 e2_plugins.c:1717
+#: e2_toolbar.c:3520 e2_toolbar.c:3592 e2_toolbar.c:3758
 msgid "Label"
 msgstr "Название"
 
 #: e2_bookmark.c:796 e2_context_menu.c:483 e2_filetype.c:989
-#: e2_filetype_dialog.c:1091 e2_menu.c:1851 e2_plugins.c:1719 e2_toolbar.c:3521
-#: e2_toolbar.c:3593 e2_toolbar.c:3759
+#: e2_filetype_dialog.c:1091 e2_menu.c:1881 e2_plugins.c:1719 e2_toolbar.c:3522
+#: e2_toolbar.c:3594 e2_toolbar.c:3760
 msgid "Icon"
 msgstr "Значок"
 
-#: e2_bookmark.c:798 e2_menu.c:1855 e2_plugins.c:1721 e2_toolbar.c:3523
-#: e2_toolbar.c:3595 e2_toolbar.c:3761
+#: e2_bookmark.c:798 e2_menu.c:1885 e2_plugins.c:1721 e2_toolbar.c:3524
+#: e2_toolbar.c:3596 e2_toolbar.c:3762
 msgid "Tooltip"
 msgstr "Подсказка"
 
@@ -1181,7 +1181,7 @@ msgstr ""
 "У вас будет запрашиваться подтверждение перед удалением закладки, содержащей "
 "'вложения'"
 
-#: e2_button.c:30 e2_button.c:59 e2_icons.c:912 e2_icons.c:1165
+#: e2_button.c:30 e2_button.c:59 e2_icons.c:913 e2_icons.c:1166
 #: e2p_upgrade.c:121
 msgid "_Cancel"
 msgstr "_Отмена"
@@ -1194,7 +1194,7 @@ msgstr "_Записать"
 msgid "Change all unprocessed items"
 msgstr "Сохранить сделанные изменения"
 
-#: e2_button.c:34 e2_icons.c:996 e2_icons.c:1249
+#: e2_button.c:34 e2_icons.c:997 e2_icons.c:1250
 msgid "_All"
 msgstr "_Все"
 
@@ -1202,11 +1202,11 @@ msgstr "_Все"
 msgid "Abandon any changes"
 msgstr "Отменить все изменения"
 
-#: e2_button.c:37 e2_icons.c:929 e2_icons.c:1182
+#: e2_button.c:37 e2_icons.c:930 e2_icons.c:1183
 msgid "_Discard"
 msgstr "От_клонить"
 
-#: e2_button.c:40 e2_icons.c:991 e2_icons.c:1244 e2_tree_dialog.c:1206
+#: e2_button.c:40 e2_icons.c:992 e2_icons.c:1245 e2_tree_dialog.c:1206
 #: e2p_thumbnail.c:1244
 msgid "_Refresh"
 msgstr "_Обновить"
@@ -1215,12 +1215,12 @@ msgstr "_Обновить"
 msgid "C_reate"
 msgstr "_Создать"
 
-#: e2_button.c:46 e2_icons.c:992 e2_icons.c:1245 e2_option_tree.c:1919
+#: e2_button.c:46 e2_icons.c:993 e2_icons.c:1246 e2_option_tree.c:1921
 #: e2_permissions_dialog.c:474
 msgid "_Remove"
 msgstr "_Удалить"
 
-#: e2_button.c:48 e2_icons.c:910 e2_icons.c:1163 e2p_config.c:1235
+#: e2_button.c:48 e2_icons.c:911 e2_icons.c:1164 e2p_config.c:1235
 #: e2p_config.c:1379 e2p_upgrade.c:112
 msgid "_Apply"
 msgstr "Пр_именить"
@@ -1387,109 +1387,118 @@ msgstr ""
 "Параметры запуска программы должны начинаться с \"-\" или \"--\" или быть "
 "существующим в файловой системе путём\n"
 
-#: e2_command.c:695 e2_command.c:1282 e2_command.c:1711
+#: e2_command.c:696 e2_command.c:1286 e2_command.c:1715
 msgid "returned"
 msgstr "вернул"
 
-#: e2_command.c:853
+#: e2_command.c:857
 #, c-format
 msgid "Command '%s' - %s"
 msgstr "Команда '%s' - %s"
 
-#: e2_command.c:1177
+#: e2_command.c:1181
 #, c-format
 msgid "Error while launching '%s'"
 msgstr "Ошибка при запуске '%s'"
 
-#: e2_command.c:1203
+#: e2_command.c:1207
 msgid "Cannot find last child process"
 msgstr "Невозможно найти последний дочерний процесс"
 
-#: e2_command.c:1211
+#: e2_command.c:1215
 #, c-format
 msgid "Cannot find child process with pid %ld"
 msgstr "Невозможно найти дочерний процесс с pid %ld"
 
-#: e2_command.c:1214
+#: e2_command.c:1218
 #, c-format
 msgid "Cannot communicate to process %ld"
 msgstr "Невозможно общение с процессом %ld"
 
-#: e2_command.c:1229
+#: e2_command.c:1233
 msgid "Failed writing to child"
 msgstr "Ошибка при записи в дочерний процесс"
 
-#: e2_command.c:1719
+#: e2_command.c:1723
 #, c-format
 msgid "Strange error: could not run '%s'"
 msgstr "Странная ошибка: невозможно запустить '%s'"
 
-#: e2_command.c:1744
+#: e2_command.c:1748
 #, c-format
 msgid "The process with pid %ld is not our child"
 msgstr "Процесс с pid %ld не является нашим потомком"
 
-#: e2_command.c:1764 e2_command.c:1782
+#: e2_command.c:1768 e2_command.c:1786
 #, c-format
 msgid "Failed writing to child: %s"
 msgstr "Ошибка при общении с потомком: %s"
 
-#: e2_command.c:2008
+#: e2_command.c:2012
 msgid "nothing is waiting"
 msgstr "ничто не ожидает"
 
-#: e2_command.c:2012 e2_task.c:4523
+#: e2_command.c:2016 e2_task.c:4523
 msgid "task"
 msgstr "задача"
 
-#: e2_command.c:2032 e2_command.c:2137 e2_command.c:2205 e2_menu.c:985
+#: e2_command.c:2036 e2_command.c:2141 e2_command.c:2209 e2_menu.c:1015
 msgid "<selected items>"
 msgstr "<выделенные элементы>"
 
-#: e2_command.c:2106
+#: e2_command.c:2110
 msgid "nothing is running"
 msgstr "ничто не запущено"
 
-#: e2_command.c:2110
+#: e2_command.c:2114
 msgid " (pid)   task    directory"
 msgstr " (pid)   задача    каталог"
 
-#: e2_command.c:2179
+#: e2_command.c:2183
 msgid "task @ directory || result"
 msgstr "задача @ каталог || результат"
 
-#: e2_command.c:2211 e2_command.c:2223
+#: e2_command.c:2215 e2_command.c:2227
 msgid "OK"
 msgstr "OK"
 
-#: e2_command.c:2211 e2_command.c:2226
+#: e2_command.c:2215 e2_command.c:2230
 msgid "error"
 msgstr "ошибка"
 
-#: e2_command.c:2595
-#, c-format
-msgid "Cannot run '%s'"
-msgstr "Невозможно запустить '%s'"
-
-#: e2_command.c:2745 e2p_du.c:333
-msgid "Failed to expand macros"
-msgstr "Ошибка при обработке макроса"
-
-#: e2_command.c:3045
+#: e2_command.c:2451 e2_command.c:3135
 #, c-format
 msgid "Failed parsing command '%s' - %s"
 msgstr "Ошибка при разборе команды '%s' - %s"
 
-#: e2_command.c:3138
+#: e2_command.c:2620
+#, c-format
+msgid "Cannot run '%s'"
+msgstr "Невозможно запустить '%s'"
+
+#: e2_command.c:2776 e2p_du.c:333
+msgid "Failed to expand macros"
+msgstr "Ошибка при обработке макроса"
+
+#: e2_command.c:2836
+msgid "Invalid quoting in variable value"
+msgstr ""
+
+#: e2_command.c:3024
+#, fuzzy
+msgid "cd requires one directory"
+msgstr "следовать за активным каталогом"
+
+#: e2_command.c:3235
 #, c-format
 msgid "Cannot send \"%s\" to a child process"
 msgstr "Невозможно послать \"%s\" дочернему процессу"
 
-#: e2_command.c:3360
+#: e2_command.c:3457
 msgid "x terminal emulator:"
 msgstr "эмулятор X-терминала:"
 
-#: e2_command.c:3361
+#: e2_command.c:3458
 msgid ""
 "This is the external command/application that will be be run when emelFM2 is "
 "asked to open a terminal"
@@ -1497,11 +1506,11 @@ msgstr ""
 "Внешняя программа, которая будет запускаться, когда emelFM2 потребуется "
 "терминал"
 
-#: e2_command.c:3364
+#: e2_command.c:3461
 msgid "use external file-viewer"
 msgstr "использовать внешний просмотрщик файлов"
 
-#: e2_command.c:3365
+#: e2_command.c:3462
 msgid ""
 "If activated, the command entered below will be run to view file content, "
 "instead of launching the internal viewer"
@@ -1509,11 +1518,11 @@ msgstr ""
 "Если включено, то для просмотра файлов будет использоваться команда, "
 "введённая ниже, вместо встроенного просмотрщика"
 
-#: e2_command.c:3368
+#: e2_command.c:3465
 msgid "viewer command:"
 msgstr "внешний просмотрщик:"
 
-#: e2_command.c:3369
+#: e2_command.c:3466
 msgid ""
 "This is a command to run an external application for viewing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1522,11 +1531,11 @@ msgstr ""
 "Первый выбранный элемент будет использован в качестве первого аргумента "
 "просмотрщика"
 
-#: e2_command.c:3373
+#: e2_command.c:3470
 msgid "use external file-editor"
 msgstr "использовать внешний редактор файлов"
 
-#: e2_command.c:3374
+#: e2_command.c:3471
 msgid ""
 "If activated, the command entered below will be run to edit file content, "
 "instead of launching the internal editor"
@@ -1534,11 +1543,11 @@ msgstr ""
 "Если включено, то для редактирования файлов будет использоваться команда, "
 "введённая ниже, вместо встроенного редактора"
 
-#: e2_command.c:3377
+#: e2_command.c:3474
 msgid "editor command:"
 msgstr "внешний редактор:"
 
-#: e2_command.c:3378
+#: e2_command.c:3475
 msgid ""
 "This is a command to run an external application for editing file content.\n"
 "The first selected item will be supplied as the first argument"
@@ -1547,11 +1556,11 @@ msgstr ""
 "Первый выбранный элемент будет использован в качестве первого аргумента "
 "редактора"
 
-#: e2_command.c:3382
+#: e2_command.c:3479
 msgid "use external encoding converter"
 msgstr "использовать внешний преобразователь кодировок"
 
-#: e2_command.c:3383
+#: e2_command.c:3480
 msgid ""
 "If activated, the command entered below will be run, instead of using the "
 "internal conversion functions, to convert file character encoding when needed"
@@ -1559,44 +1568,44 @@ msgstr ""
 "Если включено, то для преобразования кодировок будет использована команда, "
 "введённая ниже, вместо внутренних функций"
 
-#: e2_command.c:3386
+#: e2_command.c:3483
 msgid "File encoding:"
 msgstr "Кодировка файла:"
 
-#: e2_command.c:3387
+#: e2_command.c:3484
 msgid "converter command:"
 msgstr "внешний конвертер:"
 
-#: e2_command.c:3388
+#: e2_command.c:3485
 msgid ""
 "A command which runs an external application to convert text encoding to "
 "UTF-8"
 msgstr ""
 "Команда, запускающая программу для преобразования кодировки текстов в UTF-8"
 
-#: e2_command.c:3392
+#: e2_command.c:3489
 msgid "use aliases"
 msgstr "использовать псевдонимы"
 
-#: e2_command.c:3393
+#: e2_command.c:3490
 msgid "This is a general switch to turn on/off alias handling for commands"
 msgstr "Переключатель для включения/выключения обработки псевдонимов команд"
 
-#: e2_command.c:3396
+#: e2_command.c:3493
 msgid "interpret 'relative' paths"
 msgstr "обрабатывать 'относительные' пути"
 
-#: e2_command.c:3397
+#: e2_command.c:3494
 msgid ""
 "This enables correct interpretation of paths containing '..' etc. These "
 "might be typed in, or attached to a button, say"
 msgstr "Включает правильную интерпретацию путей, содержащих '..' и т. п."
 
-#: e2_command.c:3401
+#: e2_command.c:3498
 msgid "watch priority"
 msgstr "приоритет наблюдения"
 
-#: e2_command.c:3402
+#: e2_command.c:3499
 msgid ""
 "The watch priority of commands influences how fast program\n"
 "output is read from i/o channels. A too-high priority might\n"
@@ -1610,11 +1619,11 @@ msgstr ""
 "(замечание: отрицательные значения означают более высокий приоритет, а "
 "положительные — более низкий)"
 
-#: e2_command.c:3411
+#: e2_command.c:3508
 msgid "stop after timeout"
 msgstr "остановка операций по времени"
 
-#: e2_command.c:3412
+#: e2_command.c:3509
 msgid ""
 "If activated, each file operation will be terminated if not finished within "
 "the time-interval set below"
@@ -1622,21 +1631,21 @@ msgstr ""
 "Если включено, то любая файловая операция будет останавливаться, если не "
 "успеет завершиться в интервал времени, введённый ниже"
 
-#: e2_command.c:3415
+#: e2_command.c:3512
 msgid "timeout interval"
 msgstr "временной интервал"
 
-#: e2_command.c:3416
+#: e2_command.c:3513
 msgid "The interval (seconds) allowed to complete any file operation"
 msgstr ""
 "Временной интервал (в секундах), отведённый на завершение любой файловой "
 "операции"
 
-#: e2_command.c:3419
+#: e2_command.c:3516
 msgid "confirm any delete"
 msgstr "подтверждать удаление"
 
-#: e2_command.c:3420
+#: e2_command.c:3517
 msgid ""
 "If activated, you will be asked for confirmation before actually deleting "
 "anything"
@@ -1644,11 +1653,11 @@ msgstr ""
 "Если включено, то у вас будет запрашиваться подтверждение, прежде чем "
 "удалить что-либо"
 
-#: e2_command.c:3422
+#: e2_command.c:3519
 msgid "confirm any overwrite"
 msgstr "подтверждать перезапись"
 
-#: e2_command.c:3423
+#: e2_command.c:3520
 msgid ""
 "If activated, you will be asked for confirmation before actually overwriting "
 "anything"
@@ -1656,11 +1665,11 @@ msgstr ""
 "Если включено, то у вас будет запрашиваться подтверждение, прежде чем "
 "перезаписать что-либо"
 
-#: e2_command.c:3425
+#: e2_command.c:3522
 msgid "relative symlinks"
 msgstr "относительные символьные ссылки"
 
-#: e2_command.c:3426
+#: e2_command.c:3523
 msgid ""
 "This gives each created symlink a relative path to its source, like '../../"
 "<otherbranch>/<file>', instead of a full path referenced to /"
@@ -1680,16 +1689,16 @@ msgstr "монтирование"
 msgid "shell"
 msgstr "консоль"
 
-#: e2_command_line.c:1144
+#: e2_command_line.c:1189
 #, c-format
 msgid "Warning - process %s is not active"
 msgstr "Предупреждение — процесс %s не активный"
 
-#: e2_command_line.c:1545
+#: e2_command_line.c:1591
 msgid "show last"
 msgstr "показывать последнюю команду"
 
-#: e2_command_line.c:1546
+#: e2_command_line.c:1592
 msgid ""
 "If activated, the last-entered command will be displayed, instead of an "
 "empty line"
@@ -1697,11 +1706,11 @@ msgstr ""
 "Если включено, то будет показываться последняя введённая команда, вместо "
 "пустой строки"
 
-#: e2_command_line.c:1551
+#: e2_command_line.c:1597
 msgid "maximum number of history entries"
 msgstr "максимальное количество элементов в истории"
 
-#: e2_command_line.c:1552
+#: e2_command_line.c:1598
 msgid ""
 "This is the largest number of command-line history entries that will be "
 "recorded. Set to 0 for no limit"
@@ -1709,19 +1718,19 @@ msgstr ""
 "Максимальное количество элементов в истории введённых команд, которое будет "
 "сохранено. Установите 0 для снятия ограничения"
 
-#: e2_command_line.c:1555
+#: e2_command_line.c:1601
 msgid "double entries"
 msgstr "повторения элементов"
 
-#: e2_command_line.c:1556
+#: e2_command_line.c:1602
 msgid "This allows entries to be recorded more than once in the history list"
 msgstr "Позволяет элементам сохраняться в истории более одного раза"
 
-#: e2_command_line.c:1559 e2_command_line.c:1612
+#: e2_command_line.c:1605 e2_command_line.c:1658
 msgid "cyclic list"
 msgstr "циклический список"
 
-#: e2_command_line.c:1560
+#: e2_command_line.c:1606
 msgid ""
 "When scanning the history list, cycle from either end around to the other "
 "end, instead of stopping"
@@ -1729,11 +1738,11 @@ msgstr ""
 "При просмотре списка истории циклически перемещаться из одного конца списка "
 "в другой конец вместо остановки"
 
-#: e2_command_line.c:1564 e2_command_line.c:1617
+#: e2_command_line.c:1610 e2_command_line.c:1663
 msgid "show as a menu"
 msgstr "показывать как меню"
 
-#: e2_command_line.c:1565
+#: e2_command_line.c:1611
 msgid ""
 "If activated, the history entries will be presented as a menu. For most "
 "Gtk+2 themes, this will not be as attractive as the list view"
@@ -1741,21 +1750,21 @@ msgstr ""
 "Если включено, то элементы истории будут отображаться в виде меню. Для "
 "большинства GTK+2 тем это будет не столь привлекательно как обычный список"
 
-#: e2_command_line.c:1572
+#: e2_command_line.c:1618
 msgid "append space after unique items"
 msgstr "добавлять пробел после совпавших элементов"
 
-#: e2_command_line.c:1573
+#: e2_command_line.c:1619
 msgid ""
 "This appends a 'space' character to the end of a unique successful match of "
 "a file"
 msgstr "Добавляет символ «пробел» в конец уникальных совпавших элементов"
 
-#: e2_command_line.c:1580
+#: e2_command_line.c:1626
 msgid "show last entry"
 msgstr "показывать последний элемент"
 
-#: e2_command_line.c:1581
+#: e2_command_line.c:1627
 msgid ""
 "If activated, the last-entered directory will be displayed, instead of an "
 "empty line"
@@ -1763,11 +1772,11 @@ msgstr ""
 "Если включено, то будет отображаться последний введённый каталог, вместо "
 "пустой строки"
 
-#: e2_command_line.c:1585
+#: e2_command_line.c:1631
 msgid "show pathname as a tooltip"
 msgstr "показывать путь в подсказке"
 
-#: e2_command_line.c:1586
+#: e2_command_line.c:1632
 msgid ""
 "If activated, the full directory pathname will display as a tooltip. This is "
 "useful when the path is too long for the normal display"
@@ -1775,31 +1784,31 @@ msgstr ""
 "Если включено, то в подсказке будет отображаться полный путь к каталогу. Это "
 "полезно, когда путь слишком длинный для нормального отображения"
 
-#: e2_command_line.c:1591
+#: e2_command_line.c:1637
 msgid "<Tab> only"
 msgstr "только <Tab>"
 
-#: e2_command_line.c:1591
+#: e2_command_line.c:1637
 msgid "inserted"
 msgstr "вставлено"
 
-#: e2_command_line.c:1591
+#: e2_command_line.c:1637
 msgid "selected"
 msgstr "выделено"
 
-#: e2_command_line.c:1592
+#: e2_command_line.c:1638
 msgid "directory path completion"
 msgstr "автодополнение текущего пути"
 
-#: e2_command_line.c:1593
+#: e2_command_line.c:1639
 msgid "This determines the mode of completion when keying a directory-path"
 msgstr "Определяет режим автодополнения при наборе пути к текущему каталогу"
 
-#: e2_command_line.c:1598
+#: e2_command_line.c:1644
 msgid "auto update"
 msgstr "автообновление"
 
-#: e2_command_line.c:1599
+#: e2_command_line.c:1645
 msgid ""
 "If activated, all opened directories will be added to pane history, "
 "otherwise, manual addition is needed"
@@ -1807,11 +1816,11 @@ msgstr ""
 "Если активировано, все открытые каталоги будут добавлены на панель истории, "
 "иначе, необходимо ручное добавление"
 
-#: e2_command_line.c:1602
+#: e2_command_line.c:1648
 msgid "maximum number of entries"
 msgstr "максимальное количество элементов в истории"
 
-#: e2_command_line.c:1603
+#: e2_command_line.c:1649
 msgid ""
 "This is the largest number of directory-line history entries that will be "
 "retained"
@@ -1819,15 +1828,15 @@ msgstr ""
 "Максимальное количество элементов в истории текущего каталога, которое будет "
 "запоминаться"
 
-#: e2_command_line.c:1607
+#: e2_command_line.c:1653
 msgid "repeated entries"
 msgstr "повторяющиеся элементы"
 
-#: e2_command_line.c:1608
+#: e2_command_line.c:1654
 msgid "Allows entries to be recorded more than once in the history list"
 msgstr "Позволить элементам сохраняться в истории более одного раза"
 
-#: e2_command_line.c:1613
+#: e2_command_line.c:1659
 msgid ""
 "When scanning a history list, cycle from either end around to the other end, "
 "instead of stopping"
@@ -1835,7 +1844,7 @@ msgstr ""
 "При просмотре списка истории циклически перемещаться из одного конца списка "
 "в другой конец вместо остановки"
 
-#: e2_command_line.c:1618
+#: e2_command_line.c:1664
 msgid ""
 "If activated, the directory line history will be presented as a menu. For "
 "most for most Gtk+2 themes, this will not be as attractive as the list view"
@@ -1843,7 +1852,15 @@ msgstr ""
 "Если включено, то история текущего каталога будет показываться в виде меню. "
 "Для большинства GTK+2 тем это будет не столь привлекательно как список"
 
-#: e2_config_dialog.c:190 e2_config_dialog.c:1979
+#: e2_command_quoting.c:71
+msgid "Invalid Unicode escape in ANSI-C quoted string"
+msgstr ""
+
+#: e2_command_quoting.c:102
+msgid "Unterminated ANSI-C quoted string"
+msgstr ""
+
+#: e2_config_dialog.c:190 e2_config_dialog.c:1980
 msgid "configuration"
 msgstr "настройка"
 
@@ -1868,85 +1885,85 @@ msgstr "Свернуть все строки"
 msgid "Reverting to default configuration cannot be undone"
 msgstr "Возврат к настройкам по умолчанию невозможно отменить"
 
-#: e2_config_dialog.c:1140
+#: e2_config_dialog.c:1141
 msgid "Select and continue"
 msgstr "Выбрать и продолжить"
 
-#: e2_config_dialog.c:1145
+#: e2_config_dialog.c:1146
 msgid "choose plugin"
 msgstr "выбор модуля"
 
-#: e2_config_dialog.c:1278
+#: e2_config_dialog.c:1279
 #, c-format
 msgid "Choose font: %s"
 msgstr "Выбор шрифта: %s"
 
-#: e2_config_dialog.c:1358
+#: e2_config_dialog.c:1359
 msgid "abcd efgh ABCD EFGH"
 msgstr "абвг АБВГ abcd ABCD"
 
-#: e2_config_dialog.c:1358
+#: e2_config_dialog.c:1359
 msgid "example:"
 msgstr "пример:"
 
-#: e2_config_dialog.c:1473
+#: e2_config_dialog.c:1474
 msgid "Color data are not stored there"
 msgstr "Цветовые параметры здесь не хранятся"
 
-#: e2_config_dialog.c:1493 e2_config_dialog.c:1502
+#: e2_config_dialog.c:1494 e2_config_dialog.c:1503
 msgid "The current color descriptor is not valid"
 msgstr "Ошибка в текущем дескрипторе цвета"
 
-#: e2_config_dialog.c:1509 e2_config_dialog.c:1517
+#: e2_config_dialog.c:1510 e2_config_dialog.c:1518
 msgid "Set filetype color"
 msgstr "Выбрать цвет типа файла"
 
-#: e2_config_dialog.c:1652
+#: e2_config_dialog.c:1653
 #, c-format
 msgid "Choose color: %s"
 msgstr "Выбор цвета: %s"
 
-#: e2_config_dialog.c:1744
+#: e2_config_dialog.c:1745
 msgid "abCD"
 msgstr "abCD"
 
-#: e2_config_dialog.c:1744
+#: e2_config_dialog.c:1745
 msgid "currently:"
 msgstr "текущий:"
 
-#: e2_config_dialog.c:2028 e2_filetype_dialog.c:1022
+#: e2_config_dialog.c:2029 e2_filetype_dialog.c:1022
 msgid "Categories"
 msgstr "Категории"
 
-#: e2_config_dialog.c:2170
+#: e2_config_dialog.c:2171
 msgid "Click to open a font select dialog"
 msgstr "Нажмите для выбора шрифта"
 
-#: e2_config_dialog.c:2207
+#: e2_config_dialog.c:2208
 msgid "Click to open a color selection dialog"
 msgstr "Нажмите для выбора цвета"
 
-#: e2_config_dialog.c:2330
+#: e2_config_dialog.c:2331
 msgid "De_fault"
 msgstr "_По умолчанию"
 
-#: e2_config_dialog.c:2331
+#: e2_config_dialog.c:2332
 msgid "Revert all options to their default settings"
 msgstr "Вернуть все настройки к их первоначальным значениям"
 
-#: e2_config_dialog.c:2336
+#: e2_config_dialog.c:2337
 msgid "_Basic"
 msgstr "П_ростой"
 
-#: e2_config_dialog.c:2337
+#: e2_config_dialog.c:2338
 msgid "Display only the basic configuration options"
 msgstr "Показать только основные параметры конфигурации"
 
-#: e2_config_dialog.c:2343
+#: e2_config_dialog.c:2344
 msgid "Ad_vanced"
 msgstr "_Расширенный"
 
-#: e2_config_dialog.c:2344
+#: e2_config_dialog.c:2345
 msgid "Display all configuration options"
 msgstr "Показать все параметры конфигурации"
 
@@ -1963,25 +1980,25 @@ msgid "_Actions"
 msgstr "_Действия"
 
 #: e2_context_menu.c:425 e2_dnd.c:827 e2_file_info_dialog.c:343
-#: e2_filetype_dialog.c:734 e2_icons.c:920 e2_icons.c:1173
-#: e2_option_tree_context_menu.c:287 e2_output.c:1774 e2_terminal.c:464
-#: e2_toolbar.c:3484 e2_tree_dialog.c:1200 e2_view_dialog.c:1054 e2p_copy.c:757
+#: e2_filetype_dialog.c:734 e2_icons.c:921 e2_icons.c:1174
+#: e2_option_tree_context_menu.c:287 e2_output.c:1802 e2_terminal.c:464
+#: e2_toolbar.c:3485 e2_tree_dialog.c:1200 e2_view_dialog.c:1097 e2p_copy.c:757
 msgid "_Copy"
 msgstr "_Копировать"
 
-#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3486 e2p_move.c:809
+#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3487 e2p_move.c:809
 msgid "_Move"
 msgstr "_Переместить"
 
-#: e2_context_menu.c:427 e2_dnd.c:839 e2_toolbar.c:3488
+#: e2_context_menu.c:427 e2_dnd.c:839 e2_toolbar.c:3489
 msgid "_Link"
 msgstr "_Ссылка"
 
-#: e2_context_menu.c:428 e2_toolbar.c:3492
+#: e2_context_menu.c:428 e2_toolbar.c:3493
 msgid "_Trash"
 msgstr "_Корзина"
 
-#: e2_context_menu.c:431 e2p_rename.c:1974
+#: e2_context_menu.c:431 e2p_rename.c:1993
 msgid "_Rename.."
 msgstr "_Переименовать…"
 
@@ -2077,7 +2094,7 @@ msgstr "процентов свободно"
 msgid "_Edit user commands.."
 msgstr "_Настроить пользовательские команды…"
 
-#: e2_context_menu.c:455 e2_toolbar.c:3494
+#: e2_context_menu.c:455 e2_toolbar.c:3495
 msgid "Ma_ke dir.."
 msgstr "Создать _каталог…"
 
@@ -2085,11 +2102,11 @@ msgstr "Создать _каталог…"
 msgid "_Bookmarks"
 msgstr "_Закладки"
 
-#: e2_context_menu.c:458 e2_toolbar.c:3651 e2_toolbar.c:3716
+#: e2_context_menu.c:458 e2_toolbar.c:3652 e2_toolbar.c:3717
 msgid "Add _top"
 msgstr "Добавить в _начало"
 
-#: e2_context_menu.c:460 e2_toolbar.c:3655 e2_toolbar.c:3720
+#: e2_context_menu.c:460 e2_toolbar.c:3656 e2_toolbar.c:3721
 msgid "Add _bottom"
 msgstr "Добавить в _конец"
 
@@ -2114,7 +2131,7 @@ msgid "Ctrl"
 msgstr "Ctrl"
 
 #: e2_context_menu.c:493 e2_keybinding.c:1796 e2_mousebinding.c:1849
-#: e2_mousegesture.c:1330 e2_toolbar.c:3528 e2_toolbar.c:3600 e2_toolbar.c:3766
+#: e2_mousegesture.c:1330 e2_toolbar.c:3529 e2_toolbar.c:3601 e2_toolbar.c:3767
 msgid "Argument"
 msgstr "Параметры"
 
@@ -2248,7 +2265,7 @@ msgstr "подтверждение"
 msgid "Overwrite any existing item without further confirmation"
 msgstr "Перезаписывать любой существующий элемент без подтверждения"
 
-#: e2_dialog.c:1710 e2_edit_dialog.c:1702 e2_icons.c:936 e2_icons.c:1189
+#: e2_dialog.c:1710 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
 msgid "_Replace"
 msgstr "_Заменить"
 
@@ -2261,53 +2278,53 @@ msgstr "%s выполняется слишком долго. Подождать 
 msgid "_Quiet"
 msgstr "_Тихо"
 
-#: e2_dialog.c:1786
+#: e2_dialog.c:1787
 msgid "Don't ask any more"
 msgstr "Больше не спрашивать"
 
-#: e2_dialog.c:1791 e2_icons.c:968 e2_icons.c:1002 e2_icons.c:1221
-#: e2_icons.c:1255 e2p_find.c:4232 e2p_rename.c:1927
+#: e2_dialog.c:1793 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
+#: e2_icons.c:1256 e2p_find.c:4232 e2p_rename.c:1946
 msgid "_Stop"
 msgstr "_Остановить"
 
-#: e2_dialog.c:1792
+#: e2_dialog.c:1794
 #, c-format
 msgid "Cancel the %s"
 msgstr "Отменить %s"
 
-#: e2_dialog.c:1798
+#: e2_dialog.c:1800
 msgid "_Wait"
 msgstr "_Подождать"
 
-#: e2_dialog.c:1799
+#: e2_dialog.c:1801
 msgid "Wait some more"
 msgstr "Подождать ещё"
 
-#: e2_dialog.c:1821
+#: e2_dialog.c:1823
 msgid "center"
 msgstr "в центре"
 
-#: e2_dialog.c:1821
+#: e2_dialog.c:1823
 msgid "mouse"
 msgstr "на курсоре"
 
-#: e2_dialog.c:1821 e2_output.c:4374 e2_toolbar.c:3406
+#: e2_dialog.c:1823 e2_output.c:4424 e2_toolbar.c:3407
 msgid "none"
 msgstr "нет"
 
-#: e2_dialog.c:1822
+#: e2_dialog.c:1824
 msgid "always center"
 msgstr "всегда в центре"
 
-#: e2_dialog.c:1822
+#: e2_dialog.c:1824
 msgid "center on parent"
 msgstr "в центре предыдущего"
 
-#: e2_dialog.c:1824
+#: e2_dialog.c:1826
 msgid "dialog position"
 msgstr "положение диалоговых окон"
 
-#: e2_dialog.c:1825
+#: e2_dialog.c:1827
 msgid "This determines the position where dialog windows will pop up"
 msgstr "Определяет место, где будут появляться диалоговые окна"
 
@@ -2370,7 +2387,7 @@ msgid "Spelling suggestions"
 msgstr "Возможные варианты написания"
 
 #: e2_edit_dialog.c:916 e2_edit_dialog.c:1029 e2_edit_dialog.c:1724
-#: e2_icons.c:995 e2_icons.c:1248 e2p_config.c:1169
+#: e2_icons.c:996 e2_icons.c:1249 e2p_config.c:1169
 msgid "_Save"
 msgstr "_Сохранить"
 
@@ -2394,15 +2411,15 @@ msgstr "Сохранить _выделенное…"
 msgid "Save the selected text"
 msgstr "Сохранить выделенный текст"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1060
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1103
 msgid "Print file"
 msgstr "Напечатать файл"
 
-#: e2_edit_dialog.c:928 e2_view_dialog.c:1060
+#: e2_edit_dialog.c:928 e2_view_dialog.c:1103
 msgid "Print selected text"
 msgstr "Напечатать выделенный текст"
 
-#: e2_edit_dialog.c:929 e2_view_dialog.c:1061
+#: e2_edit_dialog.c:929 e2_view_dialog.c:1104
 msgid "_Print.."
 msgstr "Пе_чать…"
 
@@ -2410,7 +2427,7 @@ msgstr "Пе_чать…"
 msgid "Reload the file being edited"
 msgstr "Загрузить редактируемый файл заново"
 
-#: e2_edit_dialog.c:937 e2_toolbar.c:3557 e2p_find.c:4277
+#: e2_edit_dialog.c:937 e2_toolbar.c:3558 e2p_find.c:4277
 msgid "_Find.."
 msgstr "По_иск…"
 
@@ -2426,16 +2443,16 @@ msgstr "_Замена…"
 msgid "Find and replace matching text"
 msgstr "Найти и заменить текст"
 
-#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1729
-#: e2_view_dialog.c:1930
+#: e2_edit_dialog.c:942 e2_edit_dialog.c:1777 e2_output.c:1757
+#: e2_view_dialog.c:1974
 msgid "_Hide"
 msgstr "Спря_тать"
 
-#: e2_edit_dialog.c:943 e2_view_dialog.c:1938
+#: e2_edit_dialog.c:943 e2_view_dialog.c:1982
 msgid "Hide the search options bar"
 msgstr "Спрятать панель поиска"
 
-#: e2_edit_dialog.c:946 e2_edit_dialog.c:1782 e2_icons.c:1006 e2_icons.c:1259
+#: e2_edit_dialog.c:946 e2_edit_dialog.c:1782 e2_icons.c:1007 e2_icons.c:1260
 msgid "_Undo"
 msgstr "_Отмена"
 
@@ -2479,7 +2496,7 @@ msgstr "Установить язык проверки правописания"
 msgid "_Wrap"
 msgstr "П_еренос"
 
-#: e2_edit_dialog.c:974 e2_view_dialog.c:1941
+#: e2_edit_dialog.c:974 e2_view_dialog.c:1985
 msgid "If activated, text in the window will be word-wrapped"
 msgstr "Если включено, то текст в окне будет переноситься автоматически"
 
@@ -2487,7 +2504,7 @@ msgstr "Если включено, то текст в окне будет пер
 msgid "Se_ttings"
 msgstr "_Настройки"
 
-#: e2_edit_dialog.c:978 e2_view_dialog.c:1067
+#: e2_edit_dialog.c:978 e2_view_dialog.c:1110
 msgid "Open the configuration dialog at the options page"
 msgstr "Открыть диалог настройки на странице параметров"
 
@@ -2496,7 +2513,7 @@ msgid "Save modified file ?"
 msgstr "Сохранить изменённый файл ?"
 
 #: e2_edit_dialog.c:1018 e2_filetype.c:716 e2_filetype.c:751 e2_filetype.c:949
-#: e2_filetype_dialog.c:1283 e2_icons.c:933 e2_icons.c:1186 e2_output.c:1782
+#: e2_filetype_dialog.c:1283 e2_icons.c:934 e2_icons.c:1187 e2_output.c:1810
 msgid "_Edit"
 msgstr "_Редактировать"
 
@@ -2543,17 +2560,17 @@ msgstr "под_тверждение"
 msgid "Replace this match"
 msgstr "Заменить текст"
 
-#: e2_edit_dialog.c:1712 e2_icons.c:937 e2_icons.c:1190 e2_output.c:1721
-#: e2_terminal.c:469 e2_view_dialog.c:1945 e2p_find.c:4241
+#: e2_edit_dialog.c:1712 e2_icons.c:938 e2_icons.c:1191 e2_output.c:1749
+#: e2_terminal.c:469 e2_view_dialog.c:1989 e2p_find.c:4241
 msgid "_Find"
 msgstr "_Поиск"
 
-#: e2_edit_dialog.c:1720 e2_view_dialog.c:1960
+#: e2_edit_dialog.c:1720 e2_view_dialog.c:2004
 msgid "Find the next match"
 msgstr "Искать дальше"
 
-#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:1974
-#: e2_view_dialog.c:1995
+#: e2_edit_dialog.c:1739 e2_edit_dialog.c:1754 e2_view_dialog.c:2018
+#: e2_view_dialog.c:2039
 msgid "not found"
 msgstr "не найдено"
 
@@ -2725,18 +2742,18 @@ msgstr "к"
 msgid "M"
 msgstr "М"
 
-#: e2_filestore.c:1627 e2_pane.c:622
+#: e2_filestore.c:1627 e2_pane.c:624
 #, c-format
 msgid "Cannot access %s, going to %s instead"
 msgstr "Недоступен %s, вместо этого перехожу в %s"
 
-#: e2_filetype.c:124 e2_filetype.c:500 e2_filetype.c:700 e2_menu.c:1703
-#: e2_output.c:1432 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_filetype.c:124 e2_filetype.c:500 e2_filetype.c:700 e2_menu.c:1733
+#: e2_output.c:1460 e2_task.c:4250 e2_task_backend.c:1869
 msgid "<directory>"
 msgstr "<каталог>"
 
-#: e2_filetype.c:125 e2_filetype.c:506 e2_filetype.c:708 e2_menu.c:1784
-#: e2_output.c:1480 e2_task.c:4256
+#: e2_filetype.c:125 e2_filetype.c:506 e2_filetype.c:708 e2_menu.c:1814
+#: e2_output.c:1508 e2_task.c:4256
 msgid "<executable>"
 msgstr "<исполняемый>"
 
@@ -2750,8 +2767,8 @@ msgstr "каталоги"
 
 #: e2_filetype.c:702 e2_filetype.c:817 e2_filetype.c:831 e2_filetype.c:846
 #: e2_filetype.c:860 e2_filetype.c:874 e2_filetype.c:887 e2_filetype.c:900
-#: e2_filetype.c:935 e2_filetype_dialog.c:1296 e2_icons.c:974 e2_icons.c:1227
-#: e2_output.c:1785 e2_view_dialog.c:729
+#: e2_filetype.c:935 e2_filetype_dialog.c:1296 e2_icons.c:975 e2_icons.c:1228
+#: e2_output.c:1813 e2_view_dialog.c:772
 msgid "_Open"
 msgstr "_Открыть"
 
@@ -2868,7 +2885,7 @@ msgid "gzip tarballs"
 msgstr "архивы gzip"
 
 #: e2_filetype.c:828 e2_filetype.c:843 e2_filetype.c:857 e2_filetype.c:871
-#: e2_filetype.c:884 e2p_unpack.c:984
+#: e2_filetype.c:884 e2p_unpack.c:985
 msgid "_Unpack"
 msgstr "_Распаковать"
 
@@ -2929,7 +2946,7 @@ msgstr "объектные файлы"
 msgid "_View symbols"
 msgstr "_Просмотреть символы"
 
-#: e2_filetype.c:987 e2_menu.c:1857
+#: e2_filetype.c:987 e2_menu.c:1887
 msgid "Command"
 msgstr "Команда"
 
@@ -2958,7 +2975,7 @@ msgstr "Вырезать выбранную строку(ки)"
 msgid "Copy selected row(s)"
 msgstr "Копировать выбранную строку(ки)"
 
-#: e2_filetype_dialog.c:740 e2_icons.c:980 e2_icons.c:1233
+#: e2_filetype_dialog.c:740 e2_icons.c:981 e2_icons.c:1234
 #: e2_option_tree_context_menu.c:291 e2_terminal.c:467
 msgid "_Paste"
 msgstr "В_ставить"
@@ -2967,8 +2984,8 @@ msgstr "В_ставить"
 msgid "Paste previously copied or cut row(s) after current row"
 msgstr "Вставить заранее скопированную или вырезанную строку после текущей"
 
-#: e2_filetype_dialog.c:745 e2_filetype_dialog.c:1167 e2_icons.c:909
-#: e2_icons.c:1162 e2_option_tree.c:1932 e2_option_tree_context_menu.c:315
+#: e2_filetype_dialog.c:745 e2_filetype_dialog.c:1167 e2_icons.c:910
+#: e2_icons.c:1163 e2_option_tree.c:1934 e2_option_tree_context_menu.c:315
 #: e2_permissions_dialog.c:470
 msgid "_Add"
 msgstr "_Добавить"
@@ -2977,9 +2994,9 @@ msgstr "_Добавить"
 msgid "Add a row after the current one"
 msgstr "Добавить строку после текущей"
 
-#: e2_filetype_dialog.c:748 e2_filetype_dialog.c:1156 e2_icons.c:947
-#: e2_icons.c:1200 e2_option_tree.c:1942 e2_option_tree_context_menu.c:343
-#: e2_toolbar.c:428 e2_toolbar.c:3670 e2_toolbar.c:3731 e2_toolbar.c:3737
+#: e2_filetype_dialog.c:748 e2_filetype_dialog.c:1156 e2_icons.c:948
+#: e2_icons.c:1201 e2_option_tree.c:1944 e2_option_tree_context_menu.c:343
+#: e2_toolbar.c:428 e2_toolbar.c:3671 e2_toolbar.c:3732 e2_toolbar.c:3738
 msgid "_Up"
 msgstr "Ввер_х"
 
@@ -2987,8 +3004,8 @@ msgstr "Ввер_х"
 msgid "Move selected row up"
 msgstr "Переместить текущую строку вверх"
 
-#: e2_filetype_dialog.c:750 e2_filetype_dialog.c:1161 e2_icons.c:941
-#: e2_icons.c:1194 e2_option_tree.c:1939 e2_option_tree_context_menu.c:346
+#: e2_filetype_dialog.c:750 e2_filetype_dialog.c:1161 e2_icons.c:942
+#: e2_icons.c:1195 e2_option_tree.c:1941 e2_option_tree_context_menu.c:346
 #: e2_toolbar.c:430
 msgid "_Down"
 msgstr "В_низ"
@@ -2997,7 +3014,7 @@ msgstr "В_низ"
 msgid "Move selected row down"
 msgstr "Переместить текущую строку вниз"
 
-#: e2_filetype_dialog.c:833 e2_option_tree.c:1267
+#: e2_filetype_dialog.c:833 e2_option_tree.c:1268
 #, c-format
 msgid "select icon for %s"
 msgstr "выберите значок для %s"
@@ -3018,11 +3035,11 @@ msgstr "Названия"
 msgid "Commands"
 msgstr "Команды"
 
-#: e2_filetype_dialog.c:1157 e2_option_tree.c:1943
+#: e2_filetype_dialog.c:1157 e2_option_tree.c:1945
 msgid "Move the selected row one place up"
 msgstr "Переместить текущую строку на одну позицию вверх"
 
-#: e2_filetype_dialog.c:1163 e2_option_tree.c:1940
+#: e2_filetype_dialog.c:1163 e2_option_tree.c:1942
 msgid "Move the selected row one place down"
 msgstr "Переместить текущую строку на одну позицию вниз"
 
@@ -3030,7 +3047,7 @@ msgstr "Переместить текущую строку на одну поз�
 msgid "Add a row after the currently selected one"
 msgstr "Добавить строку после текушей"
 
-#: e2_filetype_dialog.c:1173 e2_option_tree.c:1962
+#: e2_filetype_dialog.c:1173 e2_option_tree.c:1964
 #, fuzzy
 msgid "Auto _icons"
 msgstr "значки"
@@ -3091,7 +3108,7 @@ msgstr "_Открыть…"
 msgid "Enter a command with which to open the file"
 msgstr "Введите команду, с помощью которой следует открыть этот файл"
 
-#: e2_fileview.c:132 e2_ownership_dialog.c:341 e2_permissions_dialog.c:327
+#: e2_fileview.c:132 e2_ownership_dialog.c:345 e2_permissions_dialog.c:327
 #: e2_plugins.c:1724 e2p_crypt.c:4047 e2p_timeset.c:802
 msgid "Filename"
 msgstr "Имя файла"
@@ -3104,7 +3121,7 @@ msgstr "Расширение"
 msgid "Size"
 msgstr "Размер"
 
-#: e2_fileview.c:137 e2_ownership_dialog.c:361 e2_permissions_dialog.c:398
+#: e2_fileview.c:137 e2_ownership_dialog.c:365 e2_permissions_dialog.c:398
 msgid "Permissions"
 msgstr "Права"
 
@@ -3112,7 +3129,7 @@ msgstr "Права"
 msgid "Owner"
 msgstr "Владелец"
 
-#: e2_fileview.c:139 e2_ownership_dialog.c:403 e2_permissions_dialog.c:361
+#: e2_fileview.c:139 e2_ownership_dialog.c:407 e2_permissions_dialog.c:361
 #: e2_permissions_dialog.c:424
 msgid "Group"
 msgstr "Группа"
@@ -3174,14 +3191,14 @@ msgstr "Невозможно открыть '%s' для записи — %s"
 msgid "Error writing file '%s' - %s"
 msgstr "Ошибка записи в файл '%s' — %s"
 
-#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:611
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:654
 #: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Ошибка при чтении файла %s"
 
 #: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1535 e2_task_backend.c:1196
+#: e2_output.c:1563 e2_task_backend.c:1196
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Невозможно получить информацию о %s"
@@ -3275,259 +3292,259 @@ msgstr "_Очистить"
 msgid "Cannot auto-mount device '%s' at '%s'"
 msgstr "Невозможно автомонтировать устройство '%s' в '%s'"
 
-#: e2_icons.c:908 e2_icons.c:1161
+#: e2_icons.c:909 e2_icons.c:1162
 msgid "_About"
 msgstr "О программе"
 
-#: e2_icons.c:911 e2_icons.c:1164
+#: e2_icons.c:912 e2_icons.c:1165
 msgid "_Bold"
 msgstr "_Жирный"
 
-#: e2_icons.c:915 e2_icons.c:1168
+#: e2_icons.c:916 e2_icons.c:1169
 msgid "_Clear"
 msgstr "_Очистить"
 
-#: e2_icons.c:918 e2_icons.c:1171
+#: e2_icons.c:919 e2_icons.c:1172
 msgid "_Connect"
 msgstr "_Соединиться"
 
-#: e2_icons.c:919 e2_icons.c:1172
+#: e2_icons.c:920 e2_icons.c:1173
 msgid "_Convert"
 msgstr "_Преобразовать"
 
-#: e2_icons.c:921 e2_icons.c:1174
+#: e2_icons.c:922 e2_icons.c:1175
 msgid "_Cut"
 msgstr "_Вырезать"
 
-#: e2_icons.c:928 e2_icons.c:1181
+#: e2_icons.c:929 e2_icons.c:1182
 msgid "_Directory"
 msgstr "_Каталог"
 
-#: e2_icons.c:930 e2_icons.c:1183
+#: e2_icons.c:931 e2_icons.c:1184
 msgid "_Disconnect"
 msgstr "_Отключиться"
 
-#: e2_icons.c:934 e2_icons.c:1187
+#: e2_icons.c:935 e2_icons.c:1188
 msgid "_Execute"
 msgstr "_Выполнить"
 
-#: e2_icons.c:935 e2_icons.c:1188
+#: e2_icons.c:936 e2_icons.c:1189
 msgid "_File"
 msgstr "_Файл"
 
-#: e2_icons.c:939 e2_icons.c:1192
+#: e2_icons.c:940 e2_icons.c:1193
 msgid "_Fullscreen"
 msgstr "_Во весь экран"
 
-#: e2_icons.c:940 e2_icons.c:1193 e2_toolbar.c:3669 e2_toolbar.c:3730
-#: e2_toolbar.c:3738
+#: e2_icons.c:941 e2_icons.c:1194 e2_toolbar.c:3670 e2_toolbar.c:3731
+#: e2_toolbar.c:3739
 msgid "_Back"
 msgstr "_Назад"
 
-#: e2_icons.c:942 e2_icons.c:961 e2_icons.c:1195 e2_icons.c:1214
-#: e2_toolbar.c:3671 e2_toolbar.c:3732 e2_toolbar.c:3736
+#: e2_icons.c:943 e2_icons.c:962 e2_icons.c:1196 e2_icons.c:1215
+#: e2_toolbar.c:3672 e2_toolbar.c:3733 e2_toolbar.c:3737
 msgid "_Forward"
 msgstr "_Вперёд"
 
-#: e2_icons.c:943 e2_icons.c:1196
+#: e2_icons.c:944 e2_icons.c:1197
 msgid "_Bottom"
 msgstr "_Вниз"
 
-#: e2_icons.c:944 e2_icons.c:1197
+#: e2_icons.c:945 e2_icons.c:1198
 msgid "_First"
 msgstr "_Первый"
 
-#: e2_icons.c:945 e2_icons.c:1198
+#: e2_icons.c:946 e2_icons.c:1199
 msgid "_Last"
 msgstr "_Последний"
 
-#: e2_icons.c:946 e2_icons.c:1199
+#: e2_icons.c:947 e2_icons.c:1200
 msgid "_Top"
 msgstr "_Вверх"
 
-#: e2_icons.c:949 e2_icons.c:1202 e2_option_tree.c:1965 e2_toolbar.c:3572
-#: e2p_find.c:4223 e2p_rename.c:1925
+#: e2_icons.c:950 e2_icons.c:1203 e2_option_tree.c:1967 e2_toolbar.c:3573
+#: e2p_find.c:4223 e2p_rename.c:1944
 msgid "_Help"
 msgstr "_Справка"
 
-#: e2_icons.c:950 e2_icons.c:1203
+#: e2_icons.c:951 e2_icons.c:1204
 msgid "_Home"
 msgstr "_Домой"
 
-#: e2_icons.c:951 e2_icons.c:1204
+#: e2_icons.c:952 e2_icons.c:1205
 msgid "_Indent"
 msgstr "_Отступ"
 
-#: e2_icons.c:952 e2_icons.c:1205
+#: e2_icons.c:953 e2_icons.c:1206
 msgid "_Index"
 msgstr "_Индекс"
 
-#: e2_icons.c:953 e2_icons.c:1206
+#: e2_icons.c:954 e2_icons.c:1207
 msgid "_Information"
 msgstr "_Информация"
 
-#: e2_icons.c:954 e2_icons.c:1207
+#: e2_icons.c:955 e2_icons.c:1208
 msgid "_Italic"
 msgstr "_Наклонный"
 
-#: e2_icons.c:955 e2_icons.c:1208
+#: e2_icons.c:956 e2_icons.c:1209
 msgid "_Goto"
 msgstr "_Перейти"
 
-#: e2_icons.c:956 e2_icons.c:1209
+#: e2_icons.c:957 e2_icons.c:1210
 msgid "_Centre"
 msgstr "_Центр"
 
-#: e2_icons.c:957 e2_icons.c:1210
+#: e2_icons.c:958 e2_icons.c:1211
 msgid "_Fill"
 msgstr "_Заполнить"
 
-#: e2_icons.c:958 e2_icons.c:1211 e2_toolbar.c:435
+#: e2_icons.c:959 e2_icons.c:1212 e2_toolbar.c:435
 msgid "_Left"
 msgstr "_Слева"
 
-#: e2_icons.c:959 e2_icons.c:1212 e2_toolbar.c:437
+#: e2_icons.c:960 e2_icons.c:1213 e2_toolbar.c:437
 msgid "_Right"
 msgstr "_Справа"
 
-#: e2_icons.c:962 e2_icons.c:1215
+#: e2_icons.c:963 e2_icons.c:1216
 msgid "_Next"
 msgstr "_Следующий"
 
-#: e2_icons.c:963 e2_icons.c:1216 e2p_copy.c:608 e2p_move.c:656
+#: e2_icons.c:964 e2_icons.c:1217 e2p_copy.c:608 e2p_move.c:656
 msgid "_Pause"
 msgstr "_Пауза"
 
-#: e2_icons.c:964 e2_icons.c:1217
+#: e2_icons.c:965 e2_icons.c:1218
 msgid "_Play"
 msgstr "_Воспроизвести"
 
-#: e2_icons.c:965 e2_icons.c:1218
+#: e2_icons.c:966 e2_icons.c:1219
 msgid "_Previous"
 msgstr "_Предыдущий"
 
-#: e2_icons.c:966 e2_icons.c:1219
+#: e2_icons.c:967 e2_icons.c:1220
 msgid "_Record"
 msgstr "_Записать"
 
-#: e2_icons.c:967 e2_icons.c:1220
+#: e2_icons.c:968 e2_icons.c:1221
 msgid "Re_wind"
 msgstr "Пере_мотать"
 
-#: e2_icons.c:970 e2_icons.c:1223
+#: e2_icons.c:971 e2_icons.c:1224
 msgid "_Network"
 msgstr "_Сеть"
 
-#: e2_icons.c:971 e2_icons.c:1224
+#: e2_icons.c:972 e2_icons.c:1225
 msgid "_New"
 msgstr "_Новый"
 
-#: e2_icons.c:972 e2_icons.c:1225
+#: e2_icons.c:973 e2_icons.c:1226
 msgid "_No"
 msgstr "_Нет"
 
-#: e2_icons.c:973 e2_icons.c:1226
+#: e2_icons.c:974 e2_icons.c:1227
 msgid "_OK"
 msgstr "_OK"
 
-#: e2_icons.c:975 e2_icons.c:1228
+#: e2_icons.c:976 e2_icons.c:1229
 msgid "_Landscape"
 msgstr "_Альбомная"
 
-#: e2_icons.c:976 e2_icons.c:1229
+#: e2_icons.c:977 e2_icons.c:1230
 msgid "_Portrait"
 msgstr "_Портретная"
 
-#: e2_icons.c:981 e2_icons.c:1234
+#: e2_icons.c:982 e2_icons.c:1235
 msgid "_Preferences"
 msgstr "_Параметры"
 
-#: e2_icons.c:983 e2_icons.c:1236
+#: e2_icons.c:984 e2_icons.c:1237
 msgid "_Print"
 msgstr "_Печать"
 
-#: e2_icons.c:985 e2_icons.c:1238
+#: e2_icons.c:986 e2_icons.c:1239
 msgid "Pre_view"
 msgstr "Прос_мотр"
 
-#: e2_icons.c:986 e2_icons.c:1239
+#: e2_icons.c:987 e2_icons.c:1240
 msgid "_Report"
 msgstr "_Сообщить"
 
-#: e2_icons.c:988 e2_icons.c:1241
+#: e2_icons.c:989 e2_icons.c:1242
 msgid "_Properties"
 msgstr "_Свойства"
 
-#: e2_icons.c:989 e2_icons.c:1242 e2_main.c:1007 e2_toolbar.c:3574
+#: e2_icons.c:990 e2_icons.c:1243 e2_main.c:1007 e2_toolbar.c:3575
 #: e2_tray.c:415
 msgid "_Quit"
 msgstr "_Выход"
 
-#: e2_icons.c:990 e2_icons.c:1243
+#: e2_icons.c:991 e2_icons.c:1244
 msgid "_Redo"
 msgstr "_Вернуть"
 
-#: e2_icons.c:993 e2_icons.c:1246
+#: e2_icons.c:994 e2_icons.c:1247
 msgid "_Revert"
 msgstr "_Восстановить"
 
-#: e2_icons.c:994 e2_icons.c:1247
+#: e2_icons.c:995 e2_icons.c:1248
 msgid "_Save_as"
 msgstr "_Сохранить как"
 
-#: e2_icons.c:997 e2_icons.c:1250
+#: e2_icons.c:998 e2_icons.c:1251
 msgid "_Color"
 msgstr "_Цвет"
 
-#: e2_icons.c:998 e2_icons.c:1251
+#: e2_icons.c:999 e2_icons.c:1252
 msgid "_Font"
 msgstr "_Шрифт"
 
-#: e2_icons.c:999 e2_icons.c:1252
+#: e2_icons.c:1000 e2_icons.c:1253
 msgid "Sort_asc"
 msgstr "Сортировка по _возрастанию"
 
-#: e2_icons.c:1000 e2_icons.c:1253
+#: e2_icons.c:1001 e2_icons.c:1254
 msgid "Sort_desc"
 msgstr "Сортировка по _убыванию"
 
-#: e2_icons.c:1001 e2_icons.c:1254
+#: e2_icons.c:1002 e2_icons.c:1255
 msgid "_Spell"
 msgstr "_Правописание"
 
-#: e2_icons.c:1003 e2_icons.c:1256
+#: e2_icons.c:1004 e2_icons.c:1257
 msgid "_Strikeout"
 msgstr "_Зачёркнутый"
 
-#: e2_icons.c:1004 e2_icons.c:1257
+#: e2_icons.c:1005 e2_icons.c:1258
 msgid "_Undelete"
 msgstr "_Восстановить"
 
-#: e2_icons.c:1005 e2_icons.c:1258
+#: e2_icons.c:1006 e2_icons.c:1259
 msgid "_Underline"
 msgstr "_Подчёркнутый"
 
-#: e2_icons.c:1007 e2_icons.c:1260
+#: e2_icons.c:1008 e2_icons.c:1261
 msgid "_Outdent"
 msgstr "_Выступ"
 
-#: e2_icons.c:1008 e2_icons.c:1261
+#: e2_icons.c:1009 e2_icons.c:1262
 msgid "_Yes"
 msgstr "_Да"
 
-#: e2_icons.c:1009 e2_icons.c:1262
+#: e2_icons.c:1010 e2_icons.c:1263
 msgid "_Original"
 msgstr "_Оригинал"
 
-#: e2_icons.c:1010 e2_icons.c:1263
+#: e2_icons.c:1011 e2_icons.c:1264
 msgid "_Fit"
 msgstr "_Заполнить"
 
-#: e2_icons.c:1011 e2_icons.c:1264
+#: e2_icons.c:1012 e2_icons.c:1265
 msgid "Zoom_in"
 msgstr "У_величить"
 
-#: e2_icons.c:1012 e2_icons.c:1265
+#: e2_icons.c:1013 e2_icons.c:1266
 msgid "Zoom_out"
 msgstr "У_меньшить"
 
@@ -3628,31 +3645,69 @@ msgstr "Продолжить работу"
 msgid "Missing _image"
 msgstr "Отсутствует _изображение"
 
-#: e2_menu.c:1039
+#: e2_menu.c:843
+#, fuzzy
+msgid "Copy full _paths"
+msgstr "Свернуть все пути"
+
+#: e2_menu.c:844
+#, fuzzy
+msgid "Copy the full path of each selected item to the clipboard"
+msgstr "Скопировать путь или имя каждого выбранного элемента в буфер обмена"
+
+#: e2_menu.c:849
+msgid "Copy full paths (one per _line)"
+msgstr ""
+
+#: e2_menu.c:850
+#, fuzzy
+msgid "Copy the full path of each selected item to the clipboard, one per line"
+msgstr "Скопировать путь или имя каждого выбранного элемента в буфер обмена"
+
+#: e2_menu.c:855
+#, fuzzy
+msgid "Copy full paths (Bash-_quoted)"
+msgstr "Свернуть все пути"
+
+#: e2_menu.c:856
+msgid "Copy full paths quoted for Bash, separated by spaces"
+msgstr ""
+
+#: e2_menu.c:861
+#, fuzzy
+msgid "Copy full paths (Bash-quoted, one per l_ine)"
+msgstr "Скопировать путь или имя каждого выбранного элемента в буфер обмена"
+
+#: e2_menu.c:862
+#, fuzzy
+msgid "Copy full paths quoted for Bash, one per line"
+msgstr "Скопировать путь или имя каждого выбранного элемента в буфер обмена"
+
+#: e2_menu.c:1069
 msgid "no children"
 msgstr "нет дочерних процессов"
 
-#: e2_menu.c:1062
+#: e2_menu.c:1092
 msgid "_Name filter"
 msgstr "Фильтр по _Имени"
 
-#: e2_menu.c:1064
+#: e2_menu.c:1094
 msgid "_Size filter"
 msgstr "Фильтр по _Размеру"
 
-#: e2_menu.c:1066
+#: e2_menu.c:1096
 msgid "_Date filter"
 msgstr "Фильтр по _Дате"
 
-#: e2_menu.c:1069
+#: e2_menu.c:1099
 msgid "_Directories too"
 msgstr "_Каталоги тоже"
 
-#: e2_menu.c:1076
+#: e2_menu.c:1106
 msgid "_Remove all filters"
 msgstr "_Убрать все фильтры"
 
-#: e2_menu.c:1848 e2_plugins.c:1715
+#: e2_menu.c:1878 e2_plugins.c:1715
 msgid "Menu"
 msgstr "Меню"
 
@@ -4284,7 +4339,7 @@ msgid "The directory from which icon files will be retrieved"
 msgstr "Каталог, из которого будут использоваться значки"
 
 #: e2_option__default.c:217 e2_option__default.c:407 e2_option__default.c:416
-#: e2_toolbar.c:3432 e2_toolbar.c:3442
+#: e2_toolbar.c:3433 e2_toolbar.c:3443
 msgid "theme"
 msgstr "определяется темой"
 
@@ -4388,11 +4443,11 @@ msgstr "разноцветный фон"
 msgid "If activated, lines in file lists will alternate background color"
 msgstr "Если включено, то строки в списке файлов будут разных цветов"
 
-#: e2_option__default.c:299 e2_output.c:4389 e2_view_dialog.c:2333
+#: e2_option__default.c:299 e2_output.c:4439 e2_view_dialog.c:2380
 msgid "use custom font"
 msgstr "использовать особый шрифт"
 
-#: e2_option__default.c:300 e2_output.c:4390 e2_view_dialog.c:2334
+#: e2_option__default.c:300 e2_output.c:4440 e2_view_dialog.c:2381
 msgid ""
 "If activated, the font specified below will be used, instead of the theme "
 "default"
@@ -4557,7 +4612,7 @@ msgid "If enabled, the color specified below will be used for background"
 msgstr ""
 "Если включено, то цвет, указанный ниже, будет использоваться как фоновый"
 
-#: e2_option__default.c:377 e2_view_dialog.c:2361
+#: e2_option__default.c:377 e2_view_dialog.c:2408
 msgid "background color"
 msgstr "цвет фона"
 
@@ -4584,23 +4639,23 @@ msgid ""
 msgstr ""
 "Этот цвет используется для подсветки названий элементов и других надписей"
 
-#: e2_option__default.c:407 e2_toolbar.c:3432
+#: e2_option__default.c:407 e2_toolbar.c:3433
 msgid "icon above label"
 msgstr "значки над подписями"
 
-#: e2_option__default.c:407 e2_toolbar.c:3432
+#: e2_option__default.c:407 e2_toolbar.c:3433
 msgid "icon beside label"
 msgstr "значки рядом с подписями"
 
-#: e2_option__default.c:407 e2_toolbar.c:3432
+#: e2_option__default.c:407 e2_toolbar.c:3433
 msgid "icon only"
 msgstr "только значки"
 
-#: e2_option__default.c:407 e2_toolbar.c:3432
+#: e2_option__default.c:407 e2_toolbar.c:3433
 msgid "label only"
 msgstr "только подписи"
 
-#: e2_option__default.c:408 e2_toolbar.c:3433
+#: e2_option__default.c:408 e2_toolbar.c:3434
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' leaves most space for other things"
 msgstr ""
@@ -4611,23 +4666,23 @@ msgstr ""
 msgid "toolbars button style"
 msgstr "стиль панелей инструментов"
 
-#: e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_option__default.c:416 e2_toolbar.c:3443
 msgid "dnd"
 msgstr "dnd"
 
-#: e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_option__default.c:416 e2_toolbar.c:3443
 msgid "menu"
 msgstr "меню"
 
-#: e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_option__default.c:416 e2_toolbar.c:3443
 msgid "toolbar large"
 msgstr "большая панель"
 
-#: e2_option__default.c:416 e2_toolbar.c:3442
+#: e2_option__default.c:416 e2_toolbar.c:3443
 msgid "toolbar small"
 msgstr "маленькая панель"
 
-#: e2_option__default.c:417 e2_toolbar.c:3443
+#: e2_option__default.c:417 e2_toolbar.c:3444
 #, c-format
 msgid "'%s' uses the Gtk default, '%s' is smallest, '%s' is largest"
 msgstr ""
@@ -4661,7 +4716,7 @@ msgstr "Нажмите клавишу"
 msgid "%s is assigned to '%s'"
 msgstr "%s назначена '%s'"
 
-#: e2_option_tree.c:1521
+#: e2_option_tree.c:1523
 #, c-format
 msgid ""
 "Are you sure that you want to delete this row and <b>%d</b> other related "
@@ -4669,70 +4724,70 @@ msgid ""
 msgstr ""
 "Вы уверены, что хотите удалить эту строку и <b>%d</b> другие связанные %s?"
 
-#: e2_option_tree.c:1521
+#: e2_option_tree.c:1523
 msgid "action"
 msgstr "действие"
 
-#: e2_option_tree.c:1528
+#: e2_option_tree.c:1530
 #, c-format
 msgid "Are you sure that you want to delete this row and <b>%d</b> %s?"
 msgstr "Вы уверены, что хотите удалить этоу строку и <b>%d</b> %s?"
 
-#: e2_option_tree.c:1920
+#: e2_option_tree.c:1922
 msgid "Remove the selected row"
 msgstr "Удалить выбранную строку"
 
-#: e2_option_tree.c:1923 e2_option_tree_context_menu.c:338
+#: e2_option_tree.c:1925 e2_option_tree_context_menu.c:338
 msgid "_Select"
 msgstr "Вы_брать"
 
-#: e2_option_tree.c:1924 e2_option_tree_context_menu.c:339
+#: e2_option_tree.c:1926 e2_option_tree_context_menu.c:339
 msgid "Select one or more plugins to be added"
 msgstr "Выбрать один или больше модулей для добавления"
 
-#: e2_option_tree.c:1929
+#: e2_option_tree.c:1931
 msgid "_Child"
 msgstr "_Вложенный"
 
-#: e2_option_tree.c:1930
+#: e2_option_tree.c:1932
 msgid "Add a child row to the currently selected one"
 msgstr "Добавить вложенный элемент в текущий выбранный"
 
-#: e2_option_tree.c:1933
+#: e2_option_tree.c:1935
 msgid "Add a row after the currently selected row in the tree"
 msgstr "Добавить строку после текущей выделенной строки в дереве"
 
-#: e2_option_tree.c:1948
+#: e2_option_tree.c:1950
 msgid "Tra_nslate"
 msgstr "_Перевод"
 
-#: e2_option_tree.c:1949
+#: e2_option_tree.c:1951
 msgid "Set all single-letter bindings to current locale"
 msgstr "Привести все однобуквенные привязки клавиш к текущей локали"
 
-#: e2_option_tree.c:1953
+#: e2_option_tree.c:1955
 msgid "Re_plicate"
 msgstr "С_копировать"
 
-#: e2_option_tree.c:1954
+#: e2_option_tree.c:1956
 msgid "Import data of the other toolbar"
 msgstr "Скопировать настройки другой панели"
 
-#: e2_option_tree.c:1958
+#: e2_option_tree.c:1960
 msgid "Co_lor"
 msgstr "_Цвет"
 
-#: e2_option_tree.c:1959
+#: e2_option_tree.c:1961
 msgid "Show color-selection dialog"
 msgstr "Показать диалог выбора цвета"
 
-#: e2_option_tree.c:1963
+#: e2_option_tree.c:1965
 msgid ""
 "Fill empty command icons from installed applications and the current icon "
 "theme"
 msgstr ""
 
-#: e2_option_tree.c:1966
+#: e2_option_tree.c:1968
 msgid "Get help on this option"
 msgstr "Посмотреть справку по настройке"
 
@@ -4792,141 +4847,141 @@ msgstr "Ниче_го в меню"
 msgid "Hide all listed plugins from menu"
 msgstr "Убрать все модули из меню"
 
-#: e2_output.c:1232
+#: e2_output.c:1260
 #, c-format
 msgid "Cannot find any output from process %s"
 msgstr "Невозможно найти вывод процесса %s"
 
-#: e2_output.c:1722
+#: e2_output.c:1750
 msgid "Find text in the command log"
 msgstr ""
 
-#: e2_output.c:1723 e2_terminal.c:486
+#: e2_output.c:1751 e2_terminal.c:486
 #, fuzzy
 msgid "_Hide tools"
 msgstr "Спря_тать"
 
-#: e2_output.c:1724 e2_terminal.c:487
+#: e2_output.c:1752 e2_terminal.c:487
 #, fuzzy
 msgid "Return to the file list"
 msgstr "Вернуться к родной файловой системе"
 
-#: e2_output.c:1725
+#: e2_output.c:1753
 msgid "_Expand / restore view"
 msgstr ""
 
-#: e2_output.c:1726 e2_terminal.c:489
+#: e2_output.c:1754 e2_terminal.c:489
 msgid "Expand this view, or restore the file lists and both tools areas"
 msgstr ""
 
-#: e2_output.c:1730
+#: e2_output.c:1758
 msgid "Do not show the output pane"
 msgstr "Не показывать панель вывода"
 
-#: e2_output.c:1733
+#: e2_output.c:1761
 msgid "_Toggle full"
 msgstr "_На весь экран"
 
-#: e2_output.c:1736
+#: e2_output.c:1764
 msgid "Toggle output pane size to/from the full window size"
 msgstr "Переключить панель вывода в/из полноэкранного режима"
 
-#: e2_output.c:1744
+#: e2_output.c:1772
 msgid "_New tab"
 msgstr "_Новая вкладка"
 
-#: e2_output.c:1745
+#: e2_output.c:1773
 msgid "Add another tab for the output pane"
 msgstr "Добавить новую вкладку к панели вывода"
 
-#: e2_output.c:1748
+#: e2_output.c:1776
 msgid "_Remove tab"
 msgstr "_Удалить вкладку"
 
-#: e2_output.c:1749
+#: e2_output.c:1777
 msgid "Close this this tab"
 msgstr "Закрыть эту вкладку"
 
-#: e2_output.c:1758
+#: e2_output.c:1786
 msgid "_Attach"
 msgstr "_Присоединить"
 
-#: e2_output.c:1759
+#: e2_output.c:1787
 msgid "Move this tab back to output pane"
 msgstr "Вернуть эту вкладку обратно в панель вывода"
 
-#: e2_output.c:1766 e2_output.c:1770
+#: e2_output.c:1794 e2_output.c:1798
 msgid "C_lear"
 msgstr "_Очистить"
 
-#: e2_output.c:1767 e2_output.c:1771
+#: e2_output.c:1795 e2_output.c:1799
 msgid "Clear this tab"
 msgstr "Очистить эту вкладку"
 
-#: e2_output.c:1775 e2_view_dialog.c:1055
+#: e2_output.c:1803 e2_view_dialog.c:1098
 msgid "Copy selected text"
 msgstr "Копировать выделенный текст"
 
-#: e2_output.c:1783
+#: e2_output.c:1811
 msgid "Edit the tab contents"
 msgstr "Редактировать содержимое вкладки"
 
-#: e2_output.c:1825
+#: e2_output.c:1853
 msgid "Co_mmand output"
 msgstr "_Вывод команды"
 
-#: e2_output.c:1826
+#: e2_output.c:1854
 msgid "Show output from a completed command"
 msgstr "Показать вывод завершённой команды"
 
-#: e2_output.c:1839 e2_view_dialog.c:1066
+#: e2_output.c:1867 e2_view_dialog.c:1109
 msgid "_Settings"
 msgstr "_Настройка"
 
-#: e2_output.c:1852
+#: e2_output.c:1880
 msgid "_Other"
 msgstr "_Дополнительно"
 
-#: e2_output.c:1853
+#: e2_output.c:1881
 msgid "Open the configuration dialog at the output options page"
 msgstr "Открыть диалог настройки на странице параметров вывода"
 
-#: e2_output.c:2262
+#: e2_output.c:2290
 msgid ""
 "\n"
 "--- Merged command log ---\n"
 msgstr ""
 
-#: e2_output.c:2943
+#: e2_output.c:2971
 msgid "output tabs"
 msgstr "вкладки вывода"
 
-#: e2_output.c:3518
+#: e2_output.c:3554
 msgid "-- end-of-output --"
 msgstr "-- конец-вывода --"
 
-#: e2_output.c:4340
+#: e2_output.c:4390
 msgid "show output pane when a new message appears"
 msgstr "показывать панель вывода когда появляется новое сообщение"
 
-#: e2_output.c:4341
+#: e2_output.c:4391
 msgid "This will ensure you don't miss any messages"
 msgstr "Позволяет быть уверенным, что вы не пропустите ни одного сообщения"
 
-#: e2_output.c:4348
+#: e2_output.c:4398
 msgid "show output pane if the command line is focused"
 msgstr "показывать панель вывода, если командная строка активна"
 
-#: e2_output.c:4349
+#: e2_output.c:4399
 msgid ""
 "This causes the output pane to be opened when you are about enter a command"
 msgstr "Заставляет панель вывода открываться, когда вы набираете команду"
 
-#: e2_output.c:4353
+#: e2_output.c:4403
 msgid "hide output pane if the command line is unfocused"
 msgstr "скрывать панель вывода, если командная строка не активна"
 
-#: e2_output.c:4354
+#: e2_output.c:4404
 msgid ""
 "This causes the output pane to be closed when you move focus away from the "
 "command line"
@@ -4934,30 +4989,30 @@ msgstr ""
 "Заставляет панель вывода закрываться, когда вы перестаёте работать с "
 "командной строкой"
 
-#: e2_output.c:4357
+#: e2_output.c:4407
 msgid "show commands"
 msgstr "показывать команды"
 
-#: e2_output.c:4358
+#: e2_output.c:4408
 msgid "This echoes the commands that are run and their exit value"
 msgstr "Выводит названия запущенных команд и их возвращаемые значения"
 
-#: e2_output.c:4360
+#: e2_output.c:4410
 msgid "scroll to new output"
 msgstr "перемещаться за новыми сообщениями"
 
-#: e2_output.c:4361
+#: e2_output.c:4411
 msgid ""
 "This will automatically scroll the output pane content, to show new "
 "message(s)"
 msgstr ""
 "Включает автоматическую прокрутку вниз, чтобы показывать новые сообщения"
 
-#: e2_output.c:4363
+#: e2_output.c:4413
 msgid "only scroll when really following"
 msgstr "перемещаться только когда действительно необходимо"
 
-#: e2_output.c:4364
+#: e2_output.c:4414
 msgid ""
 "This stops automatic pane scrolling to new output if you've manually "
 "scrolled away"
@@ -4965,11 +5020,11 @@ msgstr ""
 "Останавливает автоматическую прокрутку вниз, когда вы прокручиваете окно "
 "вручную"
 
-#: e2_output.c:4367
+#: e2_output.c:4417
 msgid "only scroll when new output is at the end"
 msgstr "перемещаться только если в конце появились новые сообщения"
 
-#: e2_output.c:4368
+#: e2_output.c:4418
 msgid ""
 "This stops pane scrolling if a different process has displayed text after "
 "the current insert position"
@@ -4977,11 +5032,11 @@ msgstr ""
 "Останавливает прокрутку, если другой процесс выводит текст после текущей "
 "позиции вставки"
 
-#: e2_output.c:4371
+#: e2_output.c:4421
 msgid "auto-selection boundary characters"
 msgstr "символы границы автоматически выбранного текста"
 
-#: e2_output.c:4372
+#: e2_output.c:4422
 msgid ""
 "Character(s), usually punctuation, any of which will set a boundary for auto-"
 "selected text"
@@ -4989,19 +5044,19 @@ msgstr ""
 "Символ(ы), обычно знак препинания, любой из которых установит границу для "
 "автоматически выбранного текста."
 
-#: e2_output.c:4374
+#: e2_output.c:4424
 msgid "everywhere"
 msgstr "в любом месте"
 
-#: e2_output.c:4374
+#: e2_output.c:4424
 msgid "words"
 msgstr "по словам"
 
-#: e2_output.c:4376
+#: e2_output.c:4426
 msgid "line wrap mode"
 msgstr "режим переноса строк"
 
-#: e2_output.c:4377
+#: e2_output.c:4427
 #, fuzzy
 msgid ""
 "If mode is 'none', a horizontal scrollbar will be available. Mode 'words' "
@@ -5010,36 +5065,36 @@ msgstr ""
 "Если включен режим 'нет', то будет доступна горизонтальня линия прокрутки. В "
 "режиме 'слова' строки будут разбиваться между словами"
 
-#: e2_output.c:4380
+#: e2_output.c:4430
 msgid "left margin (pixels)"
 msgstr "отступ слева (пиксели)"
 
-#: e2_output.c:4381
+#: e2_output.c:4431
 msgid "This is the left margin between the output-pane edge and the text in it"
 msgstr "Отступ слева между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4384
+#: e2_output.c:4434
 msgid "right margin (pixels)"
 msgstr "отступ справа (пиксели)"
 
-#: e2_output.c:4385
+#: e2_output.c:4435
 msgid ""
 "This is the right margin between the output-pane edge and the text in it"
 msgstr "Отступ справа между границей окна вывода и текстом в нем"
 
-#: e2_output.c:4393
+#: e2_output.c:4443
 msgid "custom output font"
 msgstr "особый шрифт"
 
-#: e2_output.c:4394
+#: e2_output.c:4444
 msgid "This is the font used for text in the output pane"
 msgstr "Шрифт, используемый для текста в окне вывода"
 
-#: e2_output.c:4399
+#: e2_output.c:4449
 msgid "positive color"
 msgstr "положительный цвет"
 
-#: e2_output.c:4400
+#: e2_output.c:4450
 msgid ""
 "This color is used for messages about successful operations or other "
 "'positive events'"
@@ -5047,11 +5102,11 @@ msgstr ""
 "Этот цвет используется для сообщений об успешных операциях или о других "
 "положительных событиях"
 
-#: e2_output.c:4403
+#: e2_output.c:4453
 msgid "negative color"
 msgstr "отрицательный цвет"
 
-#: e2_output.c:4404
+#: e2_output.c:4454
 msgid ""
 "This color is used for errors, warnings and other messages that should grab "
 "attention"
@@ -5059,59 +5114,59 @@ msgstr ""
 "Этот цвет используется для ошибок, предупреждений и других сообщений, "
 "которые должны привлекать внимание"
 
-#: e2_output.c:4407
+#: e2_output.c:4457
 msgid "commands color"
 msgstr "цвет команд"
 
-#: e2_output.c:4408
+#: e2_output.c:4458
 msgid "This color is used for echoing issued commands"
 msgstr ""
 "Этот цвет используется для подсветки названий элементов и других надписей"
 
-#: e2_output.c:4411
+#: e2_output.c:4461
 msgid "unimportant color"
 msgstr "нейтральный цвет"
 
-#: e2_output.c:4412
+#: e2_output.c:4462
 msgid ""
 "This color is used for messages of minor importance or other miscellaneous "
 "events"
 msgstr "Этот цвет используется для сообщений о маловажных событиях"
 
-#: e2_ownership_dialog.c:330
+#: e2_ownership_dialog.c:334
 msgid "ownership"
 msgstr "владелец"
 
-#: e2_ownership_dialog.c:341 e2_permissions_dialog.c:327 e2p_timeset.c:802
+#: e2_ownership_dialog.c:345 e2_permissions_dialog.c:327 e2p_timeset.c:802
 msgid "Directory name"
 msgstr "Имя каталога"
 
-#: e2_ownership_dialog.c:383 e2_permissions_dialog.c:340
+#: e2_ownership_dialog.c:387 e2_permissions_dialog.c:340
 #: e2_permissions_dialog.c:414
 msgid "User"
 msgstr "Владелец"
 
-#: e2_ownership_dialog.c:429
+#: e2_ownership_dialog.c:433
 msgid "_Recurse"
 msgstr "_Рекурсивно"
 
-#: e2_pane.c:1744 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
+#: e2_pane.c:1758 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
 msgid "No trash directory is available"
 msgstr "Каталог «корзины» недоступен"
 
-#: e2_pane.c:1870
+#: e2_pane.c:1884
 msgid "_Edit places"
 msgstr "_Редактировать места"
 
-#: e2_pane.c:2249
+#: e2_pane.c:2263
 msgid "both"
 msgstr "обе"
 
-#: e2_pane.c:2691
+#: e2_pane.c:2705
 msgid "At startup, show a specific directory in this pane"
 msgstr "При запуске открывать указанный каталог в этой панели"
 
-#: e2_pane.c:2692
+#: e2_pane.c:2706
 msgid ""
 "This causes the directory named below, instead of the last-opened directory, "
 "to be shown at session start"
@@ -5119,20 +5174,20 @@ msgstr ""
 "Позволяет при запуске программы открывать каталог, указанный ниже, вместо "
 "последнего использовавшегося"
 
-#: e2_pane.c:2697
+#: e2_pane.c:2711
 #, c-format
 msgid "pane %d startup directory:"
 msgstr "начальный каталог для панели %d:"
 
-#: e2_pane.c:2699
+#: e2_pane.c:2713
 msgid "This is the directory to show in this pane, at session start"
 msgstr "Каталог, который следует открыть в этой панели при запуске программы"
 
-#: e2_pane.c:2707
+#: e2_pane.c:2721
 msgid "this pane is like pane 2"
 msgstr "эта панель как панель 2"
 
-#: e2_pane.c:2709 e2_pane.c:2719
+#: e2_pane.c:2723 e2_pane.c:2733
 #, c-format
 msgid ""
 "This makes pane %d options (other than toolbar placement and content) apply "
@@ -5141,16 +5196,16 @@ msgstr ""
 "Настроит панель %d (кроме расположения панелей инструментов и их "
 "содержимого) также как %d"
 
-#: e2_pane.c:2717
+#: e2_pane.c:2731
 msgid "this pane is like pane 1"
 msgstr "эта панель как панель 1"
 
-#: e2_pane.c:2730
+#: e2_pane.c:2744
 #, c-format
 msgid "show %s column"
 msgstr "показывать столбец %s"
 
-#: e2_pane.c:2731
+#: e2_pane.c:2745
 #, c-format
 msgid "This causes the the named column to be displayed in pane %d (duh ...)"
 msgstr "Включает показ указанного столбца в панели %d (duh ...)"
@@ -5414,7 +5469,7 @@ msgstr "У вас недостаточно привилегий, чтобы из
 msgid "open with"
 msgstr "открыть с помощью"
 
-#: e2_task.c:4307 e2_toolbar.c:3561 e2_toolbar.c:3565 e2p_upgrade.c:172
+#: e2_task.c:4307 e2_toolbar.c:3562 e2_toolbar.c:3566 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "Введите команду:"
 
@@ -5506,7 +5561,7 @@ msgstr "Невозможно получить текущие права для %
 msgid "Cannot change ownership of all of %s"
 msgstr "Невозможно изменить владельца у %s"
 
-#: e2_terminal.c:134 e2_window.c:141
+#: e2_terminal.c:134 e2_window.c:142
 msgid "Equal panel sizes (1:1)"
 msgstr ""
 
@@ -5940,35 +5995,35 @@ msgstr "создан"
 msgid "modified"
 msgstr "изменён"
 
-#: e2_toolbar.c:3380
+#: e2_toolbar.c:3381
 msgid "show the "
 msgstr "показывать "
 
-#: e2_toolbar.c:3381
+#: e2_toolbar.c:3382
 #, c-format
 msgid "This determines whether the %s is displayed or hidden"
 msgstr "Определяет, показывается %s, или нет"
 
-#: e2_toolbar.c:3388
+#: e2_toolbar.c:3389
 msgid " horizontal"
 msgstr " горизонтально"
 
-#: e2_toolbar.c:3389
+#: e2_toolbar.c:3390
 #, c-format
 msgid "This determines whether the %s is displayed horizontally or vertically"
 msgstr "Определяет, будет ли %s отображаться горизонтально или вертикально"
 
-#: e2_toolbar.c:3396
+#: e2_toolbar.c:3397
 #, c-format
 msgid "show tooltips for %s buttons"
 msgstr "показывать подсказки для кнопок на %s"
 
-#: e2_toolbar.c:3397
+#: e2_toolbar.c:3398
 #, c-format
 msgid "If deactivated, tooltips will not be displayed for %s buttons"
 msgstr "Если выключено, то подсказки не будут показываться для кнопок на %s"
 
-#: e2_toolbar.c:3404
+#: e2_toolbar.c:3405
 #, c-format
 msgid ""
 "This determines the method for accessing %s elements that are hidden due to "
@@ -5977,327 +6032,327 @@ msgstr ""
 "Определяет метод доступа к элементам %s, которые скрыты из-за нехватки места "
 "на экране"
 
-#: e2_toolbar.c:3406
+#: e2_toolbar.c:3407
 msgid "use rest button"
 msgstr "использовать специальную кнопку"
 
-#: e2_toolbar.c:3406
+#: e2_toolbar.c:3407
 msgid "use scrollbars"
 msgstr "использовать прокрутку"
 
-#: e2_toolbar.c:3407
+#: e2_toolbar.c:3408
 msgid "space handling"
 msgstr "управление местом"
 
-#: e2_toolbar.c:3414
+#: e2_toolbar.c:3415
 msgid " buttons have relief"
 msgstr " объёмные кнопки"
 
-#: e2_toolbar.c:3416
+#: e2_toolbar.c:3417
 msgid ""
 "Buttons with relief show their outline continually, not just when 'moused'"
 msgstr ""
 "Объёмные кнопки отображаются приподнятыми всегда, а не только когда выделены "
 "мышью"
 
-#: e2_toolbar.c:3423
+#: e2_toolbar.c:3424
 msgid " buttons are the same size"
 msgstr " все кнопки одного размера"
 
-#: e2_toolbar.c:3425
+#: e2_toolbar.c:3426
 msgid ""
 "Equal-width buttons look good on a vertical bar, bad on a horizontal bar"
 msgstr ""
 "Одинаковые по размеру кнопки выглядят хорошо на вертикальной панели, но "
 "плохо на горизонтальной"
 
-#: e2_toolbar.c:3435
+#: e2_toolbar.c:3436
 msgid "button style"
 msgstr "стиль кнопок"
 
-#: e2_toolbar.c:3445
+#: e2_toolbar.c:3446
 msgid "icon size"
 msgstr "размер значков"
 
-#: e2_toolbar.c:3452
+#: e2_toolbar.c:3453
 msgid " container"
 msgstr " размещение"
 
-#: e2_toolbar.c:3453
+#: e2_toolbar.c:3454
 #, c-format
 msgid "This determines the 'box' into which the %s is placed"
 msgstr "Определяет место где будет размещена %s"
 
-#: e2_toolbar.c:3455
+#: e2_toolbar.c:3456
 msgid "both panes"
 msgstr "обе панели"
 
-#: e2_toolbar.c:3455
+#: e2_toolbar.c:3456
 msgid "file-pane 1"
 msgstr "панель 1"
 
-#: e2_toolbar.c:3455
+#: e2_toolbar.c:3456
 msgid "file-pane 2"
 msgstr "панель 2"
 
-#: e2_toolbar.c:3455
+#: e2_toolbar.c:3456
 msgid "main window"
 msgstr "главное окно"
 
-#: e2_toolbar.c:3463
+#: e2_toolbar.c:3464
 msgid " priority"
 msgstr " приоритет"
 
-#: e2_toolbar.c:3464
+#: e2_toolbar.c:3465
 msgid "This determines the order of toolbars (0 = left or top)"
 msgstr "Определяет порядок панелей инструментов (0 = слева или вверху)"
 
-#: e2_toolbar.c:3485
+#: e2_toolbar.c:3486
 msgid "Copy items selected in the active pane to the other one"
 msgstr "Копировать элементы, выбранные в активной панели, в другую панель"
 
-#: e2_toolbar.c:3487
+#: e2_toolbar.c:3488
 msgid "Move items selected in the active pane to the other one"
 msgstr "Переместить элементы, выбранные в активной панели, в другую панель"
 
-#: e2_toolbar.c:3489
+#: e2_toolbar.c:3490
 msgid "Symlink items selected in the active pane to the other one"
 msgstr "Создать символьную ссылку элемента из активной панели в другой панели"
 
-#: e2_toolbar.c:3490
+#: e2_toolbar.c:3491
 msgid "Re_name.."
 msgstr "Пере_именовать…"
 
-#: e2_toolbar.c:3491
+#: e2_toolbar.c:3492
 msgid "Rename items selected in the active pane"
 msgstr "Переименовать элементы, выбранные в активной панели"
 
-#: e2_toolbar.c:3493
+#: e2_toolbar.c:3494
 msgid "Move items selected in the active pane to a trashbin"
 msgstr "Переместить элементы, выбранные в активной панели, в «корзину»"
 
-#: e2_toolbar.c:3494
+#: e2_toolbar.c:3495
 msgid "Create new directory(ies)"
 msgstr "Создать новый каталог"
 
-#: e2_toolbar.c:3500
+#: e2_toolbar.c:3501
 msgid "Re_fresh"
 msgstr "_Обновить"
 
-#: e2_toolbar.c:3500
+#: e2_toolbar.c:3501
 msgid "Update pane contents"
 msgstr "Обновить содержимое панели"
 
-#: e2_toolbar.c:3501
+#: e2_toolbar.c:3502
 msgid "_Switch"
 msgstr "_Переключить"
 
-#: e2_toolbar.c:3502
+#: e2_toolbar.c:3503
 msgid "Toggle the active pane"
 msgstr "Переключить активную панель"
 
-#: e2_toolbar.c:3548
+#: e2_toolbar.c:3549
 msgid "Full"
 msgstr "На веь экран"
 
-#: e2_toolbar.c:3548
+#: e2_toolbar.c:3549
 msgid "Maximize output pane"
 msgstr "Развернуть панель вывода на весь экран"
 
-#: e2_toolbar.c:3549
+#: e2_toolbar.c:3550
 msgid "Shrink"
 msgstr "Уменьшить"
 
-#: e2_toolbar.c:3549
+#: e2_toolbar.c:3550
 msgid "Un-maximize output pane"
 msgstr "Уменьшить панель вывода до нормального размера"
 
-#: e2_toolbar.c:3550
+#: e2_toolbar.c:3551
 msgid "Hide"
 msgstr "Скрыть"
 
-#: e2_toolbar.c:3550
+#: e2_toolbar.c:3551
 msgid "Hide output pane"
 msgstr "Скрыть панель вывода"
 
-#: e2_toolbar.c:3551
+#: e2_toolbar.c:3552
 msgid "Show"
 msgstr "Показать"
 
-#: e2_toolbar.c:3551
+#: e2_toolbar.c:3552
 msgid "Show output pane"
 msgstr "Показать панель вывода"
 
-#: e2_toolbar.c:3552
+#: e2_toolbar.c:3553
 msgid "Clear"
 msgstr "Очистить"
 
-#: e2_toolbar.c:3552
+#: e2_toolbar.c:3553
 msgid "Clear output pane"
 msgstr "Очистить панель вывода"
 
-#: e2_toolbar.c:3554
+#: e2_toolbar.c:3555
 msgid "Clear command line"
 msgstr "Очистить командную строку"
 
-#: e2_toolbar.c:3554
+#: e2_toolbar.c:3555
 msgid "cl"
 msgstr "cl"
 
-#: e2_toolbar.c:3555
+#: e2_toolbar.c:3556
 msgid "Child processes"
 msgstr "Дочерние процессы"
 
-#: e2_toolbar.c:3555
+#: e2_toolbar.c:3556
 msgid "ps"
 msgstr "ps"
 
-#: e2_toolbar.c:3556
+#: e2_toolbar.c:3557
 msgid "Calculate disk usage of selected items"
 msgstr "Подсчитать объём, занимаемый выбранными элементами"
 
-#: e2_toolbar.c:3556 e2p_du.c:375
+#: e2_toolbar.c:3557 e2p_du.c:375
 msgid "du"
 msgstr "du"
 
-#: e2_toolbar.c:3557
+#: e2_toolbar.c:3558
 msgid "Find item in active pane, by name"
 msgstr "Найти элемент в активной панели по названию"
 
-#: e2_toolbar.c:3558
+#: e2_toolbar.c:3559
 msgid "Open terminal at the active directory"
 msgstr "Открыть терминал в активной панели"
 
-#: e2_toolbar.c:3558
+#: e2_toolbar.c:3559
 msgid "_X"
 msgstr "_X"
 
-#: e2_toolbar.c:3561 e2_toolbar.c:3565
+#: e2_toolbar.c:3562 e2_toolbar.c:3566
 msgid "Run command as root"
 msgstr "Запустить команду от имени root"
 
-#: e2_toolbar.c:3561 e2_toolbar.c:3565
+#: e2_toolbar.c:3562 e2_toolbar.c:3566
 msgid "su.."
 msgstr "su.."
 
-#: e2_toolbar.c:3568
+#: e2_toolbar.c:3569
 msgid "Mount or unmount a device"
 msgstr "Монтировать или отмонтировать устройство"
 
-#: e2_toolbar.c:3568
+#: e2_toolbar.c:3569
 msgid "mts.."
 msgstr "mts.."
 
-#: e2_toolbar.c:3571
+#: e2_toolbar.c:3572
 msgid "View/change configuration settings for this program"
 msgstr "Просмотреть/изменить настройки для этой программы"
 
-#: e2_toolbar.c:3571
+#: e2_toolbar.c:3572
 msgid "_Settings.."
 msgstr "_Настройки…"
 
-#: e2_toolbar.c:3572
+#: e2_toolbar.c:3573
 msgid "Get information about this program"
 msgstr "Просмотреть информацию о программе"
 
-#: e2_toolbar.c:3574
+#: e2_toolbar.c:3575
 msgid "Close this program"
 msgstr "Выйти из программы"
 
-#: e2_toolbar.c:3622 e2_toolbar.c:3687
+#: e2_toolbar.c:3623 e2_toolbar.c:3688
 msgid "Hide other pane"
 msgstr "Скрыть другую панель"
 
-#: e2_toolbar.c:3622 e2_toolbar.c:3624 e2_toolbar.c:3627 e2_toolbar.c:3687
-#: e2_toolbar.c:3689 e2_toolbar.c:3692
+#: e2_toolbar.c:3623 e2_toolbar.c:3625 e2_toolbar.c:3628 e2_toolbar.c:3688
+#: e2_toolbar.c:3690 e2_toolbar.c:3693
 msgid "_Panes"
 msgstr "_Панели"
 
-#: e2_toolbar.c:3625 e2_toolbar.c:3628 e2_toolbar.c:3690 e2_toolbar.c:3693
+#: e2_toolbar.c:3626 e2_toolbar.c:3629 e2_toolbar.c:3691 e2_toolbar.c:3694
 msgid "Show other pane"
 msgstr "Показать другую панель"
 
-#: e2_toolbar.c:3630 e2_toolbar.c:3695
+#: e2_toolbar.c:3631 e2_toolbar.c:3696
 msgid "Show _hidden"
 msgstr "Показать _скрытое"
 
-#: e2_toolbar.c:3631 e2_toolbar.c:3696
+#: e2_toolbar.c:3632 e2_toolbar.c:3697
 msgid "Display hidden items in this directory"
 msgstr "Показать скрытые элементы в этом каталоге"
 
-#: e2_toolbar.c:3632 e2_toolbar.c:3697
+#: e2_toolbar.c:3633 e2_toolbar.c:3698
 msgid "Hide _hidden"
 msgstr "Скрыть _скрытое"
 
-#: e2_toolbar.c:3633 e2_toolbar.c:3698
+#: e2_toolbar.c:3634 e2_toolbar.c:3699
 msgid "Do not display hidden items in this directory"
 msgstr "Не показывать скрытые элементы в этом каталоге"
 
-#: e2_toolbar.c:3634 e2_toolbar.c:3636 e2_toolbar.c:3699 e2_toolbar.c:3701
+#: e2_toolbar.c:3635 e2_toolbar.c:3637 e2_toolbar.c:3700 e2_toolbar.c:3702
 msgid "Fil_ters"
 msgstr "_Фильтры"
 
-#: e2_toolbar.c:3635 e2_toolbar.c:3700
+#: e2_toolbar.c:3636 e2_toolbar.c:3701
 msgid "Set rules for the items to be displayed"
 msgstr "Установить правила, какие элементы показывать"
 
-#: e2_toolbar.c:3637 e2_toolbar.c:3702
+#: e2_toolbar.c:3638 e2_toolbar.c:3703
 msgid "Set/remove rules for the items to be displayed"
 msgstr "Установить/убрать правила, какие элементы показывать"
 
-#: e2_toolbar.c:3639 e2_toolbar.c:3704
+#: e2_toolbar.c:3640 e2_toolbar.c:3705
 msgid "_VFS"
 msgstr "_VFS"
 
-#: e2_toolbar.c:3640 e2_toolbar.c:3705
+#: e2_toolbar.c:3641 e2_toolbar.c:3706
 msgid "Show a virtual directory in this pane"
 msgstr "Показывать виртуальный каталог в этой панели"
 
-#: e2_toolbar.c:3641 e2_toolbar.c:3706
+#: e2_toolbar.c:3642 e2_toolbar.c:3707
 msgid "_LocalFS"
 msgstr "_LocalFS"
 
-#: e2_toolbar.c:3649 e2_toolbar.c:3714
+#: e2_toolbar.c:3650 e2_toolbar.c:3715
 msgid "_Marks"
 msgstr "_Метки"
 
-#: e2_toolbar.c:3650 e2_toolbar.c:3715
+#: e2_toolbar.c:3651 e2_toolbar.c:3716
 msgid "Bookmarks"
 msgstr "Закладки"
 
-#: e2_toolbar.c:3652 e2_toolbar.c:3717
+#: e2_toolbar.c:3653 e2_toolbar.c:3718
 msgid "Add the current directory to the top of the bookmarks list"
 msgstr "Добавить этот каталог в начало списка закладок"
 
-#: e2_toolbar.c:3656 e2_toolbar.c:3721
+#: e2_toolbar.c:3657 e2_toolbar.c:3722
 msgid "Add the current directory to the bottom of the bookmarks list"
 msgstr "Добавить этот каталог в конец списка закладок"
 
-#: e2_toolbar.c:3659 e2_toolbar.c:3724
+#: e2_toolbar.c:3660 e2_toolbar.c:3725
 msgid "_Edit bookmarks"
 msgstr "_Настроить закладки"
 
-#: e2_toolbar.c:3660 e2_toolbar.c:3725
+#: e2_toolbar.c:3661 e2_toolbar.c:3726
 msgid "Open the bookmarks configuration dialog"
 msgstr "Открыть диалог настройки закладок"
 
-#: e2_toolbar.c:3663 e2_toolbar.c:3666 e2_toolbar.c:3728 e2_toolbar.c:3734
+#: e2_toolbar.c:3664 e2_toolbar.c:3667 e2_toolbar.c:3729 e2_toolbar.c:3735
 msgid "M_irror"
 msgstr "_Отобразить"
 
-#: e2_toolbar.c:3664 e2_toolbar.c:3667 e2_toolbar.c:3729 e2_toolbar.c:3735
+#: e2_toolbar.c:3665 e2_toolbar.c:3668 e2_toolbar.c:3730 e2_toolbar.c:3736
 msgid "Go to directory shown in other pane"
 msgstr "Перейти в каталог, показанный в другой панели"
 
-#: e2_toolbar.c:3669 e2_toolbar.c:3730 e2_toolbar.c:3738
+#: e2_toolbar.c:3670 e2_toolbar.c:3731 e2_toolbar.c:3739
 msgid "Go to previous directory in history"
 msgstr "Перейти в предыдущий каталог в истории"
 
-#: e2_toolbar.c:3670 e2_toolbar.c:3731 e2_toolbar.c:3737
+#: e2_toolbar.c:3671 e2_toolbar.c:3732 e2_toolbar.c:3738
 msgid "Go up to parent directory"
 msgstr "Перейти в родительский каталог"
 
-#: e2_toolbar.c:3671 e2_toolbar.c:3732 e2_toolbar.c:3736
+#: e2_toolbar.c:3672 e2_toolbar.c:3733 e2_toolbar.c:3737
 msgid "Go to next directory in history"
 msgstr "Перейти в следующий каталог в истории"
 
@@ -6391,175 +6446,205 @@ msgstr ""
 msgid "Cannot read USAGE help document"
 msgstr "Невозможно прочитать файл помощи USAGE"
 
-#: e2_utils.c:1157
+#: e2_utils.c:1133 e2p_rename.c:887
 msgid "No item selected"
 msgstr "Не выбраны элементы"
 
-#: e2_utils.c:1228
+#: e2_utils.c:1204 e2p_rename.c:887
 msgid "No item selected in other pane"
 msgstr "Не выбраны элементы в другой панели"
 
-#: e2_utils.c:1610
+#: e2_utils.c:1586
 msgid "No matching '}' found in action text"
 msgstr "Не найдено соответствующей '}' в тексте действия"
 
-#: e2_utils.c:1702
+#: e2_utils.c:1678
 msgid "No matching '$' found in action text"
 msgstr "Не найдено соответствующего '$' в тексте действия"
 
-#: e2_utils.c:4027
+#: e2_utils.c:4015
 msgid "KEYS_abcdefghijklmnopqrstuvwxyz"
 msgstr "KEYS_фисвуапршолдбтщзйкыегмцхня"
 
-#: e2_view_dialog.c:486 e2p_crypt.c:1579 e2p_crypt.c:1904
+#: e2_view_dialog.c:470
+#, fuzzy
+msgid "Large file"
+msgstr "изображения"
+
+#: e2_view_dialog.c:472
+#, c-format
+msgid ""
+"<b>%s</b>\n"
+"\n"
+"This file is larger than the configured limit of %d MB.\n"
+"Opening it may take a long time and use a lot of memory.\n"
+"\n"
+"Open it anyway?"
+msgstr ""
+
+#: e2_view_dialog.c:482
+msgid "_Open Anyway"
+msgstr ""
+
+#: e2_view_dialog.c:517 e2p_crypt.c:1579 e2p_crypt.c:1904
 #, c-format
 msgid "Cannot read '%s'"
 msgstr "Невозможно прочитать '%s'"
 
-#: e2_view_dialog.c:503
+#: e2_view_dialog.c:534
 #, c-format
 msgid "'%s' is a directory"
 msgstr "'%s' является каталогом"
 
-#: e2_view_dialog.c:534
+#: e2_view_dialog.c:577
 #, c-format
 msgid "Cannot read %s"
 msgstr "Невозможно прочитать '%s'"
 
-#: e2_view_dialog.c:589
+#: e2_view_dialog.c:632
 #, c-format
 msgid "Encoding conversion command '%s' failed"
 msgstr "Команда преобразования кодировки '%s' не выполнена"
 
-#: e2_view_dialog.c:642
+#: e2_view_dialog.c:685
 #, c-format
 msgid "Conversion from %s encoding failed: \"%s\""
 msgstr "Преобразование кодировки из '%s' не выполнено: \"%s\""
 
-#: e2_view_dialog.c:680
+#: e2_view_dialog.c:723
 msgid "choose file encoding"
 msgstr "выберите кодировку файла"
 
-#: e2_view_dialog.c:693
+#: e2_view_dialog.c:736
 msgid "Select one or more encodings to test"
 msgstr "Выбрать одну или более кодировок для проверки"
 
-#: e2_view_dialog.c:724
+#: e2_view_dialog.c:767
 msgid "_Test"
 msgstr "_Проверка"
 
-#: e2_view_dialog.c:791
+#: e2_view_dialog.c:834
 msgid "The file encoding may be any of the selected ones"
 msgstr "Кодировка файла может быть любой из выбранных"
 
-#: e2_view_dialog.c:811
+#: e2_view_dialog.c:854
 msgid "File encoding cannot be converted from any selected type"
 msgstr "Файл не может быть преобразован ни из одного выбранного типа"
 
-#: e2_view_dialog.c:1068 e2_view_dialog.c:2307
+#: e2_view_dialog.c:1111 e2_view_dialog.c:2351
 #, fuzzy
 msgid "file viewer"
 msgstr "сохранение файла"
 
-#: e2_view_dialog.c:1125
+#: e2_view_dialog.c:1168
 msgid "Finds"
 msgstr "Поиск"
 
-#: e2_view_dialog.c:1139
+#: e2_view_dialog.c:1182
 msgid "If activated, text case does matter when searching"
 msgstr "Если включено, то при поиске будет учитываться регистр букв"
 
-#: e2_view_dialog.c:1139
+#: e2_view_dialog.c:1182
 msgid "_match case"
 msgstr "_учитывать регистр"
 
-#: e2_view_dialog.c:1144
+#: e2_view_dialog.c:1187
 msgid "If activated, matches must be surrounded by word-separator characters"
 msgstr ""
 "Если включено, то искомые слова должны быть окружены символами-разделителями"
 
-#: e2_view_dialog.c:1144
+#: e2_view_dialog.c:1187
 msgid "wh_ole words"
 msgstr "слова _целиком"
 
-#: e2_view_dialog.c:1148
+#: e2_view_dialog.c:1191
 msgid "If activated, searching proceeds toward document start"
 msgstr "Если включено, то поиск будет идти к началу документа"
 
-#: e2_view_dialog.c:1148
+#: e2_view_dialog.c:1191
 msgid "_backward"
 msgstr "_назад"
 
-#: e2_view_dialog.c:1151
+#: e2_view_dialog.c:1194
 msgid "If activated, searching cycles from either end to the other"
 msgstr "Если включено, то поиск будет повторяться по кругу"
 
-#: e2_view_dialog.c:1151
+#: e2_view_dialog.c:1194
 msgid "_loop"
 msgstr "в _цикле"
 
-#: e2_view_dialog.c:1862
+#: e2_view_dialog.c:1906
 msgid "displaying file"
 msgstr "просмотр файла"
 
-#: e2_view_dialog.c:1940
+#: e2_view_dialog.c:1984
 msgid "_wrap"
 msgstr "_перенос строк"
 
-#: e2_view_dialog.c:1953 e2_view_dialog.c:1960
+#: e2_view_dialog.c:1997 e2_view_dialog.c:2004
 msgid "Show the search options bar"
 msgstr "Показать панель поиска"
 
-#: e2_view_dialog.c:1962
+#: e2_view_dialog.c:2006
 msgid "Jump to the bottom of the content"
 msgstr ""
 
-#: e2_view_dialog.c:1964
+#: e2_view_dialog.c:2008
 #, fuzzy
 msgid "Reload the file from disk"
 msgstr "Загрузить редактируемый файл заново"
 
-#: e2_view_dialog.c:2310
+#: e2_view_dialog.c:2354
 msgid "wrap text"
 msgstr "переносить строки"
 
-#: e2_view_dialog.c:2311
+#: e2_view_dialog.c:2355
 msgid "This causes the view window to open with text-wrapping enabled"
 msgstr "Включает перенос строк при открытии окна просмотра файла"
 
-#: e2_view_dialog.c:2314
+#: e2_view_dialog.c:2358
+msgid "large file warning threshold (MB)"
+msgstr ""
+
+#: e2_view_dialog.c:2359
+msgid ""
+"Ask before loading files larger than this size into the internal viewer (1 "
+"MB = 1,048,576 bytes)"
+msgstr ""
+
+#: e2_view_dialog.c:2361
 msgid "syntax highlighting"
 msgstr "подсветка синтаксиса"
 
-#: e2_view_dialog.c:2315
+#: e2_view_dialog.c:2362
 msgid "Automatically detect the language and highlight source code"
 msgstr "Автоматически определять язык и подсвечивать исходный код"
 
-#: e2_view_dialog.c:2317
+#: e2_view_dialog.c:2364
 msgid "automatically jump to the newest line"
 msgstr ""
 
-#: e2_view_dialog.c:2318
+#: e2_view_dialog.c:2365
 msgid "Open and refresh matching files at the end of their content"
 msgstr ""
 
-#: e2_view_dialog.c:2320
+#: e2_view_dialog.c:2367
 #, fuzzy
 msgid "jump-to-end filetypes"
 msgstr "настроить типы файлов"
 
-#: e2_view_dialog.c:2321
+#: e2_view_dialog.c:2368
 msgid ""
 "Semicolon-separated filename patterns, matched case-insensitively (for "
 "example *.log; *.out)"
 msgstr ""
 
-#: e2_view_dialog.c:2324
+#: e2_view_dialog.c:2371
 #, fuzzy
 msgid "initial window width"
 msgstr "ширина окна"
 
-#: e2_view_dialog.c:2325
+#: e2_view_dialog.c:2372
 msgid ""
 "The view window will default to showing this many characters per line (but "
 "the the displayed buttons may make it wider than this)"
@@ -6567,157 +6652,157 @@ msgstr ""
 "Количество символов в строке, которое окно просмотра будет показывать по "
 "умолчанию (но кнопки в окне могут сделать его шире)"
 
-#: e2_view_dialog.c:2329
+#: e2_view_dialog.c:2376
 msgid "window height"
 msgstr "высота окна"
 
-#: e2_view_dialog.c:2330
+#: e2_view_dialog.c:2377
 msgid "The view window will default to showing this many lines of text"
 msgstr "Количество строк, которое окно просмотра будет показывать по умолчанию"
 
-#: e2_view_dialog.c:2337
+#: e2_view_dialog.c:2384
 #, fuzzy
 msgid "text font"
 msgstr "текстовые документы"
 
-#: e2_view_dialog.c:2338
+#: e2_view_dialog.c:2385
 msgid "Font for ordinary text when ASCII art is not detected"
 msgstr ""
 
-#: e2_view_dialog.c:2340
+#: e2_view_dialog.c:2387
 msgid "maximum initial width (characters)"
 msgstr ""
 
-#: e2_view_dialog.c:2341
+#: e2_view_dialog.c:2388
 msgid "Limit the opening width; the text area fills the window when resized"
 msgstr ""
 
-#: e2_view_dialog.c:2342
+#: e2_view_dialog.c:2389
 msgid "detect ASCII art"
 msgstr ""
 
-#: e2_view_dialog.c:2343
+#: e2_view_dialog.c:2390
 msgid ""
 "Detect PC and Amiga artwork and use the bundled IBM VGA or Topaz font "
 "without wrapping"
 msgstr ""
 
-#: e2_view_dialog.c:2344 e2p_find.c:349
+#: e2_view_dialog.c:2391 e2p_find.c:349
 msgid "all files"
 msgstr "все файлы"
 
-#: e2_view_dialog.c:2344
+#: e2_view_dialog.c:2391
 #, fuzzy
 msgid "matching extensions"
 msgstr "расширения"
 
-#: e2_view_dialog.c:2345
+#: e2_view_dialog.c:2392
 msgid "detect ASCII art in"
 msgstr ""
 
-#: e2_view_dialog.c:2346
+#: e2_view_dialog.c:2393
 msgid ""
 "Choose whether to check all files or only files matching the extension list "
 "below"
 msgstr ""
 
-#: e2_view_dialog.c:2348
+#: e2_view_dialog.c:2395
 msgid "ASCII art file extensions"
 msgstr ""
 
-#: e2_view_dialog.c:2349
+#: e2_view_dialog.c:2396
 msgid ""
 "Semicolon-separated filename patterns, matched case-insensitively when "
 "matching extensions is selected (for example *.nfo; *.asc)"
 msgstr ""
 
-#: e2_view_dialog.c:2351
+#: e2_view_dialog.c:2398
 msgid "clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2352
+#: e2_view_dialog.c:2399
 msgid "Open HTTP and HTTPS links with a click; dragging still selects text"
 msgstr ""
 
-#: e2_view_dialog.c:2353
+#: e2_view_dialog.c:2400
 #, fuzzy
 msgid "use custom browser"
 msgstr "использовать особый шрифт"
 
-#: e2_view_dialog.c:2354
+#: e2_view_dialog.c:2401
 msgid ""
 "Use the browser executable below instead of the desktop's default browser"
 msgstr ""
 
-#: e2_view_dialog.c:2355
+#: e2_view_dialog.c:2402
 #, fuzzy
 msgid "browser executable"
 msgstr "запуск для владельца"
 
-#: e2_view_dialog.c:2356
+#: e2_view_dialog.c:2403
 msgid ""
 "Executable name or full path, without arguments; the link is passed as one "
 "argument"
 msgstr ""
 
-#: e2_view_dialog.c:2357
+#: e2_view_dialog.c:2404
 #, fuzzy
 msgid "show line numbers"
 msgstr "показывать значки в меню"
 
-#: e2_view_dialog.c:2358
+#: e2_view_dialog.c:2405
 msgid "Show logical line numbers beside the text; copied text is unchanged"
 msgstr ""
 
-#: e2_view_dialog.c:2359
+#: e2_view_dialog.c:2406
 #, fuzzy
 msgid "foreground color"
 msgstr "цвет фона"
 
-#: e2_view_dialog.c:2360
+#: e2_view_dialog.c:2407
 msgid "Text and line-number color"
 msgstr ""
 
-#: e2_view_dialog.c:2362
+#: e2_view_dialog.c:2409
 #, fuzzy
 msgid "Background color of the file viewer"
 msgstr "Цвет фона, исползуемый вместо цвета из темы"
 
-#: e2_view_dialog.c:2363
+#: e2_view_dialog.c:2410
 #, fuzzy
 msgid "link color"
 msgstr "цвет подсветки"
 
-#: e2_view_dialog.c:2364
+#: e2_view_dialog.c:2411
 msgid "Color of clickable hyperlinks"
 msgstr ""
 
-#: e2_view_dialog.c:2366
+#: e2_view_dialog.c:2413
 msgid "case sensitive searches"
 msgstr "поиск с учётом регистра"
 
-#: e2_view_dialog.c:2367
+#: e2_view_dialog.c:2414
 msgid ""
 "This causes the view window search-bar to first open with case-sensitive "
 "searching enabled"
 msgstr "Включает поиск с учётом регистра в окне просмотра"
 
-#: e2_view_dialog.c:2371
+#: e2_view_dialog.c:2418
 msgid "show last search string"
 msgstr "показывать последнюю строку поиска"
 
-#: e2_view_dialog.c:2372
+#: e2_view_dialog.c:2419
 msgid ""
 "This shows the last search-string in the entry field, when the view window "
 "search-bar is displayed"
 msgstr ""
 "Включает показ предыдущей строки поиска при отображении окна просмотра файла"
 
-#: e2_view_dialog.c:2376
+#: e2_view_dialog.c:2423
 msgid "keep search history"
 msgstr "хранить историю поиска"
 
-#: e2_view_dialog.c:2377
+#: e2_view_dialog.c:2424
 msgid "This causes search strings to be remembered between sessions"
 msgstr "Включает запоминание строк поиска между запусками программы"
 
@@ -6752,30 +6837,30 @@ msgstr ""
 msgid "Override encoding detection for this file"
 msgstr ""
 
-#: e2_window.c:1285
+#: e2_window.c:1286
 #, c-format
 msgid "displayed & %d concealed "
 msgstr "показанных и %d скрытых "
 
-#: e2_window.c:1288
+#: e2_window.c:1289
 #, c-format
 msgid "%s%d selected item(s) of %d %sin %s"
 msgstr "%s%d элементов выбраны из %d %sв %s"
 
 # It seems, I don't need to translate.
-#: e2_window.c:1898
+#: e2_window.c:1901
 msgid "WhoAmI"
 msgstr "WhoAmI"
 
-#: e2p_clipnames.c:119
+#: e2p_clipnames.c:179
 msgid "copy_name"
 msgstr "скопировать_имя"
 
-#: e2p_clipnames.c:120
+#: e2p_clipnames.c:180
 msgid "Copy _names"
 msgstr "Скопировать _имена"
 
-#: e2p_clipnames.c:121
+#: e2p_clipnames.c:181
 msgid "Copy path or name of each selected item to the clipboard"
 msgstr "Скопировать путь или имя каждого выбранного элемента в буфер обмена"
 
@@ -7300,7 +7385,7 @@ msgstr "год(лет)"
 msgid "Find items:"
 msgstr "Искать файлы:"
 
-#: e2p_find.c:3158 e2p_rename.c:1774
+#: e2p_find.c:3158 e2p_rename.c:1793
 msgid "any_where"
 msgstr "_везде"
 
@@ -7308,19 +7393,19 @@ msgstr "_везде"
 msgid "in _trash"
 msgstr "в _корзине"
 
-#: e2p_find.c:3164 e2p_rename.c:1778
+#: e2p_find.c:3164 e2p_rename.c:1797
 msgid "in _active directory"
 msgstr "в _активном каталоге"
 
-#: e2p_find.c:3172 e2p_rename.c:1780
+#: e2p_find.c:3172 e2p_rename.c:1799
 msgid "in _other directory"
 msgstr "в _другом каталоге"
 
-#: e2p_find.c:3181 e2p_rename.c:1791
+#: e2p_find.c:3181 e2p_rename.c:1810
 msgid "in _directory"
 msgstr "в катало_ге"
 
-#: e2p_find.c:3182 e2p_rename.c:1361
+#: e2p_find.c:3182 e2p_rename.c:1380
 msgid "Choose directory"
 msgstr "Выберите каталог"
 
@@ -7620,7 +7705,7 @@ msgstr "Посмотреть советы по пользованию поиск
 msgid "Clear all search parameters"
 msgstr "Сбросить все параметры поиска"
 
-#: e2p_find.c:4235 e2p_rename.c:1927
+#: e2p_find.c:4235 e2p_rename.c:1946
 msgid "Stop the current search"
 msgstr "Остановить поиск"
 
@@ -7741,33 +7826,33 @@ msgstr "_Упаковать…"
 msgid "Build an archive containing the selected items"
 msgstr "Создать архив, содержащий выделенные элементы"
 
-#: e2p_rename.c:793
+#: e2p_rename.c:801
 msgid "No current name pattern is specified"
 msgstr "Не указан шаблон текущих имён файлов"
 
-#: e2p_rename.c:812
+#: e2p_rename.c:820
 msgid "No replacement name pattern is specified"
 msgstr "Не указан шаблон замены названий файлов"
 
-#: e2p_rename.c:820
+#: e2p_rename.c:828
 msgid "Replacement name pattern cannot have wildcard(s)"
 msgstr "Шаблон замен названий файлов не может содержать символы '?' и '*'"
 
-#: e2p_rename.c:962
+#: e2p_rename.c:976
 #, c-format
 msgid "Error in regular expression %s"
 msgstr "Ошибка в регулярном выражении %s"
 
-#: e2p_rename.c:1029
+#: e2p_rename.c:1044
 #, c-format
 msgid "Cannot find anything which matches %s"
 msgstr "Невозможно найти ничего совпадающего с %s"
 
-#: e2p_rename.c:1119 e2p_rename.c:1936
+#: e2p_rename.c:1136 e2p_rename.c:1955
 msgid "_Rename"
 msgstr "_Переименовать"
 
-#: e2p_rename.c:1192
+#: e2p_rename.c:1209
 #, c-format
 msgid ""
 "Rename\n"
@@ -7782,7 +7867,7 @@ msgstr ""
 "<b>%s</b> (который уже существует)\n"
 "в %s"
 
-#: e2p_rename.c:1193
+#: e2p_rename.c:1210
 #, c-format
 msgid ""
 "Rename\n"
@@ -7797,68 +7882,68 @@ msgstr ""
 "<b>%s</b>\n"
 "в %s"
 
-#: e2p_rename.c:1250
+#: e2p_rename.c:1267
 #, c-format
 msgid "Renamed %s to %s in %s"
 msgstr "Переименовано %s в %s в %s"
 
-#: e2p_rename.c:1763
+#: e2p_rename.c:1782
 msgid "rename items"
 msgstr "переименование файлов"
 
-#: e2p_rename.c:1773
+#: e2p_rename.c:1792
 msgid "Search for items:"
 msgstr "Искать элементы:"
 
-#: e2p_rename.c:1847
+#: e2p_rename.c:1866
 msgid "R_ecurse subdirectories"
 msgstr "В_ложенные каталоги"
 
-#: e2p_rename.c:1852
+#: e2p_rename.c:1871
 msgid "_Selected items"
 msgstr "_Выбранные элементы"
 
-#: e2p_rename.c:1856
+#: e2p_rename.c:1875
 msgid "Match _exact/wildcard"
 msgstr "Искать _точно/шаблон"
 
-#: e2p_rename.c:1858
+#: e2p_rename.c:1877
 msgid "Match regular e_xpression"
 msgstr "Искать регулярное _выражение"
 
-#: e2p_rename.c:1863
+#: e2p_rename.c:1882
 msgid "Current name is like this:"
 msgstr "Текущее имя совпадает с:"
 
-#: e2p_rename.c:1897
+#: e2p_rename.c:1916
 msgid "New name is _upper case"
 msgstr "Новое имя в _верхнем регистре"
 
-#: e2p_rename.c:1899
+#: e2p_rename.c:1918
 msgid "New name is _lower case"
 msgstr "Новое имя в _нижнем регистре"
 
-#: e2p_rename.c:1901
+#: e2p_rename.c:1920
 msgid "_New name is like this:"
 msgstr "_Новое имя совпадает с:"
 
-#: e2p_rename.c:1919
+#: e2p_rename.c:1938
 msgid "Con_firm before each rename"
 msgstr "_Подтверждение перед каждым переименованием"
 
-#: e2p_rename.c:1926
+#: e2p_rename.c:1945
 msgid "Get advice on rename options"
 msgstr "Посмотреть советы по параметрам"
 
-#: e2p_rename.c:1937
+#: e2p_rename.c:1956
 msgid "Begin renaming"
 msgstr "Начать переименование"
 
-#: e2p_rename.c:1973
+#: e2p_rename.c:1992
 msgid "renext"
 msgstr "расширенное_переименование"
 
-#: e2p_rename.c:1975
+#: e2p_rename.c:1994
 msgid "Rename items, using wildcards or regular-expressions"
 msgstr "Переименовать элементы, используя шаблоны или регулярные выражения"
 
@@ -8099,48 +8184,48 @@ msgstr "Изменён"
 msgid "Inode Changed"
 msgstr "Создан"
 
-#: e2p_timeset.c:1024
+#: e2p_timeset.c:1025
 #, c-format
 msgid "You do not have authority to change time(s) for %s"
 msgstr "У вас нет прав для изменения времени для %s"
 
-#: e2p_timeset.c:1126
+#: e2p_timeset.c:1127
 msgid "timeset"
 msgstr "изменить_время"
 
-#: e2p_timeset.c:1127
+#: e2p_timeset.c:1128
 msgid "Change _times.."
 msgstr "Изменить _время…"
 
-#: e2p_timeset.c:1128
+#: e2p_timeset.c:1129
 msgid "Change any of the time properties of selected items"
 msgstr "Изменить любые параметры времени у выбранных элементов"
 
-#: e2p_unpack.c:764
+#: e2p_unpack.c:765
 msgid "What do you want to do with the unpacked items ?"
 msgstr "Что вы хотите сделать с распакованными элементами?"
 
-#: e2p_unpack.c:772
+#: e2p_unpack.c:773
 msgid "Re_pack"
 msgstr "_Упаковать"
 
-#: e2p_unpack.c:775
+#: e2p_unpack.c:776
 msgid "_Retain"
 msgstr "_Оставить"
 
-#: e2p_unpack.c:858
+#: e2p_unpack.c:859
 msgid "Selected item is not a supported archive"
 msgstr "Выбранный элемент не является поддерживаемым архивом"
 
-#: e2p_unpack.c:875
+#: e2p_unpack.c:876
 msgid "Recursive unpack is not supported"
 msgstr "Распаковка вложенных каталогов не поддерживается"
 
-#: e2p_unpack.c:978
+#: e2p_unpack.c:979
 msgid "unpack_with_plugin"
 msgstr "распаковать_модулем"
 
-#: e2p_unpack.c:985
+#: e2p_unpack.c:986
 msgid "Unpack archive file into a temporary directory"
 msgstr "Распаковать архив во временный каталог"
 
