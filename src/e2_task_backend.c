@@ -853,6 +853,16 @@ static gboolean _e2_task_backend_mkdir1 (VPATH *dest, mode_t mode)
 	return TRUE;
 }
 /**
+@brief check whether @a localpath is a directory, not a link to one
+@param localpath virtual path with localised absolute path of item to check
+@return TRUE if @a localpath is a real directory
+*/
+static gboolean _e2_task_backend_is_realdir (VPATH *localpath)
+{
+	struct stat sb;
+	return (!e2_fs_lstat (localpath, &sb E2_ERR_NONE()) && S_ISDIR (sb.st_mode));
+}
+/**
 @brief check whether is ok to overwrite @a dest
 @param src virtual path with localised absolute path of item to copy/move
 @param dest virtual path with localised absolute path existing item to be overwritten
@@ -975,6 +985,16 @@ static E2_TwResult _e2_task_twcb_copy (VPATH *localpath,
 				&& e2_fs_access2 (dest E2_ERR_PTR()) == 0)	//destination item exists already
 #endif
 			{
+				if (user_data->taskmode & E2_FTM_KEEP)
+				{	//enter only a real dir, keep any other existing item
+#ifdef E2_VFS
+					if (!_e2_task_backend_is_realdir (&ddata))
+#else
+					if (!_e2_task_backend_is_realdir (dest))
+#endif
+						retval |= E2TW_SKIPSUB;
+					break;
+				}
 #ifdef E2_VFS
 				if (e2_fs_is_dir3 (&ddata E2_ERR_PTR())) //destination is a dir also
 #else
@@ -1031,6 +1051,16 @@ static E2_TwResult _e2_task_twcb_copy (VPATH *localpath,
 				&& e2_fs_access2 (dest E2_ERR_PTR()) == 0)	//destination item exists already
 #endif
 			{
+				if (user_data->taskmode & E2_FTM_KEEP)
+				{	//keep the existing item, an existing dir misses the contents
+#ifdef E2_VFS
+					if (_e2_task_backend_is_realdir (&ddata))
+#else
+					if (_e2_task_backend_is_realdir (dest))
+#endif
+						retval = E2TW_FIXME;
+					break;
+				}
 #ifdef E2_VFS
 				if (e2_fs_is_dir3 (&ddata E2_ERR_PTR())) //destination is a dir also
 #else
@@ -1087,6 +1117,14 @@ static E2_TwResult _e2_task_twcb_copy (VPATH *localpath,
 		case E2TW_F:  //file
 		case E2TW_SL:  //link
 		case E2TW_SLN:  //bad link
+			if ((user_data->taskmode & (E2_FTM_MERGE | E2_FTM_KEEP))
+					== (E2_FTM_MERGE | E2_FTM_KEEP)	//keep existing items
+#ifdef E2_VFS
+				&& e2_fs_access2 (&ddata E2_ERR_NONE()) == 0)
+#else
+				&& e2_fs_access2 (dest E2_ERR_NONE()) == 0)
+#endif
+				break;
 			if ((user_data->taskmode & E2_FTM_MERGE) //doing a merge-copy
 				&& (user_data->taskmode & E2_FTM_CHECK)	//confirm overwrite
 #ifdef E2_VFS
@@ -1299,10 +1337,12 @@ gboolean e2_task_backend_copy (VPATH *src, VPATH *dest, E2_FileTaskMode mode)
 #endif
 			if (data.continued_after_problem)
 			{
+				//a merge destination is the user's existing dir, leave its name
+				if (!(mode & E2_FTM_MERGE) &&
 #ifdef E2_VFS
-				if (!e2_fs_access2 (&tdata E2_ERR_NONE()))
+					!e2_fs_access2 (&tdata E2_ERR_NONE()))
 #else
-				if (!e2_fs_access2 (data.newroot E2_ERR_NONE()))
+					!e2_fs_access2 (data.newroot E2_ERR_NONE()))
 #endif
 				{
 					gchar *temp2, *temp3;
@@ -1419,6 +1459,65 @@ gboolean e2_task_backend_move (VPATH *src, VPATH *dest)
 	if (temp != VPSTR(dest))
 		g_free (temp);
 	return TRUE;
+}
+/**
+@brief move the contents of dir @a src into the existing dir @a dest
+Each item missing from @a dest is moved there. Where both dirs have a dir (not
+a link to one) with the same name, that is merged in the same way. Any other
+item which exists in @a dest is kept there, and the source item stays in @a src.
+@a src is removed if it ends up empty.
+@param src localised string, absolute path of dir whose contents are to be moved
+@param dest localised string, absolute path of existing dir to receive them
+@return TRUE unless some item could not be moved (kept items are not failures)
+*/
+gboolean e2_task_backend_move_merge (VPATH *src, VPATH *dest)
+{
+	if (e2_fs_mount_is_mountpoint (src))
+		return FALSE;
+
+	GList *member, *entries = (GList *)e2_fs_dir_foreach (src, E2_DIRWATCH_NO,
+		NULL, NULL, NULL E2_ERR_NONE());
+	if (E2DREAD_FAILED (entries))
+		return (e2_fs_error_simple (_("Cannot open directory %s"), src));
+
+	gboolean retval = TRUE;
+	GString *s = g_string_sized_new (PATH_MAX);
+	GString *d = g_string_sized_new (PATH_MAX);
+#ifdef E2_VFS
+	VPATH sdata = { NULL, src->spacedata };
+	VPATH ddata = { NULL, dest->spacedata };
+#endif
+	for (member = entries; member != NULL; member = member->next)
+	{
+		const gchar *name = (const gchar *)member->data;
+		if (!strcmp (name, ".."))
+			continue;
+		g_string_printf (s, "%s"G_DIR_SEPARATOR_S"%s", VPSTR(src), name);
+		g_string_printf (d, "%s"G_DIR_SEPARATOR_S"%s", VPSTR(dest), name);
+#ifdef E2_VFS
+		sdata.path = s->str;
+		ddata.path = d->str;
+		if (e2_fs_access2 (&ddata E2_ERR_NONE()) != 0)	//missing from dest
+			retval = e2_task_backend_move (&sdata, &ddata) && retval;
+		else if (_e2_task_backend_is_realdir (&sdata)
+			&& _e2_task_backend_is_realdir (&ddata))
+			retval = e2_task_backend_move_merge (&sdata, &ddata) && retval;
+#else
+		if (e2_fs_access2 (d->str E2_ERR_NONE()) != 0)	//missing from dest
+			retval = e2_task_backend_move (s->str, d->str) && retval;
+		else if (_e2_task_backend_is_realdir (s->str)
+			&& _e2_task_backend_is_realdir (d->str))
+			retval = e2_task_backend_move_merge (s->str, d->str) && retval;
+#endif
+		//otherwise keep the existing item
+	}
+	e2_list_free_with_data (&entries);
+	g_string_free (s, TRUE);
+	g_string_free (d, TRUE);
+
+	//fails if anything was kept or not moved, the dir is then retained
+	e2_fs_rmdir (src E2_ERR_NONE());
+	return retval;
 }
 /**
 @brief create soft link named @a name to @a target

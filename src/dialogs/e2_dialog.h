@@ -63,7 +63,9 @@ typedef enum
 	YES,
 	YES_TO_ALL,
 	NO,
-	NO_TO_ALL
+	NO_TO_ALL,
+	KEEP_ALL,	//keep this and every later existing item
+	MERGE_ALL	//as KEEP_ALL, but merge the contents of existing dirs
 } DialogButtons;
 
 typedef enum
@@ -72,6 +74,8 @@ typedef enum
 	YESALL = 1,
 	NOALL  = 1 << 1,
 	BOTHALL= 1 << 2,
+	KEEPALL= 1 << 3,	//offer to keep all existing items
+	MERGEALL= 1 << 4,	//offer to keep existing items and merge existing dirs
 	PERMITTED = 1 << 6 //add "no permission" label to dialog and adjust buttons accordingly
 } OW_ButtonFlags;
 

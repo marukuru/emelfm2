@@ -1713,6 +1713,53 @@ static gboolean _e2_task_count_recursive (VPATH *sdir_local, GPtrArray *names_lo
 	return (items > 1);
 }
 /**
+@brief check whether both @a src and @a dest are directories, not links to them
+@param src virtual path with localised path of source item
+@param dest virtual path with localised path of existing destination item
+@return TRUE if a merge of @a src into @a dest is possible
+*/
+static gboolean _e2_task_both_dirs (VPATH *src, VPATH *dest)
+{
+	struct stat sb;
+	return (!e2_fs_lstat (src, &sb E2_ERR_NONE()) && S_ISDIR (sb.st_mode)
+		&& !e2_fs_lstat (dest, &sb E2_ERR_NONE()) && S_ISDIR (sb.st_mode));
+}
+/**
+@brief after the user chose Merge, copy items missing from existing dir @a dest
+Nothing is done unless both @a src and @a dest are dirs. Existing items in
+@a dest are kept, without asking.
+@param src virtual path with localised path of source item
+@param dest virtual path with localised path of existing destination item
+@param mode flags for the copy task
+
+@return
+*/
+static void _e2_task_copy_merge_kept (VPATH *src, VPATH *dest, E2_FileTaskMode mode)
+{
+	if (_e2_task_both_dirs (src, dest))
+		e2_task_backend_copy (src, dest,
+			(mode | E2_FTM_MERGE | E2_FTM_KEEP) & ~E2_FTM_CHECK);
+}
+/**
+@brief after the user chose Merge, move items missing from existing dir @a ddata
+Nothing is done unless both @a sdata and @a ddata are dirs. Existing items in
+@a ddata are kept, without asking.
+@param src string with localised path of source item, as for @a sdata
+@param sdata virtual path with localised path of source item
+@param ddata virtual path with localised path of existing destination item
+
+@return FALSE if some item could not be moved
+*/
+static gboolean _e2_task_move_merge_kept (GString *src, VPATH *sdata, VPATH *ddata)
+{
+	if (!_e2_task_both_dirs (sdata, ddata))
+		return TRUE;	//the existing item is kept
+	gboolean success = e2_task_backend_move_merge (sdata, ddata);
+	if (e2_fs_access2 (sdata E2_ERR_NONE()) != 0)	//everything moved, src removed
+		_e2_task_update_trash_info (src, NULL);
+	return success;
+}
+/**
 @brief check whether a move|copy task would put a dir into any of its own descendants
 @param srcpath local path of source item
 @param destpath local path of source item
@@ -1886,7 +1933,11 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 #endif
 		: names->len > 1;
 	}
-	OW_ButtonFlags extras = (multisrc) ? BOTHALL : NONE;
+	OW_ButtonFlags extras = ((multisrc) ? BOTHALL : NONE) | KEEPALL | MERGEALL;
+	//after Keep all or Merge, existing items are kept without asking
+	gboolean keep_all = FALSE;
+	//after Merge, existing dirs also get their missing items
+	gboolean merge_all = FALSE;
 
 	e2_task_advise ();
 #ifdef E2_REFRESH_DEBUG
@@ -1905,6 +1956,12 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 		ddata.path = dest->str;
 		if (_e2_task_circular (&sdata, &ddata))
 			continue;
+		if (keep_all && e2_fs_access2 (&ddata E2_ERR_NONE()) == 0)
+		{
+			if (merge_all)
+				_e2_task_copy_merge_kept (&sdata, &ddata, mode);
+			continue;
+		}
 		if ((!(mode & E2_FTM_MERGE)	//normal copy
 				|| !e2_fs_is_dir3 (&sdata E2_ERR_NONE())
 				|| !e2_fs_is_dir3 (&ddata E2_ERR_NONE())	//not merging 2 dirs
@@ -1914,6 +1971,12 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 #else
 		if (_e2_task_circular (src->str, dest->str))
 			continue;
+		if (keep_all && e2_fs_access2 (dest->str E2_ERR_NONE()) == 0)
+		{
+			if (merge_all)
+				_e2_task_copy_merge_kept (src->str, dest->str, mode);
+			continue;
+		}
 		if ((!(mode & E2_FTM_MERGE)	//normal copy
 				|| !e2_fs_is_dir3 (src->str E2_ERR_NONE())
 				|| !e2_fs_is_dir3 (dest->str E2_ERR_NONE())	//not merging 2 dirs
@@ -1933,6 +1996,21 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 			*qed->status = E2_TASK_RUNNING;
 			switch (result)
 			{
+				case MERGE_ALL:
+					merge_all = TRUE;
+				case KEEP_ALL:
+					keep_all = TRUE;
+					if (mode & E2_FTM_MERGE)
+						merge_all = TRUE;	//this task merges dirs anyway
+					if (merge_all)
+						_e2_task_copy_merge_kept (
+#ifdef E2_VFS
+							&sdata, &ddata,
+#else
+							src->str, dest->str,
+#endif
+							mode);
+					break;
 				case YES_TO_ALL:
 					check = FALSE;
 				case OK:
@@ -2434,7 +2512,11 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 	;
 	//setup for tailoring over-write dialog
 	gboolean multisrc = (check) ? names->len > 1 : FALSE;
-	OW_ButtonFlags extras = (multisrc) ? BOTHALL : NONE;
+	OW_ButtonFlags extras = ((multisrc) ? BOTHALL : NONE) | KEEPALL | MERGEALL;
+	//after Keep all or Merge, existing items are kept without asking
+	gboolean keep_all = FALSE;
+	//after Merge, existing dirs also get their missing items
+	gboolean merge_all = FALSE;
 
 	e2_task_advise ();
 	e2_filestore_disable_refresh ();  //avoid pauses in the move process
@@ -2470,8 +2552,20 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 		}
 #ifdef E2_VFS
 		ddata.path = dest->str;
+		if (keep_all && e2_fs_access2 (&ddata E2_ERR_NONE()) == 0)
+		{
+			if (merge_all)
+				retval = _e2_task_move_merge_kept (src, &sdata, &ddata) && retval;
+			continue;
+		}
 		if (check && e2_fs_access2 (&ddata E2_ERR_NONE()) == 0)
 #else
+		if (keep_all && e2_fs_access2 (dest->str E2_ERR_NONE()) == 0)
+		{
+			if (merge_all)
+				retval = _e2_task_move_merge_kept (src, src->str, dest->str) && retval;
+			continue;
+		}
 		if (check && e2_fs_access2 (dest->str E2_ERR_NONE()) == 0)
 #endif
 		{
@@ -2486,6 +2580,17 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 			*qed->status = E2_TASK_RUNNING;
 			switch (result)
 			{
+				case MERGE_ALL:
+					merge_all = TRUE;
+					retval = _e2_task_move_merge_kept (src,
+#ifdef E2_VFS
+						&sdata, &ddata) && retval;
+#else
+						src->str, dest->str) && retval;
+#endif
+				case KEEP_ALL:
+					keep_all = TRUE;
+					break;
 				case YES_TO_ALL:
 					check = FALSE;
 				case OK:

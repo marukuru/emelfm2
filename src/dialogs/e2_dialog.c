@@ -310,6 +310,10 @@ DialogButtons e2_dialog_response_decode (gint response)
 			return CANCEL;
 		case E2_RESPONSE_APPLYTOALL:
 			return YES_TO_ALL;
+		case E2_RESPONSE_KEEPALL:
+			return KEEP_ALL;
+		case E2_RESPONSE_MERGE:
+			return MERGE_ALL;
 		default:
 			return NO_TO_ALL;
 	}
@@ -1606,6 +1610,8 @@ DialogButtons e2_dialog_delete_check (VPATH *localpath, gboolean multi,
 /**
 @brief dialog for overwrite check
 Assumes that @a dlocal (at least) exists, expects BGL open/off.
+With KEEPALL or MERGEALL in @a extras, KEEP_ALL or MERGE_ALL may be returned.
+Merging is offered for multiple items, or when both items are directories.
 @param slocal virtual path with localised string for source-item, or NULL for no date-check
 @param dlocal virtual path with localised string for destination-item
 @param extras flags for which buttons to show
@@ -1654,11 +1660,15 @@ DialogButtons e2_dialog_ow_check (VPATH *slocal, VPATH *dlocal, OW_ButtonFlags e
 	if (type == NULL)
 		type = _("existing");
 
+	//merging needs real dirs, not links to them
+	gboolean ddir = (!e2_fs_lstat (dlocal, &sb E2_ERR_NONE())	//should never fail
+		&& S_ISDIR (sb.st_mode));
+	gboolean mergeable = (ddir && slocal != NULL
+		&& !e2_fs_lstat (slocal, &sb E2_ERR_NONE()) && S_ISDIR (sb.st_mode));
+
 	CLOSEBGL
 
-	if (!e2_fs_lstat (dlocal, &sb E2_ERR_NONE())	//should never fail
-		&& S_ISDIR (sb.st_mode)
-		&& !S_ISLNK (sb.st_mode))
+	if (ddir)
 	{
 		dialog = e2_dialog_create (_("confirm"), STOCK_NAME_DIALOG_WARNING, DUMMY_RESPONSE_CB, NULL, _("Remove all contents of %s\n<b>%s</b> ?"), type, public);
 	}
@@ -1700,6 +1710,25 @@ DialogButtons e2_dialog_ow_check (VPATH *slocal, VPATH *dlocal, OW_ButtonFlags e
 
 	e2_dialog_add_defined_button (dialog, &stop_btn);
 	e2_dialog_add_defined_button (dialog, &all_btn);
+
+	if (extras & MERGEALL)
+	{
+		E2_Button merge_btn = { _("_Merge"), STOCK_NAME_DIRECTORY,
+			_("Keep existing items, and add only missing items to existing directories, without further confirmation"),
+			E2_BTN_TIPPED, E2_BTN_TIPPED, E2_RESPONSE_MERGE };
+		if (!((extras & BOTHALL) || mergeable))
+			merge_btn.showflags |= E2_BTN_GREY;
+		e2_dialog_add_defined_button (dialog, &merge_btn);
+	}
+	if (extras & KEEPALL)
+	{
+		E2_Button keep_btn = { _("Keep a_ll"), STOCK_NAME_NO,
+			_("Keep this and any other existing item without further confirmation"),
+			E2_BTN_TIPPED, E2_BTN_TIPPED, E2_RESPONSE_KEEPALL };
+		if (!(extras & BOTHALL))
+			keep_btn.showflags |= E2_BTN_GREY;
+		e2_dialog_add_defined_button (dialog, &keep_btn);
+	}
 
 	e2_button_derive (&stop_btn, &E2_BUTTON_NO, BTN_NO_KEEP);
 	//set default button to 'no'

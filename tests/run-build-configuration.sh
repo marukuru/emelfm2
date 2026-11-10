@@ -46,6 +46,7 @@ tests/run-content-drag.sh
 tests/run-directory-context.sh
 tests/run-output-wrap.sh
 tests/run-output-clear-styles.sh
+tests/run-overwrite-choices.sh
 tests/run-pane-tabs.sh
 tests/run-quick-search.sh
 tests/run-viewer-text.sh

@@ -77,6 +77,8 @@ typedef enum
 #define E2_RESPONSE_DISCARD		115
 #define E2_RESPONSE_FIND		116
 #define E2_RESPONSE_MORE		117
+#define E2_RESPONSE_KEEPALL		118	//keep all existing items (overwrite check)
+#define E2_RESPONSE_MERGE		119	//keep existing items, merge existing dirs
 
 #define E2_RESPONSE_USER1		120
 #define E2_RESPONSE_USER2		121

@@ -37,6 +37,7 @@ typedef enum
 	E2_FTM_RENAME   = 1 << 3, //copy-as UNUSED
 	E2_FTM_CHECK    = 1 << 4, //perform backend overwrite checking (used when merging)
 	E2_FTM_PAUSABLE = 1 << 5, //UNUSED check for pause requests during file copy
+	E2_FTM_KEEP     = 1 << 6, //when merging, keep existing items without asking
 	E2_FTM_SAMETIME = 1 << 8, //preserve times of processed items
 	E2_FTM_SAMEACL  = 1 << 9, //preserve ACL's of processed items
 } E2_FileTaskMode;
@@ -229,6 +230,7 @@ gchar *e2_task_system_command (const gchar *command, const gchar *filepath);
 gboolean e2_task_drop (E2_TaskType type, const gchar *destdir, gchar * const *uris);
 gboolean e2_task_backend_copy (VPATH *src, VPATH *dest, E2_FileTaskMode mode);
 gboolean e2_task_backend_move (VPATH *src, VPATH *dest);
+gboolean e2_task_backend_move_merge (VPATH *src, VPATH *dest);
 gboolean e2_task_backend_link (VPATH *target, VPATH *name);
 gboolean e2_task_backend_rename (VPATH *oldsrc, VPATH*newsrc);
 gboolean e2_task_backend_delete (VPATH *localpath);

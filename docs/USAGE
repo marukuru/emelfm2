@@ -191,6 +191,11 @@ Operations (copy, move etc) on item(s) in the active file pane are performed on 
 
 If you want to operate only on the contents of a directory, you must open the directory and select the contents explicitly.
 
+When copying or moving, the over-write confirmation dialog offers Keep (retain this existing item) and Replace, and when several items are processed, also All (replace every existing item) and Cancel. Two further choices apply to the rest of the operation, without further confirmation:
+  Keep all retains this and every other existing item. Items which do not yet exist at the destination are still copied or moved.
+  Merge also retains existing items, but where a directory exists at the destination, its missing contents are added instead. Nested directories are handled the same way, so only items missing from the destination are copied or moved. When moving, retained items stay in the source, and source directories which end up empty are removed. A link to a directory at the destination is retained, never merged into.
+Keep all is offered when several items are processed. Merge is offered then too, or when the single item and its existing counterpart are both directories.
+
 Most such operations are added to a queue, and performed when they reach the head of that queue. This allows such operations to be initiated and performed without blocking the user-interface, when the operation takes some time to complete. Some operations - info, view, view again, edit, edit again, open, open with - are performed independently of the queue.
 
 You can directly rename any allowed item by clicking on its name in a filelist, when the item's row is not selected. In this case, the rename action is not queued.
