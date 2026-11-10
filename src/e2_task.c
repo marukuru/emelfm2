@@ -22,6 +22,7 @@ some functions do not need TreeRowReferences
 */
 
 #include "e2_task.h"
+#include "e2_task_progress.h"
 #include "e2_tray.h"
 #include <string.h>
 #include <pthread.h>
@@ -1945,8 +1946,12 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 #endif
 	e2_filestore_disable_refresh ();  //avoid pauses in the copy process
 
+	E2_TaskProgress *progress = e2_task_progress_new (qed, other_local, FALSE);
+	pthread_cleanup_push ((gpointer)e2_task_progress_free, progress);
 	for (count=0; count < names->len; count++, iterator++)
 	{
+		if (!e2_task_progress_item (progress, count))
+			break;	//abandoned by the user
 		//".." entries filtered when names compiled;
 		g_string_printf (src, "%s%s", curr_local, (*iterator)->filename);  //separator comes with dir
 		g_string_printf (dest, "%s%s", other_local, (*iterator)->filename);
@@ -1994,6 +1999,7 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 #endif
 				extras);
 			*qed->status = E2_TASK_RUNNING;
+			e2_task_progress_answered (progress);
 			switch (result)
 			{
 				case MERGE_ALL:
@@ -2061,6 +2067,7 @@ static gboolean _e2_task_copyQ (E2_ActionTaskData *qed)
 				check = FALSE;
 		}
 	}
+	pthread_cleanup_pop (1);	//end progress reporting
 	g_string_free (src, TRUE);
 	g_string_free (dest, TRUE);
 	e2_window_clear_status_message ();
@@ -2521,8 +2528,12 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 	e2_task_advise ();
 	e2_filestore_disable_refresh ();  //avoid pauses in the move process
 
+	E2_TaskProgress *progress = e2_task_progress_new (qed, other_local, TRUE);
+	pthread_cleanup_push ((gpointer)e2_task_progress_free, progress);
 	for (count=0; count < names->len; count++, iterator++)
 	{
+		if (!e2_task_progress_item (progress, count))
+			break;	//abandoned by the user
 		//".." entries filtered when names compiled
 		g_string_printf (src, "%s%s", curr_local, (*iterator)->filename);  //separator comes with dir
 		g_string_printf (dest, "%s%s", other_local, (*iterator)->filename);
@@ -2578,6 +2589,7 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 #endif
 				extras);
 			*qed->status = E2_TASK_RUNNING;
+			e2_task_progress_answered (progress);
 			switch (result)
 			{
 				case MERGE_ALL:
@@ -2638,6 +2650,7 @@ static gboolean __e2_task_move (E2_ActionTaskData *qed, gchar *trashpath)
 			retval = retval && success;
 		}
 	}
+	pthread_cleanup_pop (1);	//end progress reporting
 	g_string_free (src, TRUE);
 	g_string_free (dest, TRUE);
 	e2_window_clear_status_message ();
@@ -4614,6 +4627,13 @@ void e2_task_actions_register (void)
 		{ g_strconcat(_A(6),".",_A(40),NULL), _e2_task_copy_as, FALSE, E2_ACTION_TYPE_ITEM, 0, },
 		{ g_strconcat(_A(6),".",_A(65),NULL), _e2_task_move, FALSE, E2_ACTION_TYPE_ITEM, 0, },
 		{ g_strconcat(_A(6),".",_A(66),NULL), _e2_task_move_as, FALSE, E2_ACTION_TYPE_ITEM, 0, },
+		//former progress-plugin actions, for existing bindings, toolbars and menus
+		{ g_strconcat(_A(6),".",_("cpbar"),NULL), _e2_task_copy, FALSE, E2_ACTION_TYPE_ITEM,
+			E2_ACTION_EXCLUDE_GENERAL, },
+		{ g_strconcat(_A(6),".",_("cpbar_with_time"),NULL), _e2_task_copy, FALSE, E2_ACTION_TYPE_ITEM,
+			E2_ACTION_EXCLUDE_GENERAL, GINT_TO_POINTER (E2_FTM_SAMETIME), NULL},
+		{ g_strconcat(_A(6),".",_("mvbar"),NULL), _e2_task_move, FALSE, E2_ACTION_TYPE_ITEM,
+			E2_ACTION_EXCLUDE_GENERAL, },
 		{ g_strconcat(_A(6),".",_A(99),NULL), _e2_task_symlink, FALSE, E2_ACTION_TYPE_ITEM, 0, },
 		{ g_strconcat(_A(6),".",_A(100),NULL), _e2_task_symlink_as, FALSE, E2_ACTION_TYPE_ITEM, 0, },
 		{ g_strconcat(_A(6),".",_A(45),NULL), _e2_task_delete, FALSE, E2_ACTION_TYPE_ITEM, 0, },

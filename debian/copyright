@@ -57,8 +57,7 @@ Additional copyrights:
  * src/utils/e2_widget.c
    May contain code from emelFM. Any such code copyright (C) 1999 Michael Clark.
 
- * plugins/e2p_cpbar.c
- * plugins/e2p_mvbar.c
+ * src/e2_task_progress.c (adapted from the former copy and move plugins)
    Portions copyright (C) 2004 Florian Zaehringer <flo.zaehringer@web.de>
    May contain code from emelFM. Any such code copyright (C) 1999 Michael Clark.
 

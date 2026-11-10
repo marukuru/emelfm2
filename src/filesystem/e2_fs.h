@@ -170,6 +170,13 @@ gboolean e2_fs_error_local (const gchar *format, VPATH *local
 );
 gboolean e2_fs_error_simple (const gchar *format, VPATH *local);
 
+/* Per-thread observer of e2_fs_copy_file(). It is called with @a bytes 0 before
+ * the data of @a src is copied, then with the size of each copied block, and
+ * returns FALSE to abandon that copy (the part-copied @a dest is removed). */
+typedef gboolean (*E2_FsCopyMonitor) (VPATH *src, VPATH *dest, guint64 bytes,
+	gpointer data);
+void e2_fs_set_copy_monitor (E2_FsCopyMonitor monitor, gpointer data);
+
 void e2_fs_check_coding (void);
 gboolean e2_fs_ingroup (gid_t gid);
 //formatted file write, used locally for config and cache writing

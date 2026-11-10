@@ -109,7 +109,7 @@ static gboolean unload_plugin (Plugin *p)
 	return ret;
 }
 \endcode \n
-Plugins may have more than one action, which requires some extra detail in the \c init_plugin and \c unload_plugin functions. Refer to the cpbar plugin code for an example of this.
+Plugins may have more than one action, which requires some extra detail in the \c init_plugin and \c unload_plugin functions. Refer to the selmatch plugin code for an example of this.
 */
 /**
 \page plugins plugins
@@ -1677,8 +1677,6 @@ static void _e2_plugins_tree_defaults (E2_OptionSet *set)
 	g_strdup ("true|true||||e2p_pack.so||"),
 	g_strdup ("true|false||||e2p_unpack.so||"),
 	g_strdup ("true|true||||e2p_clipnames.so||"),
-	g_strdup ("false|false||||e2p_copy.so||"),
-	g_strdup ("false|false||||e2p_move.so||"),
 	g_strdup ("false|false||||e2p_timeset.so||"),
 	g_strdup ("false|false||||e2p_dircmp.so||"),
 #ifdef E2_ACL

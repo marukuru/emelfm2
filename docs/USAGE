@@ -196,6 +196,10 @@ When copying or moving, the over-write confirmation dialog offers Keep (retain t
   Merge also retains existing items, but where a directory exists at the destination, its missing contents are added instead. Nested directories are handled the same way, so only items missing from the destination are copied or moved. When moving, retained items stay in the source, and source directories which end up empty are removed. A link to a directory at the destination is retained, never merged into.
 Keep all is offered when several items are processed. Merge is offered then too, or when the single item and its existing counterpart are both directories.
 
+Copying and moving show a progress window when they take more than half a second. It names the file being processed and, except for a move within one filesystem (which just renames items), the amount done. Pause holds the operation until Resume is clicked. Cancel stops it: items already done remain, the item being copied is not left partly copied, and a directory being merged into keeps what was added to it. A move between filesystems copies each item and then deletes its source. Cancelling while an item is being copied leaves that item at its source.
+
+The former copy and move plugins are no longer needed. Their actions file.cpbar, file.cpbar_with_time and file.mvbar run the built-in copy, copy with times and move, so existing key bindings, toolbar buttons and menus keep working.
+
 Most such operations are added to a queue, and performed when they reach the head of that queue. This allows such operations to be initiated and performed without blocking the user-interface, when the operation takes some time to complete. Some operations - info, view, view again, edit, edit again, open, open with - are performed independently of the queue.
 
 You can directly rename any allowed item by clicking on its name in a filelist, when the item's row is not selected. In this case, the rename action is not queued.
@@ -411,10 +415,6 @@ If the chosen action is REMOVE:
 
 Copies selected item(s), each with new name as entered by the user, to the current directory.
 
-[copy plugin]
-
-This offers the possibiitiy of pausing the copy process. Any such pause begins at the completion of the item currently being copied. If that's a directory, all its decendants will be competed before the pause.
-
 [crypt plugin]
 
 Encrypt or decrypts selected files. Encryption is performed using the  Salsa20 algorithm (see www.ecrypt.eu.org/stream/salsa20pf.html). Recursion into directories is possible, if the corresponding option is selected.
@@ -490,10 +490,6 @@ NOTE the action-name for this plugin is (in english) file.foreach. If this actio
 [glob plugin]
 
 Selects items whose name matches specified pattern(s). The selection criteria are the same as filelist filtering criteria.
-
-[move plugin]
-
-This offers the possibiitiy of pausing the move process. Any such pause begins at the completion of the item currently being moved. If that's a directory, all its decendants will be competed before the pause.
 
 [names copy plugin]
 

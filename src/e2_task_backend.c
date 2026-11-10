@@ -30,6 +30,7 @@ These functions are thread-safe, when E2_TREEWALK is defind
 */
 
 #include "e2_task.h"
+#include "e2_task_progress.h"
 #include <string.h>
 #include <pthread.h>
 #include "e2_filetype.h"
@@ -903,6 +904,8 @@ Treewalk is breadth-first, not physical
 static E2_TwResult _e2_task_twcb_copy (VPATH *localpath,
 	const struct stat *statptr, E2_TwStatus status, E2_CopyData *user_data)
 {
+	if (e2_task_progress_stopped ())
+		return E2TW_STOP;	//abandoned by the user
 	E2_TwResult retval = E2TW_CONTINUE;
 	mode_t mode = statptr->st_mode;
 	E2_ERR_DECLARE
@@ -1325,6 +1328,22 @@ gboolean e2_task_backend_copy (VPATH *src, VPATH *dest, E2_FileTaskMode mode)
 			g_list_free (data.dirdata);
 		}
 
+		if (!retval && e2_task_progress_stopped ())
+		{	//abandoned by the user: no part-copy, but a merge keeps what it added
+			if (!(mode & E2_FTM_MERGE))
+			{
+#ifdef E2_VFS
+				VPATH tdata = { data.newroot, dest->spacedata };
+				_e2_task_backend_delete (&tdata E2_ERR_NONE());
+#else
+				_e2_task_backend_delete (data.newroot E2_ERR_NONE());
+#endif
+			}
+			E2_ERR_CLEAR
+			if (data.newroot != VPSTR(dest))
+				g_free (data.newroot);
+			return FALSE;
+		}
 		if (data.continued_after_problem)
 		{
 			e2_fs_error_simple (_("Cannot copy all of %s"), src);
@@ -1431,6 +1450,7 @@ gboolean e2_task_backend_move (VPATH *src, VPATH *dest)
 		if (E2_ERR_IS (EXDEV))
 		{	//have to copy to another device
 			E2_ERR_CLEAR
+			//if the copy is abandoned by the user, src remains intact
 			return ( e2_task_backend_copy (src, dest, E2_FTM_SAMETIME)
 				&& e2_task_backend_delete (src) );
 		}
@@ -1492,6 +1512,8 @@ gboolean e2_task_backend_move_merge (VPATH *src, VPATH *dest)
 		const gchar *name = (const gchar *)member->data;
 		if (!strcmp (name, ".."))
 			continue;
+		if (e2_task_progress_stopped ())
+			break;	//abandoned by the user, the rest stays in src
 		g_string_printf (s, "%s"G_DIR_SEPARATOR_S"%s", VPSTR(src), name);
 		g_string_printf (d, "%s"G_DIR_SEPARATOR_S"%s", VPSTR(dest), name);
 #ifdef E2_VFS

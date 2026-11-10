@@ -2992,9 +2992,26 @@ gint e2_fs_writeflush (gint file_desc)
 		res = 0;
 	return res;
 }
+//observer of copies done by the current thread, see e2_fs_set_copy_monitor()
+static __thread E2_FsCopyMonitor copy_monitor = NULL;
+static __thread gpointer copy_monitor_data = NULL;
+/**
+@brief set or clear the observer of file copies done by the current thread
+This allows progress reporting, pausing or abandoning a copy
+@param monitor the function to call, or NULL
+@param data pointer to data for @a monitor
+
+@return
+*/
+void e2_fs_set_copy_monitor (E2_FsCopyMonitor monitor, gpointer data)
+{
+	copy_monitor = monitor;
+	copy_monitor_data = data;
+}
 /**
 @brief perform a native, blockwise, file copy
-Error messages assume BGL is open
+Error messages assume BGL is open. Any copy monitor set by the current thread
+is informed of progress, and may abandon the copy, without an error message.
 @param vsrc localised string, absolute path of item to copy
 @param src_sb pointer to valid struct stat for @a src
 @param vdest localised string, absolute path of copy destination
@@ -3011,6 +3028,8 @@ gboolean e2_fs_copy_file (VPATH *src, const struct stat *src_sb,
 #endif
 //		struct stat src_sb;
 		struct stat dest_sb;
+		if (copy_monitor != NULL && !copy_monitor (src, dest, 0, copy_monitor_data))
+			return FALSE;
 		E2_ERR_BACKUP (localerr);
 		//CHECKME vfs e2_fs_open|close ever needed for closing while native copying ?
 
@@ -3110,6 +3129,12 @@ gboolean e2_fs_copy_file (VPATH *src, const struct stat *src_sb,
 #endif
 				e2_fs_error_local (_("Error writing file %s"),
 					dest E2_ERR_MSGC());
+				retval = FALSE;
+				break;
+			}
+			if (copy_monitor != NULL
+				&& !copy_monitor (src, dest, (guint64) n_read, copy_monitor_data))
+			{	//abandoned, the part-copied dest is removed below
 				retval = FALSE;
 				break;
 			}
