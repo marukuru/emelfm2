@@ -107,7 +107,9 @@ static gboolean ready (ViewInfo *view)
 
 static gboolean tick (gpointer data)
 {
-    if (!ready (&app.pane1.view) || !ready (&app.pane2.view)) return TRUE;
+    /* The panes can be listed before startup has loaded the filetypes. */
+    if (app.filetypes == NULL || !ready (&app.pane1.view) || !ready (&app.pane2.view))
+        return TRUE;
     CLOSEBGL
     if (result_path == NULL) setup ();
     if (waiting)
