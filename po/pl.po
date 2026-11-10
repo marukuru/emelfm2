@@ -3,7 +3,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emelFM2-0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-26 22:14+0100\n"
+"POT-Creation-Date: 2026-11-10 17:12+0100\n"
 "PO-Revision-Date: 2013-08-18 15:47+0100\n"
 "Last-Translator: Arkadiusz Kowalski <0.akowalski@gmail.com>\n"
 "Language-Team: polski\n"
@@ -244,7 +244,7 @@ msgstr ""
 msgid "complete"
 msgstr ""
 
-#: e2_action.c:1194 e2_task.c:2066
+#: e2_action.c:1194 e2_task.c:2151
 msgid "copy"
 msgstr ""
 
@@ -284,7 +284,7 @@ msgstr ""
 msgid "filetype"
 msgstr ""
 
-#: e2_action.c:1204 e2_task.c:4416 e2p_find.c:4200
+#: e2_action.c:1204 e2_task.c:4534 e2p_find.c:4200
 msgid "find"
 msgstr ""
 
@@ -344,7 +344,7 @@ msgstr ""
 msgid "mountpoints"
 msgstr ""
 
-#: e2_action.c:1220 e2_task.c:2609
+#: e2_action.c:1220 e2_task.c:2727
 msgid "move"
 msgstr ""
 
@@ -400,7 +400,7 @@ msgstr ""
 msgid "refreshsuspend"
 msgstr ""
 
-#: e2_action.c:1234 e2_task.c:3254
+#: e2_action.c:1234 e2_task.c:3372
 msgid "rename"
 msgstr ""
 
@@ -537,7 +537,7 @@ msgid "child"
 msgstr ""
 
 #: e2_action.c:1273 e2_menu.c:851 e2_pane.c:1325 e2_pane.c:1477 e2_pane.c:1873
-#: e2_task.c:2178 e2p_clipnames.c:112
+#: e2_task.c:2263 e2p_clipnames.c:112
 msgid "ctrl"
 msgstr ""
 
@@ -1042,8 +1042,8 @@ msgstr "Czy jesteś pewien, że chcesz usunąć zakładkę"
 msgid "and"
 msgstr "i"
 
-#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1533 e2_dialog.c:1663
-#: e2_dialog.c:1669 e2_dialog.c:1741 e2_dialog.c:1782 e2_edit_dialog.c:782
+#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1537 e2_dialog.c:1673
+#: e2_dialog.c:1679 e2_dialog.c:1770 e2_dialog.c:1811 e2_edit_dialog.c:782
 #: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1523
 #: e2_option_tree.c:1530 e2p_crypt.c:852 e2p_rename.c:1117
 msgid "confirm"
@@ -1117,18 +1117,18 @@ msgstr ""
 msgid "default trash directory"
 msgstr "domyślny kosz"
 
-#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1883 e2_plugins.c:1717
+#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1883 e2_plugins.c:1715
 #: e2_toolbar.c:3520 e2_toolbar.c:3592 e2_toolbar.c:3758
 msgid "Label"
 msgstr "Etykieta"
 
 #: e2_bookmark.c:796 e2_context_menu.c:483 e2_filetype.c:989
-#: e2_filetype_dialog.c:1091 e2_menu.c:1881 e2_plugins.c:1719 e2_toolbar.c:3522
+#: e2_filetype_dialog.c:1091 e2_menu.c:1881 e2_plugins.c:1717 e2_toolbar.c:3522
 #: e2_toolbar.c:3594 e2_toolbar.c:3760
 msgid "Icon"
 msgstr "Ikona"
 
-#: e2_bookmark.c:798 e2_menu.c:1885 e2_plugins.c:1721 e2_toolbar.c:3524
+#: e2_bookmark.c:798 e2_menu.c:1885 e2_plugins.c:1719 e2_toolbar.c:3524
 #: e2_toolbar.c:3596 e2_toolbar.c:3762
 msgid "Tooltip"
 msgstr "Podpowiedź"
@@ -1438,7 +1438,7 @@ msgstr "Nieudane zapisywanie do procesu potomnego: %s"
 msgid "nothing is waiting"
 msgstr "nic nie oczekuje"
 
-#: e2_command.c:2016 e2_task.c:4523
+#: e2_command.c:2016 e2_task.c:4648
 msgid "task"
 msgstr "zadanie"
 
@@ -1987,11 +1987,11 @@ msgstr "_Akcje"
 #: e2_context_menu.c:425 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:734 e2_icons.c:921 e2_icons.c:1174
 #: e2_option_tree_context_menu.c:287 e2_output.c:1802 e2_terminal.c:464
-#: e2_toolbar.c:3485 e2_tree_dialog.c:1200 e2_view_dialog.c:1097 e2p_copy.c:757
+#: e2_toolbar.c:3485 e2_tree_dialog.c:1200 e2_view_dialog.c:1097
 msgid "_Copy"
 msgstr "_Kopiuj"
 
-#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3487 e2p_move.c:809
+#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3487
 msgid "_Move"
 msgstr "_Przenieś"
 
@@ -2202,52 +2202,52 @@ msgstr "Błąd montowania urządzenia: %s"
 msgid "Error unmounting device: %s"
 msgstr "Błąd odmontowywania urządzenia: %s"
 
-#: e2_dialog.c:1017 e2_tree_dialog.c:1675
+#: e2_dialog.c:1021 e2_tree_dialog.c:1675
 msgid "_Hidden"
 msgstr "_Ukryty"
 
-#: e2_dialog.c:1019
+#: e2_dialog.c:1023
 msgid "Toggle display of hidden items"
 msgstr "Zmień sposób wyświetlania ukrytych elementów"
 
-#: e2_dialog.c:1167
+#: e2_dialog.c:1171
 msgid "user input"
 msgstr ""
 
-#: e2_dialog.c:1305
+#: e2_dialog.c:1309
 msgid "You don't have authority to change anything"
 msgstr "Nie masz zezwolenia na zmianę czegokolwiek"
 
-#: e2_dialog.c:1336
+#: e2_dialog.c:1340
 msgid "You don't have authority to do this"
 msgstr "Nie masz wystarczających praw aby to zrobić"
 
-#: e2_dialog.c:1533
+#: e2_dialog.c:1537
 #, c-format
 msgid "Are you sure you want to delete <b>%s</b>?"
 msgstr "Czy jesteś pewien, że chcesz usunąć <b>%s</b>?"
 
-#: e2_dialog.c:1548
+#: e2_dialog.c:1552
 msgid "Delete items without further confirmation"
 msgstr "Usuwaj elementy bez prośby o potwierdzenie"
 
-#: e2_dialog.c:1570
+#: e2_dialog.c:1574
 msgid "Retain this item"
 msgstr "Pozostaw ten element"
 
-#: e2_dialog.c:1644
+#: e2_dialog.c:1650
 msgid "older"
 msgstr "starszy"
 
-#: e2_dialog.c:1646
+#: e2_dialog.c:1652
 msgid "newer"
 msgstr "nowszy"
 
-#: e2_dialog.c:1655
+#: e2_dialog.c:1661
 msgid "existing"
 msgstr "obecny"
 
-#: e2_dialog.c:1663
+#: e2_dialog.c:1673
 #, c-format
 msgid ""
 "Remove all contents of %s\n"
@@ -2256,7 +2256,7 @@ msgstr ""
 "Usunąć całą zawartość %s\n"
 "<b>%s</b> ?"
 
-#: e2_dialog.c:1669
+#: e2_dialog.c:1679
 #, c-format
 msgid ""
 "Overwrite %s <b>%s</b>\n"
@@ -2265,75 +2265,95 @@ msgstr ""
 "Nadpisać %s <b>%s</b>\n"
 "w %s ?"
 
-#: e2_dialog.c:1674
+#: e2_dialog.c:1684
 #, fuzzy
 msgid "Overwrite confirmation"
 msgstr "potwierdzenie"
 
-#: e2_dialog.c:1697
+#: e2_dialog.c:1707
 msgid "Overwrite any existing item without further confirmation"
 msgstr "Nadpisuje każdy istniejący element bez konieczności potwierdzania"
 
-#: e2_dialog.c:1710 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
+#: e2_dialog.c:1716
+msgid "_Merge"
+msgstr ""
+
+#: e2_dialog.c:1717
+#, fuzzy
+msgid ""
+"Keep existing items, and add only missing items to existing directories, "
+"without further confirmation"
+msgstr "Nadpisuje każdy istniejący element bez konieczności potwierdzania"
+
+#: e2_dialog.c:1725
+msgid "Keep a_ll"
+msgstr ""
+
+#: e2_dialog.c:1726
+#, fuzzy
+msgid "Keep this and any other existing item without further confirmation"
+msgstr "Nadpisuje każdy istniejący element bez konieczności potwierdzania"
+
+#: e2_dialog.c:1739 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
 msgid "_Replace"
 msgstr "_Zastąp"
 
-#: e2_dialog.c:1782
+#: e2_dialog.c:1811
 #, c-format
 msgid "%s is taking a long time. Continue waiting ?"
 msgstr "%s zabiera zbyt dużo czasu. Czekać nadal ?"
 
-#: e2_dialog.c:1785
+#: e2_dialog.c:1814
 msgid "_Quiet"
 msgstr "_Cicho"
 
-#: e2_dialog.c:1787
+#: e2_dialog.c:1816
 msgid "Don't ask any more"
 msgstr "Nie pytaj więcej"
 
-#: e2_dialog.c:1793 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
+#: e2_dialog.c:1822 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
 #: e2_icons.c:1256 e2p_find.c:4232 e2p_rename.c:1946
 msgid "_Stop"
 msgstr "_Zatrzymaj"
 
-#: e2_dialog.c:1794
+#: e2_dialog.c:1823
 #, c-format
 msgid "Cancel the %s"
 msgstr "Anuluj %s"
 
-#: e2_dialog.c:1800
+#: e2_dialog.c:1829
 msgid "_Wait"
 msgstr "_Czekaj"
 
-#: e2_dialog.c:1801
+#: e2_dialog.c:1830
 msgid "Wait some more"
 msgstr "Czeka trochę dłużej"
 
-#: e2_dialog.c:1823
+#: e2_dialog.c:1852
 msgid "center"
 msgstr "centruj"
 
-#: e2_dialog.c:1823
+#: e2_dialog.c:1852
 msgid "mouse"
 msgstr "mysz"
 
-#: e2_dialog.c:1823 e2_output.c:4424 e2_toolbar.c:3407
+#: e2_dialog.c:1852 e2_output.c:4424 e2_toolbar.c:3407
 msgid "none"
 msgstr "brak"
 
-#: e2_dialog.c:1824
+#: e2_dialog.c:1853
 msgid "always center"
 msgstr "zawsze centruj"
 
-#: e2_dialog.c:1824
+#: e2_dialog.c:1853
 msgid "center on parent"
 msgstr "centruj na rodzicu"
 
-#: e2_dialog.c:1826
+#: e2_dialog.c:1855
 msgid "dialog position"
 msgstr "pozycja okna dialogowego"
 
-#: e2_dialog.c:1827
+#: e2_dialog.c:1856
 msgid "This determines the position where dialog windows will pop up"
 msgstr "Określa pozycję pojawiających się okien dialogowych"
 
@@ -2760,12 +2780,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Brak dostępu do %s, przechodzę do %s"
 
 #: e2_filetype.c:124 e2_filetype.c:500 e2_filetype.c:700 e2_menu.c:1733
-#: e2_output.c:1460 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_output.c:1460 e2_task.c:4368 e2_task_backend.c:1990
 msgid "<directory>"
 msgstr "<katalog>"
 
 #: e2_filetype.c:125 e2_filetype.c:506 e2_filetype.c:708 e2_menu.c:1814
-#: e2_output.c:1508 e2_task.c:4256
+#: e2_output.c:1508 e2_task.c:4374
 msgid "<executable>"
 msgstr "<uruchamialny>"
 
@@ -3124,7 +3144,7 @@ msgid "Enter a command with which to open the file"
 msgstr "Wprowadź komendę za pomocą której mam otworzyć plik"
 
 #: e2_fileview.c:132 e2_ownership_dialog.c:345 e2_permissions_dialog.c:327
-#: e2_plugins.c:1724 e2p_crypt.c:4047 e2p_timeset.c:802
+#: e2_plugins.c:1722 e2p_crypt.c:4047 e2p_timeset.c:802
 msgid "Filename"
 msgstr "Nazwa pliku"
 
@@ -3206,14 +3226,14 @@ msgstr "Nie mogę otworzyć '%s' dla zapisu - %s"
 msgid "Error writing file '%s' - %s"
 msgstr "Błąd zapisu pliku '%s' - %s"
 
-#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:654
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3119 e2_view_dialog.c:654
 #: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Błąd odczytu pliku %s"
 
-#: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1563 e2_task_backend.c:1196
+#: e2_fs.c:2677 e2_fs.c:3070 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_output.c:1563 e2_task_backend.c:1237
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Nie mogę zebrać informacji odnośnie %s"
@@ -3223,45 +3243,45 @@ msgstr "Nie mogę zebrać informacji odnośnie %s"
 msgid "Cannot open file %s"
 msgstr "Nie mogę otworzyć pliku %s"
 
-#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2954 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3130 e2p_crypt.c:2954 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Błąd zapisu pliku %s"
 
-#: e2_fs.c:3026 e2p_dircmp.c:403
+#: e2_fs.c:3045 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "Nie mogę otworzyć '%s' do odczytu"
 
-#: e2_fs.c:3040
+#: e2_fs.c:3059
 #, c-format
 msgid "Cannot create file %s"
 msgstr "Nie mogę utworzyć pliku %s"
 
-#: e2_fs.c:3168
+#: e2_fs.c:3193
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "Nie mogę otworzyć połączenia dla komendy '%s'"
 
-#: e2_fs.c:3215
+#: e2_fs.c:3240
 #, fuzzy, c-format
 msgid "Command %s failed: error reading output"
 msgstr "Uruchomienie %s nie powiodło się: brak wystarczającej ilości pamięci"
 
-#: e2_fs.c:3233
+#: e2_fs.c:3258
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "Uruchomienie %s nie powiodło się: brak wystarczającej ilości pamięci"
 
-#: e2_fs.c:3358
+#: e2_fs.c:3383
 msgid "-rwxrwxrwx"
 msgstr ""
 
-#: e2_fs.c:3363
+#: e2_fs.c:3388
 msgid "ldbcfs"
 msgstr ""
 
-#: e2_fs.c:3368
+#: e2_fs.c:3393
 msgid "TtSs"
 msgstr "TtSs"
 
@@ -3270,7 +3290,7 @@ msgstr "TtSs"
 msgid "Cannot change anything in %s"
 msgstr "Nie mogę zmieniać niczego w %s"
 
-#: e2_fs_walk.c:175 e2_fs_walk.c:651 e2_task_backend.c:105 e2p_find.c:2143
+#: e2_fs_walk.c:175 e2_fs_walk.c:651 e2_task_backend.c:106 e2p_find.c:2143
 #: e2p_find.c:2791 e2p_timeset.c:363
 #, c-format
 msgid "Cannot change permissions of %s"
@@ -3281,7 +3301,7 @@ msgstr "Nie mogę zmienić praw dostępu %s"
 msgid "Directory %s not opened"
 msgstr "Katalog %s nie został otworzony"
 
-#: e2_fs_walk.c:385
+#: e2_fs_walk.c:385 e2_task_backend.c:1501
 #, c-format
 msgid "Cannot open directory %s"
 msgstr "Nie mogę otworzyć katalogu %s"
@@ -3434,7 +3454,7 @@ msgstr "P_rawo"
 msgid "_Next"
 msgstr "_Następne"
 
-#: e2_icons.c:964 e2_icons.c:1217 e2p_copy.c:608 e2p_move.c:656
+#: e2_icons.c:964 e2_icons.c:1217 e2_task_progress.c:202
 msgid "_Pause"
 msgstr "_Pauza"
 
@@ -3747,7 +3767,7 @@ msgstr "Także _katalogi"
 msgid "_Remove all filters"
 msgstr "_Usuń wszystkie filtry"
 
-#: e2_menu.c:1878 e2_plugins.c:1715
+#: e2_menu.c:1878 e2_plugins.c:1713
 msgid "Menu"
 msgstr ""
 
@@ -3796,7 +3816,7 @@ msgstr "lecz jest nierozważnym używanie znaków specjalnych"
 msgid "directories will be created"
 msgstr "foldery zostaną utworzone"
 
-#: e2_mkdir_dialog.c:684 e2_mkdir_dialog.c:730 e2_task_backend.c:849
+#: e2_mkdir_dialog.c:684 e2_mkdir_dialog.c:730 e2_task_backend.c:850
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Nie mogę utworzyć katalogu %s"
@@ -5205,7 +5225,7 @@ msgstr "Użytkownik"
 msgid "_Recurse"
 msgstr "_Rekursywnie"
 
-#: e2_pane.c:1758 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
+#: e2_pane.c:1758 e2_task.c:2241 e2_task.c:2433 e2_task.c:3306
 msgid "No trash directory is available"
 msgstr "'Kosz' nie jest dostępny"
 
@@ -5343,11 +5363,11 @@ msgstr "inne"
 msgid "Cannot unload plugin"
 msgstr "Nie mogę wyłączyć wtyczki"
 
-#: e2_plugins.c:1713
+#: e2_plugins.c:1711
 msgid "Loaded"
 msgstr "Załadowana"
 
-#: e2_plugins.c:1726
+#: e2_plugins.c:1724
 msgid "Location"
 msgstr "Lokacja"
 
@@ -5450,169 +5470,220 @@ msgstr ""
 msgid "New tab"
 msgstr "_Nowa zakładka"
 
-#: e2_task.c:137
+#: e2_task.c:138
 msgid "<system default>"
 msgstr ""
 
-#: e2_task.c:929
+#: e2_task.c:930
 #, c-format
 msgid "%s added to tasks queue"
 msgstr "%s dodany do kolejki zadań"
 
-#: e2_task.c:1405
+#: e2_task.c:1406
 #, c-format
 msgid "The current operation (%s)"
 msgstr "Aktualna operacja (%s)"
 
-#: e2_task.c:1408
+#: e2_task.c:1409
 msgid "operation"
 msgstr "operacja"
 
-#: e2_task.c:1607
+#: e2_task.c:1608
 msgid "Busy"
 msgstr ""
 
-#: e2_task.c:1609
+#: e2_task.c:1610
 msgid "File operation in progress"
 msgstr "Operacja na pliku w trakcie realizacji"
 
-#: e2_task.c:1761
+#: e2_task.c:1809
 msgid "Operation not permitted - Circular directories"
 msgstr "Operacja nie dozwolona - katalogi są zagnieżdzone"
 
-#: e2_task.c:2062 e2_task.c:2605 e2_task.c:2861 e2_task.c:3250 e2p_clone.c:82
+#: e2_task.c:2147 e2_task.c:2723 e2_task.c:2979 e2_task.c:3368 e2p_clone.c:82
 msgid "Enter new name for"
 msgstr "Podaj nową nazwę dla"
 
-#: e2_task.c:2294
+#: e2_task.c:2379
 #, c-format
 msgid "Trashed item %s reinstated to %s"
 msgstr "Usunięty element %s został przywrócony do %s"
 
-#: e2_task.c:2308
+#: e2_task.c:2393
 #, c-format
 msgid "Cannot reinstate %s"
 msgstr "Nie mogę przywrócić %s"
 
-#: e2_task.c:2865
+#: e2_task.c:2983
 msgid "link"
 msgstr ""
 
-#: e2_task.c:3180
+#: e2_task.c:3298
 #, c-format
 msgid "Removed all trash items from '%s'"
 msgstr "Usunięto wszystkie śmieci z '%s'"
 
-#: e2_task.c:3361
+#: e2_task.c:3479
 #, c-format
 msgid "Cannot rename %s"
 msgstr "Nie mogę zmienić nazwy %s"
 
-#: e2_task.c:3536
+#: e2_task.c:3654
 #, c-format
 msgid "You do not have authority to change permission(s) of %s"
 msgstr "Nie masz dostępu aby zmieniać prawa odczytu %s"
 
-#: e2_task.c:3677
+#: e2_task.c:3795
 #, c-format
 msgid "You do not have authority to change owner(s) of %s"
 msgstr "Nie masz dostępu aby zmieniać właściciela %s"
 
-#: e2_task.c:4306
+#: e2_task.c:4424
 msgid "open with"
 msgstr "otwórz z"
 
-#: e2_task.c:4307 e2_toolbar.c:3562 e2_toolbar.c:3566 e2p_upgrade.c:172
+#: e2_task.c:4425 e2_toolbar.c:3562 e2_toolbar.c:3566 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "Podaj komendę:"
 
-#: e2_task.c:4417
+#: e2_task.c:4535
 msgid "Enter a name or partial name to find:"
 msgstr "Poadj nazwę lub jej cząść do znalezienia:"
 
-#: e2_task.c:4523
+#: e2_task.c:4631
+msgid "cpbar"
+msgstr ""
+
+#: e2_task.c:4633
+msgid "cpbar_with_time"
+msgstr ""
+
+#: e2_task.c:4635
+msgid "mvbar"
+msgstr ""
+
+#: e2_task.c:4648
 msgid "abort"
 msgstr "anuluj"
 
-#: e2_task_backend.c:286
+#: e2_task_backend.c:287
 #, c-format
 msgid "Cannot change ownership of %s"
 msgstr "Nie mogę zmienić praw właściciela dla %s"
 
-#: e2_task_backend.c:468 e2_task_backend.c:1551 e2p_shred.c:650 e2p_shred.c:666
+#: e2_task_backend.c:469 e2_task_backend.c:1672 e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "Nie mogę usunąć %s"
 
-#: e2_task_backend.c:576 e2_task_backend.c:1516
+#: e2_task_backend.c:577 e2_task_backend.c:1637
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "Nie mogę usunąć istniejącego %s"
 
-#: e2_task_backend.c:635
+#: e2_task_backend.c:636
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "Nie mogę utworzyć specjalnego pliku %s"
 
-#: e2_task_backend.c:650
+#: e2_task_backend.c:651
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "Nie mogę utworzyć FIFO %s"
 
-#: e2_task_backend.c:798
+#: e2_task_backend.c:799
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "Nie mogę utworzyć nowego linku do %s"
 
-#: e2_task_backend.c:809
+#: e2_task_backend.c:810
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "Nie mogę uzyskać informacji o celu dla linku %s"
 
-#: e2_task_backend.c:1292
+#: e2_task_backend.c:1349
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "Nie mogę skopiować całości %s"
 
-#: e2_task_backend.c:1309
+#: e2_task_backend.c:1368
 msgid "incomplete"
 msgstr "niekompletne"
 
-#: e2_task_backend.c:1401
+#: e2_task_backend.c:1461
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "Nie mogę przenieść %s do %s"
 
-#: e2_task_backend.c:1456
+#: e2_task_backend.c:1577
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "Nie mogę utworzyć linku do %s"
 
-#: e2_task_backend.c:1504
+#: e2_task_backend.c:1625
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "Nie mogę zmienić nazwy %s na %s"
 
-#: e2_task_backend.c:1587 e2_task_backend.c:1703 e2p_crypt.c:2981
+#: e2_task_backend.c:1708 e2_task_backend.c:1824 e2p_crypt.c:2981
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "Nie mogę pozyskać aktualnych danych dla %s"
 
-#: e2_task_backend.c:1638
+#: e2_task_backend.c:1759
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "Nie mogę zmienić praw dostępu dla wszystkich elementów z %s"
 
-#: e2_task_backend.c:1657
+#: e2_task_backend.c:1778
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "Nie mogę pozyskać informacji o prawach dostępu do %s"
 
-#: e2_task_backend.c:1773
+#: e2_task_backend.c:1894
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Nie mogę zmienić właściciela dla wszystkich elementów z %s"
+
+#: e2_task_progress.c:180
+msgid "copying"
+msgstr "kopiowanie"
+
+#: e2_task_progress.c:180
+msgid "moving"
+msgstr "przenoszenie"
+
+#: e2_task_progress.c:205
+msgid "_Resume"
+msgstr "Kontynuuj"
+
+#: e2_task_progress.c:261
+#, fuzzy, c-format
+msgid "%.2f MB of %.2f MB  (%.0f%%)"
+msgstr "%.2f MB z %.2f MB  (%.0f\\%%)"
+
+#: e2_task_progress.c:277
+#, c-format
+msgid ""
+"moving %s\n"
+"to %s\n"
+"this is item %s of %s"
+msgstr ""
+"przenoszenie %s\n"
+"do %s\n"
+"jest to element %s z %s"
+
+#: e2_task_progress.c:278
+#, c-format
+msgid ""
+"copying %s\n"
+"to %s\n"
+"this is item %s of %s"
+msgstr ""
+"kopiowanie %s\n"
+"do %s\n"
+"element %s z %s"
 
 #: e2_terminal.c:134 e2_window.c:142
 msgid "Equal panel sizes (1:1)"
@@ -7065,61 +7136,6 @@ msgstr "_Konfiguruj.."
 msgid "Export or import configuration data"
 msgstr "Eksportuj lub importuj dane konfiguracyjne"
 
-#: e2p_copy.c:295
-#, c-format
-msgid ""
-"copying %s\n"
-"to %s\n"
-"this is item %s of %s"
-msgstr ""
-"kopiowanie %s\n"
-"do %s\n"
-"element %s z %s"
-
-#: e2p_copy.c:315 e2p_move.c:321
-#, fuzzy, c-format
-msgid "%.2f MB of %.2f MB  (%.0f%%)"
-msgstr "%.2f MB z %.2f MB  (%.0f\\%%)"
-
-#: e2p_copy.c:564 e2p_move.c:563
-#, c-format
-msgid "Cannot put anything in %s"
-msgstr "Nie mogę umieścić niczego w %s"
-
-#: e2p_copy.c:586
-msgid "copying"
-msgstr "kopiowanie"
-
-#: e2p_copy.c:614 e2p_move.c:662
-msgid "_Resume"
-msgstr "Kontynuuj"
-
-#: e2p_copy.c:756
-msgid "cpbar"
-msgstr ""
-
-#: e2p_copy.c:758
-#, fuzzy
-msgid "Copy selected items, with displayed progress details"
-msgstr "Kopiuj zaznaczone elementy wyświetlając postęp kopiowania"
-
-#: e2p_copy.c:760
-msgid "cpbar_with_time"
-msgstr ""
-
-#: e2p_copy.c:761
-msgid "Copy with _times"
-msgstr "Kopiuj z ustalonymi czasami"
-
-#: e2p_copy.c:762
-#, fuzzy
-msgid ""
-"Copy selected items, with preserved time-properties and displayed progress "
-"details"
-msgstr ""
-"Kopiuj zaznaczone elementy z zachowanymi opcjami czasu wyświetlając postęp "
-"kopiowania"
-
 #: e2p_crypt.c:1615
 #, c-format
 msgid "Compression failed for file %s"
@@ -7843,35 +7859,6 @@ msgstr ""
 msgid "Select items matching a specified pattern"
 msgstr "Zaznacz elementy pasujące do podanego wzoru"
 
-#: e2p_move.c:301
-#, c-format
-msgid ""
-"moving %s\n"
-"to %s\n"
-"this is item %s of %s"
-msgstr ""
-"przenoszenie %s\n"
-"do %s\n"
-"jest to element %s z %s"
-
-#: e2p_move.c:580
-#, fuzzy, c-format
-msgid "Cannot delete anything from %s"
-msgstr "Nie mogę usunąć istniejącego %s"
-
-#: e2p_move.c:634
-msgid "moving"
-msgstr "przenoszenie"
-
-#: e2p_move.c:808
-msgid "mvbar"
-msgstr ""
-
-#: e2p_move.c:810
-#, fuzzy
-msgid "Move selected items, with displayed progress details"
-msgstr "Przenieś zaznaczone elementy pokazując postęp"
-
 #: e2p_pack.c:234
 msgid "Filename:"
 msgstr "Nazwa pliku:"
@@ -8356,6 +8343,33 @@ msgstr "Otwórz pierwszy zaznaczony plik przy pomocy programu %s"
 #: e2p_view.c:83
 msgid "view_with_plugin"
 msgstr "view_with_plugin"
+
+#, c-format
+#~ msgid "Cannot put anything in %s"
+#~ msgstr "Nie mogę umieścić niczego w %s"
+
+#, fuzzy
+#~ msgid "Copy selected items, with displayed progress details"
+#~ msgstr "Kopiuj zaznaczone elementy wyświetlając postęp kopiowania"
+
+#~ msgid "Copy with _times"
+#~ msgstr "Kopiuj z ustalonymi czasami"
+
+#, fuzzy
+#~ msgid ""
+#~ "Copy selected items, with preserved time-properties and displayed "
+#~ "progress details"
+#~ msgstr ""
+#~ "Kopiuj zaznaczone elementy z zachowanymi opcjami czasu wyświetlając "
+#~ "postęp kopiowania"
+
+#, fuzzy, c-format
+#~ msgid "Cannot delete anything from %s"
+#~ msgstr "Nie mogę usunąć istniejącego %s"
+
+#, fuzzy
+#~ msgid "Move selected items, with displayed progress details"
+#~ msgstr "Przenieś zaznaczone elementy pokazując postęp"
 
 #~ msgid "custom font for viewing files"
 #~ msgstr "własna czcionka do podglądu plików"

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: emelfm2-0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-26 22:14+0100\n"
+"POT-Creation-Date: 2026-11-10 17:12+0100\n"
 "PO-Revision-Date: 2014-01-26 18:52+0300\n"
 "Last-Translator: Kyrill Detinov <lazy.kent@opensuse.org>\n"
 "Language-Team: Russian <ru@li.org>\n"
@@ -248,7 +248,7 @@ msgstr "очистить_историю"
 msgid "complete"
 msgstr "завершить"
 
-#: e2_action.c:1194 e2_task.c:2066
+#: e2_action.c:1194 e2_task.c:2151
 msgid "copy"
 msgstr "копировать"
 
@@ -288,7 +288,7 @@ msgstr "редактировать_снова"
 msgid "filetype"
 msgstr "тип_файла"
 
-#: e2_action.c:1204 e2_task.c:4416 e2p_find.c:4200
+#: e2_action.c:1204 e2_task.c:4534 e2p_find.c:4200
 msgid "find"
 msgstr "найти"
 
@@ -348,7 +348,7 @@ msgstr "создать_каталог"
 msgid "mountpoints"
 msgstr "точки_монтирования"
 
-#: e2_action.c:1220 e2_task.c:2609
+#: e2_action.c:1220 e2_task.c:2727
 msgid "move"
 msgstr "переместить"
 
@@ -404,7 +404,7 @@ msgstr "продолжить_обновлять"
 msgid "refreshsuspend"
 msgstr "отменить_обновлять"
 
-#: e2_action.c:1234 e2_task.c:3254
+#: e2_action.c:1234 e2_task.c:3372
 msgid "rename"
 msgstr "переименовать"
 
@@ -541,7 +541,7 @@ msgid "child"
 msgstr "дочерний"
 
 #: e2_action.c:1273 e2_menu.c:851 e2_pane.c:1325 e2_pane.c:1477 e2_pane.c:1873
-#: e2_task.c:2178 e2p_clipnames.c:112
+#: e2_task.c:2263 e2p_clipnames.c:112
 msgid "ctrl"
 msgstr "ctrl"
 
@@ -1047,8 +1047,8 @@ msgstr "Вы уверены, что хотите удалить закладку
 msgid "and"
 msgstr "и"
 
-#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1533 e2_dialog.c:1663
-#: e2_dialog.c:1669 e2_dialog.c:1741 e2_dialog.c:1782 e2_edit_dialog.c:782
+#: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1537 e2_dialog.c:1673
+#: e2_dialog.c:1679 e2_dialog.c:1770 e2_dialog.c:1811 e2_edit_dialog.c:782
 #: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1523
 #: e2_option_tree.c:1530 e2p_crypt.c:852 e2p_rename.c:1117
 msgid "confirm"
@@ -1119,18 +1119,18 @@ msgstr "usr/local"
 msgid "default trash directory"
 msgstr "каталог корзины по умолчанию"
 
-#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1883 e2_plugins.c:1717
+#: e2_bookmark.c:794 e2_context_menu.c:481 e2_menu.c:1883 e2_plugins.c:1715
 #: e2_toolbar.c:3520 e2_toolbar.c:3592 e2_toolbar.c:3758
 msgid "Label"
 msgstr "Название"
 
 #: e2_bookmark.c:796 e2_context_menu.c:483 e2_filetype.c:989
-#: e2_filetype_dialog.c:1091 e2_menu.c:1881 e2_plugins.c:1719 e2_toolbar.c:3522
+#: e2_filetype_dialog.c:1091 e2_menu.c:1881 e2_plugins.c:1717 e2_toolbar.c:3522
 #: e2_toolbar.c:3594 e2_toolbar.c:3760
 msgid "Icon"
 msgstr "Значок"
 
-#: e2_bookmark.c:798 e2_menu.c:1885 e2_plugins.c:1721 e2_toolbar.c:3524
+#: e2_bookmark.c:798 e2_menu.c:1885 e2_plugins.c:1719 e2_toolbar.c:3524
 #: e2_toolbar.c:3596 e2_toolbar.c:3762
 msgid "Tooltip"
 msgstr "Подсказка"
@@ -1438,7 +1438,7 @@ msgstr "Ошибка при общении с потомком: %s"
 msgid "nothing is waiting"
 msgstr "ничто не ожидает"
 
-#: e2_command.c:2016 e2_task.c:4523
+#: e2_command.c:2016 e2_task.c:4648
 msgid "task"
 msgstr "задача"
 
@@ -1982,11 +1982,11 @@ msgstr "_Действия"
 #: e2_context_menu.c:425 e2_dnd.c:827 e2_file_info_dialog.c:343
 #: e2_filetype_dialog.c:734 e2_icons.c:921 e2_icons.c:1174
 #: e2_option_tree_context_menu.c:287 e2_output.c:1802 e2_terminal.c:464
-#: e2_toolbar.c:3485 e2_tree_dialog.c:1200 e2_view_dialog.c:1097 e2p_copy.c:757
+#: e2_toolbar.c:3485 e2_tree_dialog.c:1200 e2_view_dialog.c:1097
 msgid "_Copy"
 msgstr "_Копировать"
 
-#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3487 e2p_move.c:809
+#: e2_context_menu.c:426 e2_dnd.c:833 e2_toolbar.c:3487
 msgid "_Move"
 msgstr "_Переместить"
 
@@ -2193,52 +2193,52 @@ msgstr "Ошибка при монтировании устройства: %s"
 msgid "Error unmounting device: %s"
 msgstr "Ошибка при размонтировании устройства: %s"
 
-#: e2_dialog.c:1017 e2_tree_dialog.c:1675
+#: e2_dialog.c:1021 e2_tree_dialog.c:1675
 msgid "_Hidden"
 msgstr "_Скрытые"
 
-#: e2_dialog.c:1019
+#: e2_dialog.c:1023
 msgid "Toggle display of hidden items"
 msgstr "Включить/Выключить показ скрытых элементов"
 
-#: e2_dialog.c:1167
+#: e2_dialog.c:1171
 msgid "user input"
 msgstr "ввод"
 
-#: e2_dialog.c:1305
+#: e2_dialog.c:1309
 msgid "You don't have authority to change anything"
 msgstr "У вас нет прав для изменения чего-либо"
 
-#: e2_dialog.c:1336
+#: e2_dialog.c:1340
 msgid "You don't have authority to do this"
 msgstr "Вы не авторизованы, чтобы сделать это"
 
-#: e2_dialog.c:1533
+#: e2_dialog.c:1537
 #, c-format
 msgid "Are you sure you want to delete <b>%s</b>?"
 msgstr "Вы уверены, что хотите удалить <b>%s</b>?"
 
-#: e2_dialog.c:1548
+#: e2_dialog.c:1552
 msgid "Delete items without further confirmation"
 msgstr "Удалить элементы без дальнейших вопросов"
 
-#: e2_dialog.c:1570
+#: e2_dialog.c:1574
 msgid "Retain this item"
 msgstr "Сохранить этот элемент"
 
-#: e2_dialog.c:1644
+#: e2_dialog.c:1650
 msgid "older"
 msgstr "более старый"
 
-#: e2_dialog.c:1646
+#: e2_dialog.c:1652
 msgid "newer"
 msgstr "более новый"
 
-#: e2_dialog.c:1655
+#: e2_dialog.c:1661
 msgid "existing"
 msgstr "существует"
 
-#: e2_dialog.c:1663
+#: e2_dialog.c:1673
 #, c-format
 msgid ""
 "Remove all contents of %s\n"
@@ -2247,7 +2247,7 @@ msgstr ""
 "Удалить всё содержимое %s\n"
 "<b>%s</b>?"
 
-#: e2_dialog.c:1669
+#: e2_dialog.c:1679
 #, c-format
 msgid ""
 "Overwrite %s <b>%s</b>\n"
@@ -2256,75 +2256,96 @@ msgstr ""
 "Перезаписать %s <b>%s</b>\n"
 "в %s?"
 
-#: e2_dialog.c:1674
+#: e2_dialog.c:1684
 #, fuzzy
 msgid "Overwrite confirmation"
 msgstr "подтверждение"
 
-#: e2_dialog.c:1697
+#: e2_dialog.c:1707
 msgid "Overwrite any existing item without further confirmation"
 msgstr "Перезаписывать любой существующий элемент без подтверждения"
 
-#: e2_dialog.c:1710 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
+#: e2_dialog.c:1716
+#, fuzzy
+msgid "_Merge"
+msgstr "копировать_со_слиянием"
+
+#: e2_dialog.c:1717
+#, fuzzy
+msgid ""
+"Keep existing items, and add only missing items to existing directories, "
+"without further confirmation"
+msgstr "Перезаписывать любой существующий элемент без подтверждения"
+
+#: e2_dialog.c:1725
+msgid "Keep a_ll"
+msgstr ""
+
+#: e2_dialog.c:1726
+#, fuzzy
+msgid "Keep this and any other existing item without further confirmation"
+msgstr "Перезаписывать любой существующий элемент без подтверждения"
+
+#: e2_dialog.c:1739 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
 msgid "_Replace"
 msgstr "_Заменить"
 
-#: e2_dialog.c:1782
+#: e2_dialog.c:1811
 #, c-format
 msgid "%s is taking a long time. Continue waiting ?"
 msgstr "%s выполняется слишком долго. Подождать ещё?"
 
-#: e2_dialog.c:1785
+#: e2_dialog.c:1814
 msgid "_Quiet"
 msgstr "_Тихо"
 
-#: e2_dialog.c:1787
+#: e2_dialog.c:1816
 msgid "Don't ask any more"
 msgstr "Больше не спрашивать"
 
-#: e2_dialog.c:1793 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
+#: e2_dialog.c:1822 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
 #: e2_icons.c:1256 e2p_find.c:4232 e2p_rename.c:1946
 msgid "_Stop"
 msgstr "_Остановить"
 
-#: e2_dialog.c:1794
+#: e2_dialog.c:1823
 #, c-format
 msgid "Cancel the %s"
 msgstr "Отменить %s"
 
-#: e2_dialog.c:1800
+#: e2_dialog.c:1829
 msgid "_Wait"
 msgstr "_Подождать"
 
-#: e2_dialog.c:1801
+#: e2_dialog.c:1830
 msgid "Wait some more"
 msgstr "Подождать ещё"
 
-#: e2_dialog.c:1823
+#: e2_dialog.c:1852
 msgid "center"
 msgstr "в центре"
 
-#: e2_dialog.c:1823
+#: e2_dialog.c:1852
 msgid "mouse"
 msgstr "на курсоре"
 
-#: e2_dialog.c:1823 e2_output.c:4424 e2_toolbar.c:3407
+#: e2_dialog.c:1852 e2_output.c:4424 e2_toolbar.c:3407
 msgid "none"
 msgstr "нет"
 
-#: e2_dialog.c:1824
+#: e2_dialog.c:1853
 msgid "always center"
 msgstr "всегда в центре"
 
-#: e2_dialog.c:1824
+#: e2_dialog.c:1853
 msgid "center on parent"
 msgstr "в центре предыдущего"
 
-#: e2_dialog.c:1826
+#: e2_dialog.c:1855
 msgid "dialog position"
 msgstr "положение диалоговых окон"
 
-#: e2_dialog.c:1827
+#: e2_dialog.c:1856
 msgid "This determines the position where dialog windows will pop up"
 msgstr "Определяет место, где будут появляться диалоговые окна"
 
@@ -2748,12 +2769,12 @@ msgid "Cannot access %s, going to %s instead"
 msgstr "Недоступен %s, вместо этого перехожу в %s"
 
 #: e2_filetype.c:124 e2_filetype.c:500 e2_filetype.c:700 e2_menu.c:1733
-#: e2_output.c:1460 e2_task.c:4250 e2_task_backend.c:1869
+#: e2_output.c:1460 e2_task.c:4368 e2_task_backend.c:1990
 msgid "<directory>"
 msgstr "<каталог>"
 
 #: e2_filetype.c:125 e2_filetype.c:506 e2_filetype.c:708 e2_menu.c:1814
-#: e2_output.c:1508 e2_task.c:4256
+#: e2_output.c:1508 e2_task.c:4374
 msgid "<executable>"
 msgstr "<исполняемый>"
 
@@ -3109,7 +3130,7 @@ msgid "Enter a command with which to open the file"
 msgstr "Введите команду, с помощью которой следует открыть этот файл"
 
 #: e2_fileview.c:132 e2_ownership_dialog.c:345 e2_permissions_dialog.c:327
-#: e2_plugins.c:1724 e2p_crypt.c:4047 e2p_timeset.c:802
+#: e2_plugins.c:1722 e2p_crypt.c:4047 e2p_timeset.c:802
 msgid "Filename"
 msgstr "Имя файла"
 
@@ -3191,14 +3212,14 @@ msgstr "Невозможно открыть '%s' для записи — %s"
 msgid "Error writing file '%s' - %s"
 msgstr "Ошибка записи в файл '%s' — %s"
 
-#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3100 e2_view_dialog.c:654
+#: e2_fs.c:2604 e2_fs.c:2642 e2_fs.c:2695 e2_fs.c:3119 e2_view_dialog.c:654
 #: e2p_config.c:693 e2p_crypt.c:2922 e2p_dircmp.c:443
 #, c-format
 msgid "Error reading file %s"
 msgstr "Ошибка при чтении файла %s"
 
-#: e2_fs.c:2677 e2_fs.c:3051 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
-#: e2_output.c:1563 e2_task_backend.c:1196
+#: e2_fs.c:2677 e2_fs.c:3070 e2_fs_walk.c:308 e2_fs_walk.c:470 e2_fs_walk.c:699
+#: e2_output.c:1563 e2_task_backend.c:1237
 #, c-format
 msgid "Cannot get information about %s"
 msgstr "Невозможно получить информацию о %s"
@@ -3208,45 +3229,45 @@ msgstr "Невозможно получить информацию о %s"
 msgid "Cannot open file %s"
 msgstr "Невозможно открыть файл %s"
 
-#: e2_fs.c:2847 e2_fs.c:3111 e2p_crypt.c:2954 e2p_shred.c:250
+#: e2_fs.c:2847 e2_fs.c:3130 e2p_crypt.c:2954 e2p_shred.c:250
 #, c-format
 msgid "Error writing file %s"
 msgstr "Ошибка при записи в файл %s"
 
-#: e2_fs.c:3026 e2p_dircmp.c:403
+#: e2_fs.c:3045 e2p_dircmp.c:403
 #, c-format
 msgid "Cannot open '%s' for reading"
 msgstr "Невозможно открыть '%s' для чтения"
 
-#: e2_fs.c:3040
+#: e2_fs.c:3059
 #, c-format
 msgid "Cannot create file %s"
 msgstr "Невозможно создать файл %s"
 
-#: e2_fs.c:3168
+#: e2_fs.c:3193
 #, c-format
 msgid "Cannot open pipe for command '%s'"
 msgstr "Невозможно открыть pipe для команды '%s'"
 
-#: e2_fs.c:3215
+#: e2_fs.c:3240
 #, fuzzy, c-format
 msgid "Command %s failed: error reading output"
 msgstr "Ошибка команды %s: не хватает памяти"
 
-#: e2_fs.c:3233
+#: e2_fs.c:3258
 #, c-format
 msgid "Command %s failed: not enough memory"
 msgstr "Ошибка команды %s: не хватает памяти"
 
-#: e2_fs.c:3358
+#: e2_fs.c:3383
 msgid "-rwxrwxrwx"
 msgstr "-rwxrwxrwx"
 
-#: e2_fs.c:3363
+#: e2_fs.c:3388
 msgid "ldbcfs"
 msgstr "ldbcfs"
 
-#: e2_fs.c:3368
+#: e2_fs.c:3393
 msgid "TtSs"
 msgstr "TtSs"
 
@@ -3255,7 +3276,7 @@ msgstr "TtSs"
 msgid "Cannot change anything in %s"
 msgstr "Невозможно ничего изменить в %s"
 
-#: e2_fs_walk.c:175 e2_fs_walk.c:651 e2_task_backend.c:105 e2p_find.c:2143
+#: e2_fs_walk.c:175 e2_fs_walk.c:651 e2_task_backend.c:106 e2p_find.c:2143
 #: e2p_find.c:2791 e2p_timeset.c:363
 #, c-format
 msgid "Cannot change permissions of %s"
@@ -3266,7 +3287,7 @@ msgstr "Невозможно изменить права %s"
 msgid "Directory %s not opened"
 msgstr "Каталог %s не открыт"
 
-#: e2_fs_walk.c:385
+#: e2_fs_walk.c:385 e2_task_backend.c:1501
 #, c-format
 msgid "Cannot open directory %s"
 msgstr "Невозможно открыть каталог %s"
@@ -3411,7 +3432,7 @@ msgstr "_Справа"
 msgid "_Next"
 msgstr "_Следующий"
 
-#: e2_icons.c:964 e2_icons.c:1217 e2p_copy.c:608 e2p_move.c:656
+#: e2_icons.c:964 e2_icons.c:1217 e2_task_progress.c:202
 msgid "_Pause"
 msgstr "_Пауза"
 
@@ -3707,7 +3728,7 @@ msgstr "_Каталоги тоже"
 msgid "_Remove all filters"
 msgstr "_Убрать все фильтры"
 
-#: e2_menu.c:1878 e2_plugins.c:1715
+#: e2_menu.c:1878 e2_plugins.c:1713
 msgid "Menu"
 msgstr "Меню"
 
@@ -3754,7 +3775,7 @@ msgstr "но неразумно использовать подстановоч�
 msgid "directories will be created"
 msgstr "каталоги будут созданы"
 
-#: e2_mkdir_dialog.c:684 e2_mkdir_dialog.c:730 e2_task_backend.c:849
+#: e2_mkdir_dialog.c:684 e2_mkdir_dialog.c:730 e2_task_backend.c:850
 #, c-format
 msgid "Cannot create directory %s"
 msgstr "Невозможно создать каталог %s"
@@ -5150,7 +5171,7 @@ msgstr "Владелец"
 msgid "_Recurse"
 msgstr "_Рекурсивно"
 
-#: e2_pane.c:1758 e2_task.c:2156 e2_task.c:2348 e2_task.c:3188
+#: e2_pane.c:1758 e2_task.c:2241 e2_task.c:2433 e2_task.c:3306
 msgid "No trash directory is available"
 msgstr "Каталог «корзины» недоступен"
 
@@ -5289,11 +5310,11 @@ msgstr "_остальные"
 msgid "Cannot unload plugin"
 msgstr "Невозможно выгрузить модуль"
 
-#: e2_plugins.c:1713
+#: e2_plugins.c:1711
 msgid "Loaded"
 msgstr "Загружен"
 
-#: e2_plugins.c:1726
+#: e2_plugins.c:1724
 msgid "Location"
 msgstr "Расположение"
 
@@ -5396,170 +5417,221 @@ msgstr ""
 msgid "New tab"
 msgstr "_Новая вкладка"
 
-#: e2_task.c:137
+#: e2_task.c:138
 #, fuzzy
 msgid "<system default>"
 msgstr "по_умолчанию"
 
-#: e2_task.c:929
+#: e2_task.c:930
 #, c-format
 msgid "%s added to tasks queue"
 msgstr "%s добавлен в список задач"
 
-#: e2_task.c:1405
+#: e2_task.c:1406
 #, c-format
 msgid "The current operation (%s)"
 msgstr "Текущая операция (%s)"
 
-#: e2_task.c:1408
+#: e2_task.c:1409
 msgid "operation"
 msgstr "операция"
 
-#: e2_task.c:1607
+#: e2_task.c:1608
 msgid "Busy"
 msgstr "Выполняется операция"
 
-#: e2_task.c:1609
+#: e2_task.c:1610
 msgid "File operation in progress"
 msgstr "Идёт файловая операция"
 
-#: e2_task.c:1761
+#: e2_task.c:1809
 msgid "Operation not permitted - Circular directories"
 msgstr "Операция невозможна — кольцевые директории"
 
-#: e2_task.c:2062 e2_task.c:2605 e2_task.c:2861 e2_task.c:3250 e2p_clone.c:82
+#: e2_task.c:2147 e2_task.c:2723 e2_task.c:2979 e2_task.c:3368 e2p_clone.c:82
 msgid "Enter new name for"
 msgstr "Введите новое имя для"
 
-#: e2_task.c:2294
+#: e2_task.c:2379
 #, c-format
 msgid "Trashed item %s reinstated to %s"
 msgstr "Элемент %s восстановлен из корзины в %s"
 
-#: e2_task.c:2308
+#: e2_task.c:2393
 #, c-format
 msgid "Cannot reinstate %s"
 msgstr "Невозможно восстановить %s"
 
-#: e2_task.c:2865
+#: e2_task.c:2983
 msgid "link"
 msgstr "ссылка"
 
-#: e2_task.c:3180
+#: e2_task.c:3298
 #, c-format
 msgid "Removed all trash items from '%s'"
 msgstr "Удалены все элементы из '%s'"
 
-#: e2_task.c:3361
+#: e2_task.c:3479
 #, c-format
 msgid "Cannot rename %s"
 msgstr "Невозможно переименовать %s"
 
-#: e2_task.c:3536
+#: e2_task.c:3654
 #, c-format
 msgid "You do not have authority to change permission(s) of %s"
 msgstr "У вас недостаточно привилегий, чтобы изменить права %s"
 
-#: e2_task.c:3677
+#: e2_task.c:3795
 #, c-format
 msgid "You do not have authority to change owner(s) of %s"
 msgstr "У вас недостаточно привилегий, чтобы изменить владельца %s"
 
-#: e2_task.c:4306
+#: e2_task.c:4424
 msgid "open with"
 msgstr "открыть с помощью"
 
-#: e2_task.c:4307 e2_toolbar.c:3562 e2_toolbar.c:3566 e2p_upgrade.c:172
+#: e2_task.c:4425 e2_toolbar.c:3562 e2_toolbar.c:3566 e2p_upgrade.c:172
 msgid "Enter command:"
 msgstr "Введите команду:"
 
-#: e2_task.c:4417
+#: e2_task.c:4535
 msgid "Enter a name or partial name to find:"
 msgstr "Введите имя или часть имени файла, который надо найти:"
 
-#: e2_task.c:4523
+#: e2_task.c:4631
+msgid "cpbar"
+msgstr "индикатор_копирования"
+
+#: e2_task.c:4633
+msgid "cpbar_with_time"
+msgstr "индикатор_копирования_со_временем"
+
+#: e2_task.c:4635
+msgid "mvbar"
+msgstr "индикатор_перемещения"
+
+#: e2_task.c:4648
 msgid "abort"
 msgstr "прервать"
 
-#: e2_task_backend.c:286
+#: e2_task_backend.c:287
 #, c-format
 msgid "Cannot change ownership of %s"
 msgstr "Невозможно изменить владельца %s"
 
-#: e2_task_backend.c:468 e2_task_backend.c:1551 e2p_shred.c:650 e2p_shred.c:666
+#: e2_task_backend.c:469 e2_task_backend.c:1672 e2p_shred.c:650 e2p_shred.c:666
 #, c-format
 msgid "Cannot delete %s"
 msgstr "Невозможно удалить %s"
 
-#: e2_task_backend.c:576 e2_task_backend.c:1516
+#: e2_task_backend.c:577 e2_task_backend.c:1637
 #, c-format
 msgid "Cannot delete existing %s"
 msgstr "Невозможно удалить существующий %s"
 
-#: e2_task_backend.c:635
+#: e2_task_backend.c:636
 #, c-format
 msgid "Cannot create special file %s"
 msgstr "Невозможно создать специальный файл %s"
 
-#: e2_task_backend.c:650
+#: e2_task_backend.c:651
 #, c-format
 msgid "Cannot create FIFO %s"
 msgstr "Невозможно создать FIFO %s"
 
-#: e2_task_backend.c:798
+#: e2_task_backend.c:799
 #, c-format
 msgid "Cannot create new link to %s"
 msgstr "Невозможно создать новую ссылку на %s"
 
-#: e2_task_backend.c:809
+#: e2_task_backend.c:810
 #, c-format
 msgid "Cannot get target info for link %s"
 msgstr "Невозможно получить иформацию о ссылке %s"
 
-#: e2_task_backend.c:1292
+#: e2_task_backend.c:1349
 #, c-format
 msgid "Cannot copy all of %s"
 msgstr "Невозможно ничего скопировать из %s"
 
-#: e2_task_backend.c:1309
+#: e2_task_backend.c:1368
 msgid "incomplete"
 msgstr "незавершено"
 
-#: e2_task_backend.c:1401
+#: e2_task_backend.c:1461
 #, c-format
 msgid "Cannot move %s to %s"
 msgstr "Невозможно переместить %s в %s"
 
-#: e2_task_backend.c:1456
+#: e2_task_backend.c:1577
 #, c-format
 msgid "Cannot create link to %s"
 msgstr "Невозможно создать ссылку на %s"
 
-#: e2_task_backend.c:1504
+#: e2_task_backend.c:1625
 #, c-format
 msgid "Cannot rename %s to %s"
 msgstr "Невозможно переименовать %s в %s"
 
-#: e2_task_backend.c:1587 e2_task_backend.c:1703 e2p_crypt.c:2981
+#: e2_task_backend.c:1708 e2_task_backend.c:1824 e2p_crypt.c:2981
 #: e2p_shred.c:460 e2p_timeset.c:323
 #, c-format
 msgid "Cannot get current data for %s"
 msgstr "Невозможно получить текущую дату для %s"
 
-#: e2_task_backend.c:1638
+#: e2_task_backend.c:1759
 #, c-format
 msgid "Cannot change permission(s) of all of %s"
 msgstr "Невозможно изменить права у %s"
 
-#: e2_task_backend.c:1657
+#: e2_task_backend.c:1778
 #, c-format
 msgid "Cannot get current permissions of %s"
 msgstr "Невозможно получить текущие права для %s"
 
-#: e2_task_backend.c:1773
+#: e2_task_backend.c:1894
 #, c-format
 msgid "Cannot change ownership of all of %s"
 msgstr "Невозможно изменить владельца у %s"
+
+#: e2_task_progress.c:180
+msgid "copying"
+msgstr "копирование"
+
+#: e2_task_progress.c:180
+msgid "moving"
+msgstr "перемещение"
+
+#: e2_task_progress.c:205
+msgid "_Resume"
+msgstr "_Продолжить"
+
+#: e2_task_progress.c:261
+#, fuzzy, c-format
+msgid "%.2f MB of %.2f MB  (%.0f%%)"
+msgstr "%.2f МБ из %.2f МБ  (%.0f\\%%)"
+
+#: e2_task_progress.c:277
+#, c-format
+msgid ""
+"moving %s\n"
+"to %s\n"
+"this is item %s of %s"
+msgstr ""
+"перемещение %s\n"
+"в %s\n"
+"это элемент %s из %s"
+
+#: e2_task_progress.c:278
+#, c-format
+msgid ""
+"copying %s\n"
+"to %s\n"
+"this is item %s of %s"
+msgstr ""
+"копирование %s\n"
+"в %s\n"
+"это элемент %s из %s"
 
 #: e2_terminal.c:134 e2_window.c:142
 msgid "Equal panel sizes (1:1)"
@@ -7003,59 +7075,6 @@ msgstr "_Настройки…"
 msgid "Export or import configuration data"
 msgstr "Экспортировать или импортировать настройки"
 
-#: e2p_copy.c:295
-#, c-format
-msgid ""
-"copying %s\n"
-"to %s\n"
-"this is item %s of %s"
-msgstr ""
-"копирование %s\n"
-"в %s\n"
-"это элемент %s из %s"
-
-#: e2p_copy.c:315 e2p_move.c:321
-#, fuzzy, c-format
-msgid "%.2f MB of %.2f MB  (%.0f%%)"
-msgstr "%.2f МБ из %.2f МБ  (%.0f\\%%)"
-
-#: e2p_copy.c:564 e2p_move.c:563
-#, c-format
-msgid "Cannot put anything in %s"
-msgstr "Невозможно ничего записать в %s"
-
-#: e2p_copy.c:586
-msgid "copying"
-msgstr "копирование"
-
-#: e2p_copy.c:614 e2p_move.c:662
-msgid "_Resume"
-msgstr "_Продолжить"
-
-#: e2p_copy.c:756
-msgid "cpbar"
-msgstr "индикатор_копирования"
-
-#: e2p_copy.c:758
-msgid "Copy selected items, with displayed progress details"
-msgstr "Копировать выбранные элементы, показывая детали процесса"
-
-#: e2p_copy.c:760
-msgid "cpbar_with_time"
-msgstr "индикатор_копирования_со_временем"
-
-#: e2p_copy.c:761
-msgid "Copy with _times"
-msgstr "Копировать со _временем"
-
-#: e2p_copy.c:762
-msgid ""
-"Copy selected items, with preserved time-properties and displayed progress "
-"details"
-msgstr ""
-"Копировать выбранные элементы с сохранением временных свойств, показывая "
-"детали процесса"
-
 #: e2p_crypt.c:1615
 #, c-format
 msgid "Compression failed for file %s"
@@ -7778,34 +7797,6 @@ msgstr "_Выбор…"
 msgid "Select items matching a specified pattern"
 msgstr "Выбрать элементы совпадающие с указанной маской"
 
-#: e2p_move.c:301
-#, c-format
-msgid ""
-"moving %s\n"
-"to %s\n"
-"this is item %s of %s"
-msgstr ""
-"перемещение %s\n"
-"в %s\n"
-"это элемент %s из %s"
-
-#: e2p_move.c:580
-#, c-format
-msgid "Cannot delete anything from %s"
-msgstr "Невозможно ничего удалить из %s"
-
-#: e2p_move.c:634
-msgid "moving"
-msgstr "перемещение"
-
-#: e2p_move.c:808
-msgid "mvbar"
-msgstr "индикатор_перемещения"
-
-#: e2p_move.c:810
-msgid "Move selected items, with displayed progress details"
-msgstr "Переместить выбранные элементы, показывая детали процесса"
-
 #: e2p_pack.c:234
 msgid "Filename:"
 msgstr "Имя файла:"
@@ -8282,6 +8273,30 @@ msgstr "Открыть первый выбранный элемент с пом�
 #: e2p_view.c:83
 msgid "view_with_plugin"
 msgstr "просмотреть_модулем"
+
+#, c-format
+#~ msgid "Cannot put anything in %s"
+#~ msgstr "Невозможно ничего записать в %s"
+
+#~ msgid "Copy selected items, with displayed progress details"
+#~ msgstr "Копировать выбранные элементы, показывая детали процесса"
+
+#~ msgid "Copy with _times"
+#~ msgstr "Копировать со _временем"
+
+#~ msgid ""
+#~ "Copy selected items, with preserved time-properties and displayed "
+#~ "progress details"
+#~ msgstr ""
+#~ "Копировать выбранные элементы с сохранением временных свойств, показывая "
+#~ "детали процесса"
+
+#, c-format
+#~ msgid "Cannot delete anything from %s"
+#~ msgstr "Невозможно ничего удалить из %s"
+
+#~ msgid "Move selected items, with displayed progress details"
+#~ msgstr "Переместить выбранные элементы, показывая детали процесса"
 
 #~ msgid "custom font for viewing files"
 #~ msgstr "особый шрифт для просмотра файлов"
