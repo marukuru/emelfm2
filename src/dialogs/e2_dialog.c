@@ -1535,7 +1535,8 @@ DialogButtons e2_dialog_delete_check (VPATH *localpath, gboolean multi,
 	F_FREE (s2, s1);
 	CLOSEBGL
 	GtkWidget *dialog = e2_dialog_create (_("confirm"), STOCK_NAME_DIALOG_QUESTION, DUMMY_RESPONSE_CB, NULL, _("Are you sure you want to delete <b>%s</b>?"), s3);
-	OPENBGL
+	//the dialog is completed with BGL still closed, because adding buttons from
+	//a task thread races with the main thread's handling of the dialog
 	g_free (s3);
 
 	E2_DialogFlags flags = 0;
@@ -1590,7 +1591,6 @@ DialogButtons e2_dialog_delete_check (VPATH *localpath, gboolean multi,
 	//maybe this helps gtk 2.16 crashes ?
 //	OPENBGL
 
-	CLOSEBGL
 	e2_dialog_setup (dialog, app.main_window);
 	e2_dialog_run (dialog, NULL, flags);
 	if (*horz >= 0 && *vert >= 0)
@@ -1682,7 +1682,8 @@ DialogButtons e2_dialog_ow_check (VPATH *slocal, VPATH *dlocal, OW_ButtonFlags e
 	}
 
 	gtk_window_set_title (GTK_WINDOW (dialog), _("Overwrite confirmation"));
-	OPENBGL
+	//the dialog is completed with BGL still closed, because adding buttons from
+	//a task thread races with the main thread's handling of the dialog
 
 	F_FREE (utf, VPSTR(dlocal));
 	g_free (public);
@@ -1750,6 +1751,7 @@ DialogButtons e2_dialog_ow_check (VPATH *slocal, VPATH *dlocal, OW_ButtonFlags e
 
 	if (e2_fs_access3 (dlocal, W_OK E2_ERR_NONE()))
 		_e2_dialog_setup_auth (dialog, (flags & E2_DIALOG_MULTI));
+	OPENBGL	//e2_dialog_show() closes it again
 
 //tag DEBUGfreeze2;
 	//maybe this helps
