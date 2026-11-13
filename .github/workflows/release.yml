@@ -143,21 +143,44 @@ jobs:
     permissions:
       contents: write
     steps:
+      # Each artifact goes to its own directory. Merged into one, the files of
+      # two builds with the same name (the "latest" image is also one of the
+      # listed releases) were written concurrently, mixing their contents.
       - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
           path: artifacts
-          merge-multiple: true
 
       - name: List artifacts
         run: find artifacts -type f
+
+      - name: Collect and verify release files
+        run: |
+          set -o pipefail
+          mkdir -p dist
+          # Sorted, so a listed release's build is kept rather than "latest"
+          find artifacts -type f \( -name '*.deb' -o -name '*.AppImage' \) | sort |
+          while read -r file; do
+            name=$(basename "$file")
+            if [ -e "dist/$name" ]; then
+              echo "Skipping $file, the same package is already collected"
+            else
+              cp "$file" "dist/$name"
+            fi
+          done
+          # Never publish a package which cannot be unpacked
+          for deb in dist/*.deb; do
+            dpkg-deb --fsys-tarfile "$deb" | tar -t > /dev/null
+            echo "Verified $deb"
+          done
+          ls -l dist
 
       - name: Create Release
         uses: softprops/action-gh-release@v2
         with:
           tag_name: "v${{ needs.release-info.outputs.version }}-${{ github.run_number }}"
           name: "Release ${{ needs.release-info.outputs.version }} (Build ${{ github.run_number }})"
-          body_path: artifacts/release_notes.md
+          body_path: artifacts/release-notes/release_notes.md
           files: |
-            artifacts/*.deb
-            artifacts/*.AppImage
+            dist/*.deb
+            dist/*.AppImage
