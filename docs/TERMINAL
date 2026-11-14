@@ -189,6 +189,16 @@ with the same profiles (e.g. apt-get build-dep -Ppkg.emelfm2.vte .). Profile
 restrictions choose exactly the matching GTK and VTE development package;
 dh_shlibdeps derives runtime dependencies from the actual linked binaries.
 
+On Ubuntu 26.04, use the GTK 3 and VTE profiles together. The GTK 2 terminal
+profile requires the legacy libvte-dev package, which is unavailable there.
+From the source directory, install dependencies and build with:
+
+  sudo apt-get build-dep -Ppkg.emelfm2.gtk3,pkg.emelfm2.vte .
+  DEB_BUILD_PROFILES='pkg.emelfm2.gtk3 pkg.emelfm2.vte' dpkg-buildpackage -us -uc -b
+
+The GTK 3 terminal backend uses libvte-2.91-dev. Debian packages can be built
+without root or fakeroot; debhelper sets ownership in the resulting archives.
+
 AppImage dependency selection: tools/appimage-dependencies.sh GTK WITH_VTE.
 Stage a feature-specific build in a clean checkout using:
   tools/stage-appimage.sh /tmp/emelfm2-AppDir 3 1

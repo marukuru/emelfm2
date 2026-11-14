@@ -89,7 +89,7 @@ install: build
 	cp $(CURDIR)/icons/emelfm2_32.png $(CURDIR)/debian/emelfm2/usr/share/icons/hicolor/32x32/apps/emelfm2.png
 	cp $(CURDIR)/icons/emelfm2_48.png $(CURDIR)/debian/emelfm2/usr/share/icons/hicolor/48x48/apps/emelfm2.png
 
-	install -g 0 -o 0 -m 755 -d debian/emelfm2-i18n
+	install -m 755 -d debian/emelfm2-i18n
 	$(MAKE) install_i18n PREFIX=$(CURDIR)/debian/emelfm2-i18n/usr $(MAKEOPTS)
 
 binary-indep: build install
