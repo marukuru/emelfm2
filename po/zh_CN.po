@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 0.9.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-11-10 17:12+0100\n"
+"POT-Creation-Date: 2026-11-14 14:45+0000\n"
 "PO-Revision-Date: 2014-01-27 15:18+0800\n"
 "Last-Translator: ccpaging <ccpaging@gmail.com>\n"
 "Language-Team: ccpaging <ccpaging@gmail.com>\n"
@@ -1057,7 +1057,7 @@ msgid "and"
 msgstr "并且"
 
 #: e2_bookmark.c:441 e2_bookmark.c:443 e2_dialog.c:1537 e2_dialog.c:1673
-#: e2_dialog.c:1679 e2_dialog.c:1770 e2_dialog.c:1811 e2_edit_dialog.c:782
+#: e2_dialog.c:1679 e2_dialog.c:1772 e2_dialog.c:1813 e2_edit_dialog.c:782
 #: e2_edit_dialog.c:1012 e2_main.c:1002 e2_option_tree.c:1523
 #: e2_option_tree.c:1530 e2p_crypt.c:852 e2p_rename.c:1117
 msgid "confirm"
@@ -2182,11 +2182,11 @@ msgstr "没有足够的权限"
 msgid "Are you sure you want to delete <b>%s</b>?"
 msgstr "确定要删除 <b>%s</b> 吗?"
 
-#: e2_dialog.c:1552
+#: e2_dialog.c:1553
 msgid "Delete items without further confirmation"
 msgstr "删除文件,  不再确认"
 
-#: e2_dialog.c:1574
+#: e2_dialog.c:1575
 msgid "Retain this item"
 msgstr "保留这个文件"
 
@@ -2225,90 +2225,90 @@ msgstr ""
 msgid "Overwrite confirmation"
 msgstr "确认"
 
-#: e2_dialog.c:1707
+#: e2_dialog.c:1708
 msgid "Overwrite any existing item without further confirmation"
 msgstr "覆盖已经存在的文件, 不需进一步的确认"
 
-#: e2_dialog.c:1716
+#: e2_dialog.c:1717
 msgid "_Merge"
 msgstr ""
 
-#: e2_dialog.c:1717
+#: e2_dialog.c:1718
 #, fuzzy
 msgid ""
 "Keep existing items, and add only missing items to existing directories, "
 "without further confirmation"
 msgstr "覆盖已经存在的文件, 不需进一步的确认"
 
-#: e2_dialog.c:1725
+#: e2_dialog.c:1726
 msgid "Keep a_ll"
 msgstr ""
 
-#: e2_dialog.c:1726
+#: e2_dialog.c:1727
 #, fuzzy
 msgid "Keep this and any other existing item without further confirmation"
 msgstr "覆盖已经存在的文件, 不需进一步的确认"
 
-#: e2_dialog.c:1739 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
+#: e2_dialog.c:1740 e2_edit_dialog.c:1702 e2_icons.c:937 e2_icons.c:1190
 msgid "_Replace"
 msgstr "替换(_R)"
 
-#: e2_dialog.c:1811
+#: e2_dialog.c:1813
 #, c-format
 msgid "%s is taking a long time. Continue waiting ?"
 msgstr "%s 已经运行了较长的时间, 继续等待吗 ?"
 
-#: e2_dialog.c:1814
+#: e2_dialog.c:1816
 msgid "_Quiet"
 msgstr "静默(_Q)"
 
-#: e2_dialog.c:1816
+#: e2_dialog.c:1818
 msgid "Don't ask any more"
 msgstr "不再询问"
 
-#: e2_dialog.c:1822 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
+#: e2_dialog.c:1824 e2_icons.c:969 e2_icons.c:1003 e2_icons.c:1222
 #: e2_icons.c:1256 e2p_find.c:4232 e2p_rename.c:1946
 msgid "_Stop"
 msgstr "停止(_S)"
 
-#: e2_dialog.c:1823
+#: e2_dialog.c:1825
 #, c-format
 msgid "Cancel the %s"
 msgstr "取消 %s"
 
-#: e2_dialog.c:1829
+#: e2_dialog.c:1831
 msgid "_Wait"
 msgstr "等待(_W)"
 
-#: e2_dialog.c:1830
+#: e2_dialog.c:1832
 msgid "Wait some more"
 msgstr "等待"
 
-#: e2_dialog.c:1852
+#: e2_dialog.c:1854
 msgid "center"
 msgstr "中间"
 
-#: e2_dialog.c:1852
+#: e2_dialog.c:1854
 msgid "mouse"
 msgstr "鼠标"
 
-#: e2_dialog.c:1852 e2_output.c:4424 e2_toolbar.c:3407
+#: e2_dialog.c:1854 e2_output.c:4424 e2_toolbar.c:3407
 msgid "none"
 msgstr "无"
 
-#: e2_dialog.c:1853
+#: e2_dialog.c:1855
 msgid "always center"
 msgstr "总是中间"
 
-#: e2_dialog.c:1853
+#: e2_dialog.c:1855
 msgid "center on parent"
 msgstr "父窗口的中间"
 
-#: e2_dialog.c:1855
+#: e2_dialog.c:1857
 msgid "dialog position"
 msgstr "对话框的位置"
 
-#: e2_dialog.c:1856
+#: e2_dialog.c:1858
 msgid "This determines the position where dialog windows will pop up"
 msgstr "决定弹出对话框的位置"
 
