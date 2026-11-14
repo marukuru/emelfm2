@@ -44,6 +44,7 @@ tests/run-command-progress.sh
 TEST_VTE="$vte" tests/run-application-smoke.sh
 tests/run-content-drag.sh
 tests/run-directory-context.sh
+tests/run-file-open.sh
 tests/run-output-wrap.sh
 tests/run-output-clear-styles.sh
 tests/run-overwrite-choices.sh

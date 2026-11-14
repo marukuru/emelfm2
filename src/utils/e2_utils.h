@@ -143,9 +143,10 @@ GList *e2_utils_get_trash_all (void) G_GNUC_MALLOC;
 const gchar *e2_utils_get_output_font (void);
 void e2_utils_update_gtk_settings (void);
 gchar *e2_utils_expand_macros (const gchar *text, const gchar *for_each) G_GNUC_MALLOC;
-gchar *e2_utils_replace_name_macros (const gchar *text, const gchar *utfpath) G_GNUC_MALLOC;
+//These can return text unchanged, so must not have G_GNUC_MALLOC.
+gchar *e2_utils_replace_name_macros (const gchar *text, const gchar *utfpath);
 gchar *e2_utils_replace_multiname (const gchar *text, gchar *path, GPtrArray *array,
-	gboolean single) G_GNUC_MALLOC;
+	gboolean single);
 gboolean e2_utils_get_variable (gchar **variable);
 gchar *e2_utils_replace_vars (gchar *raw, gboolean rawpath) G_GNUC_MALLOC;
 gchar *e2_utils_replace_wildcards (gchar *raw);
